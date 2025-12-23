@@ -1,0 +1,278 @@
+/* Page wrapper ensures your blog content sits nicely under navbar */
+.blog-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 120px 20px 60px; /* top clears navbar, bottom gives breathing room */
+}
+
+/* Post container */
+.blog-post {
+  text-align: left;
+  color: #e6edf3;
+}
+
+/* Back link */
+.blog-back {
+  display: inline-block;
+  margin-bottom: 18px;
+  text-decoration: none;
+  color: #58a6ff;
+}
+
+.blog-back:hover {
+  text-decoration: underline;
+}
+
+/* Title */
+.blog-post-title {
+  font-size: 2.3rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+/* Meta */
+.blog-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+
+.blog-meta .dot {
+  opacity: 0.7;
+}
+
+/* Tags */
+.blog-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 26px;
+}
+
+.blog-tag {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* TOC */
+.blog-toc {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
+  padding: 16px 16px;
+  margin: 0 0 26px;
+}
+
+.blog-toc-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.blog-toc ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.blog-toc li {
+  margin: 6px 0;
+}
+
+.blog-toc a {
+  color: #c9d1d9;
+  text-decoration: none;
+}
+
+.blog-toc a:hover {
+  text-decoration: underline;
+}
+
+/* Indentation by heading level */
+.toc-level-2 { margin-left: 0; }
+.toc-level-3 { margin-left: 14px; opacity: 0.9; }
+
+/* Markdown typography */
+.blog-post p {
+  line-height: 1.75;
+  font-size: 1.05rem;
+  margin: 0 0 18px;
+}
+
+.blog-post h2 {
+  margin-top: 42px;
+  margin-bottom: 14px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.blog-post h3 {
+  margin-top: 28px;
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.blog-post a {
+  color: #58a6ff;
+}
+
+.blog-post a:hover {
+  text-decoration: underline;
+}
+
+/* Inline code */
+.inline-code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.95em;
+}
+
+/* Code block wrapper */
+.code-block {
+  position: relative;         /* REQUIRED so ::before + button positions work */
+  margin: 26px 0;
+  border-radius: 12px;
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 42px 16px 16px;    /* top padding creates space for label + copy btn */
+  overflow-x: auto;
+}
+
+/* Language label top-left */
+.code-block::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-size: 0.72rem;
+  color: #8b949e;
+  text-transform: uppercase;
+}
+
+/* Copy button top-right */
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.10);
+  color: #e6edf3;
+  border: 0;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Pre/code */
+.code-pre {
+  margin: 0;
+}
+
+/* Archive page styles */
+.blog-archive {
+  text-align: left;
+}
+
+.blog-year-section {
+  margin-bottom: 44px;
+}
+
+.blog-year {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.blog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.blog-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.blog-title-link {
+  text-decoration: none;
+  color: #e6edf3;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.blog-title-link:hover {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+.blog-date {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+
+.blog-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 180px;   /* ⬅ clears navbar properly */
+   padding-bottom: 80px;
+}
+
+.blog-page-title {
+  font-size: 2.4rem;
+   margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-page-subtitle {
+  color: #aaa;
+  margin-top: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.tag-pill { 
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #a78bfa;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.tag-pill:hover {
+  background: rgba(207,168,255,0.15);
+  color: #c4b5fd;
+}
+
+.tag-count {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+
+/* Navigation row above blog content */
+.blog-nav {
+  margin-bottom: 2rem;
+}
