@@ -260,7 +260,7 @@ function BlogPost() {
     <input
       type="email"
       name="email"
-      placeholder="thabangvisionstudios@gmail.com"
+      placeholder="enter your email"
       required
     />
     <button type="submit">Subscribe</button>
