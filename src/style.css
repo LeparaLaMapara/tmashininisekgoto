@@ -795,3 +795,15 @@ button:focus {
 
 
 
+/* Book Calender */
+.conversation-link {
+  color: #c77dff;              /* matches your purple accent */
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.conversation-link:hover {
+  color: #ffffff;
+}

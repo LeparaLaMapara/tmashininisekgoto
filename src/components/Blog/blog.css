@@ -11,18 +11,23 @@
   color: #e6edf3;
 }
 
+
 /* Back link */
 .blog-back {
   display: inline-block;
-  margin-bottom: 18px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #a78bfa;
+  font-size: 0.85rem;
   text-decoration: none;
-  color: #58a6ff;
+  transition: all 0.2s ease;
 }
 
 .blog-back:hover {
-  text-decoration: underline;
+  background: rgba(207,168,255,0.15);
+  color: #c4b5fd;
 }
-
 /* Title */
 .blog-post-title {
   font-size: 2.3rem;
@@ -46,6 +51,7 @@
 
 /* Tags */
 .blog-tags {
+    color: #ffffff; /* Force readable base color */
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -53,6 +59,7 @@
 }
 
 .blog-tag {
+    color: #ffffff; /* Force readable base color */
   font-size: 0.85rem;
   padding: 6px 10px;
   border-radius: 999px;
@@ -67,7 +74,7 @@
   padding: 16px 16px;
   margin: 0 0 26px;
 }
-
+ 
 .blog-toc-title {
   font-weight: 700;
   margin-bottom: 10px;
@@ -183,13 +190,15 @@
 }
 
 .blog-year-section {
+  color: #ffffff;
   margin-bottom: 44px;
 }
 
 .blog-year {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
 }
 
 .blog-list {
@@ -243,6 +252,27 @@
   margin-bottom: 2rem;
 }
 
+/* =========================
+   TAG PAGE OVERRIDES
+   ========================= */
+
+.tag-page h1 {
+  color: #ffffff;
+}
+
+.tag-page .blog-page-subtitle {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.tag-page .blog-title-link {
+  color: #e6edf3;
+}
+
+.tag-page .blog-title-link:hover {
+  color: #58a6ff;
+}
+
+
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
@@ -272,7 +302,60 @@
 }
 
 
+
+
 /* Navigation row above blog content */
 .blog-nav {
   margin-bottom: 2rem;
+}
+
+
+
+
+
+.blog-subscribe {
+  margin-top: 4rem;
+  padding: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.blog-subscribe h4 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.blog-subscribe p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin-bottom: 1.2rem;
+}
+
+.subscribe-form {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.subscribe-form input {
+  padding: 0.55rem 0.75rem;
+  min-width: 240px;
+  border-radius: 6px;
+  border: none;
+  font-family: inherit;
+}
+
+.subscribe-form button {
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #7c4dff;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.subscribe-form button:hover {
+  opacity: 0.9;
 }

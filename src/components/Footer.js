@@ -7,6 +7,7 @@ import {
   AiFillYoutube
 } from "react-icons/ai";
 import { FaLinkedinIn } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";  // Material Design is also a great fit
 
 function Footer() {
   let date = new Date();
@@ -60,6 +61,16 @@ function Footer() {
                 rel="noopener noreferrer"
               >
                 <AiFillInstagram />
+              </a>
+            </li>
+             <li className="social-icons">
+              <a
+                href="mailto:thabangvisionstudios@gmail.com"
+                style={{ color: "white" }}
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <MdEmail />
               </a>
             </li>
           </ul>

@@ -13,6 +13,8 @@ import {
   AiFillYoutube
 } from "react-icons/ai";
 import { FaLinkedinIn } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";  // Material Design is also a great fit
+
 
 function Home() {
   return (
@@ -100,7 +102,18 @@ function Home() {
                   <AiFillInstagram />
                 </a>
               </li>
-            </ul>
+              <li className="social-icons">
+                  <a
+                    href="mailto:thabangvisionstudios@gmail.com"
+                    style={{ color: "white" }}
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="icon-colour home-social-icons"
+                  >
+                    <MdEmail />
+                  </a>
+                </li>
+              </ul>
           </Col>
         </Row>
       </Container>

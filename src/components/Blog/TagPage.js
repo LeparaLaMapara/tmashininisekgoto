@@ -23,7 +23,7 @@ function TagPage() {
   }, [tag]);
 
   return (
-    <Container className="blog-page">
+    <Container className="blog-page tag-page">
       <Link to="/blog" className="blog-back">
         ← Back to blog
       </Link>

@@ -235,6 +235,38 @@ function BlogPost() {
         >
           {content}
         </ReactMarkdown>
+        {/* Subscribe block */}
+<section className="blog-subscribe">
+  <h4>Subscribe</h4>
+
+  <p>
+    I write occasionally about building real-world AI systems,
+    data platforms, and engineering discipline.
+    No spam — unsubscribe anytime.
+  </p>
+
+  <form
+    action="https://buttondown.email/api/emails/embed-subscribe/thabangvisionstudios"
+    method="post"
+    target="popupwindow"
+    onSubmit={() =>
+      window.open(
+        "https://buttondown.email/thabangvisionstudios",
+        "popupwindow"
+      )
+    }
+    className="subscribe-form"
+  >
+    <input
+      type="email"
+      name="email"
+      placeholder="thabangvisionstudios@gmail.com"
+      required
+    />
+    <button type="submit">Subscribe</button>
+  </form>
+</section>
+
       </article>
     </Container>
   );

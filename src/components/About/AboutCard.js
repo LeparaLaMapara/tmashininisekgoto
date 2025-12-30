@@ -11,14 +11,13 @@ function AboutCard() {
             Hi, I’m <span className="purple">Thabang Mashinini-Sekgoto</span> from{" "}
             <span className="purple">Johannesburg, South Africa</span>, a <span className="purple">PhD researcher</span> at{" "}
             <span className="purple">the University of the Witwatersrand</span>,
-            where my research focuses on computer vision, distributed systems,
-            probabilistic modelling, geospatial data, and building AI systems that work reliably
-            under real-world constraints.
+            My research focuses on self-supervised learning, probabilistic modeling, and distributed ML systems
+             designed to function reliably in real-world, low-resource environments..
             <br />
             <br />
-            Beyond academia, I work as an{" "}
+            Beyond academia, I operate as a{" "}
             <span className="purple">
-              software engineer, Data Scientist, and open-source developer
+               Principal Data Scientist and Software engineer
             </span>
             . I’ve spent years designing and delivering production-grade AI/ML and
             data platforms across telecoms, banking, education, and research —
@@ -26,32 +25,28 @@ function AboutCard() {
             execution.
             <br />
             <br />
-            I’m also the co-founder of{" "}
+            I am the co-founder of{" "}
             <span className="purple">ThaBangVision Studio Labs</span>, an end-to-end creative
             technology studio operating at the intersection of visual production and
-            advanced engineering. The studio spans photography, filmmaking, visual design,
-            gear experimentation and rental, and applied R&D.
+            advanced engineering. The studio spans photography, filmmaking, and applied R&D.
             <br />
             <br />
             Within the studio, the research arm operates under{" "}
             <span className="purple">Ubunye Artificial Intelligence Ecosystems (UAIE)</span>,
-            where I design and build AI systems for both the creative industry and
-            enterprise sectors. This includes open-source AI and computer vision tools,
-            bespoke embedded and distributed software systems, and applied ML solutions
-            across domains such as computer vision analytics, and intelligent automation platforms.
+            Here, I design and build AI systems for both the creative and enterprise sectors, including:
+
+            <ul >
+            <li>Open-source AI tools</li>
+            <li>Standardized ETL/ML frameworks to uplift organizational engineering maturity.</li>
+            <li>Embedded systems and intelligent automation platforms.</li>
+            </ul>
+
+            At heart, I enjoy building—software, systems, tools, and the teams behind them. I collaborate with startups 
+            and organizations on ambitious projects that require
+             deep engineering capability and systemic thinking. My goal is to create work that is both technically rigorous and deeply impactful.
             <br />
             <br />
-            Through this structure, I collaborate with teams, startups, and organisations
-            on ambitious technical and creative projects that require both deep engineering
-            capability and strong system-level thinking.
-            <br />
-            <br />
-            At heart, I enjoy building things — software, systems, tools, and
-            the teams behind them — with the goal of creating work
-            that’s both technically rigorous and impactful.
-            <br />
-            <br />
-            Outside of engineering and research, I love staying creative and inspired through:
+            Outside of the lab and the terminal, I stay inspired through:
           </p>
 
 
