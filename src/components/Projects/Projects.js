@@ -81,7 +81,7 @@ function Projects() {
               Solution: Developed a constrained optimisation engine with real-time streaming analytics to prioritise generator dispatch.\n
               Impact: Reduced downtime by 5%, lowered operational costs by 30%, and supported R1B annual savings.\n
               Skills: PyFlink, Kafka, CVXPY, PySpark, Kubernetes, Docker, GitLab CI.`}
-              ghLink="https://github.com/soumyajit4419/Plant_AI"
+              // ghLink="https://github.com/soumyajit4419/Plant_AI"
               demoLink="https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring"
             />
           </Col>
