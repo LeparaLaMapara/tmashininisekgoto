@@ -54,7 +54,7 @@ function Projects() {
               Impact: Improved reliability of IoT forecasting, telematics scoring, and real-time analytics at scale.\n
               Skills: Python, NumPy, Dask, PyPI, CI/CD, Software Engineering.`}
               ghLink="https://github.com/ubunye-ai-ecosystems/tfilterspy"
-              demoLink="hhttps://ubunye-ai-ecosystems.github.io/tfilterspy/"
+              demoLink="https://ubunye-ai-ecosystems.github.io/tfilterspy"
             />
           </Col>
 
