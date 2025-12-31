@@ -81,7 +81,6 @@ function Projects() {
               Solution: Developed a constrained optimisation engine with real-time streaming analytics to prioritise generator dispatch.\n
               Impact: Reduced downtime by 5%, lowered operational costs by 30%, and supported R1B annual savings.\n
               Skills: PyFlink, Kafka, CVXPY, PySpark, Kubernetes, Docker, GitLab CI.`}
-              // ghLink="https://github.com/soumyajit4419/Plant_AI"
               demoLink="https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring"
             />
           </Col>
@@ -95,7 +94,6 @@ function Projects() {
               Solution: Built analytics workflows using IBM PAIRS to process multi-terabyte raster and vector datasets.\n
               Impact: Integrated into IBM’s Environmental Intelligence Suite for global environmental monitoring.\n
               Skills: IBM PAIRS, IBM Cloud, Airflow, Python, Hadoop, GeoPandas, Rasterio, TensorFlow.`}
-              // ghLink="https://github.com/soumyajit4419/AI_For_Social_Good"
               demoLink="https://www.ibm.com/products/environmental-intelligence-suite" 
             />
           </Col>
@@ -109,7 +107,6 @@ function Projects() {
               Solution: Built an interactive dashboard with automated heatmaps and case-tracking visualisations.\n
               Impact: Used by Gauteng Department of Health for hotspot identification and rapid response.\n
               Skills: Python, Dash, Plotly, Folium, Leaflet, IBM Cloud.`}
-              // ghLink="https://github.com/soumyajit4419/Face_And_Emotion_Detection"
               demoLink="https://gpcoronavirus.co.za/"      
             />
           </Col>
@@ -167,7 +164,6 @@ function Projects() {
               Impact: Achieved 90% silhouette score and enabled more informed decision-making for students and advisors.\n
               Skills: Python, Scikit-Learn, Pandas, PowerBI.`}
               ghLink="https://github.com/LeparaLaMapara/Wits-Recommendation-System"
-              // demoLink="https://chatify-49.web.app/"
             />
           </Col>
 
