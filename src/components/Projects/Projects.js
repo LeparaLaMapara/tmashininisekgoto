@@ -62,7 +62,7 @@ function Projects() {
             <ProjectCard
               imgPath={KasilamProjects}
               isBlog={false}
-              title="Kasilam Projects"
+              title="Kasilam Digital Platforms"
               description={`Problem: Township businesses lacked affordable digital presence and branding tools.\n
               Solution: Developed scalable web templates and branding systems deployed on cost-free hosting.\n
               Impact: Enabled SMEs to reach customers online and strengthen brand identity.\n
@@ -121,7 +121,8 @@ function Projects() {
               Impact: Enabled photographers to present their work professionally, improving brand identity and client engagement within the Kasilam digital ecosystem.\n
               Skills: HTML, CSS, JavaScript, GitHub Pages, CD/CI.`}
               ghLink="https://github.com/orgs/Kasilam-Projects/repositories"
-              demoLink="https://thabanglukhetho.github.io/Photography/"
+              demoLink="https://realthabanglukhetho.github.io/photography/index.html"
+
             />
           </Col>
 
@@ -136,7 +137,7 @@ function Projects() {
               Impact: Provided an accessible platform for township creatives to display their work professionally and attract clients online.\n
               Skills: React.js, JavaScript, CSS, GitHub Pages, CI/CD.`}
               ghLink="https://github.com/orgs/Kasilam-Projects/repositories"
-              demoLink="https://realthabanglukhetho.github.io/photography/index.html"
+              demoLink="https://thabanglukhetho.github.io/Photography/"
             />
           </Col>
 

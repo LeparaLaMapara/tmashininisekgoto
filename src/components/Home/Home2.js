@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import myImg from "../../Assets/avatar.svg";
 import Tilt from "react-parallax-tilt";
+import { ImPointRight } from "react-icons/im";
 
 function Home2() {
   return (
@@ -14,48 +15,47 @@ function Home2() {
             </h1>
 
            <p className="home-about-body">
-              I’m an{" "}
+              I build {" "}
               <span className="purple">
-             Applied Machine Learning Scientist
-              </span>{" "} and{" "}
-              <span className="purple">PhD Researcher</span>{" "}
-              working at the intersection of self-supervised learning, distributed systems,
-               probabilistic modeling, and large-scale data engineering. 
+              AI systems </span>
+              that actually work in the real world not just models, but the data, infrastructure, and decisions around them. 
+              I’m especially interested in what happens when machine learning meets reality: noisy data, 
+              changing environments, limited resources, and human behaviour.
               <br />
               <br />
-              I don't just design models; I design and operationalize real-world AI systems. My work spans the entire lifecycle—from research and architecture 
-              to production-grade execution—ensuring that complex data becomes a reliable operational asset.
-             
-              I remain a hands-on engineer and architect, building the tools I use. This includes maintaining open-source ecosystems 
-              like <span className="purple">UAIE (Ubunye-AI-Ecosystems)</span> for standardized ETL/ML and  Bayesian state estimation.
+              My work sits at the intersection of <span className="purple">distributed systems</span>, <span className="purple">probabilistic </span> 
+               and <span className="purple">applied machine learning (ML)</span>.
+              I enjoy taking ideas from research and turning them into <span className="purple">ML-driven solutions </span> 
+              that serve people and organisations such as data pipelines, analytic services, optimisation engines, and platforms that others use.
               <br />
               <br />
 
-             Over the years, I’ve led and delivered ML/AI-driven, mission-critical platforms across <span className="purple">telecoms</span>, 
-             <span className="purple">banking</span>, <span className="purple">education</span>, and <span className="purple">research</span>. 
-             My work focuses on moving beyond the research to create measurable enterprise value:
+             Over time, I’ve found myself less interested in tools and more interested in <span className="purple">systems</span>:
+             <br/>
             <br />
-            <ul >
-              <li>
-              <span className="purple">Telecoms (Vodacom)</span> — Architected a national-scale network optimization engine for smart-generator allocation,
-              contributing to <span className="purple">R1 billion in annual OPEX savings</span> and improving network <span className="purple">uptime by 5%</span>
+            <ul > 
+              <li className="about-activity">
+              <ImPointRight /> How do you build AI systems that are robust, reliable, and maintainable in real-world under constrainted environments?
               </li>
-              <br />
-              <li>
-                <span className="purple">Banking & Insurance (ABSA)</span> — Led the enterprise-wide <span className="purple">Databricks-based ML transformation</span>, cutting model training 
-                and scoring latency by <span className="purple">80–90%</span> and improving risk visibility for property insurance by  <span className="purple">80%</span>.
+              <br/>
+              <li className="about-activity">
+              <ImPointRight /> How do you create engineering cultures that balance innovation with discipline, experimentation with rigor, and speed with quality?
               </li>
-              <br />
-              <li>
-                <span className="purple">Global Research (IBM)</span> — Developed global geospatial and climate risk intelligence platforms, 
-                improving seasonal forecast accuracy by <span className="purple">15%</span> and building real-time epidemiological tools for public health authorities.
-              </li>
-              <br />
-              <li>
-                <span className="purple">Education (Wits BIS)</span> — Spearheaded the strategic modernization of data capabilities, designing a recommendation system 
-                that generated over <span className="purple">R2 million</span> in annual revenue through improved enrollment alignment.
+              <br/>
+              <li className="about-activity">
+              <ImPointRight /> How do you build teams that can work effectively with AI systems?
               </li>
            </ul>
+
+            This site is where I think in public.
+            I write about what I’m building, what I’m learning, and the patterns I see while working on real problems in industry and research. 
+            Some posts are technical, some are reflective, but all of them come from practice not theory alone.
+
+            <br/>
+            <br/>
+
+            Long-term, I’m interested in building foundational AI and data platforms, contributing to open systems,
+             and helping shape how machine learning is actually used, especially in environments that don’t look like Silicon Valley.
 
             <Col md={8} className="home-about-description">
             <h1 style={{ fontSize: "2.6em" }}>
@@ -63,50 +63,68 @@ function Home2() {
             </h1>
             </Col>
 
-            I partner with founders, leadership teams, and technical organizations to design, modernize, 
-            and scale <span className="purple">real-world AI and data engineering platforms.</span> How I Can Help:
-              <br />
-              <br />
+          If you’re curious about AI beyond the demos and hype — how it’s actually
+          designed, deployed, and kept running in the real world — you’ll probably
+          feel at home here.
+          <br />
+          <br />
 
+
+          I spend most of my time helping people turn complex ideas into systems that
+          actually work. Sometimes that’s a start-up trying to build something new.
+          Other times it’s a large organisation trying to fix or modernise what they
+          already have.
+          <br />
+          <br />
+
+          In practice, that usually means things like:
+          <br />
+          <br />
     
           <ul >
-            <li>
-            <span className="purple">AI & Data Science Strategy</span> — Consulting on system design and roadmaps that align
-             technical delivery with measurable business outcomes.
+            <li className="about-activity">
+              <ImPointRight /> <span className="purple">Making sense of messy data</span> — helping teams
+              understand what data they have, what they can trust, and how to turn it
+              into something useful for decisions.
             </li>
             <br />
 
-            <li>
-              <span className="purple">Enterprise ML & cloud transformation</span> — Architecting production platforms—specializing 
-              in Databricks, AWS, and streaming architectures (Kafka, Flink) to cut latency and scale scoring.
+            <li className="about-activity">
+              <ImPointRight /> <span className="purple">Designing AI systems that don’t fall apart</span> —
+              not just models, but the data pipelines, infrastructure, and processes around
+              them so they work reliably at scale.
             </li>
             <br />
 
-            <li>
-              <span className="purple">Advanced Analytics & Decision Systems</span> — Turning complex, multi-terabyte datasets (including geospatial 
-              and IoT telemetry) into operational insights.
+            <li className="about-activity">
+                <ImPointRight /> <span className="purple">Modernising existing platforms</span> — helping
+                organisations move from slow, fragile systems to faster, more flexible
+                setups using modern cloud and data tools.
             </li>
             <br />
 
-            <li>
-              <span className="purple">Technical Leadership</span> — Providing Senior/Principal-level consulting to stabilize high-value systems, 
-              introduce MLOps, and establish AI governance.
+            <li className="about-activity">
+              <ImPointRight /> <span className="purple">Bringing clarity to complex problems</span> —
+                especially where data is large, uncertain, or changing.
             </li>
             <br />
 
-            <li>
-              <span className="purple">Capability Enablement</span> — Mentoring teams and running workshops to upskill engineers/data scienists in distributed ML,
-               probabilistic modeling, and modern engineering practices.
+            <li className="about-activity">
+              <ImPointRight />  <span className="purple">Helping people/organisations grow</span> — mentoring engineers
+              and data scientists, and helping teams build confidence working with
+              modern AI and data systems.
             </li>
           </ul>
-          Tackling a complex AI or platform challenge?{" "}
+                If you’re dealing with a tricky AI or data problem or you just want to
+                talk things through and see if there’s a fit  I’m always open to a
+                conversation. {" "}
                 <a
                   href="https://calendar.app.google/JzUn4JQ2pnzmmjLx5"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="conversation-link"
+                  className="coffee-button"
                 >
-                  LET'S TALK
+                   ☕ LET’S HAVE COFFEE & TALK
                   </a>
           </p>
           </Col>

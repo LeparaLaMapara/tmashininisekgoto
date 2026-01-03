@@ -807,3 +807,42 @@ button:focus {
 .conversation-link:hover {
   color: #ffffff;
 }
+
+
+
+
+
+.coffee-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+  margin-top: 1.5rem;
+
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(167, 139, 250, 0.9),
+    rgba(124, 77, 255, 0.9)
+  );
+
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+
+  box-shadow: 0 8px 30px rgba(124, 77, 255, 0.35);
+  transition: all 0.25s ease;
+}
+
+.coffee-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(124, 77, 255, 0.5);
+  color: #ffffff;
+}
+
+.coffee-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 20px rgba(124, 77, 255, 0.3);
+}
