@@ -246,12 +246,12 @@ function BlogPost() {
   </p>
 
   <form
-    action="https://buttondown.com/api/emails/embed-subscribe/thabang"
+    action="https://buttondown.com/api/emails/embed-subscribe/thabangvisionstudios"
     method="post"
     target="popupwindow"
     onSubmit={() =>
       window.open(
-        "https://buttondown.com/refer/thabang",
+        "https://buttondown.com/refer/thabangvisionstudios",
         "popupwindow"
       )
     }
