@@ -236,36 +236,40 @@ function BlogPost() {
           {content}
         </ReactMarkdown>
         {/* Subscribe block */}
-<section className="blog-subscribe">
-  <h4>Subscribe</h4>
+        <section className="blog-subscribe" aria-label="Newsletter signup">
+          <h2 className="blog-subscribe-title">Subscribe</h2>
 
-  <p>
-    I write occasionally about building real-world AI systems,
-    data platforms, and engineering discipline.
-    No spam — unsubscribe anytime.
-  </p>
+          <p>
+            I write occasionally about building real-world AI systems, data
+            platforms, and engineering discipline. No spam — unsubscribe
+            anytime.
+          </p>
 
-  <form
-    action="https://buttondown.com/api/emails/embed-subscribe/thabangvisionstudios"
-    method="post"
-    target="popupwindow"
-    onSubmit={() =>
-      window.open(
-        "https://buttondown.com/refer/thabangvisionstudios",
-        "popupwindow"
-      )
-    }
-    className="subscribe-form"
-  >
-    <input
-      type="email"
-      name="email"
-      placeholder="enter your email"
-      required
-    />
-    <button type="submit">Subscribe</button>
-  </form>
-</section>
+          <form
+            action="https://buttondown.com/api/emails/embed-subscribe/thabangvisionstudios"
+            method="post"
+            target="popupwindow"
+            onSubmit={() =>
+              window.open(
+                "https://buttondown.com/refer/thabangvisionstudios",
+                "popupwindow"
+              )
+            }
+            className="subscribe-form"
+          >
+            <label htmlFor="newsletter-email" className="sr-only">
+              Email address
+            </label>
+            <input
+              id="newsletter-email"
+              type="email"
+              name="email"
+              placeholder="enter your email"
+              required
+            />
+            <button type="submit">Subscribe</button>
+          </form>
+        </section>
 
       </article>
     </Container>
