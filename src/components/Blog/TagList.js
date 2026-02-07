@@ -1,65 +1,56 @@
 import React, { useMemo } from "react";
 import { Container } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import blogIndex from "./blogIndex.json";
 import "./blog.css";
 
-function TagPage() {
-  const { tag } = useParams();
+function normalizeTag(tag) {
+  return String(tag || "").trim().toLowerCase();
+}
 
-  /**
-   * Filter posts that contain this tag
-   */
-  const posts = useMemo(() => {
-    return blogIndex.filter(
-      (post) => post.tags && post.tags.includes(tag)
-    );
-  }, [tag]);
+function TagList() {
+  const tags = useMemo(() => {
+    const counts = (blogIndex || []).reduce((acc, post) => {
+      const uniqueTags = new Set((post.tags || []).map(normalizeTag).filter(Boolean));
+
+      uniqueTags.forEach((tag) => {
+        acc[tag] = (acc[tag] || 0) + 1;
+      });
+
+      return acc;
+    }, {});
+
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([name, count]) => ({ name, count }));
+  }, []);
 
   return (
     <Container className="blog-page">
-      {/* Back button (pill style) */}
       <div className="blog-nav">
         <Link to="/blog" className="tag-pill">
           ← Back to blog
         </Link>
       </div>
 
-      {/* Tag header */}
-      <h1 className="blog-tag-title">#{tag}</h1>
-      <p className="blog-subtitle">
-        {posts.length} post{posts.length !== 1 && "s"}
+      <h1 className="blog-page-title">Browse Tags</h1>
+      <p className="blog-page-subtitle">
+        Explore posts by topic.
       </p>
 
-      {/* Posts list */}
-      <ul className="blog-list">
-        {posts.map((post) => (
-          <li key={post.id} className="blog-list-item">
-            <Link to={`/blog/${post.id}`} className="blog-title-link">
-              {post.title}
+      {tags.length === 0 ? (
+        <p className="blog-page-subtitle">No tags available yet.</p>
+      ) : (
+        <div className="tag-cloud">
+          {tags.map((tag) => (
+            <Link key={tag.name} to={`/tags/${tag.name}`} className="tag-pill">
+              #{tag.name} <span className="tag-count">({tag.count})</span>
             </Link>
-            <span className="blog-date">
-              {formatShortDate(post.date)}
-            </span>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      )}
     </Container>
   );
 }
 
-/**
- * Utility: Format date as "Oct 10"
- */
-function formatShortDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return dateStr;
-
-  return d.toLocaleDateString(undefined, {
-    month: "short",
-    day: "2-digit",
-  });
-}
-
-export default TagPage;
+export default TagList;

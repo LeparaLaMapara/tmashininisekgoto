@@ -12,15 +12,16 @@ import "./blog.css";
  */
 function TagPage() {
   const { tag } = useParams();
+  const normalizedTag = String(tag || "").trim().toLowerCase();
 
   /**
    * Filter posts that contain this tag
    */
   const posts = useMemo(() => {
     return blogIndex
-      .filter((post) => post.tags?.includes(tag))
+      .filter((post) => (post.tags || []).map((t) => String(t).trim().toLowerCase()).includes(normalizedTag))
       .sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [tag]);
+  }, [normalizedTag]);
 
   return (
     <Container className="blog-page tag-page">
@@ -28,9 +29,9 @@ function TagPage() {
         ← Back to blog
       </Link>
 
-      <h1 className="blog-tag-title">#{tag}</h1>
+      <h1 className="blog-tag-title">#{normalizedTag}</h1>
       <p className="blog-tag-subtitle">
-        {posts.length} post{posts.length !== 1 && "s"} tagged with “{tag}”
+        {posts.length} post{posts.length !== 1 && "s"} tagged with “{normalizedTag}”
       </p>
 
       {posts.length === 0 ? (

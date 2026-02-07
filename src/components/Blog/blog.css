@@ -316,13 +316,16 @@
 .blog-subscribe {
   margin-top: 4rem;
   padding: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(90deg, rgba(7, 7, 30, 0.85), rgba(35, 11, 56, 0.85));
   text-align: center;
 }
 
-.blog-subscribe h4 {
+.blog-subscribe-title {
   margin-bottom: 0.5rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .blog-subscribe p {
@@ -358,4 +361,17 @@
 
 .subscribe-form button:hover {
   opacity: 0.9;
+}
+
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
