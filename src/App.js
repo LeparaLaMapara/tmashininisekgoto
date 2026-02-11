@@ -18,7 +18,8 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
-
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import ScrollToTop from "./components/ScrollToTop";
 import "./style.css";
 import "./App.css";
@@ -58,6 +59,9 @@ function App() {
         </main>
 
         <Footer />
+        <Analytics /> {/* <--- Add this component at the bottom */}
+        <SpeedInsights /> {/* <--- Add this component at the bottom */}
+        
       </div>
     </Router>
   );

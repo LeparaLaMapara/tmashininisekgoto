@@ -4,8 +4,8 @@ import homeLogo from "../../Assets/home-main.svg";
 import Particle from "../Particle";
 import Home2 from "./Home2";
 import Type from "./Type";
-import Techstack from "../About/Techstack";
-import Github from "../About/Github";
+// import Techstack from "../About/Techstack";
+// import Github from "../About/Github";
 import {
   AiFillGithub,
   AiOutlineTwitter,
@@ -94,7 +94,7 @@ function Home() {
               </li>
               <li className="social-icons">
                 <a
-                  href="https://www.instagram.com/thabangvision"
+                  href="https://www.instagram.com/thabanglukheto"
                   target="_blank"
                   rel="noreferrer"
                   className="icon-colour home-social-icons"
@@ -102,6 +102,18 @@ function Home() {
                   <AiFillInstagram />
                 </a>
               </li>
+                <li className="social-icons">
+                            <a
+                              href="https://x.com/thabangline"
+                              style={{ color: "white" }}
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="icon-colour home-social-icons"
+
+                            >
+                              <AiOutlineTwitter />
+                            </a>
+                          </li>
               <li className="social-icons">
                   <a
                     href="mailto:thabangvisionstudios@gmail.com"
