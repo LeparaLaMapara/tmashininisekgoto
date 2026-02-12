@@ -104,7 +104,6 @@ function NavBar() {
           <AiOutlineBook style={{ marginBottom: "2px" }} /> Blog
           </Nav.Link>
           </Nav.Item>
-<<<<<<< HEAD
          <Nav.Item>
               <Nav.Link
                 as={Link}
@@ -117,8 +116,6 @@ function NavBar() {
           <Nav.Link as={Link} to="/talks" onClick={() => updateExpanded(false)}>
               <AiOutlineFundProjectionScreen style={{ marginBottom: "2px" }} /> Talks
             </Nav.Link>
-=======
->>>>>>> 12d530d0f2c7936edd22c6c0275b5406e6e37fa9
             <Nav.Item>
               <Nav.Link
                 href="https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ"
