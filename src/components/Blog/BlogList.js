@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import blogIndex from "./blogIndex.json";
+import { getPublishedPosts } from "./postVisibility";
 import "./blog.css";
 
 /**
@@ -20,7 +21,8 @@ function BlogList() {
    * - Sort posts newest first.
    */
   const { sortedYears, postsByYear } = useMemo(() => {
-    const normalized = (blogIndex || []).map((p) => {
+    const publishedPosts = getPublishedPosts(blogIndex || []);
+    const normalized = publishedPosts.map((p) => {
       const year = p.year || (p.date ? new Date(p.date).getFullYear() : "Unknown");
       return { ...p, year };
     });
