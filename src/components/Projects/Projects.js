@@ -68,7 +68,7 @@ function Projects() {
               Impact: Enabled SMEs to reach customers online and strengthen brand identity.\n
               Skills: HTML, CSS, JavaScript, React, GitHub Pages.`}
               ghLink="https://github.com/orgs/Kasilam-Projects/repositories"
-              // demoLink="https://editor.soumya-jit.tech/"              
+              demoLink="https://kasilamdigitialplatforms.vercel.app/"              
             />
           </Col>
 

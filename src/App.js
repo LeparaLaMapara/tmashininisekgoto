@@ -24,6 +24,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import "./style.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Talks from "./components/Talks/Talks";
 
 function App() {
   const [load, updateLoad] = useState(true);
@@ -55,6 +56,8 @@ function App() {
             <Route path="/tags/:tag" element={<TagPage />} />
 
             <Route path="*" element={<Navigate to="/" />} />
+
+            <Route path="/talks" element={<Talks />} />
           </Routes>
         </main>
 

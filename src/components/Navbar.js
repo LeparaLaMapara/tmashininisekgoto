@@ -110,7 +110,9 @@ function NavBar() {
             
               </Nav.Link>
             </Nav.Item>
-
+          <Nav.Link as={Link} to="/talks" onClick={() => updateExpanded(false)}>
+              <AiOutlineFundProjectionScreen style={{ marginBottom: "2px" }} /> Talks
+            </Nav.Link>
             <Nav.Item>
               <Nav.Link
                 href="https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ"
