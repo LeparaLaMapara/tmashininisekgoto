@@ -9,7 +9,20 @@
       "systems",
       "python"
     ],
-    "file": "how-to-build-python-packages.md",
+    "file": "ubunye-engine-ai-ecosystem.md",
     "summary": "A practical guide to designing, packaging, and publishing Python libraries from first principles."
+  }
+   {
+    "id": "ubunye-engine-ai-ecosystem",
+    "title": "Ubunye Engine: One Framework, One Convention, One CLI — Why Unity Is the Real Deliverable",
+    "date": "2026-03-05",
+    "year": 2026,
+    "tags": [
+      "open source",
+      "agentic ai",
+      "python"
+    ],
+    "file": "ubunye-engine-ai-ecosystem.md",
+    "summary": "I built a production-grade ML/ETL framework — config system, lineage tracking, model registry, CI/CD, documentation, 261 tests — in approximately 30 human hours using an AI coding agent, at a total cost of R1,520. This is the unfiltered account: the CI failures at 2am, the bug in a three-line fallback, the API hallucinations, and the real economics of building with an agent versus a team. The central argument is simple: the discipline to ship boring work is rarer than the ability to design interesting architecture, and it matters more"
   }
 ]
