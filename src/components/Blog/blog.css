@@ -144,6 +144,15 @@
   border-radius: 6px;
 }
 
+/* Images */
+.blog-post img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 24px auto;
+  border-radius: 8px;
+}
+
 /* Inline code */
 .inline-code {
   padding: 2px 6px;
