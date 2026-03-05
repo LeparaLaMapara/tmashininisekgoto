@@ -45,7 +45,7 @@ function Talks() {
                 </div>
                 <Card.Body>
                   <Card.Title>{talk.title}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted" style={{ fontSize: "0.9rem" }}>
+                  <Card.Subtitle className="mb-2" style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>
                     {talk.event} | {talk.date}
                   </Card.Subtitle>
                   <Card.Text style={{ textAlign: "justify" }}>

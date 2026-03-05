@@ -27,7 +27,7 @@ function Footer() {
               <a
                 href="https://github.com/leparalamapara"
                 style={{ color: "white" }}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiFillGithub />
@@ -37,7 +37,7 @@ function Footer() {
               <a
                 href="https://www.youtube.com/@thabangvision"
                 style={{ color: "white" }}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiFillYoutube />
@@ -47,7 +47,7 @@ function Footer() {
               <a
                 href="https://www.linkedin.com/in/thabang-mashinini-0081b5b6/"
                 style={{ color: "white" }}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <FaLinkedinIn />
@@ -55,9 +55,9 @@ function Footer() {
             </li>
             <li className="social-icons">
               <a
-                href="https://www.instagram.com/thabanglukheto"
+                href="https://www.instagram.com/thabanglukhetho"
                 style={{ color: "white" }}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiFillInstagram />
@@ -67,17 +67,17 @@ function Footer() {
               <a
                 href="https://x.com/thabangline"
                 style={{ color: "white" }}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiOutlineTwitter />
               </a>
             </li>
-             <li className="social-icons">
+            <li className="social-icons">
               <a
                 href="mailto:thabangvisionstudios@gmail.com"
                 style={{ color: "white" }}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <MdEmail />

@@ -37,19 +37,6 @@ function About() {
               <img src={laptopImg} alt="about" className="img-fluid" />
             </Col>
           </Row>
-          <h1 className="project-heading">
-            Professional <strong className="purple">Skillset </strong>
-          </h1>
-
-          <Techstack />
-
-          <h1 className="project-heading">
-            <strong className="purple">Tools</strong> I use
-          </h1>
-          <Toolstack />
-
-          <Github />
-
           {/* WORK WITH ME */}
           <Row style={{ paddingTop: "60px", paddingBottom: "60px" }}>
             <Col md={12}>
@@ -122,6 +109,19 @@ function About() {
               </a>
             </Col>
           </Row>
+
+          <h1 className="project-heading">
+            Professional <strong className="purple">Skillset </strong>
+          </h1>
+
+          <Techstack />
+
+          <h1 className="project-heading">
+            <strong className="purple">Tools</strong> I use
+          </h1>
+          <Toolstack />
+
+          <Github />
         </Container>
       </Container>
     </>
