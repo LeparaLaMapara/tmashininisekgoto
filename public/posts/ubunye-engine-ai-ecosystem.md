@@ -1,6 +1,6 @@
 ---
 title: "Ubunye Engine: One Framework, One Convention, One CLI — Why Unity Is the Real Deliverable"
-date: 2025-01-22
+date: 2026-03-05
 tags: [framework, engineering, data, mlops]
 summary: A technical memoir on building Ubunye Engine — the real story of broken imports, silent CI failures, and the slow accumulation of something that actually works.
 ---
@@ -36,7 +36,7 @@ Simple idea. Complicated execution.
 
 ---
 
-![GitHub Action Ubunye](public/posts/A_whiteboard_sketch.png)
+![GitHub Action Ubunye](/posts/A_whiteboard_sketch.png)
 
 ---
 
@@ -66,7 +66,7 @@ The first four phases were about building the core contracts:
 Each phase felt finished. None of them were.
 
 ---
-![GitHub Action Ubunye](public/posts/git_action_ubunye.png)
+![GitHub Action Ubunye](/posts/git_action_ubunye.png)
 ---
 
 ## Phase 5: The Model Registry — The One That Changed Everything
@@ -134,7 +134,7 @@ One line of registry JSON update. No orphaned artifacts. No ambiguity about
 what's live.
 
 ---
-![GitHub Action Ubunye](public/posts/ubunye_terminal_model_list.png)
+![GitHub Action Ubunye](/posts/ubunye_terminal_model_list.png)
 
 
 ---
@@ -285,7 +285,7 @@ transport layer. That would make Ubunye the only config-driven ETL/ML engine wit
 a fully backend-agnostic data plane. That's a real differentiator.
 
 ---
-![GitHub Action Ubunye](public/posts/engine_core_architecture.png)
+![GitHub Action Ubunye](/posts/engine_core_architecture.png)
 ---
 
 ## The Documentation Detour
@@ -336,7 +336,7 @@ ubunye/plugins/writers/__init__.py
 ```
 
 ---
-![GitHub Action Ubunye](public/posts/error_mkdocstrings.png)
+![GitHub Action Ubunye](/posts/error_mkdocstrings.png)
 ---
 
 ## The Subtle Bug: When Sampling Returns Nothing
@@ -382,7 +382,7 @@ def test_empty_sample_falls_back_to_collect_not_schema():
 ```
 
 ---
-![GitHub Action Ubunye](public/posts/different_hashes.png)
+![GitHub Action Ubunye](/posts/different_hashes.png)
 ---
 
 ## CI/CD: The Perpetual Game of Whack-a-Mole
@@ -446,7 +446,7 @@ F401: 'requests.auth.HTTPBasicAuth' imported but unused
 Two lines deleted. CI green.
 
 ---
-![GitHub Action Ubunye](public/posts/gitHub_actions_workflow_dashboard.png)
+![GitHub Action Ubunye](/posts/gitHub_actions_workflow_dashboard.png)
 ---
 
 ## The PyPI Publish Workflow
@@ -489,7 +489,7 @@ That's the moment it becomes real. A public package. Importable by anyone.
 `pip install ubunye-engine`.
 
 ---
-![GitHub Action Ubunye](public/posts/PyPI_package_page.png)
+![GitHub Action Ubunye](/posts/PyPI_package_page.png)
 ---
 
 ## The Version Problem (And Its Elegant Solution)
@@ -577,7 +577,7 @@ The lineage store doesn't write flat files in the root — it writes them under
 
 ---
 
-![GitHub Action Ubunye](public/posts/kaggle_notebook.png)
+![GitHub Action Ubunye](/posts/kaggle_notebook.png)
 
 
 ---
@@ -610,7 +610,7 @@ ML pipeline. In one notebook. On a free Kaggle GPU.
 > Lineage → ubunye lineage trace, Rollback → registry.rollback(). Clean, complete,
 > no Spark required.]**
 
-![GitHub Action Ubunye](public/posts/engine_feature.png)
+![GitHub Action Ubunye](/posts/engine_feature.png)
 
 
 ---
@@ -739,7 +739,7 @@ Roughly 3–4 full working days of human effort.
 
 ---
 
-![GitHub Action Ubunye](public/posts/solo_approach.png)
+![GitHub Action Ubunye](/posts/solo_approach.png)
 
 
 ---
@@ -800,7 +800,7 @@ than a team that doesn't.
 > bar almost invisible. A note at the bottom: "The cost difference is real.
 > So is the bus factor. Neither cancels the other."]**
 
-![GitHub Action Ubunye](public/posts/agent_augmented_solo.png)
+![GitHub Action Ubunye](/posts/agent_augmented_solo.png)
 
 
 ---
@@ -849,7 +849,7 @@ skip learning.
 ---
 
 
-![GitHub Action Ubunye](public/posts/engineering_experience.png)
+![GitHub Action Ubunye](/posts/engineering_experience.png)
 
 ---
 
@@ -924,7 +924,7 @@ than code you did. You're always slightly behind the output.
 > wrong API" overhead band in red. The overall balance is strongly positive but
 > not uniformly so.]**
 
-![GitHub Action Ubunye](public/posts/overhead_introduced.png)
+![GitHub Action Ubunye](/posts/overhead_introduced.png)
 
 ---
 
@@ -975,7 +975,7 @@ They are accumulating liability.
 ---
 
 
-![GitHub Action Ubunye](public/posts/collaboration_agent_human.png)
+![GitHub Action Ubunye](/posts/collaboration_agent_human.png)
 
 
 ---
@@ -1018,7 +1018,7 @@ that is an extraordinarily good deal. But only if you understand where the money
 
 ---
 
-![GitHub Action Ubunye](public/posts/contex_cost.png)
+![GitHub Action Ubunye](/posts/contex_cost.png)
 
 
 ---
@@ -1083,7 +1083,7 @@ on every turn.
 
 ---
 
-![GitHub Action Ubunye](public/posts/compounding_contex.png)
+![GitHub Action Ubunye](/posts/compounding_contex.png)
 
 ---
 
@@ -1148,7 +1148,7 @@ to review. More cache written. Specific prompts get specific responses.
 
 ---
 
-![GitHub Action Ubunye](public/posts/rules_agentic_engineering.png)
+![GitHub Action Ubunye](/posts/rules_agentic_engineering.png)
 
 ---
 
@@ -1290,7 +1290,7 @@ This project doesn't pretend otherwise.
 ---
 
 
-![GitHub Action Ubunye](public/posts/pandas_spark_gap.png)
+![GitHub Action Ubunye](/posts/pandas_spark_gap.png)
 
 ---
 
