@@ -37,7 +37,7 @@ function Projects() {
               Impact: Accelerated model delivery, improved data quality, and uplifted engineering capability across teams.\n
               Skills: Python, Dask, Spark, YAML, Databricks, Docker, CI/CD, Software Engineering.`}
               ghLink="https://github.com/ubunye-ai-ecosystems"
-              demoLink="https://github.com/ubunye-ai-ecosystems/ubunye_engine"
+              demoLink="https://ubunye-ai-ecosystems.github.io/ubunye_engine/"
             />
           </Col>
 
