@@ -29,9 +29,7 @@ Simple idea. Complicated execution.
 
 ---
 
-> **[Image: A whiteboard sketch with boxes and arrows — "config.yaml → Engine.run() →
-> Readers → Task.transform() → Writers → Monitors". Some arrows are crossed out and
-> redrawn. A coffee cup ring stains one corner. This is what day one looked like.]**
+![GitHub Action Ubunye](public/posts/A_whiteboard_sketch.png)
 
 ---
 
@@ -129,11 +127,8 @@ One line of registry JSON update. No orphaned artifacts. No ambiguity about
 what's live.
 
 ---
+![GitHub Action Ubunye](public/posts/ubunye_terminal_model_list.png)
 
-> **[Image: A terminal showing `ubunye models list` output. A table with columns:
-> Version, Stage, Registered, Key Metrics. Row 1.0.0 is coloured green (production).
-> Row 0.0.2 is white (archived). Row 0.0.1 is white (archived). Each row shows
-> accuracy and F1 score. Clean, readable, one command.]**
 
 ---
 
@@ -283,14 +278,7 @@ transport layer. That would make Ubunye the only config-driven ETL/ML engine wit
 a fully backend-agnostic data plane. That's a real differentiator.
 
 ---
-
-> **[Image: A layered architecture diagram. At the centre: "Engine Core" in a solid
-> box. Surrounding it, connected by dotted lines labelled "port": "SparkBackend",
-> "PandasBackend", "PolarsBackend". On the right, connected to "port": "SklearnModel",
-> "XGBoostModel", "CustomInferenceModel". Everything touches the engine through
-> the interface. Nothing bypasses it. Caption: "Ports and adapters: the engine defines
-> the shape. Backends fill it."]**
-
+![GitHub Action Ubunye](public/posts/engine_core_architecture.png)
 ---
 
 ## The Documentation Detour
@@ -341,12 +329,7 @@ ubunye/plugins/writers/__init__.py
 ```
 
 ---
-
-> **[Image: A split screen. Left side: terminal output showing "ERROR - mkdocstrings:
-> RestApiReader could not be found" repeated six times with different class names.
-> Right side: a file tree showing six new empty __init__.py files highlighted in
-> green. Caption: "Six bytes of solution for two hours of debugging."]**
-
+![GitHub Action Ubunye](public/posts/error_mkdocstrings.png)
 ---
 
 ## The Subtle Bug: When Sampling Returns Nothing
@@ -392,13 +375,7 @@ def test_empty_sample_falls_back_to_collect_not_schema():
 ```
 
 ---
-
-> **[Image: A diagram showing two small DataFrames (2 rows each, same schema,
-> different values). An arrow from each points to "sample(0.01)" which both
-> produce an empty list. Both empty lists point to "hash_schema()" producing
-> the same hash "a3f7...". A red X is drawn over this path. A green arrow shows
-> the corrected path: empty sample → collect() → hash row data → different hashes.]**
-
+![GitHub Action Ubunye](public/posts/different_hashes.png)
 ---
 
 ## CI/CD: The Perpetual Game of Whack-a-Mole
@@ -462,13 +439,7 @@ F401: 'requests.auth.HTTPBasicAuth' imported but unused
 Two lines deleted. CI green.
 
 ---
-
-> **[Image: A GitHub Actions workflow dashboard. Four jobs are shown. "Lint" has a
-> green checkmark. "Unit Tests (Python 3.9)" has a green checkmark. "Unit Tests
-> (Python 3.11)" has a green checkmark. "Integration Tests (Spark)" has a green
-> checkmark. The commit message below reads: "fix: add fetch-depth: 0 to docs
-> workflow". The timestamp is 23:47 UTC. It took all day to get here.]**
-
+![GitHub Action Ubunye](public/posts/gitHub_actions_workflow_dashboard.png)
 ---
 
 ## The PyPI Publish Workflow
@@ -511,12 +482,7 @@ That's the moment it becomes real. A public package. Importable by anyone.
 `pip install ubunye-engine`.
 
 ---
-
-> **[Image: PyPI package page for "ubunye-engine". Shows version 0.1.1, description
-> "Config-first, Spark-native ETL/ML engine with a modular plugin system", install
-> command "pip install ubunye-engine", and optional extras listed: spark, ml, dev.
-> The release date reads today's date.]**
-
+![GitHub Action Ubunye](public/posts/PyPI_package_page.png)
 ---
 
 ## The Version Problem (And Its Elegant Solution)
@@ -604,11 +570,8 @@ The lineage store doesn't write flat files in the root — it writes them under
 
 ---
 
-> **[Image: A Kaggle notebook cell showing successful output. The cell ran
-> `ubunye models list --use-case titanic --model TitanicSurvivalModel`.
-> The output shows a formatted table: version 1.0.0 in green (production),
-> version 1.0.1 in white (archived). Metrics show accuracy=0.8342, f1=0.7891.
-> Below the cell, the execution time reads "0.8s".]**
+![GitHub Action Ubunye](public/posts/kaggle_notebook.png)
+
 
 ---
 
@@ -639,6 +602,9 @@ ML pipeline. In one notebook. On a free Kaggle GPU.
 > Model training → UbunyeModel + ModelTransform, Quality gates → PromotionGate,
 > Lineage → ubunye lineage trace, Rollback → registry.rollback(). Clean, complete,
 > no Spark required.]**
+
+![GitHub Action Ubunye](public/posts/engine_feature.png)
+
 
 ---
 
@@ -766,11 +732,8 @@ Roughly 3–4 full working days of human effort.
 
 ---
 
-> **[Image: A horizontal bar chart comparing the two approaches. Solo approach:
-> a long bar spanning ~35 days. With agent: a short bar spanning ~3.5 days.
-> A bracket on the right labels the gap "8–12× faster". Below the chart,
-> a footnote reads: "Human hours, not wall-clock time. Excludes time spent
-> waiting for CI runs."]**
+![GitHub Action Ubunye](public/posts/solo_approach.png)
+
 
 ---
 
@@ -830,6 +793,9 @@ than a team that doesn't.
 > bar almost invisible. A note at the bottom: "The cost difference is real.
 > So is the bus factor. Neither cancels the other."]**
 
+![GitHub Action Ubunye](public/posts/agent_augmented_solo.png)
+
+
 ---
 
 ### The experience compression — and why seniors benefit more than juniors
@@ -875,11 +841,8 @@ skip learning.
 
 ---
 
-> **[Image: A graph with "Engineering experience" on the X-axis and "Value extracted
-> from agent" on the Y-axis. The line curves upward — low experience extracts little
-> value (high hallucination risk, low verification capacity); high experience extracts
-> high value. A note points to the middle of the curve: "The sweet spot is 5–8 years —
-> enough experience to direct and verify, enough time to have the patience for it."]**
+
+![GitHub Action Ubunye](public/posts/engineering_experience.png)
 
 ---
 
@@ -954,6 +917,8 @@ than code you did. You're always slightly behind the output.
 > wrong API" overhead band in red. The overall balance is strongly positive but
 > not uniformly so.]**
 
+![GitHub Action Ubunye](public/posts/overhead_introduced.png)
+
 ---
 
 ### What this means for "vibe coding"
@@ -1002,11 +967,9 @@ They are accumulating liability.
 
 ---
 
-> **[Image: A simple diagram with two columns. Left column: "Human does"
-> — Architecture, Direction, Verification, Debugging, Judgement. Right column:
-> "Agent does" — Pattern replication, Boilerplate, Volume, First drafts,
-> Consistency. An arrow between the columns is labelled "collaboration".
-> No column is labelled "replaced".]**
+
+![GitHub Action Ubunye](public/posts/collaboration_agent_human.png)
+
 
 ---
 
@@ -1048,9 +1011,8 @@ that is an extraordinarily good deal. But only if you understand where the money
 
 ---
 
-> **[Image: A pie chart of the R1,143 API cost. Two large slices dominate: "Cache reads
-> R536 (47%)" and "Cache writes R485 (42%)". A small slice: "Output R119 (10%)".
-> A tiny sliver: "Input R4 (1%)". Caption: "90% of the cost is context, not code."]**
+![GitHub Action Ubunye](public/posts/contex_cost.png)
+
 
 ---
 
@@ -1114,12 +1076,7 @@ on every turn.
 
 ---
 
-> **[Image: A timeline of the session broken into phases. Each phase is a horizontal
-> band. The band gets progressively darker from left to right, representing growing
-> cache size. Phase 1 (config) is light. Phase 5 (model registry) is medium. The
-> Kaggle debugging and blog sections are darkest. An annotation reads: "context
-> size compounds — every turn in a late session is more expensive than a turn in
-> an early session doing the same work."]**
+![GitHub Action Ubunye](public/posts/compounding_contex.png)
 
 ---
 
@@ -1184,11 +1141,7 @@ to review. More cache written. Specific prompts get specific responses.
 
 ---
 
-> **[Image: Two columns side by side. Left: "What happened" — one long session,
-> files read repeatedly, full error logs pasted, open-ended prompts. Right:
-> "What to do instead" — session per phase, CLAUDE.md API contracts, paste 5 lines
-> not 500, specific prompts. An estimate at the bottom: "Estimated saving: 40-60%
-> of cache cost with better session hygiene."]**
+![GitHub Action Ubunye](public/posts/rules_agentic_engineering.png)
 
 ---
 
@@ -1329,12 +1282,8 @@ This project doesn't pretend otherwise.
 
 ---
 
-> **[Image: A simple 2x2 matrix. X-axis: Team Size (small → large). Y-axis:
-> Infrastructure Complexity (low → high). Bottom-left quadrant labelled "notebooks
-> + pandas". Top-right quadrant labelled "Databricks + Unity Catalog". The
-> middle band — small-to-medium team, moderate complexity — is labelled
-> "Ubunye Engine". A circle is drawn around that band. No claim is made about
-> the other quadrants.]**
+
+![GitHub Action Ubunye](public/posts/pandas_spark_gap.png)
 
 ---
 
