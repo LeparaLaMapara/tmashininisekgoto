@@ -25,7 +25,7 @@
     "react-tsparticles": "^1.42.2",
     "rehype-highlight": "^6.0.0",
     "rehype-katex": "^6.0.3",
-    "remark-gfm": "^4.0.1",
+    "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "typewriter-effect": "^2.18.2",
     "video-react": "^0.16.0",
