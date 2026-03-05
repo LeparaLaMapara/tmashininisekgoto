@@ -13,8 +13,9 @@ export const TALKS_DATA = [
     title: "Session 5.4: AI Agents for online shopping",
     description: "AI is evolving fast. The next phase is AI agents that can work for you. If you want to understand the future of online shopping, business operations and decision-making then this conversation with Thabang, a lead AI data scientist in a bank an AI researcher at the University of the Witwatersrand, is relevant for you.",
     date: "Feb 8, 2026",
-    videoUrl: "https://www.youtube.com/embed/SsvfCIOL16Q", 
+    videoUrl: "https://www.youtube.com/embed/SsvfCIOL16Q",
     slidesUrl: "https://notebooklm.google.com/notebook/7aeffeae-ba0f-4cf5-a227-3e4c73352f94?artifactId=c9dbfab2-c0d8-460d-81d9-411b0593249b",
+    slidesLabel: "View Notes",
     event: "FabAcademic - Unfiltered [Prof Mamokgethi Phakeng]"
   },
   {
@@ -61,6 +62,6 @@ export const WRITINGS_DATA = [
     description: "Youth Explorer uses data collected in Census 2011 on challenges facing the youth, which enables researchers and policy-makers to focus on areas of concern and implement interventions. The project found that in households where no one has a matric the chances are unemployment are high, and the young people in that household will be unemployed.",
     link: "https://www.dsti.gov.za/images/dst_newsletter_march_2018_web.pdf",
     date: "Jan 2018",
-    image: "https://mg.co.za/wp-content/uploads/2019/03/866bd2be-00-students-in-dside-programme-come-up-with-innovative-solutions.jpeg" 
+    image: null
   }
 ];
