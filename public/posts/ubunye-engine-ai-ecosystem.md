@@ -604,11 +604,6 @@ ML pipeline. In one notebook. On a free Kaggle GPU.
 
 ---
 
-> **[Image: The notebook's final summary table. Two columns: "Engine Feature" and
-> "Key Class / Command". Rows include: Config templating → load_config() + Jinja2,
-> Model training → UbunyeModel + ModelTransform, Quality gates → PromotionGate,
-> Lineage → ubunye lineage trace, Rollback → registry.rollback(). Clean, complete,
-> no Spark required.]**
 
 ![GitHub Action Ubunye](/posts/engine_feature.png)
 
