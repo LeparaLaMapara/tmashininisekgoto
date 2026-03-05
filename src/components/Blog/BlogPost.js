@@ -69,6 +69,28 @@ function stripFrontmatter(mdText) {
   return mdText.replace(/---[\s\S]*?---/, "").trim();
 }
 
+/**
+ * Strip markdown syntax to plain readable text for TTS.
+ */
+function toPlainText(md) {
+  return md
+    .replace(/```[\s\S]*?```/g, "")         // code blocks
+    .replace(/`[^`]+`/g, "")                // inline code
+    .replace(/^\s*#{1,6}\s+/gm, "")         // headings
+    .replace(/\*\*(.+?)\*\*/g, "$1")        // bold
+    .replace(/__(.+?)__/g, "$1")            // bold alt
+    .replace(/\*(.+?)\*/g, "$1")            // italic
+    .replace(/_(.+?)_/g, "$1")              // italic alt
+    .replace(/!\[.*?\]\(.*?\)/g, "")        // images
+    .replace(/\[(.+?)\]\(.+?\)/g, "$1")     // links → label only
+    .replace(/^[-*+]\s+/gm, "")            // list bullets
+    .replace(/^\d+\.\s+/gm, "")            // numbered lists
+    .replace(/^>\s*/gm, "")                // blockquotes
+    .replace(/^[-*_]{3,}$/gm, "")          // horizontal rules
+    .replace(/\n{3,}/g, "\n\n")            // excessive newlines
+    .trim();
+}
+
 function BlogPost() {
   const { id } = useParams();
 
@@ -76,6 +98,28 @@ function BlogPost() {
   const [postMeta, setPostMeta] = useState(null);
   const [readingTime, setReadingTime] = useState("");
   const [toc, setToc] = useState([]);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Cancel speech when navigating away
+  useEffect(() => {
+    return () => window.speechSynthesis.cancel();
+  }, []);
+
+  const handleListen = () => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+    const plain = toPlainText(content);
+    const utterance = new SpeechSynthesisUtterance(plain);
+    utterance.rate = 0.95;
+    utterance.lang = "en-US";
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
 
   // Find metadata from index (stable)
   const meta = useMemo(() => {
@@ -144,6 +188,15 @@ function BlogPost() {
           <span>{formatLongDate(postMeta.date)}</span>
           <span className="dot">•</span>
           <span>{readingTime}</span>
+          <span className="dot">•</span>
+          <button
+            className={`listen-btn${isSpeaking ? " listen-btn--active" : ""}`}
+            onClick={handleListen}
+            type="button"
+            aria-label={isSpeaking ? "Stop listening" : "Listen to post"}
+          >
+            {isSpeaking ? "⏹ Stop" : "🔊 Listen"}
+          </button>
         </div>
 
         {/* Tags (safe) */}
