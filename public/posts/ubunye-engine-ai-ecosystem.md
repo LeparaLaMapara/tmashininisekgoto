@@ -1,7 +1,7 @@
 ---
 title: "Ubunye Engine: One Framework, One Convention, One CLI — Why Unity Is the Real Deliverable"
 date: 2026-03-05
-tags: [framework, engineering, data, mlops]
+tags: [open source, engineering, python, mlops, agentic ai]
 summary: A technical memoir on building Ubunye Engine — the real story of broken imports, silent CI failures, and the slow accumulation of something that actually works.
 ---
 
