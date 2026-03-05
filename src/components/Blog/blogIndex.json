@@ -11,8 +11,8 @@
     ],
     "file": "ubunye-engine-ai-ecosystem.md",
     "summary": "A practical guide to designing, packaging, and publishing Python libraries from first principles."
-  }
-   {
+  },
+  {
     "id": "ubunye-engine-ai-ecosystem",
     "title": "Ubunye Engine: One Framework, One Convention, One CLI — Why Unity Is the Real Deliverable",
     "date": "2026-03-05",
