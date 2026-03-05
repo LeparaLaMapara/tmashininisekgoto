@@ -54,7 +54,7 @@ export const WRITINGS_DATA = [
     description: "The DSIDE (Data Science for Innovation and Development) programme at the University of the Witwatersrand has been instrumental in developing innovative solutions to address challenges in South Africa.",
     link: "https://mg.co.za/article/2018-02-09-00-students-in-dside-programme-come-up-with-innovative-solutions",
     date: "Jan 2018",
-    image: "https://mg.co.za/wp-content/uploads/2019/03/866bd2be-00-students-in-dside-programme-come-up-with-innovative-solutions.jpeg" 
+    image: "https://mg.co.za/wp-content/uploads/2019/03/866bd2be-00-students-in-dside-programme-come-up-with-innovative-solutions.jpeg"
   },
   {
     id: 2,

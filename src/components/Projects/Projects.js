@@ -3,41 +3,38 @@ import { Container, Row, Col } from "react-bootstrap";
 import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
 
-
 import UAIE from "../../Assets/Projects/1.png";
-import thabangvision from "../../Assets/Projects/2.png";
 import IBMsuites from "../../Assets/Projects/3.png";
 import WitsRecommender from "../../Assets/Projects/4.png";
 import CovidDashboard from "../../Assets/Projects/5.png";
 import KasilamProjects from "../../Assets/Projects/6.png";
-import thabangvision2 from "../../Assets/Projects/7.png";
 import DSIDE from "../../Assets/Projects/8.png";
 import SmartGenerators from "../../Assets/Projects/9.png";
 import TFfiltersPy from "../../Assets/Projects/10.png";
 import MSC from "../../Assets/Projects/11.png";
-
-
 
 function Projects() {
   return (
     <Container fluid className="project-section">
       <Particle />
       <Container>
+
+        {/* SECTION 1: OPEN SOURCE */}
         <h1 className="project-heading">
-          My Recent <strong className="purple">Works </strong>
+          Open <strong className="purple">Source</strong>
         </h1>
         <p style={{ color: "white" }}>
-          Here are a few projects I've worked on recently.
+          Frameworks, libraries, and tools I built, own, and maintain publicly.
         </p>
-        <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
+
+        <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={UAIE}
-              isBlog={false}
               title="Ubunye AI Ecosystems (UAIE)"
               description={`Problem: ABSA lacked consistent ML/ETL standards, reusable engineering patterns, and scalable workflows.\n
               Solution: Built a modular open-source ecosystem providing declarative ETL engines, ML pipelines, feature stores, and YAML-driven orchestration.\n
-              Impact: Accelerated model delivery, data improved quality, and uplifted engineering capability across teams.\n
+              Impact: Accelerated model delivery, improved data quality, and uplifted engineering capability across teams.\n
               Skills: Python, Dask, Spark, YAML, Databricks, Docker, CI/CD, Software Engineering.`}
               ghLink="https://github.com/ubunye-ai-ecosystems"
               demoLink="https://github.com/ubunye-ai-ecosystems/ubunye_engine"
@@ -47,7 +44,6 @@ function Projects() {
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={TFfiltersPy}
-              isBlog={false}
               title="Tfilterspy — Bayesian Filtering Library"
               description={`Problem: IoT and telematics pipelines required robust filtering for noisy sensor data and real-time state estimation.\n
               Solution: Created an open-source Bayesian filtering library supporting Kalman, Particle, and Ensemble filters with distributed execution.\n
@@ -61,21 +57,29 @@ function Projects() {
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={KasilamProjects}
-              isBlog={false}
               title="Kasilam Digital Platforms"
               description={`Problem: Township businesses lacked affordable digital presence and branding tools.\n
               Solution: Developed scalable web templates and branding systems deployed on cost-free hosting.\n
               Impact: Enabled SMEs to reach customers online and strengthen brand identity.\n
               Skills: HTML, CSS, JavaScript, React, GitHub Pages.`}
               ghLink="https://github.com/orgs/Kasilam-Projects/repositories"
-              demoLink="https://kasilamdigitialplatforms.vercel.app/"              
+              demoLink="https://kasilamdigitialplatforms.vercel.app/"
             />
           </Col>
+        </Row>
 
+        {/* SECTION 2: PROFESSIONAL & RESEARCH */}
+        <h1 className="project-heading">
+          Professional & <strong className="purple">Research Work</strong>
+        </h1>
+        <p style={{ color: "white" }}>
+          Delivered at scale in industry and academic institutions — with real stakes, real data, and real impact.
+        </p>
+
+        <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={SmartGenerators}
-              isBlog={true}
               title="Vodacom Smart Generators Optimization"
               description={`Problem: Load-shedding caused fuel inefficiency, network downtime, and poor generator deployment decisions.\n
               Solution: Developed a constrained optimisation engine with real-time streaming analytics to prioritise generator dispatch.\n
@@ -88,63 +92,30 @@ function Projects() {
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={IBMsuites}
-              isBlog={false}
               title="IBM GeoSpatial Analytics Suites"
               description={`Problem: Enterprises required scalable geospatial intelligence for environmental, climate, and supply-chain risk.\n
               Solution: Built analytics workflows using IBM PAIRS to process multi-terabyte raster and vector datasets.\n
-              Impact: Integrated into IBM’s Environmental Intelligence Suite for global environmental monitoring.\n
+              Impact: Integrated into IBM's Environmental Intelligence Suite for global environmental monitoring.\n
               Skills: IBM PAIRS, IBM Cloud, Airflow, Python, Hadoop, GeoPandas, Rasterio, TensorFlow.`}
-              demoLink="https://www.ibm.com/products/environmental-intelligence-suite" 
+              demoLink="https://www.ibm.com/products/environmental-intelligence-suite"
             />
           </Col>
 
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={CovidDashboard}
-              isBlog={false}
               title="IBM Covid Monitoring Dashboard"
               description={`Problem: Public health teams needed real-time visibility of COVID-19 hotspots.\n
               Solution: Built an interactive dashboard with automated heatmaps and case-tracking visualisations.\n
               Impact: Used by Gauteng Department of Health for hotspot identification and rapid response.\n
               Skills: Python, Dash, Plotly, Folium, Leaflet, IBM Cloud.`}
-              demoLink="https://gpcoronavirus.co.za/"      
-            />
-          </Col>
-
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={thabangvision}
-              isBlog={false}
-              title="Photography Gallery Website"
-             description={`Problem: Traditional photography portfolios are expensive to build and maintain, limiting access for upcoming township photographers.\n
-              Solution: Designed and developed a fully responsive portfolio website using HTML, CSS, and JavaScript, including dynamic features such as lightbox viewing and interactive galleries.\n
-              Impact: Enabled photographers to present their work professionally, improving brand identity and client engagement within the Kasilam digital ecosystem.\n
-              Skills: HTML, CSS, JavaScript, GitHub Pages, CD/CI.`}
-              ghLink="https://github.com/orgs/Kasilam-Projects/repositories"
-              demoLink="https://realthabanglukhetho.github.io/photography/index.html"
-
-            />
-          </Col>
-
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={thabangvision2}
-              isBlog={false}
-              title="Photography Portfolio Website"
-             
-                description={`Problem: Many township creatives and small businesses struggle to showcase their visual work online due to high hosting costs and lack of technical skill.\n
-              Solution: Built a responsive photography gallery using React.js, enabling high-quality image rendering, grid layouts, and fast client-side navigation.\n
-              Impact: Provided an accessible platform for township creatives to display their work professionally and attract clients online.\n
-              Skills: React.js, JavaScript, CSS, GitHub Pages, CI/CD.`}
-              ghLink="https://github.com/orgs/Kasilam-Projects/repositories"
-              demoLink="https://thabanglukhetho.github.io/Photography/"
+              demoLink="https://gpcoronavirus.co.za/"
             />
           </Col>
 
           <Col md={4} className="project-card">
             <ProjectCard
               imgPath={DSIDE}
-              isBlog={false}
               title="Smart Municipality Analytics Dashboard (CSIR DSIDE)"
               description={`Problem: Municipal managers lacked predictive tools for service delivery optimisation.\n
               Solution: Developed ML models (SVM, Random Forest, PCA) and delivered insights via a Django dashboard.\n
@@ -155,10 +126,9 @@ function Projects() {
             />
           </Col>
 
-            <Col md={4} className="project-card">
+          <Col md={4} className="project-card">
             <ProjectCard
               imgPath={WitsRecommender}
-              isBlog={false}
               title="Smart Wits Course Recommender System"
               description={`Problem: First-year students struggled to choose optimal courses, leading to poor completion rates.\n
               Solution: Built a K-modes clustering recommendation engine deployed via an interactive dashboard.\n
@@ -168,10 +138,9 @@ function Projects() {
             />
           </Col>
 
-         <Col md={4} className="project-card">
+          <Col md={4} className="project-card">
             <ProjectCard
               imgPath={MSC}
-              isBlog={false}
               title="Echo State Network for Iterative Image Segmentation"
               description={`Problem: Iterative segmentation using RNNs was computationally expensive.\n
               Solution: Designed an Echo State Network architecture enabling efficient segmentation with reduced training overhead.\n
@@ -181,8 +150,8 @@ function Projects() {
               demoLink="https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643"
             />
           </Col>
-
         </Row>
+
       </Container>
     </Container>
   );
