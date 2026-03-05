@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh workflow list --repo LeparaLaMapara/tmashininisekgoto)",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/actions/workflows)",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/actions/runs --jq '.workflow_runs[:3] | .[] | {id, name, event, conclusion, head_branch}')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/actions/runs/21268500456/jobs --jq '.jobs[] | {id, name, conclusion, steps: [.steps[] | {name, conclusion}]}')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/contents/.github/workflows --jq '.[].name')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/git/trees/main?recursive=1 --jq '.tree[] | select\\(.path | startswith\\(\"\".github\"\"\\)\\) | .path')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/actions/runs/21268500456 --jq '{workflow_id, workflow_url: .workflow_url}')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/actions/workflows/226191915 --jq '{name, path}')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/contents/.github/workflows/daily-publish.yml --jq '.content')",
+      "Bash(gh api repos/LeparaLaMapara/tmashininisekgoto/actions/runs/21268500456/jobs/61213288931/logs)",
+      "Bash(gh run view 21268500456 --repo LeparaLaMapara/tmashininisekgoto --log)",
+      "Bash(gh api \"repos/LeparaLaMapara/tmashininisekgoto/git/ref/heads/main\" --jq '.object.sha')",
+      "Bash(gh api \"repos/LeparaLaMapara/tmashininisekgoto/git/trees/c8e3cd645fb6f225082ab20925fb6e0a4fe21c45?recursive=1\" --jq '.tree[] | select\\(.path | startswith\\(\"\".github\"\"\\)\\) | .path')",
+      "Bash(gh api \"repos/LeparaLaMapara/tmashininisekgoto/actions/workflows/226191915/runs?per_page=1\" --jq '.workflow_runs[0] | {head_sha, head_branch}')",
+      "Bash(gh api \"repos/LeparaLaMapara/tmashininisekgoto/git/trees/11f894e52d267c8838449659e94a3e84305af808?recursive=1\" --jq '.tree[] | select\\(.path | startswith\\(\"\".github\"\"\\)\\) | {path, sha}')",
+      "Bash(gh api \"repos/LeparaLaMapara/tmashininisekgoto/git/blobs/ed2bac9327a87906c46fe9782bdf2395cecb7271\" --jq '.content')",
+      "Bash(head -10 /c/Users/thabanglukhetho/Documents/gits/tmashininisekgoto/public/posts/*.md)"
+    ]
+  }
+}
