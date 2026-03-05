@@ -21,7 +21,10 @@
       "Bash(ls /c/Users/thabanglukhetho/Documents/gits/tmashininisekgoto/public/posts/*.png)",
       "Bash(npm install remark-gfm@3 --save)",
       "Bash(npm install remark-gfm@3 --save --legacy-peer-deps)",
-      "Bash(node -e \"const r = require\\(''./node_modules/remark-gfm/index.js''\\); console.log\\(typeof r.default || typeof r\\)\")"
+      "Bash(node -e \"const r = require\\(''./node_modules/remark-gfm/index.js''\\); console.log\\(typeof r.default || typeof r\\)\")",
+      "Bash(node -e \"console.log\\(require\\(''/c/Users/thabanglukhetho/Documents/gits/tmashininisekgoto/node_modules/remark-gfm/package.json''\\).version\\)\")",
+      "Bash(npm install remark-gfm@3 --legacy-peer-deps)",
+      "Bash(node -e \"console.log\\(require\\(''C:/Users/thabanglukhetho/Documents/gits/tmashininisekgoto/node_modules/remark-gfm/package.json''\\).version\\)\")"
     ]
   }
 }

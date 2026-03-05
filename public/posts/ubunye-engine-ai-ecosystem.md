@@ -486,7 +486,7 @@ git push origin v0.1.1
 ```
 
 That's the moment it becomes real. A public package. Importable by anyone.
-`pip install ubunye-engine`.
+[`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/).
 
 ---
 ![GitHub Action Ubunye](/posts/PyPI_package_page.png)
@@ -527,7 +527,7 @@ installing it first.
 After all the unit tests and integration tests and CI pipelines, the question
 remained: *does it actually work on real data?*
 
-The Titanic dataset on Kaggle became the proving ground. No Hive metastore. No S3.
+The [Titanic dataset on Kaggle](https://www.kaggle.com/code/leparalamapara/ubunye-engine-titanic-usecase-example) became the proving ground. No Hive metastore. No S3.
 No Databricks. Just Python, pandas, and the engine contracts.
 
 The journey started well with config loading and CLI commands. Then the first real
@@ -599,8 +599,8 @@ The final artefact of the whole journey is a single Jupyter notebook:
 10. `ubunye lineage list/show/trace/compare/search` — full audit trail
 11. Train v2, compare versions, rollback, archive — full maintenance cycle
 
-From `pip install` to a production-ready, versioned, monitored, lineage-tracked
-ML pipeline. In one notebook. On a free Kaggle GPU.
+From [`pip install`](https://pypi.org/project/ubunye-engine/) to a production-ready, versioned, monitored, lineage-tracked
+ML pipeline. In one notebook. On a [free Kaggle GPU](https://www.kaggle.com/code/leparalamapara/ubunye-engine-titanic-usecase-example).
 
 ---
 
@@ -634,18 +634,18 @@ it — that's what I'll find out.
 
 ## What "Done" Actually Means
 
-The repository now has:
+The [repository](https://github.com/ubunye-ai-ecosystems/ubunye_engine) now has:
 
 - **261 tests** — unit and integration, Spark-free and Spark-full
 - **Full CI/CD** — lint, unit matrix (3.9/3.10/3.11), integration (Spark + Java 17),
   docs build, PyPI publish on tag
-- **MkDocs documentation site** — auto-deployed to GitHub Pages on every push to main
+- **[MkDocs documentation site](https://ubunye-ai-ecosystems.github.io/ubunye_engine/)** — auto-deployed to GitHub Pages on every push to main
 - **Model Registry** — filesystem-backed, versioned, lifecycle-managed
 - **Lineage recording** — every run is an auditable JSON record
 - **MLflow integration** — opt-in telemetry, zero coupling to the core engine
 - **CLI** — `ubunye init`, `validate`, `plan`, `run`, `plugins`, `version`,
   `lineage *`, `models *`, `test run`
-- **End-to-end example** — Titanic, real data, all features exercised
+- **[End-to-end example](https://www.kaggle.com/code/leparalamapara/ubunye-engine-titanic-usecase-example)** — Titanic, real data, all features exercised
 
 There is still no magic. The engine doesn't write your business logic for you.
 It doesn't decide what features to engineer or what model to use. It doesn't
@@ -1401,7 +1401,7 @@ That's the real message. Not "look at this framework." But:
 
 **I am the kind of engineer who finishes things — not just codes things.**
 
-The pip install works. The tests pass. The docs are live. The example ran on real
+The [pip install](https://pypi.org/project/ubunye-engine/) works. The tests pass. The [docs](https://ubunye-ai-ecosystems.github.io/ubunye_engine/) are live. The example ran on real
 data and the errors were fixed before this post was written.
 
 That's not a start. That's the point. And it's rarer than it should be.
@@ -1445,4 +1445,4 @@ blog is a proof of the thesis, not just a description of it.
 *The Ubunye Engine is open source.*
 *Source code: [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)*
 *Documentation: [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)*
-*Install: `pip install ubunye-engine`*
+*Install: [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/)*
