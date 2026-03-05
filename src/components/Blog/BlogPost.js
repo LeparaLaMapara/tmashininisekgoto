@@ -33,7 +33,7 @@ function calculateReadingTime(text) {
 function extractHeadings(markdown) {
   return markdown
     .split("\n")
-    .filter((line) => /^##+\s/.test(line)) // "## " or "### "
+    .filter((line) => /^##\s/.test(line)) // "## " only, not "### "
     .map((line) => {
       const hashes = line.match(/^##+/)?.[0] || "##";
       const level = hashes.length; // 2 or 3 etc.
