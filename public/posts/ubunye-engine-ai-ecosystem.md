@@ -1,4 +1,4 @@
-# Ubunye Engine: From an Idea to an Automated AI Ecosystem
+# Ubunye Engine: One Framework, One Convention, One CLI — Why Unity Is the Real Deliverable
 
 *A Technical Memoir*
 
