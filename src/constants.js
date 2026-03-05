@@ -19,7 +19,7 @@ export const TALKS_DATA = [
     event: "FabAcademic - Unfiltered [Prof Mamokgethi Phakeng]"
   },
   {
-    id: 4,
+    id: 2,
     title: "Scientists have discovered 300,000 new galaxies",
     description: "Scientists have discovered 300,000 new galaxies in a recent study. This discovery has significant implications for our understanding of the universe and its evolution.",
     date: "Mar 10, 2019",
@@ -37,14 +37,32 @@ export const TALKS_DATA = [
     slidesUrl: ""
   },
   {
-    id: 2,
+    id: 4,
     title: "Follow me Turtle Bot Project",
     description: "Our follow me turtle bot project, used python and ROS to design turtle-bot that follows an object. It's basically following the coke can on my right leg. This was done at the Witwatersrand University school of Computer Science and Applied Mathematics.",
     date: "Dec 16, 2017",
     event: "Wits University Computer Science and Applied Mathematics Honours Project",
     videoUrl: "https://www.youtube.com/embed/yjbHcEru0u8",
     slidesUrl: ""
-  }
+  },
+  {
+    id: 5,
+    title: "Building AI Agents for township businesses with no coding knowledge",
+    description: "AI doesn’t need to be complicated to be powerful. In this sessio I’m joined by Thabang, an AI & Data Scientist who is making AI simple, practical, and accessible for all.",
+    date: "Feb 15, 2026",
+    event: "FabAcademic - Unfiltered [Prof Mamokgethi Phakeng]",
+    videoUrl: "https://www.youtube.com/embed/jnklbzfZjNw",
+    slidesUrl: ""
+  },
+  {
+    id: 6,
+    title: "Building your personal AI Asistant to get jobs, scholarships & study opportunities",
+    description: "If you are still manually searching for jobs in 2026, you are already behind. Today we build a personal AI assistant that finds jobs, tracks scholarships and helps you apply properly. No excuses, no waiting & no complaining. Either you adapt or you are left behind.",
+    date: "Feb 22, 2026",
+    event: "FabAcademic - Unfiltered [Prof Mamokgethi Phakeng]",
+    videoUrl: "https://www.youtube.com/embed/pGqiz1vp6i4",
+    slidesUrl: ""
+  },
 ];
 
 export const WRITINGS_DATA = [
