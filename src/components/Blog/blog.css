@@ -1,10 +1,3 @@
-/* Page wrapper ensures your blog content sits nicely under navbar */
-.blog-page {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 120px 20px 60px; /* top clears navbar, bottom gives breathing room */
-}
-
 /* Post container */
 .blog-post {
   text-align: left;
@@ -131,6 +124,26 @@
   text-decoration: underline;
 }
 
+/* Markdown list readability */
+.blog-post ul,
+.blog-post ol {
+  margin: 0 0 18px 1.25rem;
+  line-height: 1.75;
+}
+
+.blog-post li {
+  margin-bottom: 8px;
+}
+
+.blog-post blockquote {
+  border-left: 3px solid rgba(167, 139, 250, 0.6);
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  color: rgba(230, 237, 243, 0.9);
+  background: rgba(167, 139, 250, 0.08);
+  border-radius: 6px;
+}
+
 /* Inline code */
 .inline-code {
   padding: 2px 6px;
@@ -211,8 +224,21 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 10px 0;
+  gap: 1rem;
+  padding: 14px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.blog-list-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.blog-list-summary {
+  margin: 6px 0 0;
+  color: rgba(230, 237, 243, 0.78);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .blog-title-link {
@@ -236,8 +262,7 @@
 .blog-page {
   max-width: 900px;
   margin: 0 auto;
-  padding-top: 180px;   /* ⬅ clears navbar properly */
-   padding-bottom: 80px;
+  padding: 150px 20px 80px;
 }
 
 .blog-page-title {
@@ -374,4 +399,15 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+@media (max-width: 768px) {
+  .blog-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .blog-date {
+    margin-top: 4px;
+  }
 }

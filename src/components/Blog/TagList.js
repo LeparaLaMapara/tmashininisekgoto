@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import blogIndex from "./blogIndex.json";
+import { getPublishedPosts } from "./postVisibility";
 import "./blog.css";
 
 function normalizeTag(tag) {
@@ -10,7 +11,7 @@ function normalizeTag(tag) {
 
 function TagList() {
   const tags = useMemo(() => {
-    const counts = (blogIndex || []).reduce((acc, post) => {
+    const counts = getPublishedPosts(blogIndex || []).reduce((acc, post) => {
       const uniqueTags = new Set((post.tags || []).map(normalizeTag).filter(Boolean));
 
       uniqueTags.forEach((tag) => {

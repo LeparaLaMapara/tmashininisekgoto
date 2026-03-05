@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import blogIndex from "./blogIndex.json";
+import { getPublishedPosts } from "./postVisibility";
 import "./blog.css";
 
 /**
@@ -19,8 +20,9 @@ function BlogList() {
    * - If year missing, infer from date.
    * - Sort posts newest first.
    */
-  const { sortedYears, postsByYear } = useMemo(() => {
-    const normalized = (blogIndex || []).map((p) => {
+  const { sortedYears, postsByYear, totalPosts } = useMemo(() => {
+    const publishedPosts = getPublishedPosts(blogIndex || []);
+    const normalized = publishedPosts.map((p) => {
       const year = p.year || (p.date ? new Date(p.date).getFullYear() : "Unknown");
       return { ...p, year };
     });
@@ -42,7 +44,7 @@ function BlogList() {
     // Sort years desc (numeric where possible)
     const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
 
-    return { sortedYears: years, postsByYear: grouped };
+    return { sortedYears: years, postsByYear: grouped, totalPosts: normalized.length };
   }, []);
 
  return (
@@ -56,8 +58,16 @@ function BlogList() {
     </div>
 
 
+    <h1 className="blog-page-title">Blog</h1>
+    <p className="blog-page-subtitle">
+      Writing on AI systems, software engineering, and lessons from building in public.
+    </p>
+
     {/* Archive grouped by year */}
     <div className="blog-archive">
+      {totalPosts === 0 && (
+        <p className="blog-page-subtitle">No published posts yet.</p>
+      )}
       {sortedYears.map((year) => (
         <section key={year} className="blog-year-section">
           <h2 className="blog-year">{year}</h2>
@@ -65,9 +75,12 @@ function BlogList() {
           <ul className="blog-list">
             {postsByYear[year].map((post) => (
               <li key={post.id} className="blog-list-item">
-                <Link to={`/blog/${post.id}`} className="blog-title-link">
-                  {post.title}
-                </Link>
+                <div className="blog-list-main">
+                  <Link to={`/blog/${post.id}`} className="blog-title-link">
+                    {post.title}
+                  </Link>
+                  {post.summary && <p className="blog-list-summary">{post.summary}</p>}
+                </div>
 
                 <span className="blog-date">
                   {formatShortDate(post.date)}

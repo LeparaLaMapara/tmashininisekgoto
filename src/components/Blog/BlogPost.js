@@ -11,6 +11,7 @@ import "katex/dist/katex.min.css";
 import "highlight.js/styles/github-dark.css";
 
 import blogIndex from "./blogIndex.json";
+import { isPostPublished } from "./postVisibility";
 import "./blog.css";
 
 /**
@@ -77,7 +78,9 @@ function BlogPost() {
 
   // Find metadata from index (stable)
   const meta = useMemo(() => {
-    return (blogIndex || []).find((p) => p.id === id) || null;
+    const post = (blogIndex || []).find((p) => p.id === id) || null;
+    if (!post || !isPostPublished(post.date)) return null;
+    return post;
   }, [id]);
 
   useEffect(() => {

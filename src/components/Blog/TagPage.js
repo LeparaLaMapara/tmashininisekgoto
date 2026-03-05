@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Container } from "react-bootstrap";
 import { useParams, Link } from "react-router-dom";
 import blogIndex from "./blogIndex.json";
+import { getPublishedPosts } from "./postVisibility";
 import "./blog.css";
 
 /**
@@ -18,7 +19,7 @@ function TagPage() {
    * Filter posts that contain this tag
    */
   const posts = useMemo(() => {
-    return blogIndex
+    return getPublishedPosts(blogIndex || [])
       .filter((post) => (post.tags || []).map((t) => String(t).trim().toLowerCase()).includes(normalizedTag))
       .sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [normalizedTag]);
