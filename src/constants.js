@@ -1,7 +1,7 @@
 export const SOCIAL_LINKS = {
   instagram: 'https://www.instagram.com/thabanglukheto',
   linkedin: 'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
-  youtube: 'https://www.youtube.com/@thabangvision/',
+  youtube: 'https://www.youtube.com/@tmashininisekgoto',
   email: 'thabangvisionstudios@gmail.com',
   twitter: 'https://x.com/thabangline',
   phone: ''

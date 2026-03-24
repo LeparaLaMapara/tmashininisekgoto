@@ -30,9 +30,8 @@ GitHub: LeparaLaMapara
 
 ## CAREER HISTORY
 
-- **University of the Witwatersrand** (2024 - Present): PhD Student. Previously published work on Echo State Networks for image segmentation. Built the Smart Wits Course Recommender System that generated R2M+ in subsidies. Honours project: Follow Me Turtle Bot using Python and ROS.
-- **CSIR DSIDE Programme**: Built the Smart Municipality Analytics Dashboard for the City of Cape Town, addressing youth unemployment and service delivery using ML models (SVM, Random Forest, PCA). Featured in Mail & Guardian.
-- **IBM Research Africa**: Machine Learning Research Scientist. Built geospatial analytics suites using IBM PAIRS for multi-terabyte environmental datasets. Integrated into IBM's Environmental Intelligence Suite. Built a COVID monitoring dashboard used by Gauteng Department of Health. Achieved 15% forecast accuracy gain on climate intelligence.
+- **University of the Witwatersrand** (2024 - Present): PhD Student. Previously published work on Echo State Networks for image segmentation. Honours project: Follow Me Turtle Bot using Python and ROS.
+- **IBM Research Africa**: Machine Learning Research Scientist. Built geospatial analytics suites using IBM PAIRS for multi-terabyte environmental datasets. Integrated into IBM's Environmental Intelligence Suite. Achieved 15% forecast accuracy gain on climate intelligence.
 - **Vodacom**: Senior Data Scientist. Developed the Smart Generators Optimization engine. Constrained optimisation with real-time streaming analytics (PyFlink, Kafka, CVXPY, PySpark, Kubernetes). Reduced downtime by 5%, lowered operational costs by 30%, contributed to R1B+ annual OPEX savings during load-shedding.
 - **ABSA** (2022 - Present): Lead AI & Data Scientist. Built ML platforms achieving 80-90% latency reduction. Identified the need for consistent ML/ETL standards, which led to building Ubunye AI Ecosystems.
 - **Ubunye AI Ecosystems (UAIE)**: Founder. Open-source ML/ETL framework. Config-first, lifecycle-managed, with model registry, lineage tracking, CLI, and 261 tests. Built in ~30 human hours with AI agent collaboration (8-12x speedup). Published on PyPI as ubunye-engine.
@@ -68,11 +67,11 @@ Impact: Improved reliability of IoT forecasting, telematics scoring, and real-ti
 Tech: Python, NumPy, Dask, PyPI, CI/CD
 GitHub: [Tfilterspy](https://github.com/ubunye-ai-ecosystems/tfilterspy)
 
-### 3. Kasilam Digital Platforms [Open Source]
-Problem: Township businesses lacked affordable digital presence and branding tools.
-Solution: Developed scalable web templates and branding systems deployed on cost-free hosting.
-Impact: Enabled SMEs to reach customers online and strengthen brand identity.
-Tech: HTML, CSS, JavaScript, React, GitHub Pages
+### 3. Kasilam Digital Platforms [Social Impact]
+Problem: Township businesses and individuals lack the technical skills and budget to build a web presence.
+Solution: A community non-profit initiative that uses AI to help people in townships build websites using plain English — powered by an easy-to-use template project requiring no coding knowledge.
+Impact: Empowering township entrepreneurs and community members to establish a digital presence with zero technical barriers.
+Tech: HTML, CSS, JavaScript, React, AI, GitHub Pages
 
 ### 4. Vodacom Smart Generators Optimization — Telecoms
 Problem: Load-shedding caused fuel inefficiency, network downtime, and poor generator deployment decisions.
@@ -86,36 +85,7 @@ Solution: Built analytics workflows using IBM PAIRS to process multi-terabyte ra
 Impact: Integrated into IBM's Environmental Intelligence Suite for global environmental monitoring.
 Tech: IBM PAIRS, IBM Cloud, Airflow, Python, Hadoop, GeoPandas, TensorFlow
 
-### 6. IBM Covid Monitoring Dashboard — Research
-Problem: Public health teams needed real-time visibility of COVID-19 hotspots.
-Solution: Built an interactive dashboard with automated heatmaps and case-tracking visualisations.
-Impact: Used by Gauteng Department of Health for hotspot identification and rapid response.
-Tech: Python, Dash, Plotly, Folium, Leaflet, IBM Cloud
 
-### 7. Smart Municipality Analytics Dashboard (CSIR DSIDE) — Education
-Problem: Municipal managers lacked predictive tools for service delivery optimisation.
-Solution: Developed ML models (SVM, Random Forest, PCA) and delivered insights via a Django dashboard.
-Impact: Improved municipal planning and youth unemployment analytics for the City of Cape Town.
-Tech: Python, Django, PostgreSQL, HTML/CSS, PCA, SVM, Random Forest
-
-### 8. Smart Wits Course Recommender System — Education
-Problem: First-year students struggled to choose optimal courses, leading to poor completion rates.
-Solution: Built a K-modes clustering recommendation engine deployed via an interactive dashboard.
-Impact: Achieved 90% silhouette score and enabled more informed decision-making for students and advisors. Generated R2M+ in subsidies.
-Tech: Python, Scikit-Learn, Pandas, PowerBI
-
-### 9. Echo State Network for Iterative Image Segmentation — Research
-Problem: Iterative segmentation using RNNs was computationally expensive.
-Solution: Designed an Echo State Network architecture enabling efficient segmentation with reduced training overhead.
-Impact: Published research demonstrating competitive performance at a fraction of compute cost.
-Tech: Python, NumPy, SciPy, PyTorch, Image Processing, Deep Learning
-
-### 10. UniApply — AI University & Job Application Agent — Social Impact
-Problem: South African students lack accessible tools to navigate university applications and job hunting — most processes are manual, fragmented, and overwhelming.
-Solution: Built a WhatsApp-based AI agent that reads matric certificates via Claude Vision, calculates APS scores, matches students to eligible university programs (UCT, Wits, Stellenbosch, UP, UNISA, UJ), and submits applications automatically using Playwright. Extended to job applications with CV parsing, job scraping, and automated form submission. POPIA compliant. Students interact via simple WhatsApp commands — no app download needed.
-Impact: Enables students to apply to universities and jobs by simply messaging a WhatsApp number — no app, no website, no friction. Supports engineering, medicine, commerce, law, science, arts, IT, and education programs.
-Tech: Python, FastAPI, Claude API (Opus + Vision), Twilio WhatsApp API, Supabase, Playwright, BeautifulSoup
-GitHub: [UniApply](https://github.com/LeparaLaMapara/uniapplytest)
 
 ## TALKS & MEDIA (6 total)
 
@@ -179,13 +149,7 @@ Venue: arXiv preprint arXiv:2102.00085 | 8 citations
 AI Summary: Developed ML models for long-range seasonal temperature forecasting, outperforming traditional numerical weather prediction at extended lead times. Published during IBM Research Africa tenure, integrated into climate intelligence workflows.
 Applications: Climate risk assessment, Agricultural planning, Energy demand forecasting, Insurance & reinsurance modeling
 
-### 4. "ML-based Probabilistic Prediction of 2m Temperature and Total Precipitation" (2022)
-Authors: MA Zaytar, B Zadrozny, C Watson, DS Civitarese, EE Vos, TM Mathonsi, et al.
-Venue: EGU22 — European Geosciences Union General Assembly 2022 | 2 citations
-AI Summary: Presents a probabilistic ML framework for predicting surface temperature and precipitation with uncertainty quantification. Presented at EGU, one of the world's largest geoscience conferences, as part of IBM's Environmental Intelligence Suite research.
-Applications: Weather prediction with uncertainty, Flood and drought early warning, Supply chain climate resilience, Environmental intelligence platforms
-
-### 5. "Learning Level Set Method by Echo State Network for Image Segmentation" (2022) — MSc Thesis
+### 4. "Learning Level Set Method by Echo State Network for Image Segmentation" (2022) — MSc Thesis
 Author: TL Mashinini
 Venue: MSc Thesis — University of the Witwatersrand, 2022
 AI Summary: Proposes a novel approach using Echo State Networks for learning variational level set segmentation as a spatiotemporal method. Compares ESN, RNN, GRU, LSTM, and 3D CNN architectures. Found that leaking rate and spectral radius critically influence ESN performance.
@@ -210,7 +174,7 @@ Photography & Filmmaking, Music Production, Calisthenics & Exploring, Skydiving,
 
 - GitHub: [LeparaLaMapara](https://github.com/LeparaLaMapara)
 - LinkedIn: [Thabang Mashinini](https://www.linkedin.com/in/thabang-mashinini-0081b5b6/)
-- YouTube: [Thabang Vision](https://www.youtube.com/@thabangvision/)
+- YouTube: [Thabang Vision](https://www.youtube.com/@tmashininisekgoto)
 - Instagram: [thabanglukheto](https://www.instagram.com/thabanglukheto)
 - Twitter/X: [thabangline](https://x.com/thabangline)
 - Email: [thabangvisionstudios@gmail.com](mailto:thabangvisionstudios@gmail.com)

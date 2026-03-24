@@ -15,7 +15,8 @@ export interface Project {
   skills: string[]
   image: string
   ghLink?: string
-  demoLink?: string
+  productLink?: string
+  paperLink?: string
 }
 
 export interface Talk {
@@ -40,7 +41,7 @@ export interface Writing {
 
 export interface TechItem {
   name: string
-  category: 'ml-ai' | 'data-engineering' | 'languages' | 'web' | 'databases' | 'devops' | 'cloud' | 'agentic-dev'
+  category: 'ml-ai' | 'data-engineering' | 'languages' | 'web' | 'infrastructure' | 'devops'
   icon: string // path to SVG in /public/icons/ or react-icons identifier
 }
 
@@ -56,7 +57,7 @@ export interface ImpactNumber {
 export const SOCIAL_LINKS = {
   github: 'https://github.com/LeparaLaMapara',
   linkedin: 'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
-  youtube: 'https://www.youtube.com/@thabangvision/',
+  youtube: 'https://www.youtube.com/@tmashininisekgoto',
   instagram: 'https://www.instagram.com/thabanglukheto',
   twitter: 'https://x.com/thabangline',
   email: 'thabangvisionstudios@gmail.com',
@@ -97,7 +98,7 @@ export const PROJECTS: Project[] = [
     skills: ['Python', 'Dask', 'Spark', 'YAML', 'Databricks', 'Docker', 'CI/CD'],
     image: '/projects/ubunye-ai.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems',
-    demoLink: 'https://ubunye-ai-ecosystems.github.io/ubunye_engine/',
+    productLink: 'https://ubunye-ai-ecosystems.github.io/ubunye_engine/',
   },
   {
     slug: 'tfilterspy',
@@ -109,19 +110,19 @@ export const PROJECTS: Project[] = [
     skills: ['Python', 'NumPy', 'Dask', 'PyPI', 'CI/CD'],
     image: '/projects/tfilterspy.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/tfilterspy',
-    demoLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy',
+    productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy',
   },
   {
     slug: 'kasilam-digital',
     title: 'Kasilam Digital Platforms',
-    category: 'open-source',
-    problem: 'Township businesses lacked affordable digital presence and branding tools.',
-    solution: 'Developed scalable web templates and branding systems deployed on cost-free hosting.',
-    impact: 'Enabled SMEs to reach customers online and strengthen brand identity.',
-    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'GitHub Pages'],
+    category: 'social-impact',
+    problem: 'Township businesses and individuals lack the technical skills and budget to build a web presence.',
+    solution: 'A community non-profit initiative that uses AI to help people in townships build websites using plain English — powered by an easy-to-use template project requiring no coding knowledge.',
+    impact: 'Empowering township entrepreneurs and community members to establish a digital presence with zero technical barriers.',
+    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'AI', 'GitHub Pages'],
     image: '/projects/kasilam.png',
     ghLink: 'https://github.com/orgs/Kasilam-Projects/repositories',
-    demoLink: 'https://kasilamdigitialplatforms.vercel.app/',
+    productLink: 'https://kasilamdigitialplatforms.vercel.app/',
   },
   // Professional & Research
   {
@@ -133,7 +134,7 @@ export const PROJECTS: Project[] = [
     impact: 'Reduced downtime by 5%, lowered operational costs by 30%, and supported R1B annual savings.',
     skills: ['PyFlink', 'Kafka', 'CVXPY', 'PySpark', 'Kubernetes', 'Docker', 'GitLab CI'],
     image: '/projects/smart-generators.png',
-    demoLink: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring',
+    productLink: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring',
   },
   {
     slug: 'ibm-geospatial',
@@ -144,68 +145,39 @@ export const PROJECTS: Project[] = [
     impact: "Integrated into IBM's Environmental Intelligence Suite for global environmental monitoring.",
     skills: ['IBM PAIRS', 'IBM Cloud', 'Airflow', 'Python', 'Hadoop', 'GeoPandas', 'TensorFlow'],
     image: '/projects/ibm-geospatial.png',
-    demoLink: 'https://www.ibm.com/products/environmental-intelligence-suite',
-  },
-  {
-    slug: 'ibm-covid-dashboard',
-    title: 'IBM Covid Monitoring Dashboard',
-    category: 'research',
-    problem: 'Public health teams needed real-time visibility of COVID-19 hotspots.',
-    solution: 'Built an interactive dashboard with automated heatmaps and case-tracking visualisations.',
-    impact: 'Used by Gauteng Department of Health for hotspot identification and rapid response.',
-    skills: ['Python', 'Dash', 'Plotly', 'Folium', 'Leaflet', 'IBM Cloud'],
-    image: '/projects/covid-dashboard.png',
-  },
-  {
-    slug: 'csir-dside',
-    title: 'Smart Municipality Analytics Dashboard (CSIR DSIDE)',
-    category: 'education',
-    problem: 'Municipal managers lacked predictive tools for service delivery optimisation.',
-    solution: 'Developed ML models (SVM, Random Forest, PCA) and delivered insights via a Django dashboard.',
-    impact: 'Improved municipal planning and youth unemployment analytics for the City of Cape Town.',
-    skills: ['Python', 'Django', 'PostgreSQL', 'HTML/CSS', 'PCA', 'SVM', 'Random Forest'],
-    image: '/projects/dside.png',
-    ghLink: 'https://github.com/LeparaLaMapara/DSIDE',
-    demoLink: 'https://prezi.com/view/DltmNuhuwJH3mcKxkPEH/',
-  },
-  {
-    slug: 'wits-recommender',
-    title: 'Smart Wits Course Recommender System',
-    category: 'education',
-    problem: 'First-year students struggled to choose optimal courses, leading to poor completion rates.',
-    solution: 'Built a K-modes clustering recommendation engine deployed via an interactive dashboard.',
-    impact: 'Achieved 90% silhouette score and enabled more informed decision-making for students and advisors.',
-    skills: ['Python', 'Scikit-Learn', 'Pandas', 'PowerBI'],
-    image: '/projects/wits-recommender.png',
-  },
-  {
-    slug: 'esn-segmentation',
-    title: 'Echo State Network for Iterative Image Segmentation',
-    category: 'research',
-    problem: 'Iterative segmentation using RNNs was computationally expensive.',
-    solution: 'Designed an Echo State Network architecture enabling efficient segmentation with reduced training overhead.',
-    impact: 'Published research demonstrating competitive performance at a fraction of compute cost.',
-    skills: ['Python', 'NumPy', 'SciPy', 'PyTorch', 'Image Processing', 'Deep Learning'],
-    image: '/projects/esn-research.png',
-    ghLink: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation/tree/master',
-    demoLink: 'https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643',
-  },
-  {
-    slug: 'uniapply',
-    title: 'UniApply: AI University & Job Application Agent',
-    category: 'social-impact',
-    problem: 'South African students lack accessible tools to navigate university applications and job hunting. Most processes are manual, fragmented, and overwhelming.',
-    solution: 'Built a WhatsApp-based AI agent that reads matric certificates via Claude Vision, calculates APS scores, matches students to eligible university programs, and submits applications automatically. Extended to job applications with CV parsing and automated form submission.',
-    impact: 'Enables students to apply to universities and jobs by simply messaging a WhatsApp number. No app download, no website, no friction.',
-    skills: ['Python', 'FastAPI', 'Claude API', 'Twilio', 'Supabase', 'Playwright', 'BeautifulSoup'],
-    image: '/projects/uniapply.svg',
-    ghLink: 'https://github.com/LeparaLaMapara/uniapplytest',
+    ghLink: 'https://github.com/IBM/ibmpairs',
+    productLink: 'https://www.ibm.com/products/environmental-intelligence-suite',
+    paperLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC',
   },
 ]
 
 // --- Talks ---
 
 export const TALKS: Talk[] = [
+  {
+    id: 9,
+    title: "Session 5.10: Learning a new skill with AI 2.0",
+    description: "Continuing the series on using AI to accelerate learning — this session explores advanced techniques for acquiring new skills with AI tools.",
+    date: "2026-03-22",
+    event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
+    videoUrl: "https://www.youtube.com/embed/U9ZtGwCjlDU",
+  },
+  {
+    id: 8,
+    title: "Session 5.8: How to use AI to learn a new skill - data analytics",
+    description: "A hands-on session showing how to use AI to learn data analytics from scratch — breaking down the learning process into practical, AI-assisted steps.",
+    date: "2026-03-08",
+    event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
+    videoUrl: "https://www.youtube.com/embed/njv5ZVhvSUM",
+  },
+  {
+    id: 7,
+    title: "Session 5.7: Your AI Skill Coach - Building Agents to Accelerate Your Career",
+    description: "Building AI agents that act as personal skill coaches — helping you identify gaps, create learning plans, and accelerate your career development.",
+    date: "2026-03-01",
+    event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
+    videoUrl: "https://www.youtube.com/embed/k2iKehY8Zq0",
+  },
   {
     id: 6,
     title: "Building your personal AI Assistant to get jobs, scholarships & study opportunities",
@@ -326,21 +298,11 @@ export const PUBLICATIONS: Publication[] = [
     authors: 'EE Vos, A Gritzman, S Makhanya, T Mashinini, CD Watson',
     venue: 'arXiv preprint arXiv:2102.00085',
     year: 2021,
-    citations: 3,
-    scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:u-x6o8ySG0sC',
+    citations: 8,
+    scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC',
     semanticScholarId: '7655474fe5524b7e1aa5ebeb9de6a7464f3eb8bc',
     aiSummary: 'Developed ML models for long-range seasonal temperature forecasting, outperforming traditional numerical weather prediction at extended lead times. Published during IBM Research Africa tenure, integrated into climate intelligence workflows.',
     applications: ['Climate risk assessment', 'Agricultural planning', 'Energy demand forecasting', 'Insurance & reinsurance modeling'],
-  },
-  {
-    title: 'ML-based Probabilistic Prediction of 2m Temperature and Total Precipitation',
-    authors: 'MA Zaytar, B Zadrozny, C Watson, DS Civitarese, EE Vos, TM Mathonsi, et al.',
-    venue: 'EGU22, European Geosciences Union General Assembly 2022',
-    year: 2022,
-    citations: 2,
-    scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:9yKSN-GCB0IC',
-    aiSummary: 'Presents a probabilistic ML framework for predicting surface temperature and precipitation with uncertainty quantification. Presented at EGU, one of the world\'s largest geoscience conferences, as part of IBM\'s Environmental Intelligence Suite research.',
-    applications: ['Weather prediction with uncertainty', 'Flood and drought early warning', 'Supply chain climate resilience', 'Environmental intelligence platforms'],
   },
   {
     title: 'Learning Level Set Method by Echo State Network for Image Segmentation',
@@ -359,45 +321,31 @@ export const TECH_STACK: TechItem[] = [
   // ML & AI
   { name: 'PyTorch', category: 'ml-ai', icon: 'Pytorch' },
   { name: 'TensorFlow', category: 'ml-ai', icon: 'Tensorflow' },
-  { name: 'Scikit-Learn', category: 'ml-ai', icon: 'Scikit' },
   { name: 'MLflow', category: 'ml-ai', icon: 'Mlflow' },
   // Data Engineering
   { name: 'Databricks', category: 'data-engineering', icon: 'Databricks' },
   { name: 'Apache Spark', category: 'data-engineering', icon: 'Spark' },
   { name: 'Apache Flink', category: 'data-engineering', icon: 'Flink' },
-  { name: 'Dask', category: 'data-engineering', icon: 'Dask' },
   { name: 'Kafka', category: 'data-engineering', icon: 'Kafka' },
   { name: 'Airflow', category: 'data-engineering', icon: 'Airflow' },
   // Languages
   { name: 'Python', category: 'languages', icon: 'Python' },
   { name: 'TypeScript', category: 'languages', icon: 'Typescript' },
-  { name: 'JavaScript', category: 'languages', icon: 'Javascript' },
   { name: 'Go', category: 'languages', icon: 'go' },
   { name: 'Java', category: 'languages', icon: 'Java' },
   { name: 'C++', category: 'languages', icon: 'C++' },
-  { name: 'Haskell', category: 'languages', icon: 'Haskell' },
   // Web
   { name: 'React', category: 'web', icon: 'React' },
   { name: 'Next.js', category: 'web', icon: 'Next' },
+  { name: 'FastAPI', category: 'web', icon: 'Python' },
   { name: 'Node.js', category: 'web', icon: 'Node' },
-  { name: 'Tailwind CSS', category: 'web', icon: 'Tailwind' },
-  { name: 'MUI', category: 'web', icon: 'MUI' },
-  // Databases
-  { name: 'PostgreSQL', category: 'databases', icon: 'SQL' },
-  { name: 'MongoDB', category: 'databases', icon: 'Mongo' },
-  { name: 'Redis', category: 'databases', icon: 'Redis' },
+  // Infrastructure
+  { name: 'PostgreSQL', category: 'infrastructure', icon: 'SQL' },
+  { name: 'AWS', category: 'infrastructure', icon: 'AWS' },
+  { name: 'Docker', category: 'infrastructure', icon: 'Docker' },
+  { name: 'Kubernetes', category: 'infrastructure', icon: 'Kubernates' },
   // DevOps
-  { name: 'Docker', category: 'devops', icon: 'Docker' },
-  { name: 'Kubernetes', category: 'devops', icon: 'Kubernates' },
   { name: 'Git', category: 'devops', icon: 'Git' },
-  // Cloud
-  { name: 'AWS', category: 'cloud', icon: 'AWS' },
-  { name: 'Firebase', category: 'cloud', icon: 'Firebase' },
-  // Agentic Dev
-  { name: 'Claude Code', category: 'agentic-dev', icon: 'claude-code' },
-  { name: 'Codex CLI', category: 'agentic-dev', icon: 'codex' },
-  { name: 'Gemini CLI', category: 'agentic-dev', icon: 'gemini' },
-  { name: 'Cursor', category: 'agentic-dev', icon: 'cursor' },
 ]
 
 // --- Skill → Icon mapping (maps project skill names to /public/icons/ SVG filenames) ---
@@ -497,10 +445,8 @@ export const TECH_CATEGORIES: Record<TechItem['category'], string> = {
   'data-engineering': 'Data Engineering',
   'languages': 'Languages',
   'web': 'Web',
-  'databases': 'Databases',
+  'infrastructure': 'Infrastructure',
   'devops': 'DevOps',
-  'cloud': 'Cloud',
-  'agentic-dev': 'Agentic Dev',
 }
 
 // --- Courses ---
@@ -718,7 +664,7 @@ export interface Testimonial {
 export const TESTIMONIALS: Testimonial[] = [
   {
     name: 'Jaco du Toit, Ph.D.',
-    role: 'AI/ML & Data Team Lead, Mobile Network Innovation',
+    role: 'AI/ML & Data Team Lead, Vodacom',
     quote: 'Thabang was an integral member of my team for several years, during which we tackled numerous challenging data science problems together. His dedication and passion for solving complex problems are truly commendable. His technical knowledge in data science is impressive, with hands-on experience in Gaussian process models, graph algorithms, probabilistic graphical models, and traditional machine learning algorithms.',
     context: 'impact',
   },
