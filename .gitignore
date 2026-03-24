@@ -31,5 +31,8 @@ yarn-error.log*
 /screenshots
 /test-results
 
+# MCP config (contains tokens)
+.mcp.json
+
 Server/node_modules
 Server/config.js
