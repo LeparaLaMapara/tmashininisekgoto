@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/utils'
 import { mdxComponents } from '@/components/blog/mdx-components'
 import { GiscusComments } from '@/components/blog/giscus-comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
+import { TableOfContents } from '@/components/blog/table-of-contents'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -78,6 +79,9 @@ export default async function BlogPostPage({ params }: PageProps) {
           ))}
         </div>
       </header>
+
+      {/* Table of Contents */}
+      <TableOfContents content={post.content} />
 
       {/* MDX content */}
       <article className="prose prose-lg max-w-3xl mx-auto">
