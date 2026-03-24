@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1220"/>
+      <stop offset="100%" stop-color="#0c4a6e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <!-- WhatsApp icon circle -->
+  <circle cx="640" cy="290" r="80" fill="none" stroke="url(#accent)" stroke-width="3" opacity="0.6"/>
+  <!-- Chat bubble -->
+  <rect x="590" y="250" rx="16" ry="16" width="100" height="60" fill="none" stroke="#0ea5e9" stroke-width="2.5" opacity="0.8"/>
+  <circle cx="620" cy="280" r="5" fill="#0ea5e9" opacity="0.7"/>
+  <circle cx="640" cy="280" r="5" fill="#0ea5e9" opacity="0.7"/>
+  <circle cx="660" cy="280" r="5" fill="#0ea5e9" opacity="0.7"/>
+  <!-- Graduation cap -->
+  <polygon points="640,230 590,255 640,280 690,255" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
+  <!-- Title -->
+  <text x="640" y="420" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="#faf4e8">UniApply</text>
+  <!-- Subtitle -->
+  <text x="640" y="465" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#0ea5e9" opacity="0.8">AI University &amp; Job Application Agent</text>
+  <!-- WhatsApp tag -->
+  <rect x="545" y="490" rx="12" ry="12" width="190" height="32" fill="#0ea5e9" opacity="0.15"/>
+  <text x="640" y="512" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#0ea5e9">WhatsApp-powered</text>
+  <!-- Grid dots decoration -->
+  <g opacity="0.1" fill="#0ea5e9">
+    <circle cx="100" cy="100" r="2"/><circle cx="130" cy="100" r="2"/><circle cx="160" cy="100" r="2"/>
+    <circle cx="100" cy="130" r="2"/><circle cx="130" cy="130" r="2"/><circle cx="160" cy="130" r="2"/>
+    <circle cx="100" cy="160" r="2"/><circle cx="130" cy="160" r="2"/><circle cx="160" cy="160" r="2"/>
+    <circle cx="1100" cy="560" r="2"/><circle cx="1130" cy="560" r="2"/><circle cx="1160" cy="560" r="2"/>
+    <circle cx="1100" cy="590" r="2"/><circle cx="1130" cy="590" r="2"/><circle cx="1160" cy="590" r="2"/>
+    <circle cx="1100" cy="620" r="2"/><circle cx="1130" cy="620" r="2"/><circle cx="1160" cy="620" r="2"/>
+  </g>
+</svg>
