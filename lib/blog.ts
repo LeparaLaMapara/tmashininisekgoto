@@ -13,6 +13,7 @@ export interface BlogPost {
   summary: string
   readingTime: string
   content: string
+  published: boolean
 }
 
 function parsePost(fileName: string): BlogPost {
@@ -30,6 +31,7 @@ function parsePost(fileName: string): BlogPost {
     summary: data.summary ?? '',
     readingTime: stats.text,
     content,
+    published: data.published !== false,
   }
 }
 
@@ -40,6 +42,7 @@ export function getAllPosts(): BlogPost[] {
 
   return files
     .map(parsePost)
+    .filter((post) => post.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 

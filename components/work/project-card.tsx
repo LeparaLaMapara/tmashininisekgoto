@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Github, ExternalLink } from 'lucide-react'
+import { Github, ExternalLink, FileText } from 'lucide-react'
 import type { Project } from '@/lib/data'
 import { SKILL_ICON_MAP } from '@/lib/data'
 
@@ -101,7 +101,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {/* Links */}
-        {(project.ghLink || project.demoLink) && (
+        {(project.ghLink || project.productLink || project.paperLink) && (
           <div className="flex items-center gap-4 pt-3 border-t border-border">
             {project.ghLink && (
               <a
@@ -114,15 +114,26 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 GitHub
               </a>
             )}
-            {project.demoLink && (
+            {project.productLink && (
               <a
-                href={project.demoLink}
+                href={project.productLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-muted hover:text-synapse transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
-                Demo
+                Product
+              </a>
+            )}
+            {project.paperLink && (
+              <a
+                href={project.paperLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-muted hover:text-synapse transition-colors"
+              >
+                <FileText className="w-4 h-4" />
+                Paper
               </a>
             )}
           </div>

@@ -25,14 +25,12 @@ const calendarTheme = {
 
 // Map tech stack categories to project categories for calendar filtering
 const TECH_TO_PROJECT_CATEGORY: Partial<Record<TechItem['category'], Project['category'][]>> = {
-  'ml-ai': ['research', 'education'],
+  'ml-ai': ['research', 'open-source'],
   'data-engineering': ['open-source', 'telecoms'],
-  'languages': ['open-source', 'research', 'education', 'social-impact'],
+  'languages': ['open-source', 'research', 'social-impact'],
   'web': ['open-source', 'social-impact'],
-  'databases': ['education', 'social-impact'],
+  'infrastructure': ['telecoms', 'research', 'open-source'],
   'devops': ['open-source', 'telecoms'],
-  'cloud': ['research'],
-  'agentic-dev': ['open-source', 'social-impact', 'research'],
 }
 
 export function TechStack() {

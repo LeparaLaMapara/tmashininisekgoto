@@ -30,15 +30,15 @@ function ProjectCards(props) {
           </Button>
         )}
 
-        {props.demoLink && (
+        {props.productLink && (
           <Button
             variant="primary"
-            href={props.demoLink}
+            href={props.productLink}
             target="_blank"
             rel="noopener noreferrer"
             style={{ marginLeft: props.ghLink ? "10px" : "0" }}
           >
-            <CgWebsite /> &nbsp;Demo
+            <CgWebsite /> &nbsp;Product
           </Button>
         )}
       </Card.Body>
