@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     'Practitioner-first AI and data science courses by Thabang Mashinini-Sekgoto. From zero-code AI agents to agentic engineering with Claude Code, MCP, and Codex.',
 }
 
+// Re-fetch waitlist counts from Supabase every 60 seconds (ISR)
+export const revalidate = 60
+
 async function getWaitlistCounts(): Promise<Record<string, number>> {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
