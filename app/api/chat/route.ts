@@ -1,5 +1,5 @@
 import { streamText } from 'ai'
-import { anthropic } from '@ai-sdk/anthropic'
+import { google } from '@ai-sdk/google'
 import { buildSystemPrompt } from '@/lib/knowledge-base'
 import { headers } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
@@ -91,10 +91,10 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: anthropic('claude-haiku-4-5-20251001'),
+    model: google('gemini-2.0-flash'),
     system: buildSystemPrompt(),
     messages,
-    maxTokens: 1024,
+    maxTokens: 2048,
   })
 
   return result.toDataStreamResponse({

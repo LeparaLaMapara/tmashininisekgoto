@@ -10,7 +10,7 @@
     "screenshot": "npx playwright test screenshot.spec.ts"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^1.2.12",
+    "@ai-sdk/google": "^1.2.0",
     "@giscus/react": "^3.1.0",
     "@react-three/drei": "^10.0.4",
     "@react-three/fiber": "^9.1.2",
