@@ -16,7 +16,7 @@ export const revalidate = 60
 async function getWaitlistCounts(): Promise<Record<string, number>> {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     if (!supabaseUrl || !supabaseServiceKey) return {}
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
