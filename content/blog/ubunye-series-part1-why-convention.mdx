@@ -1,0 +1,144 @@
+---
+title: "Ubunye Engine Part 1: Why Convention Is the Real Deliverable"
+date: 2026-03-05
+tags: [open source, engineering, python, mlops, ubunye series]
+summary: "Every data team eventually hits the same wall. Notebooks work locally. Spark jobs work on the cluster. Nothing works together. This is the problem Ubunye Engine was built to solve."
+---
+
+# Ubunye Engine Part 1: Why Convention Is the Real Deliverable
+
+*Part 1 of 5 in the Ubunye Engine series.*
+[Part 2: The Model Registry](/blog/ubunye-series-part2-model-registry) ·
+[Part 3: The Boring Work](/blog/ubunye-series-part3-boring-work) ·
+[Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production) ·
+[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent)
+
+---
+
+> This series is a technical memoir. Not a polished tutorial. The real story of broken imports,
+> silent CI failures at 2am, and the slow accumulation of something that actually works.
+> If you have ever built a framework from scratch, you will recognise every one of these moments.
+
+---
+
+## The Problem
+
+Every data team eventually hits the same wall.
+
+You have notebooks that work locally. You have Spark jobs that work on the cluster. You have ML experiments scattered across a dozen different scripts, each trained differently, saved differently, versioned not at all. Moving anything to production means a week of archaeology, figuring out which version of which script produced which model, what data it saw, and why the schema looks different today than it did last Tuesday.
+
+I have lived this problem. At Vodacom, building real time analytics on national telecommunications infrastructure. At ABSA, leading enterprise ML transformation on Databricks. At IBM Research, integrating geospatial models into production intelligence platforms. The specifics change. The pattern does not.
+
+The pattern is this: individual engineers are brilliant. Their code works. Their models perform. But the moment you need a second person to understand what the first person built, everything slows down. Not because the code is bad, but because there is no shared convention for how things are structured, how data flows, how models are versioned, or where to look when something breaks.
+
+This is not a tooling problem. Airflow exists. MLflow exists. Delta Live Tables exists. The tools are excellent. The problem is that each tool solves one layer, and nobody agrees on how the layers connect.
+
+---
+
+![GitHub Action Ubunye](/posts/A_whiteboard_sketch.png)
+
+---
+
+## The Idea
+
+The idea behind Ubunye Engine was simple: **one framework, config first, that owns the full lifecycle from raw data ingestion through to versioned model deployment.** Users write their business logic. The engine handles everything else: I/O, monitoring, lineage, model registry, CLI, documentation.
+
+Simple idea. Complicated execution.
+
+The name *Ubunye* is a Zulu word meaning **oneness** or **unity**. The goal was never to add another tool to the stack. It was to unify the stack. One config. One CLI. One lineage record. One model registry. One way to move data from raw to production, regardless of the source system, the ML library, or the cloud provider.
+
+---
+
+## Who This Is Actually For
+
+Before describing what was built, it is worth being precise about who needs it.
+
+Not a solo data scientist running notebooks. They do not need a framework. They need pandas and a good naming convention. Not a company running Databricks with a dedicated platform team either. They already have Unity Catalog, Delta Live Tables, and MLflow baked in.
+
+The real target is the gap in between: a **data team of 2 to 8 people** that has outgrown notebooks but cannot justify a full platform engineering hire. Teams where the same person writes the ingestion job, trains the model, deploys it to production, and then gets paged when it breaks at 3am. Teams where "model versioning" currently means a folder called `models_final_v3_USE_THIS_ONE/`.
+
+For that team, Ubunye Engine's value proposition is specific:
+
+1. You write `transform()`. The engine handles I/O, lineage, monitoring, and model versioning around it.
+2. Your notebook code and your production code are the same code. No rewrite when you go from experiment to prod.
+3. When something breaks, `ubunye lineage trace` shows you exactly what data that run saw. No archaeology.
+
+---
+
+## Phase 1: Config Loading
+
+The first phase was the config system. YAML with Jinja2 rendering before Pydantic validation.
+
+The key insight was that `{{ dt | default('1970-01-01') }}` needs to render *before* the schema sees it, not after. Getting that order right took longer than it should have. Jinja2 produces a string. Pydantic expects typed fields. The rendering has to happen first, then the string gets parsed into the validated schema. Reversing that order produces validation errors that make no sense until you realise the template syntax is being validated as literal text.
+
+This is the kind of problem that feels trivial in retrospect and cost an entire evening to identify.
+
+```python
+# The order matters:
+# 1. Load raw YAML as string
+# 2. Render Jinja2 templates (resolve variables, defaults, environment)
+# 3. Parse rendered string into dict
+# 4. Validate dict with Pydantic schema
+```
+
+The config system also supports profiles. A `dev` profile and a `prod` profile can live in the same YAML file, with Jinja2 conditionals selecting the right values based on an environment variable. One config file. Multiple environments. No duplication.
+
+---
+
+## Phase 2: Lineage Tracking
+
+Every run writes a structured JSON record: run ID, task path, input/output hashes, row counts, duration, status. Small files. Big value.
+
+When something breaks in production at 3am, the first question is always *"what data did this run see?"* The lineage file answers it without a Slack thread.
+
+The design was deliberately simple. No database. No server. Just JSON files written to a predictable directory structure:
+
+```
+.ubunye/lineage/{usecase}/{package}/{task}/
+  run_2026-03-05T14-30-00Z.json
+```
+
+Each record is self contained. You can read it with `cat`. You can query it with `jq`. You can diff two runs with standard tooling. The simplicity is the feature. When you are debugging at 3am, the last thing you want is a dependency on a lineage server that might itself be down.
+
+---
+
+## Phase 3: Test Infrastructure
+
+Unit tests that run without Spark. Integration tests that spin up a real local SparkSession. The matrix was Python 3.9, 3.10, 3.11 across unit and integration. GitHub Actions. `pytest-cov`, `hypothesis`, `pytest-timeout`.
+
+Standard stuff, except none of these test dependencies were in `pyproject.toml`'s `dev` extras yet. Which meant CI was failing silently with `unrecognized arguments: --cov=ubunye` for weeks before anyone noticed.
+
+This is the kind of failure that teaches you something important about CI: a green build is not the same as a correct build. The build was green because the test runner crashed before any tests ran, and a crash with no test results was not configured as a failure. The tests were not passing. They were not running at all.
+
+The fix was two lines in `pyproject.toml`. The lesson was permanent: always verify that your CI is actually executing what you think it is executing.
+
+---
+
+## Phase 4: Access Control
+
+Role based config guards so not every pipeline can write to production targets. Not glamorous. Essential.
+
+The access control layer enforces that a `dev` role cannot trigger a production write, regardless of what the config file says. The config might specify a production target. The access layer checks whether the current execution context has permission to write there. If not, it fails loudly.
+
+This exists because I have seen what happens without it. An engineer running a test pipeline accidentally writes to a production table because the config was copied from prod and nobody changed the target path. Access control is the cheapest insurance against that specific class of mistake.
+
+---
+
+## Each Phase Felt Finished. None of Them Were.
+
+This is the honest part. After Phase 4, the engine had a config system, lineage tracking, a test suite, and access control. It felt complete. It was not.
+
+A framework without a model registry is a pipeline tool. A framework without documentation is a personal project. A framework without CI/CD is a local experiment. A framework without a published package is a GitHub repository that nobody will ever install.
+
+The phases that followed, the model registry, the documentation, the CI/CD pipeline, the PyPI publication, are where the project went from "interesting" to "usable." Those phases are covered in the rest of this series.
+
+---
+
+*Next: [Part 2: The Model Registry and Hexagonal Architecture](/blog/ubunye-series-part2-model-registry)*
+
+---
+
+*The Ubunye Engine is open source.*
+*Source code: [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)*
+*Documentation: [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)*
+*Install: [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/)*

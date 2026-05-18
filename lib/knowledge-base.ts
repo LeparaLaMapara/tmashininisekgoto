@@ -106,17 +106,13 @@ Tech: IBM PAIRS, IBM Cloud, Airflow, Python, Hadoop, GeoPandas, TensorFlow
 
 ## BLOG POST SUMMARIES
 
-### "Ubunye Engine: One Framework, One Convention, One CLI" (March 2026)
-A technical memoir — not a polished tutorial. The real story of building Ubunye Engine: broken imports, silent CI failures at 2am, the bug that lived inside a single-line fallback. Covers:
-- Phase 1-4: Config loading (YAML + Jinja2), lineage tracking, test infrastructure (261 tests), access control
-- Phase 5: Model registry — the UbunyeModel contract, promotion gates, filesystem storage layout
-- Hexagonal architecture / ports and adapters — emerged from a pragmatic constraint, not a textbook
-- The DataFramePort proposal for backend-agnostic data transport
-- Documentation detour: six empty __init__.py files that fixed mkdocstrings
-- The subtle bug: df.sample(0.01) returns nothing on 2-3 row DataFrames
-- CI/CD debugging: missing dev dependencies, setuptools flat-layout, GitHub Pages 404, dead imports
-- PyPI publishing with OIDC Trusted Publishers
-- Human + Agent collaboration: ~30 human hours, 8-12x speedup, R1,520 vs R302,000 team cost
+### "Ubunye Engine" (5-part series, March 2026)
+A technical memoir series on building Ubunye Engine. Covers the full journey from idea to published PyPI package.
+- Part 1: Why Convention Is the Real Deliverable — the problem, the idea, Phase 1-4 foundation (config, lineage, tests, access control)
+- Part 2: The Model Registry and Hexagonal Architecture — the UbunyeModel contract, promotion gates, DataFramePort proposal
+- Part 3: The Boring Work That Ships Software — documentation, CI/CD debugging, PyPI publishing, subtle bugs
+- Part 4: From Kaggle to Production — end-to-end validation, honest gaps, comparison to Kedro/MLflow/DVC
+- Part 5: Building With an Agent: The Real Numbers — ~30 human hours, 8-12x speedup, R1,520 vs R302,000 team cost, vibe coding critique
 - Key lesson: agents give more leverage to senior engineers than juniors, because amplification only works if verification capacity exists
 
 ### "The Modern Data Scientist: A Roadmap for the Age of AI Agents" (March 2026)

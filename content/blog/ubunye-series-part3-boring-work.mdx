@@ -1,0 +1,248 @@
+---
+title: "Ubunye Engine Part 3: The Boring Work That Ships Software"
+date: 2026-03-07
+tags: [open source, engineering, python, mlops, ubunye series, ci/cd]
+summary: "Documentation, CI/CD, PyPI publishing, and the subtle bugs that live in single lines of code. The thesis is simple: finishing is rarer than starting, and the boring work is what separates a repository from a product."
+---
+
+# Ubunye Engine Part 3: The Boring Work That Ships Software
+
+*Part 3 of 5 in the Ubunye Engine series.*
+[Part 1: Why Convention](/blog/ubunye-series-part1-why-convention) ·
+[Part 2: The Model Registry](/blog/ubunye-series-part2-model-registry) ·
+[Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production) ·
+[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent)
+
+---
+
+## The Thesis
+
+Writing test 251 is not interesting. It is necessary. Debugging the `fetch-depth: 0` CI failure at 11pm is not interesting. It is necessary. Running your own example code before publishing it is not interesting. It is necessary.
+
+The discipline to ship boring work, the work that most engineers skip because it is not intellectually stimulating, is rarer than the ability to design interesting architecture. And it is worth considerably more, because interesting architecture that is not tested, documented, or running is just a whiteboard photo.
+
+This post covers the work that made Ubunye Engine a published, installable, documented package. None of it is glamorous. All of it is essential.
+
+---
+
+## The Documentation Detour
+
+Every framework eventually needs documentation. The plan was to spend a weekend on it. It took much longer.
+
+**MkDocs** with the Material theme looked great. The `mkdocstrings` plugin would auto generate API docs from docstrings. `git-revision-date-localized` would show when each page was last updated. `mkdocs build --strict` would catch any warnings before deploy. Simple.
+
+The first run of `mkdocs serve` produced this:
+
+```
+ERROR - mkdocstrings: ubunye.plugins.readers.rest_api.RestApiReader could not be found
+```
+
+Two hours of investigation found two separate root causes, and both had to be fixed:
+
+**Cause 1:** `import requests` at the top of `rest_api.py` failed when `requests` was not installed in the docs build environment. The fix was lazy imports: move `import requests` inside the functions that actually use it, guarded by `TYPE_CHECKING` for type annotations:
+
+```python
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import requests  # only for type checkers; not loaded at import time
+```
+
+**Cause 2:** Six sub packages had no `__init__.py`. The `griffe` AST engine that powers `mkdocstrings` could not traverse them. It raised a silent `KeyError: 'readers'` and reported the class as not found.
+
+Six empty files fixed it. Six. Empty. Files.
+
+```
+ubunye/cli/__init__.py
+ubunye/compat/__init__.py
+ubunye/plugins/ml/__init__.py
+ubunye/plugins/readers/__init__.py
+ubunye/plugins/transforms/__init__.py
+ubunye/plugins/writers/__init__.py
+```
+
+The lesson here is one I should have known already. Any sub package that contains importable Python code should have `__init__.py`. This has been true since Python 2. The fact that it still catches experienced engineers tells you something about how documentation tooling interacts with packaging in ways that are not always obvious.
+
+---
+
+![GitHub Action Ubunye](/posts/error_mkdocstrings.png)
+
+---
+
+## The Subtle Bug: When Sampling Returns Nothing
+
+Between the documentation work, a unit test caught something genuinely tricky.
+
+The test `test_different_input_different_data_hash` was failing: two DataFrames with different data were producing identical hashes. The `hash_dataframe` function sampled rows before hashing them:
+
+```python
+sample_rows = df.sample(fraction=0.01, seed=42).collect()
+```
+
+On a 2 row or 3 row DataFrame, `fraction=0.01` returns zero rows. The function then fell back to `hash_schema(df)`, hashing only the column names and types. Since both test DataFrames had the same schema but different data, the hashes were identical.
+
+The fix was a single fallback:
+
+```python
+sample_rows = df.sample(fraction=0.01, seed=42).collect()
+
+if not sample_rows:
+    # DataFrame too small for fractional sampling, collect all rows instead
+    sample_rows = df.collect()
+
+if not sample_rows:
+    return hash_schema(df)
+```
+
+Three lines. But the regression test needed to document *why* this exists, because otherwise someone will "clean it up" in six months and reintroduce the bug:
+
+```python
+def test_empty_sample_falls_back_to_collect_not_schema():
+    """
+    Regression: df.sample(0.01) returns empty on 2-3 row DataFrames.
+    Without the collect() fallback, both DataFrames hash to hash_schema()
+    and produce identical results even though their data differs.
+    """
+```
+
+This is the kind of bug that reminds you why testing matters. The code was correct for large DataFrames and silently wrong for small ones. Production data is large. Test data is small. Without the test, this bug would have lived in the codebase indefinitely, only surfacing when someone tried to verify lineage integrity on a small dataset and found that every run produced the same hash.
+
+---
+
+![GitHub Action Ubunye](/posts/different_hashes.png)
+
+---
+
+## CI/CD: The Perpetual Game
+
+GitHub Actions was supposed to be set and forget. It was not.
+
+**Problem 1: Missing dev dependencies.** The test workflow ran `pytest --cov=ubunye --timeout=300`. Both flags required packages that were not in `pyproject.toml`'s `dev` extras:
+
+```toml
+# Before: silently broken
+dev = ["pytest", "black", "ruff", "build"]
+
+# After: actually works
+dev = ["pytest", "pytest-cov>=4", "pytest-timeout", "hypothesis>=6",
+       "requests>=2.28", "black", "ruff", "build"]
+```
+
+**Problem 2: setuptools flat layout refusing to build.** The build backend auto discovers packages in a "flat layout" (packages at the repo root). The repo had both `ubunye/` and `pipelines/` at the root. setuptools refused:
+
+```
+Multiple top-level packages discovered in a flat-layout: ['ubunye', 'pipelines']
+```
+
+The `pipelines/` directory contains example pipeline tasks. It is not a Python package, but setuptools did not know that. Fix:
+
+```toml
+[tool.setuptools.packages.find]
+include = ["ubunye*"]
+```
+
+**Problem 3: GitHub Pages 404.** The docs workflow was building successfully locally but the deployed site was returning 404. The `git-revision-date-localized` plugin requires full git history. The default `actions/checkout` does a shallow clone (`fetch-depth: 1`). With `--strict` mode, the plugin warning became an error, the build silently succeeded with empty output, and the `gh-pages` branch was never updated.
+
+```yaml
+# The one line that fixed it
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0   # full history required by git-revision-date-localized
+```
+
+**Problem 4: Dead import caught by ruff.** After moving `import requests` to lazy imports, the `HTTPBasicAuth` import was still sitting in the `TYPE_CHECKING` block, imported but never used as a type annotation:
+
+```
+F401: 'requests.auth.HTTPBasicAuth' imported but unused
+```
+
+Two lines deleted. CI green.
+
+Each of these problems took between 30 minutes and 2 hours to diagnose and fix. None of them were intellectually difficult. All of them were necessary. A CI pipeline that looks green but does not actually run tests is worse than no CI at all, because it creates false confidence.
+
+---
+
+![GitHub Action Ubunye](/posts/gitHub_actions_workflow_dashboard.png)
+
+---
+
+## The PyPI Publish Workflow
+
+Publishing to PyPI should be the easy part. A version tag, a workflow file, done.
+
+The question was authentication method. The older approach uses a `PYPI_API_TOKEN` secret and the `twine` tool. The modern approach uses OIDC Trusted Publishers: no secret to rotate, no token to leak, no expiry to forget:
+
+```yaml
+environment: pypi
+permissions:
+  contents: read
+  id-token: write          # OIDC token for PyPA Trusted Publisher
+
+- name: Publish to PyPI
+  uses: pypa/gh-action-pypi-publish@release/v1
+  # No password needed: OIDC handles authentication
+```
+
+The trigger is a version tag. Nothing runs until:
+
+```bash
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+That is the moment it becomes real. A public package. Importable by anyone. [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/).
+
+---
+
+![GitHub Action Ubunye](/posts/PyPI_package_page.png)
+
+---
+
+## The Version Problem
+
+`ubunye/__init__.py` had this:
+
+```python
+__version__ = "0.1.1"
+```
+
+Every time the version changed in `pyproject.toml`, someone had to remember to update `__init__.py` too. Someone always forgot. The `ubunye version` CLI command would show the wrong version.
+
+The fix is one of Python's most underused standard library features:
+
+```python
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("ubunye-engine")
+except PackageNotFoundError:
+    __version__ = "unknown"
+```
+
+`importlib.metadata` reads the installed package metadata, which comes directly from `pyproject.toml`. One source of truth. The `PackageNotFoundError` guard handles the case where someone runs the code directly from a cloned repo without installing it first.
+
+---
+
+## The Honest Retrospective
+
+If I had to do it again, the things I would change:
+
+**Start CI earlier.** The missing dev dependencies lived undetected for weeks because the first version of CI only ran `pytest tests/unit/` without coverage or timeout flags. A proper CI setup on day one would have caught this in the first commit.
+
+**Add `__init__.py` files at scaffold time.** The griffe traversal failure was entirely preventable.
+
+**Write the docs as you build, not after.** Documentation written after the fact is archaeology. You have to re excavate design decisions you made six weeks ago and try to explain them to a stranger. Documentation written alongside the code captures the *why* while it is still fresh.
+
+**Test your own examples.** Always run the example. Always.
+
+---
+
+*Next: [Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production)*
+
+---
+
+*The Ubunye Engine is open source.*
+*Source code: [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)*
+*Documentation: [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)*
+*Install: [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/)*

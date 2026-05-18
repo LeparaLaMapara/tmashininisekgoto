@@ -1,0 +1,208 @@
+---
+title: "Ubunye Engine Part 2: The Model Registry and Hexagonal Architecture"
+date: 2026-03-06
+tags: [open source, engineering, python, mlops, ubunye series, architecture]
+summary: "The model registry was where the project went from interesting framework to something a team could actually use in production. The design principle behind it turned out to be the most significant architectural decision in the entire project."
+---
+
+# Ubunye Engine Part 2: The Model Registry and Hexagonal Architecture
+
+*Part 2 of 5 in the Ubunye Engine series.*
+[Part 1: Why Convention](/blog/ubunye-series-part1-why-convention) ·
+[Part 3: The Boring Work](/blog/ubunye-series-part3-boring-work) ·
+[Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production) ·
+[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent)
+
+---
+
+## The Phase That Changed Everything
+
+In [Part 1](/blog/ubunye-series-part1-why-convention) I described the foundation: config loading, lineage tracking, test infrastructure, and access control. Those phases made the engine functional. Phase 5, the model registry, is what made it useful.
+
+The model registry was where the project went from "interesting framework" to "something a team could actually use in production."
+
+The challenge was not building a model store. The challenge was building one that does not care what ML library you use.
+
+---
+
+## The Design Principle
+
+The design principle was strict: **the engine must never import sklearn, PyTorch, XGBoost, or any ML library.** It interacts with models only through an abstract contract, `UbunyeModel`, with four methods: `train`, `predict`, `save`, `load`. The engine calls these. It does not care what is inside them.
+
+```python
+class UbunyeModel(ABC):
+    @abstractmethod
+    def train(self, df: Any) -> Dict[str, Any]: ...
+
+    @abstractmethod
+    def predict(self, df: Any) -> Any: ...
+
+    @abstractmethod
+    def save(self, path: str) -> None: ...
+
+    @classmethod
+    @abstractmethod
+    def load(cls, path: str) -> "UbunyeModel": ...
+```
+
+Four methods. That is the entire contract between the engine and any machine learning library in the world. A user can implement `UbunyeModel` with sklearn today, ONNX tomorrow, and a custom C++ inference server next quarter. The registry does not know or care. It calls `save()`, stores the artifact, calls `load()`, and hands it to `predict()`. The internals are the user's business.
+
+---
+
+## Why This Matters
+
+This has a name. It is called **hexagonal architecture**, also known as **ports and adapters**. First described by Alistair Cockburn in 2005. The idea is to define abstract ports (interfaces) at the system boundary. Everything outside connects through adapters it provides. The engine core never depends on the outside world. It defines the shape of the connection and lets adapters fill it.
+
+What makes this interesting in Ubunye's context is that it was not deliberately applied as "hexagonal architecture." It emerged from one practical constraint: *we did not want to force users to install sklearn just to use the engine.* The architectural pattern appeared as a consequence of a pragmatic decision. That is how the best patterns usually arrive. Not from a textbook, but from a constraint that turns out to be the right one.
+
+Most ML frameworks do the opposite. They own the ML layer. sklearn's `Pipeline`. PyTorch Lightning's `Trainer`. Hugging Face's `Trainer`. Excellent tools, all tightly coupled. If your model is not sklearn compatible, you are working against the framework. If you want to swap PyTorch for JAX, you are rewriting.
+
+Ubunye's model layer does not have this problem. The engine never imports the library. The user does. The boundary is clean.
+
+---
+
+## Promotion Gates
+
+Getting the storage layout right, the version auto increment, the `development > staging > production > archived` lifecycle, and the promotion gates took weeks of iteration.
+
+The promotion gates were the most satisfying piece:
+
+```python
+PromotionGate({
+    "min_accuracy": 0.85,
+    "min_f1":       0.80,
+    "require_drift_check": True,
+})
+```
+
+A model cannot advance to production unless every gate passes. If it fails, the error tells you exactly which metric missed and by how much. No more "I thought it was good enough" production deployments.
+
+This is the kind of guardrail that nobody asks for until a bad model reaches production. Then everyone asks why it was not there from the beginning. The answer is usually that building promotion gates is not intellectually interesting work. It is accounting. But accounting is what prevents the 3am phone call.
+
+---
+
+## The Storage Layout
+
+The filesystem storage layout ended up clean:
+
+```
+.ubunye/model_store/
+  fraud_detection/
+    FraudRiskModel/
+      registry.json          <- all version metadata
+      versions/
+        1.0.0/
+          model/             <- opaque artifact (pkl, joblib, ONNX, anything)
+          metadata.json
+          metrics.json
+        1.0.1/
+          ...
+```
+
+Promoting a new version to production automatically archives the previous one. One line of registry JSON update. No orphaned artifacts. No ambiguity about what is live.
+
+The `model/` directory is deliberately opaque. The engine does not know what is inside it. A pickle file. A joblib file. An ONNX graph. A directory of TensorFlow saved model files. It does not matter. The engine calls `save(path)` and the model puts whatever it needs in that directory. The engine calls `load(path)` and the model reconstructs itself from whatever it put there. The boundary is absolute.
+
+---
+
+![GitHub Action Ubunye](/posts/ubunye_terminal_model_list.png)
+
+---
+
+## The Inconsistency This Reveals
+
+The model layer is correctly designed. But the pattern is incomplete. It only exists in one layer. The rest of the engine has a consistency problem:
+
+```
+Engine (current state):
+  Reads      -> pyspark.sql.DataFrame  <- coupled to Spark
+  Writes     -> pyspark.sql.DataFrame  <- coupled to Spark
+  Transforms -> Spark DataFrame        <- coupled
+  UbunyeModel.train(df: Any)           <- decoupled
+```
+
+The `Any` type annotation on `train(df: Any)` is a symptom. The engine passes a Spark DataFrame because that is all it knows how to produce, but it annotates it `Any` because it does not want to import PySpark into the model contract.
+
+This inconsistency is honest. It is not a design failure. It is a POC that correctly implemented the principle in the most critical layer (models) and has not yet extended it to the data transport layer. Recognising that gap is the first step toward closing it.
+
+---
+
+## The DataFramePort Proposal
+
+The full hexagonal improvement is a `DataFramePort`:
+
+```python
+@runtime_checkable
+class DataFramePort(Protocol):
+    """Abstract port for any tabular data structure.
+
+    Anything that satisfies this Protocol can flow through the engine.
+    Spark DataFrames, pandas DataFrames, Polars DataFrames: all qualify
+    without modification, because they already have these methods.
+    """
+
+    def schema(self) -> Dict[str, str]: ...
+    def count(self) -> int: ...
+    def collect(self) -> List[Dict[str, Any]]: ...
+```
+
+Then lightweight adapters for cases where the native object does not satisfy the Protocol natively:
+
+```python
+class PandasDataFrameAdapter:
+    def __init__(self, df): self._df = df
+    def schema(self): return {c: str(t) for c, t in self._df.dtypes.items()}
+    def count(self): return len(self._df)
+    def collect(self): return self._df.to_dict("records")
+```
+
+**What this unlocks:**
+
+**1. Spark free unit tests with real data.** Currently, engine tests that avoid Spark use mock objects. With `PandasDataFrameAdapter`, those same tests run on real data, real schema, real row counts. No SparkSession. No JVM. No Java install on the CI runner.
+
+**2. Polars support in 30 lines.** Add `PolarsDataFrameAdapter`. No engine changes needed. This is exactly what ports and adapters is for: adding a new implementation behind an existing interface without touching the code that uses it.
+
+**3. Local development on a laptop.** `ubunye run --backend pandas` uses pandas as the execution engine. Same `transform()` code, same config YAML, same CLI, running entirely without Spark. Experiment locally, deploy to the cluster when ready. No environment gap.
+
+**4. `UbunyeModel.train()` becomes consistent.** Instead of `train(df: Any)`, it becomes `train(df: DataFramePort)`. The model knows exactly what interface it will receive.
+
+---
+
+## Why This Is Not In the Current Version
+
+It is a migration. Every `transform()` function currently receives a `pyspark.sql.DataFrame`. Every `Reader.read()` returns one. Adding `DataFramePort` as the official interface requires a v0.2.0 with a clear migration path.
+
+The right approach for the next phase:
+
+1. Ship `DataFramePort` as a `runtime_checkable` Protocol
+2. Verify that Spark DataFrames already satisfy it via duck typing (they already have `.schema`, `.count()`, `.collect()`)
+3. Ship `PandasDataFrameAdapter` as the local/test backend
+4. Add `--backend pandas` to `ubunye run`
+5. Let `UbunyeModel.train(df)` accept `DataFramePort` in the contract
+
+---
+
+## Who Else Does This
+
+The pattern is established. It is not new.
+
+The **Ibis Project** is a Python expression layer over DuckDB, Spark, BigQuery, Polars, pandas. One expression language, any backend. **Narwhals** is a lightweight compatibility layer between dataframe libraries, letting library authors write code that works on pandas, Polars, cuDF, Modin. **SQLGlot** applies the same idea to SQL dialects: write one SQL, transpile to any backend.
+
+What would be new in Ubunye's context is applying this inside an ETL/ML engine that already has a correctly designed model layer, extending hexagonal architecture consistently from models down to the data transport layer. That would make Ubunye the only config driven ETL/ML engine with a fully backend agnostic data plane.
+
+That is a real differentiator. And it started from a constraint, not a textbook.
+
+---
+
+![GitHub Action Ubunye](/posts/engine_core_architecture.png)
+
+---
+
+*Next: [Part 3: The Boring Work That Ships Software](/blog/ubunye-series-part3-boring-work)*
+
+---
+
+*The Ubunye Engine is open source.*
+*Source code: [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)*
+*Documentation: [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)*
+*Install: [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/)*

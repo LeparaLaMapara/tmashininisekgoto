@@ -1,0 +1,312 @@
+---
+title: "Ubunye Engine Part 5: Building With an Agent. The Real Numbers"
+date: 2026-03-09
+tags: [open source, engineering, python, agentic ai, ubunye series]
+summary: "This project was built with an AI coding agent as a collaborator throughout. The numbers tell a story that the AI industry mostly avoids having. Here they are."
+---
+
+# Ubunye Engine Part 5: Building With an Agent. The Real Numbers
+
+*Part 5 of 5 in the Ubunye Engine series.*
+[Part 1: Why Convention](/blog/ubunye-series-part1-why-convention) ·
+[Part 2: The Model Registry](/blog/ubunye-series-part2-model-registry) ·
+[Part 3: The Boring Work](/blog/ubunye-series-part3-boring-work) ·
+[Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production)
+
+---
+
+## Making It Explicit
+
+This project was built with an AI coding agent as a collaborator throughout. That fact has been implicit in the whole series: the error messages, the corrections, the back and forth. It is worth making it explicit and honest, because the numbers tell a story that the AI industry mostly avoids having.
+
+---
+
+## How Long Would This Have Taken Alone?
+
+The honest estimate for a senior data engineer building this solo, no AI assistance:
+
+| Phase | Solo estimate |
+|---|---|
+| Config system (YAML + Jinja2 + Pydantic v2 + profiles) | 4 to 5 days |
+| Lineage tracking (RunContext, hasher, store, recorder, CLI) | 3 to 4 days |
+| Test infrastructure (261 tests, unit + integration, fixtures) | 4 to 6 days |
+| Access control | 1 to 2 days |
+| Model Registry (base, loader, registry, gates, transform, 40 tests) | 8 to 12 days |
+| Readers/Writers (REST API, S3, lazy imports) | 2 to 3 days |
+| MkDocs documentation site (warnings, nav, mkdocstrings) | 2 to 3 days |
+| CI/CD (3 workflows + all the debugging) | 2 to 3 days |
+| Kaggle example notebook | 1 to 2 days |
+| Blog | 0.5 days |
+| **Total** | **27 to 40 days** |
+
+That is 5 to 8 weeks of full time engineering work. Conservative estimate.
+
+---
+
+## How Long Did It Actually Take With the Agent?
+
+Counting actual human hours spent (architecture decisions, reading generated code, reviewing tests, directing the next step, catching errors, re explaining context after session resets):
+
+| Phase | With agent (human hours) |
+|---|---|
+| Config system | 3 to 4 hours |
+| Lineage tracking | 2 to 3 hours |
+| Test infrastructure | 3 to 4 hours |
+| Access control | 1 to 2 hours |
+| Model Registry | 5 to 6 hours |
+| Readers/Writers | 1 to 2 hours |
+| Documentation | 3 to 4 hours |
+| CI/CD debugging | 2 to 3 hours |
+| Kaggle notebook | 2 to 3 hours |
+| Blog | 1 hour |
+| **Total** | **~23 to 31 hours** |
+
+Roughly 3 to 4 full working days of human effort.
+
+**The speedup is approximately 8 to 12x on elapsed time.**
+
+---
+
+![GitHub Action Ubunye](/posts/solo_approach.png)
+
+---
+
+## What a Team Would Have Cost
+
+The honest comparison is not solo versus agent. It is team versus agent augmented solo.
+
+A realistic team to build this from scratch: one senior data/ML engineer and two mid level data engineers.
+
+South African market rates (2025):
+
+| Role | Annual salary | Daily rate (22 days/month) |
+|---|---|---|
+| Senior Data/ML Engineer | R850,000/year | ~R3,200/day |
+| Mid level Data Engineer | R520,000/year | ~R2,000/day |
+
+For 35 working days of active development (the low end of the solo estimate):
+
+| Cost item | Amount |
+|---|---|
+| Senior engineer x 35 days | R112,000 |
+| Mid level x 2 x 35 days | R140,000 |
+| Team overhead (standups, PRs, code reviews, coordination, 20%) | R50,400 |
+| **Total** | **~R302,000** |
+
+Agent augmented solo total: **R1,520**.
+
+That is a **200x cost reduction** on the development of this specific framework.
+
+Before concluding that agents replace developers, read that number carefully.
+
+**The R302,000 team would have produced something the agent augmented solo did not:** a codebase understood by three people. Three people who can maintain it, extend it, and debug it at 3am without the original author present. The agent does not stay. When the session ends, it forgets everything. The bus factor of agent built code is 1: the human who directed it.
+
+---
+
+![GitHub Action Ubunye](/posts/agent_augmented_solo.png)
+
+---
+
+## Does This Mean Agents Replace Developers?
+
+No. It means something more specific: *one engineer who knows how to direct an agent can deliver what previously required a team, for a fraction of the cost, in a fraction of the time.* The tradeoff is that all the domain knowledge lives in one head instead of three.
+
+For a greenfield POC that needs to prove itself before a team is justified, that tradeoff is correct. For a production system that needs to outlive its creator, that tradeoff needs to be actively managed through documentation, tests, and the kind of CI discipline described in [Part 3](/blog/ubunye-series-part3-boring-work).
+
+The real question is not "agents or engineers?" It is "what stage is this at, and what does this stage need?" Early stage: agent augmented solo is dramatically more efficient. At scale: a team that uses agents collectively is more efficient than a team that does not.
+
+---
+
+## Why Seniors Benefit More Than Juniors
+
+This is the part nobody in the AI industry talks about directly.
+
+The skills required to build Ubunye Engine solo, without an agent:
+
+| Skill domain | Experience needed |
+|---|---|
+| Apache Spark (production ETL, partitioning, shuffle tuning) | 3 to 5 years |
+| Python packaging (pyproject.toml, entry points, OIDC PyPI) | 2 to 3 years |
+| Pydantic v2 (released 2023; many engineers still on v1) | 6 months to 1 year |
+| MkDocs + mkdocstrings (griffe AST, strict mode, nav config) | 6 months |
+| GitHub Actions (multi job matrix, OIDC auth, `fetch-depth`) | 1 to 2 years |
+| ML lifecycle management (versioning, gates, promotion, rollback) | 3 to 5 years |
+| Abstract interface design (ports and adapters, plugin entry points) | 5 to 8 years |
+| **Total (with realistic overlap)** | **8 to 12+ years of diverse, production experience** |
+
+With an agent: roughly **5 to 7 years** of experience to use effectively. Not because the agent does the easy parts. It does the volumetric parts. You still need enough experience to design the architecture, evaluate what the agent produced, catch hallucinated APIs, and know when the output is wrong in a non obvious way.
+
+**This is the counterintuitive result:** AI coding agents give more leverage to senior engineers than to juniors. Not less.
+
+A junior engineer with an agent generates code at a rate they cannot verify. They cannot catch the `LineageRecorder.record_step` hallucination because they do not know the actual API. They cannot evaluate whether a `DataFramePort` design is architecturally sound. They cannot spot the empty sample fallback bug because they do not have the mental model of how Spark's fractional sampling behaves on small DataFrames.
+
+A senior engineer with an agent generates code at a rate they *can* verify, and the agent handles everything they would otherwise have to type themselves. The amplification is real because the verification capacity exists to match it.
+
+This does not make agents useless for junior engineers. It means the value they extract is lower, and the risk they carry is higher, until their verification capacity catches up. The path for juniors is: use agents to learn faster, not to skip learning.
+
+---
+
+![GitHub Action Ubunye](/posts/engineering_experience.png)
+
+---
+
+## Where the Agent Genuinely Accelerated Things
+
+The agent was fastest on work that is **structurally clear but volumetrically large**:
+
+Writing 261 tests across 30 files once the testing patterns were established. Implementing the 7 model registry methods once the storage layout was designed. Writing 6 lineage CLI commands once the first one existed as a template. Generating the full MkDocs navigation once the doc structure was planned. The entire Kaggle notebook once the section structure was agreed.
+
+In all of these cases, the agent understood the pattern from one or two examples and could replicate it at scale without degradation. The work that would have taken a human a full day took an hour of direction and review.
+
+---
+
+## Where the Agent Failed or Slowed Things Down
+
+This is the part that does not make it into AI company marketing materials.
+
+**1. API hallucination.** The agent wrote Kaggle example code using APIs that do not exist. The code looked plausible. It compiled. It failed at runtime with `AttributeError`. The agent had read the `LineageRecorder` class earlier in the session, then invented a simpler API that felt right. This cost a debugging round.
+
+**2. Context degradation across sessions.** The project spanned multiple long conversations. At the start of each session, the agent had to re read files to reconstruct what existed. Design decisions made three sessions ago were occasionally re invented differently. A human working continuously carries that context in their head for free.
+
+**3. The "plausible but wrong" problem.** The hash_dataframe empty sample bug was subtle: the code was correct for large DataFrames and silently wrong for small ones. The agent produces code that *looks right* at a rate that exceeds a human's ability to *verify right*.
+
+**4. Over generation.** Asked to add a section, the agent adds the section plus related error handling plus a helper function plus a docstring. Every unrequested addition is work you have to review and potentially undo. Discipline about scope is a human responsibility. The agent defaults to more.
+
+**5. The verification tax.** 261 tests generated quickly still need to be read. 30 files of code still need to be understood. The agent compresses the *writing* time dramatically but the *review* time is irreducible.
+
+---
+
+![GitHub Action Ubunye](/posts/overhead_introduced.png)
+
+---
+
+## What This Means for Vibe Coding
+
+Vibe coding (the practice of generating code with AI and accepting it without deeply understanding it) works fine for throwaway scripts and prototypes where the cost of being wrong is low.
+
+It does not work for a framework with a public API, 261 tests, and users who will `pip install` it.
+
+The reason is simple: **you cannot debug a codebase you do not understand.** When the hash_dataframe bug appeared, identifying it required knowing exactly how the hasher was supposed to work, what the fallback chain was, and why a 2 row DataFrame would behave differently than a 200 row one. That understanding came from the architectural decisions made before the code was written. Decisions that were human, not agent.
+
+Vibe coding transfers the typing to the agent. It cannot transfer the understanding. And when production breaks at 3am, understanding is the only thing that matters.
+
+---
+
+## The Bill: What This Actually Cost in Rands
+
+These are not estimates. The session JSONL file was parsed to get the exact numbers.
+
+### Raw token usage (one primary session)
+
+| Metric | Count |
+|---|---|
+| API turns (back and forth exchanges) | 1,008 |
+| Input tokens (fresh user messages) | 66,399 |
+| Output tokens (agent generated code, explanations) | 421,557 |
+| **Cache read tokens** | **95,038,923** |
+| Cache write tokens | 6,877,864 |
+
+That cache read number, 95 million, is not a typo.
+
+### What it cost
+
+Using claude-sonnet-4-6 API rates (input: $3/M, output: $15/M, cache read: $0.30/M, cache write: $3.75/M):
+
+| Category | Tokens | Cost (USD) | Cost (ZAR @ R18.8) |
+|---|---|---|---|
+| Input (fresh) | 66,399 | $0.20 | R3.76 |
+| Output | 421,557 | $6.32 | R118.82 |
+| Cache reads | 95,038,923 | $28.51 | R536.00 |
+| Cache writes | 6,877,864 | $25.79 | R484.86 |
+| **Total** | | **$60.83** | **R1,143.53** |
+
+Plus the Claude Pro subscription: $20/month = **R376/month**.
+
+**Total cost of this project: approximately R1,520.** For 3 to 4 days of equivalent engineering output that would have taken 5 to 8 weeks alone.
+
+90% of the bill is cache operations, not code generation. Every time the agent responded, it received the entire conversation history plus all previously read files as cached context. By turn 500, a single API call was carrying the weight of 499 previous turns, even the ones that were no longer relevant.
+
+---
+
+![GitHub Action Ubunye](/posts/contex_cost.png)
+
+---
+
+## A Framework for Working With Agents
+
+This is what building Ubunye taught me about how to work with AI agents effectively, stated simply, so it is actually useful.
+
+**Five things that work:**
+
+**1. One session per phase, always.** When a phase is complete, start a new session. The cache footprint stays small. Every turn in a new session costs less because it carries less history. Estimate: 40 to 60% reduction in cache spend with strict session boundaries.
+
+**2. `CLAUDE.md` as a living API contract.** Any interface the agent will need to call or reference should be in `CLAUDE.md` with its actual signature, not prose description. The agent reads `CLAUDE.md` at session start. If the API is there, it will not invent a cleaner sounding version three hours later.
+
+**3. Bounded prompts, not open ended ones.** "Fix the import issue in `rest_api.py`" generates a targeted response. "Fix the import issue" generates a response that may touch three files you did not ask about. Scope in the prompt produces scope in the output.
+
+**4. Paste five lines, not five hundred.** Full stack traces paste thousands of tokens into the context, which then get re sent as cache reads on every subsequent turn for the rest of the session. The agent reads the relevant part. The rest is pure cost.
+
+**5. Run examples before publishing them.** API hallucinations pass static analysis. They fail at runtime. The ten seconds it takes to run the example is worth less than the debugging round when someone else finds it broken.
+
+---
+
+**Three things the tools should do better:**
+
+**Surface context size.** A token budget indicator, visible, real time, costed, would change how humans manage sessions. This does not exist yet in any tool I have used.
+
+**Re verify APIs before writing examples.** The cost of a `Read` tool call is orders of magnitude less than the cost of an API hallucination correction cycle.
+
+**Persistent project memory across sessions.** The biggest structural weakness of current AI coding tools is that every session starts from scratch. `CLAUDE.md` is a manual workaround for a problem that should have a first class solution: structured, persistent, queryable project memory that the agent can read and write, survives session boundaries, and gets more useful over time.
+
+---
+
+![GitHub Action Ubunye](/posts/rules_agentic_engineering.png)
+
+---
+
+## The Real Shift
+
+The role of the human engineer changes, but it does not diminish. It shifts from:
+
+> *"I type the code"*
+
+to:
+
+> *"I decide what to build, verify what was built, catch what is wrong, and direct what comes next"*
+
+That is harder than it sounds. Reviewing 261 tests across 30 files, asking whether each test is testing the right thing, not just whether it passes, is genuinely skilled work. Architectural decisions about promotion gate design or lineage storage layout are not things an agent can make for you.
+
+The engineer who can do those things well, and who uses an AI coding agent to handle the volumetric work, is dramatically more productive than one who does either alone.
+
+The engineer who accepts agent output without verification is not coding. They are accumulating liability.
+
+---
+
+![GitHub Action Ubunye](/posts/collaboration_agent_human.png)
+
+---
+
+## One More Thing
+
+This blog series was co written with an AI agent.
+
+That is not a disclaimer. It is the point.
+
+The series is a document about building software with a human AI collaborator. The series itself was built through human AI collaboration. The agent drafted the structure. I pushed back on the sections that were too clean, too polished, too careful. The agent rewrote them. I pushed back again. The rough edges in this document are the places where I said "no, say it like this", and those are the parts worth reading.
+
+I am not mentioning this because I have to. I am mentioning it because not mentioning it would be dishonest. The entire argument of this series is that human agent collaboration produces something neither could produce alone. Hiding the evidence while making the argument would undermine the argument.
+
+---
+
+**I am the kind of engineer who finishes things, not just codes things.**
+
+The [pip install](https://pypi.org/project/ubunye-engine/) works. The tests pass. The [docs](https://ubunye-ai-ecosystems.github.io/ubunye_engine/) are live. The example ran on real data and the errors were fixed before this post was written.
+
+That is not a start. That is the point. And it is rarer than it should be.
+
+---
+
+*The Ubunye Engine is open source.*
+*Source code: [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)*
+*Documentation: [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)*
+*Install: [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/)*

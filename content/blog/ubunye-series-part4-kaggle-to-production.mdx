@@ -1,0 +1,178 @@
+---
+title: "Ubunye Engine Part 4: From Kaggle to Production"
+date: 2026-03-08
+tags: [open source, engineering, python, mlops, ubunye series]
+summary: "After all the unit tests and CI pipelines, the question remained: does it actually work on real data? The Kaggle Titanic dataset became the proving ground. This post covers what it proved, what it did not, and how Ubunye compares to existing frameworks."
+---
+
+# Ubunye Engine Part 4: From Kaggle to Production
+
+*Part 4 of 5 in the Ubunye Engine series.*
+[Part 1: Why Convention](/blog/ubunye-series-part1-why-convention) ·
+[Part 2: The Model Registry](/blog/ubunye-series-part2-model-registry) ·
+[Part 3: The Boring Work](/blog/ubunye-series-part3-boring-work) ·
+[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent)
+
+---
+
+## The Question That Remained
+
+After 261 tests, a full CI/CD pipeline, and a published PyPI package, the question remained: *does it actually work on real data?*
+
+The [Titanic dataset on Kaggle](https://www.kaggle.com/code/leparalamapara/ubunye-engine-titanic-usecase-example) became the proving ground. No Hive metastore. No S3. No Databricks. Just Python, pandas, and the engine contracts.
+
+---
+
+## The Mistakes
+
+The journey started well with config loading and CLI commands. Then the first real mistake:
+
+```python
+# My example code said:
+recorder = LineageRecorder(store_object)
+recorder.start_run("titanic_pipeline", "1.0.0", {"env": "kaggle"})
+
+# The actual API is:
+recorder = LineageRecorder(store="filesystem", base_dir="...")
+recorder.task_start(context=ctx, config=config)
+```
+
+The error came immediately:
+
+```
+AttributeError: 'LineageRecorder' object has no attribute 'record_step'
+```
+
+This was embarrassing. The documentation said one thing, the example code said another. The API was correct. The example was wrong. If I had run the code before publishing it, this would never have shipped.
+
+Then the config validation error:
+
+```
+ValidationError: MODEL
+  Input should be 'etl' or 'ml'
+```
+
+`MODEL: "titanic_etl"`, of course. `MODEL` is a job type classifier (`JobType` enum), not a human readable pipeline name. The human name lives in the folder structure. `MODEL: "etl"`. Fixed.
+
+Then the lineage inspection:
+
+```python
+for fname in os.listdir("/kaggle/working/.ubunye/lineage"):
+    with open(f".../{fname}") as f: ...
+
+# IsADirectoryError: [Errno 21] Is a directory: '.../lineage/titanic'
+```
+
+The lineage store does not write flat files in the root. It writes them under `{usecase}/{package}/{task}/`. Use `os.walk`. Three line fix.
+
+Each of these errors was small. Each was fixable in minutes. But collectively they tell you something important: the distance between "the framework works" and "someone else can use the framework" is larger than you expect. Tests prove the code is correct. Examples prove it is usable. Those are different things.
+
+---
+
+![GitHub Action Ubunye](/posts/kaggle_notebook.png)
+
+---
+
+## The End to End Notebook
+
+The final artefact of the whole journey is a single Jupyter notebook: `examples/titanic_end_to_end.ipynb`. It covers, in order:
+
+1. `ubunye init`, scaffold the use case folder structure
+2. Three config files with Jinja2 templating and dev/prod profiles
+3. `ubunye validate` and `ubunye plan` before touching data
+4. `RawIngestTask`, clean raw passenger records, record lineage
+5. `FeatureEngineeringTask`, engineer survival features, log to MLflow
+6. `TitanicSurvivalModel(UbunyeModel)`, sklearn RF, library independent contract
+7. `ModelTransform(action=train)`, train, register, auto promote via gates
+8. `PromotionGate`, enforce quality thresholds before production
+9. `ModelTransform(action=predict)`, load from registry by stage, score test set
+10. `ubunye lineage list/show/trace/compare/search`, full audit trail
+11. Train v2, compare versions, rollback, archive, full maintenance cycle
+
+From [`pip install`](https://pypi.org/project/ubunye-engine/) to a production ready, versioned, monitored, lineage tracked ML pipeline. In one notebook. On a [free Kaggle GPU](https://www.kaggle.com/code/leparalamapara/ubunye-engine-titanic-usecase-example).
+
+---
+
+![GitHub Action Ubunye](/posts/engine_feature.png)
+
+---
+
+## What Kaggle Does Not Prove
+
+The Titanic dataset has 891 rows. Spark is overhead at 891 rows. The notebook proves the contracts work and the engine runs end to end. It does not prove anything about the environment where Ubunye is actually meant to operate.
+
+Production looks different: 50 million rows with schema drift between runs. Five pipelines running concurrently on a shared cluster. An engineer who did not build the framework trying to write their first `transformations.py` at 4pm on a Friday. A model that passed all promotion gates but started degrading three weeks after go live because the upstream feature engineering changed.
+
+I intend to test this in my current role, on actual production scale data, with an actual team, against real SLA pressure. That is a different test from Kaggle. It is the test that matters.
+
+The framework passed its own tests. Whether it survives contact with a real data team, over time, with engineers who did not build it. That is what I will find out.
+
+---
+
+## How Ubunye Compares
+
+This is the honest comparison. Every individual component in Ubunye Engine exists elsewhere. Pydantic v2 config exists in a hundred libraries. Lineage tracking exists in MLflow. Model versioning exists in DVC. Spark readers exist in PySpark itself.
+
+The value Ubunye provides is that all of these are wired together the same way for everyone on your team.
+
+**Kedro** (QuantumBlack/McKinsey) has a similar config driven pipeline approach, but does not own the model lifecycle. You integrate MLflow separately.
+
+**MLflow** has model registry and versioning, but it is coupled to the MLflow server and does not own the data pipeline.
+
+**DVC** has data versioning and pipeline tracking, but requires a separate model serving layer.
+
+**Metaflow** has a similar decorator based approach to pipeline definition, but it is AWS native and does not have the config first philosophy.
+
+The combination that does not exist elsewhere: **config driven + library independent model interface + filesystem native + single CLI + lineage by default.** No server required. No cloud account required. Run it locally. Run it on Databricks. Run it on a Raspberry Pi if your data is small enough. The config is the interface. The rest is plugs.
+
+---
+
+## Why Not Just Use Airflow + MLflow + Delta Lake?
+
+You could. That stack is proven and well supported. But it also means three separate tools to learn, three separate configs to maintain, three separate places to look when something breaks, and a minimum infrastructure footprint that requires someone to care for it full time.
+
+Ubunye Engine is not a replacement for that stack at scale. It is a lower friction path to *getting to* scale: one config file, one CLI, one place where the whole pipeline lives. Whether that trade off is right depends entirely on your team's size and context. This project does not pretend otherwise.
+
+---
+
+## The Value Is Not the Code. It Is the Convention.
+
+This is the thing worth understanding clearly.
+
+When a new engineer joins, there is one right place to look. The ETL lives in `transformations.py`. The config lives in `config.yaml`. The model artifact is in `.ubunye/model_store/{use_case}/{model}/versions/`. The lineage for any run is under `.ubunye/lineage/`. The CLI has one entry point: `ubunye`.
+
+Compare this to the alternative, which every data team knows intimately: every engineer makes different choices. One uses a bash script. One uses a Python file with hardcoded paths. One trains a model in a notebook and pickles it to a shared drive with a name that includes "FINAL". One writes a Spark job that nobody else knows how to run. All of them work. None of them are compatible with each other.
+
+Ubunye's actual value is **one convention, enforced by code, shared by the whole team.** The framework is an organisational protocol dressed as a Python package. That convention, the agreement about how things are done, is worth more than any individual feature the engine provides, because it is the thing that lets a second engineer pick up where the first one left off.
+
+---
+
+![GitHub Action Ubunye](/posts/pandas_spark_gap.png)
+
+---
+
+## What "Done" Actually Means
+
+The [repository](https://github.com/ubunye-ai-ecosystems/ubunye_engine) now has:
+
+**261 tests**: unit and integration, Spark free and Spark full.
+**Full CI/CD**: lint, unit matrix (3.9/3.10/3.11), integration (Spark + Java 17), docs build, PyPI publish on tag.
+**[MkDocs documentation site](https://ubunye-ai-ecosystems.github.io/ubunye_engine/)**: auto deployed to GitHub Pages on every push to main.
+**Model Registry**: filesystem backed, versioned, lifecycle managed.
+**Lineage recording**: every run is an auditable JSON record.
+**MLflow integration**: opt in telemetry, zero coupling to the core engine.
+**CLI**: `ubunye init`, `validate`, `plan`, `run`, `plugins`, `version`, `lineage *`, `models *`, `test run`.
+**[End to end example](https://www.kaggle.com/code/leparalamapara/ubunye-engine-titanic-usecase-example)**: Titanic, real data, all features exercised.
+
+There is still no magic. The engine does not write your business logic for you. It does not decide what features to engineer or what model to use. What it does is make everything around your business logic reliable, observable, and repeatable. Your `transform()` function stays pure. The engine handles the rest.
+
+---
+
+*Next: [Part 5: Building With an Agent: The Real Numbers](/blog/ubunye-series-part5-building-with-agent)*
+
+---
+
+*The Ubunye Engine is open source.*
+*Source code: [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)*
+*Documentation: [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)*
+*Install: [`pip install ubunye-engine`](https://pypi.org/project/ubunye-engine/)*
