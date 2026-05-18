@@ -639,8 +639,8 @@ export const PROJECT_CATEGORIES: Record<Project['category'], string> = {
 export const BIO = {
   name: 'Thabang Mashinini-Sekgoto',
   location: 'Johannesburg, South Africa',
-  title: 'AI Systems Architect & Researcher',
-  shortBio: `AI researcher, open-source builder, and educator. I design production AI systems that create measurable impact, and I teach others to do the same.`,
+  title: 'Lead Data Scientist · AI & Analytics Engineering Leader',
+  shortBio: `Data Science and AI leader with 10+ years of experience delivering enterprise-scale analytics, ML, and AI solutions across banking, telecoms, research, and education.`,
   philosophy: 'Strive to build things that make a difference.',
   hobbies: [
     { emoji: '🎥', label: 'Photography & Filmmaking' },

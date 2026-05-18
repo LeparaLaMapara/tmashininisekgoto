@@ -99,5 +99,9 @@ export async function POST(req: Request) {
 
   return result.toDataStreamResponse({
     headers: { 'X-RateLimit-Remaining': String(remaining) },
+    getErrorMessage: (error) => {
+      console.error('AI SDK Error:', error)
+      return String(error)
+    }
   })
 }

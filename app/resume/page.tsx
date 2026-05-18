@@ -17,57 +17,73 @@ const DOT_STYLES: Record<string, string> = {
 const CAREER_TIMELINE = [
   {
     period: '2024 - Present',
-    role: 'PhD Student',
+    role: 'PhD in Computer Science (In Progress)',
     org: 'University of the Witwatersrand',
-    description: 'Self-supervised learning, distributed systems, probabilistic modeling, and large-scale data engineering.',
+    description: 'Distributed AI systems, probabilistic modelling, self-supervised learning, AI operationalisation, and distributed computing systems.',
     icon: GraduationCap,
     color: 'text-signal',
   },
   {
-    period: '2022 - Present',
-    role: 'Lead AI & Data Scientist',
-    org: 'ABSA Group',
-    description: 'Enterprise Databricks ML transformation. Reduced model training/scoring latency by 80-90%. Improved client retention by 10%.',
+    period: 'Mar 2024 - Present',
+    role: 'Lead Data Scientist (Acting Head of Data Science)',
+    org: 'ABSA Insurance',
+    description: 'Leading enterprise AI, analytics, and data science initiatives. Built scalable ML pipelines on Databricks reducing latency by 80-90%. Led telematics and rewards analytics modernisation, geospatial flood-risk modelling, and AI governance frameworks.',
     icon: Briefcase,
     color: 'text-synapse',
   },
   {
-    period: '2020 - 2022',
+    period: 'Nov 2021 - Mar 2024',
     role: 'Senior Data Scientist',
     org: 'Vodacom',
-    description: 'National-scale network optimization engine for smart-generator allocation. Contributed to R1B in annual OPEX savings.',
+    description: 'Real-time analytics and optimisation systems for national telecommunications infrastructure. Led the Smart Generator Optimisation platform contributing to ~R1B in annual operational savings. Received Vodacom Star Award.',
     icon: Briefcase,
     color: 'text-synapse',
   },
   {
-    period: '2019 - 2020',
+    period: 'Apr 2020 - Nov 2021',
     role: 'Machine Learning Research Scientist',
-    org: 'IBM Research Africa',
-    description: 'Climate risk intelligence platforms. Improved seasonal forecast accuracy by 15%. Built COVID monitoring tools for Gauteng DoH.',
+    org: 'IBM Research',
+    description: 'ML and geospatial analytics for environmental intelligence and climate-risk applications. Built predictive systems with TensorFlow, COVID-19 analytics dashboards, and integrated ML workflows into the IBM PAIRS Geospatial Platform.',
     icon: Briefcase,
     color: 'text-synapse',
   },
   {
-    period: '2018',
-    role: 'Data Science Intern (DSIDE)',
-    org: 'CSIR, Meraka Institute',
-    description: 'Built ML models and analytics dashboards for municipal service delivery optimization.',
+    period: 'Jun 2018 - Apr 2020',
+    role: 'Data Scientist',
+    org: 'Business Intelligence Services - University of the Witwatersrand',
+    description: 'Recommendation and analytics systems for institutional planning and student success. Built clustering-based systems generating over R2M annually in government subsidy impact.',
+    icon: Briefcase,
+    color: 'text-synapse',
+  },
+  {
+    period: 'Nov 2017 - Jan 2018',
+    role: 'Data Scientist & Software Engineer',
+    org: 'Council for Scientific and Industrial Research (CSIR)',
+    description: 'Predictive analytics and decision-support systems for municipalities. Recognised by Mail & Guardian, CSIR, and DST for innovation in predictive modelling.',
     icon: Code,
     color: 'text-accent',
   },
   {
-    period: '2019',
-    role: 'MSc Computer Science',
+    period: '2018 - 2019',
+    role: 'MSc in Computer Science (Distinction)',
     org: 'University of the Witwatersrand',
-    description: 'Echo State Networks for iterative image segmentation. Published research.',
+    description: 'Thesis: Learning Level Set Method by Echo State Network for Image Segmentation. Recurrent neural network approaches for computationally efficient image segmentation.',
     icon: GraduationCap,
     color: 'text-signal',
   },
   {
     period: '2017',
-    role: 'BSc Honours (Computer Science & Applied Mathematics)',
+    role: 'BSc Honours in Computer Science',
     org: 'University of the Witwatersrand',
-    description: 'Robotics, machine learning, and computational mathematics.',
+    description: 'Project: Wildfire Estimation Using Kernel Density Estimators.',
+    icon: GraduationCap,
+    color: 'text-signal',
+  },
+  {
+    period: '2014 - 2016',
+    role: 'BSc in Computational & Applied Mathematics and Astronomy',
+    org: 'University of the Witwatersrand',
+    description: 'Mathematical modelling, astrophysics, simulation, and numerical methods.',
     icon: GraduationCap,
     color: 'text-signal',
   },
@@ -102,9 +118,8 @@ export default function ResumePage() {
 
         <ScrollReveal delay={0.1}>
           <p className="text-lg text-ivory/80 leading-relaxed mb-8 max-w-2xl">
-            AI Systems Architect & Researcher. I design and deliver mission-critical AI platforms
-            across telecoms, banking, education, and global research, moving beyond experimentation
-            to create measurable business and societal impact.
+            Data Science and AI leader with 10+ years of experience delivering enterprise-scale analytics,
+            machine learning, and AI solutions across banking, telecommunications, research, and higher education.
           </p>
         </ScrollReveal>
 

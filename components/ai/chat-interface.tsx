@@ -9,15 +9,19 @@ import { SuggestedQuestions } from '@/components/ai/suggested-questions'
 
 export function ChatInterface() {
   const [rateLimitError, setRateLimitError] = useState<string | null>(null)
+  const [chatError, setChatError] = useState<string | null>(null)
   const { messages, input, handleInputChange, handleSubmit, isLoading, setInput, append } =
     useChat({
       api: '/api/chat',
       onError: (error) => {
         if (error.message.includes('limit')) {
           setRateLimitError(error.message)
+        } else {
+          setChatError('AI is temporarily unavailable. Please try again later.')
         }
       },
       onResponse: (response) => {
+        setChatError(null)
         if (response.status === 429) {
           response.json().then((data) => {
             setRateLimitError(data.error)
@@ -67,6 +71,18 @@ export function ChatInterface() {
                 <span className="h-2 w-2 rounded-full bg-synapse/60 animate-pulse [animation-delay:150ms]" />
                 <span className="h-2 w-2 rounded-full bg-synapse/60 animate-pulse [animation-delay:300ms]" />
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* AI error message */}
+        {chatError && !isLoading && (
+          <div className="flex items-start gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-500/20">
+              <div className="h-3 w-3 rounded-full bg-red-400" />
+            </div>
+            <div className="rounded-2xl rounded-tl-sm bg-surface border border-red-500/20 px-4 py-3 text-sm text-muted">
+              {chatError}
             </div>
           </div>
         )}
