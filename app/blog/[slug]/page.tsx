@@ -21,6 +21,8 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }))
 }
 
+const SITE_URL = 'https://tmashininisekgoto.vercel.app'
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -28,15 +30,21 @@ export async function generateMetadata({
   const post = getPostBySlug(slug)
   if (!post) return {}
 
+  const url = `${SITE_URL}/blog/${slug}`
+
   return {
     title: post.title,
     description: post.summary,
+    alternates: { canonical: url },
     openGraph: {
       title: post.title,
       description: post.summary,
+      url,
       type: 'article',
       publishedTime: post.date,
+      authors: ['Thabang Mashinini-Sekgoto'],
       tags: post.tags,
+      images: [`${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}&subtitle=${encodeURIComponent(post.summary.slice(0, 100))}`],
     },
   }
 }
@@ -46,8 +54,23 @@ export default async function BlogPostPage({ params }: PageProps) {
   const post = getPostBySlug(slug)
   if (!post) notFound()
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.summary,
+    datePublished: post.date,
+    author: { '@type': 'Person', name: 'Thabang Mashinini-Sekgoto', url: SITE_URL },
+    url: `${SITE_URL}/blog/${slug}`,
+    keywords: post.tags.join(', '),
+  }
+
   return (
     <section className="mx-auto max-w-3xl px-6 py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       {/* Back link */}
       <Link
         href="/blog"

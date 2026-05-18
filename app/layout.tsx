@@ -28,24 +28,31 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
+const SITE_URL = 'https://tmashininisekgoto.vercel.app'
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tmashininisekgoto.vercel.app'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Thabang Mashinini-Sekgoto | AI Systems Architect',
+    default: 'Thabang Mashinini-Sekgoto | Lead Data Scientist · AI & Analytics Engineering Leader',
     template: '%s | Thabang M-S',
   },
   description:
-    'AI Systems Architect & Researcher. Building reliable AI at scale across telecoms, banking, and research. Founder of Ubunye AI Ecosystems.',
+    'Data Science and AI leader with 10+ years of experience delivering enterprise-scale analytics, ML, and AI solutions across banking, telecoms, research, and education. Founder of Ubunye AI Ecosystems.',
   openGraph: {
-    images: ['/og-default.png'],
+    images: ['/api/og'],
     type: 'website',
     siteName: 'Thabang Mashinini-Sekgoto',
+    locale: 'en_ZA',
   },
   twitter: {
     card: 'summary_large_image',
     creator: '@thabangline',
   },
   robots: { index: true, follow: true },
+  alternates: {
+    canonical: SITE_URL,
+    types: { 'application/rss+xml': '/feed.xml' },
+  },
 }
 
 export default function RootLayout({
@@ -60,6 +67,31 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-void text-ivory font-body antialiased dark:bg-void dark:text-ivory">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Thabang Mashinini-Sekgoto',
+              url: SITE_URL,
+              jobTitle: 'Lead Data Scientist · AI & Analytics Engineering Leader',
+              worksFor: [
+                { '@type': 'Organization', name: 'ABSA Insurance' },
+                { '@type': 'Organization', name: 'University of the Witwatersrand' },
+              ],
+              alumniOf: { '@type': 'Organization', name: 'University of the Witwatersrand' },
+              sameAs: [
+                'https://github.com/LeparaLaMapara',
+                'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
+                'https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ',
+                'https://x.com/thabangline',
+                'https://www.youtube.com/@tmashininisekgoto',
+              ],
+              knowsAbout: ['Machine Learning', 'Data Science', 'AI Systems', 'Distributed Systems', 'MLOps'],
+            }),
+          }}
+        />
         <ThemeProvider>
           <StarField />
           <CursorSpotlight />
