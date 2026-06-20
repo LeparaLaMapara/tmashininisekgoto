@@ -745,3 +745,106 @@ export const TESTIMONIALS: Testimonial[] = [
     context: 'engineering',
   },
 ]
+
+// --- Career timeline ---
+// Shared source for the resume page and the interactive /career journey.
+// Order: newest-first (matches the resume display). The 3D journey walks
+// this in reverse so visitors move chronologically (oldest -> present).
+
+export type MilestoneKind = 'education' | 'work' | 'research'
+
+export interface CareerMilestone {
+  period: string
+  role: string
+  org: string
+  /** Short label rendered on the 3D monument */
+  shortOrg: string
+  description: string
+  kind: MilestoneKind
+  /** Brand accent token (maps to CSS color + hex in the 3D scene) */
+  accent: 'synapse' | 'signal' | 'accent'
+}
+
+export const CAREER_TIMELINE: CareerMilestone[] = [
+  {
+    period: '2024 - Present',
+    role: 'PhD in Computer Science (In Progress)',
+    org: 'University of the Witwatersrand',
+    shortOrg: 'PhD',
+    description: 'Distributed AI systems, probabilistic modelling, self-supervised learning, AI operationalisation, and distributed computing systems.',
+    kind: 'education',
+    accent: 'signal',
+  },
+  {
+    period: 'Mar 2024 - Present',
+    role: 'Lead Data Scientist (Acting Head of Data Science)',
+    org: 'ABSA Insurance',
+    shortOrg: 'ABSA',
+    description: 'Leading enterprise AI, analytics, and data science initiatives. Built scalable ML pipelines on Databricks reducing latency by 80-90%. Led telematics and rewards analytics modernisation, geospatial flood-risk modelling, and AI governance frameworks.',
+    kind: 'work',
+    accent: 'synapse',
+  },
+  {
+    period: 'Nov 2021 - Mar 2024',
+    role: 'Senior Data Scientist',
+    org: 'Vodacom',
+    shortOrg: 'Vodacom',
+    description: 'Real-time analytics and optimisation systems for national telecommunications infrastructure. Led the Smart Generator Optimisation platform contributing to ~R1B in annual operational savings. Received Vodacom Star Award.',
+    kind: 'work',
+    accent: 'synapse',
+  },
+  {
+    period: 'Apr 2020 - Nov 2021',
+    role: 'Machine Learning Research Scientist',
+    org: 'IBM Research',
+    shortOrg: 'IBM',
+    description: 'ML and geospatial analytics for environmental intelligence and climate-risk applications. Built predictive systems with TensorFlow, COVID-19 analytics dashboards, and integrated ML workflows into the IBM PAIRS Geospatial Platform.',
+    kind: 'work',
+    accent: 'synapse',
+  },
+  {
+    period: 'Jun 2018 - Apr 2020',
+    role: 'Data Scientist',
+    org: 'Business Intelligence Services - University of the Witwatersrand',
+    shortOrg: 'Wits BIS',
+    description: 'Recommendation and analytics systems for institutional planning and student success. Built clustering-based systems generating over R2M annually in government subsidy impact.',
+    kind: 'work',
+    accent: 'synapse',
+  },
+  {
+    period: 'Nov 2017 - Jan 2018',
+    role: 'Data Scientist & Software Engineer',
+    org: 'Council for Scientific and Industrial Research (CSIR)',
+    shortOrg: 'CSIR',
+    description: 'Predictive analytics and decision-support systems for municipalities. Recognised by Mail & Guardian, CSIR, and DST for innovation in predictive modelling.',
+    kind: 'research',
+    accent: 'accent',
+  },
+  {
+    period: '2018 - 2019',
+    role: 'MSc in Computer Science (Distinction)',
+    org: 'University of the Witwatersrand',
+    shortOrg: 'MSc',
+    description: 'Thesis: Learning Level Set Method by Echo State Network for Image Segmentation. Recurrent neural network approaches for computationally efficient image segmentation.',
+    kind: 'education',
+    accent: 'signal',
+  },
+  {
+    period: '2017',
+    role: 'BSc Honours in Computer Science',
+    org: 'University of the Witwatersrand',
+    shortOrg: 'Honours',
+    description: 'Project: Wildfire Estimation Using Kernel Density Estimators.',
+    kind: 'education',
+    accent: 'signal',
+  },
+  {
+    period: '2014 - 2016',
+    role: 'BSc in Computational & Applied Mathematics and Astronomy',
+    org: 'University of the Witwatersrand',
+    shortOrg: 'BSc',
+    description: 'Mathematical modelling, astrophysics, simulation, and numerical methods.',
+    kind: 'education',
+    accent: 'signal',
+  },
+]

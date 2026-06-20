@@ -1,93 +1,31 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
-import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle } from 'lucide-react'
+import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
+import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: 'Resume',
   description: 'Resume and career timeline of Thabang Mashinini-Sekgoto.',
 }
 
-const DOT_STYLES: Record<string, string> = {
-  'text-signal': 'border-signal/30 bg-signal/10 hover:shadow-[0_0_12px_-2px] hover:shadow-signal/30 transition-all',
-  'text-synapse': 'border-synapse/30 bg-synapse/10 hover:shadow-[0_0_12px_-2px] hover:shadow-synapse/30 transition-all',
-  'text-accent': 'border-accent/30 bg-accent/10 hover:shadow-[0_0_12px_-2px] hover:shadow-accent/30 transition-all',
+const KIND_ICON: Record<MilestoneKind, typeof GraduationCap> = {
+  education: GraduationCap,
+  work: Briefcase,
+  research: Code,
 }
 
-const CAREER_TIMELINE = [
-  {
-    period: '2024 - Present',
-    role: 'PhD in Computer Science (In Progress)',
-    org: 'University of the Witwatersrand',
-    description: 'Distributed AI systems, probabilistic modelling, self-supervised learning, AI operationalisation, and distributed computing systems.',
-    icon: GraduationCap,
-    color: 'text-signal',
-  },
-  {
-    period: 'Mar 2024 - Present',
-    role: 'Lead Data Scientist (Acting Head of Data Science)',
-    org: 'ABSA Insurance',
-    description: 'Leading enterprise AI, analytics, and data science initiatives. Built scalable ML pipelines on Databricks reducing latency by 80-90%. Led telematics and rewards analytics modernisation, geospatial flood-risk modelling, and AI governance frameworks.',
-    icon: Briefcase,
-    color: 'text-synapse',
-  },
-  {
-    period: 'Nov 2021 - Mar 2024',
-    role: 'Senior Data Scientist',
-    org: 'Vodacom',
-    description: 'Real-time analytics and optimisation systems for national telecommunications infrastructure. Led the Smart Generator Optimisation platform contributing to ~R1B in annual operational savings. Received Vodacom Star Award.',
-    icon: Briefcase,
-    color: 'text-synapse',
-  },
-  {
-    period: 'Apr 2020 - Nov 2021',
-    role: 'Machine Learning Research Scientist',
-    org: 'IBM Research',
-    description: 'ML and geospatial analytics for environmental intelligence and climate-risk applications. Built predictive systems with TensorFlow, COVID-19 analytics dashboards, and integrated ML workflows into the IBM PAIRS Geospatial Platform.',
-    icon: Briefcase,
-    color: 'text-synapse',
-  },
-  {
-    period: 'Jun 2018 - Apr 2020',
-    role: 'Data Scientist',
-    org: 'Business Intelligence Services - University of the Witwatersrand',
-    description: 'Recommendation and analytics systems for institutional planning and student success. Built clustering-based systems generating over R2M annually in government subsidy impact.',
-    icon: Briefcase,
-    color: 'text-synapse',
-  },
-  {
-    period: 'Nov 2017 - Jan 2018',
-    role: 'Data Scientist & Software Engineer',
-    org: 'Council for Scientific and Industrial Research (CSIR)',
-    description: 'Predictive analytics and decision-support systems for municipalities. Recognised by Mail & Guardian, CSIR, and DST for innovation in predictive modelling.',
-    icon: Code,
-    color: 'text-accent',
-  },
-  {
-    period: '2018 - 2019',
-    role: 'MSc in Computer Science (Distinction)',
-    org: 'University of the Witwatersrand',
-    description: 'Thesis: Learning Level Set Method by Echo State Network for Image Segmentation. Recurrent neural network approaches for computationally efficient image segmentation.',
-    icon: GraduationCap,
-    color: 'text-signal',
-  },
-  {
-    period: '2017',
-    role: 'BSc Honours in Computer Science',
-    org: 'University of the Witwatersrand',
-    description: 'Project: Wildfire Estimation Using Kernel Density Estimators.',
-    icon: GraduationCap,
-    color: 'text-signal',
-  },
-  {
-    period: '2014 - 2016',
-    role: 'BSc in Computational & Applied Mathematics and Astronomy',
-    org: 'University of the Witwatersrand',
-    description: 'Mathematical modelling, astrophysics, simulation, and numerical methods.',
-    icon: GraduationCap,
-    color: 'text-signal',
-  },
-]
+const ACCENT_TEXT: Record<string, string> = {
+  synapse: 'text-synapse',
+  signal: 'text-signal',
+  accent: 'text-accent',
+}
+
+const DOT_STYLES: Record<string, string> = {
+  signal: 'border-signal/30 bg-signal/10 hover:shadow-[0_0_12px_-2px] hover:shadow-signal/30 transition-all',
+  synapse: 'border-synapse/30 bg-synapse/10 hover:shadow-[0_0_12px_-2px] hover:shadow-synapse/30 transition-all',
+  accent: 'border-accent/30 bg-accent/10 hover:shadow-[0_0_12px_-2px] hover:shadow-accent/30 transition-all',
+}
 
 export default function ResumePage() {
   return (
@@ -150,12 +88,14 @@ export default function ResumePage() {
           <div className="absolute left-[19px] top-0 bottom-0 w-px bg-border" />
 
           <div className="space-y-8">
-            {CAREER_TIMELINE.map((item, i) => (
+            {CAREER_TIMELINE.map((item, i) => {
+              const Icon = KIND_ICON[item.kind]
+              return (
               <ScrollReveal key={i} delay={i * 0.08}>
                 <div className="relative flex gap-6">
                   {/* Dot */}
-                  <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border flex items-center justify-center ${DOT_STYLES[item.color] ?? 'bg-surface border-border'}`}>
-                    <item.icon className={`w-4 h-4 ${item.color}`} />
+                  <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border flex items-center justify-center ${DOT_STYLES[item.accent] ?? 'bg-surface border-border'}`}>
+                    <Icon className={`w-4 h-4 ${ACCENT_TEXT[item.accent]}`} />
                   </div>
 
                   {/* Content */}
@@ -169,13 +109,21 @@ export default function ResumePage() {
                   </div>
                 </div>
               </ScrollReveal>
-            ))}
+              )
+            })}
           </div>
         </div>
 
         {/* Bottom CTA */}
         <ScrollReveal delay={0.2}>
-          <div className="mt-16 flex items-center justify-center">
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/career"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-signal/10 text-signal font-medium text-sm hover:bg-signal/20 border border-signal/20 transition-all"
+            >
+              <Gamepad2 className="w-4 h-4" />
+              Walk through my journey
+            </Link>
             <Link
               href="/ai"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-synapse/10 text-synapse font-medium text-sm hover:bg-synapse/20 border border-synapse/20 transition-all"

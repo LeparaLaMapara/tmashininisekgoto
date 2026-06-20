@@ -17,6 +17,7 @@ const NAV_LINKS = [
   { href: '/talks', label: 'Talks' },
   { href: '/courses', label: 'Courses' },
   { href: '/resume', label: 'Resume' },
+  { href: '/career', label: 'Journey' },
 ]
 
 export function Navbar() {
