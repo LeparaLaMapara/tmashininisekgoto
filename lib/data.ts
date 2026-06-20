@@ -763,6 +763,12 @@ export interface CareerMilestone {
   kind: MilestoneKind
   /** Brand accent token (maps to CSS color + hex in the 3D scene) */
   accent: 'synapse' | 'signal' | 'accent'
+  /** Chapter / era flavour title for the interactive journey */
+  era: string
+  /** Standout achievement, surfaced as a callout */
+  highlight: string
+  /** Skill tags shown as chips */
+  skills: string[]
 }
 
 export const CAREER_TIMELINE: CareerMilestone[] = [
@@ -774,6 +780,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Distributed AI systems, probabilistic modelling, self-supervised learning, AI operationalisation, and distributed computing systems.',
     kind: 'education',
     accent: 'signal',
+    era: 'The Doctorate Voyage',
+    highlight: 'Researching distributed AI, probabilistic modelling & self-supervised learning',
+    skills: ['Distributed AI', 'Probabilistic Modelling', 'Self-Supervised Learning'],
   },
   {
     period: 'Mar 2024 - Present',
@@ -783,6 +792,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Leading enterprise AI, analytics, and data science initiatives. Built scalable ML pipelines on Databricks reducing latency by 80-90%. Led telematics and rewards analytics modernisation, geospatial flood-risk modelling, and AI governance frameworks.',
     kind: 'work',
     accent: 'synapse',
+    era: 'Leading the Fleet',
+    highlight: '80–90% ML pipeline latency reduction on Databricks',
+    skills: ['Enterprise AI', 'Databricks', 'Geospatial ML', 'AI Governance'],
   },
   {
     period: 'Nov 2021 - Mar 2024',
@@ -792,6 +804,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Real-time analytics and optimisation systems for national telecommunications infrastructure. Led the Smart Generator Optimisation platform contributing to ~R1B in annual operational savings. Received Vodacom Star Award.',
     kind: 'work',
     accent: 'synapse',
+    era: 'Scaling the Network',
+    highlight: '~R1B annual operational savings · Vodacom Star Award',
+    skills: ['Real-time Analytics', 'Optimisation', 'Telecoms'],
   },
   {
     period: 'Apr 2020 - Nov 2021',
@@ -801,6 +816,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'ML and geospatial analytics for environmental intelligence and climate-risk applications. Built predictive systems with TensorFlow, COVID-19 analytics dashboards, and integrated ML workflows into the IBM PAIRS Geospatial Platform.',
     kind: 'work',
     accent: 'synapse',
+    era: 'The Climate Quest',
+    highlight: 'ML on the IBM PAIRS Geospatial Platform & COVID-19 analytics',
+    skills: ['TensorFlow', 'Geospatial', 'Climate Risk'],
   },
   {
     period: 'Jun 2018 - Apr 2020',
@@ -810,6 +828,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Recommendation and analytics systems for institutional planning and student success. Built clustering-based systems generating over R2M annually in government subsidy impact.',
     kind: 'work',
     accent: 'synapse',
+    era: 'The First Expedition',
+    highlight: 'R2M+ annual government subsidy impact',
+    skills: ['Recommendation Systems', 'Clustering', 'Analytics'],
   },
   {
     period: 'Nov 2017 - Jan 2018',
@@ -819,6 +840,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Predictive analytics and decision-support systems for municipalities. Recognised by Mail & Guardian, CSIR, and DST for innovation in predictive modelling.',
     kind: 'research',
     accent: 'accent',
+    era: 'Setting Sail',
+    highlight: 'Recognised by Mail & Guardian, CSIR & DST for innovation',
+    skills: ['Predictive Analytics', 'Decision Support', 'Software Engineering'],
   },
   {
     period: '2018 - 2019',
@@ -828,6 +852,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Thesis: Learning Level Set Method by Echo State Network for Image Segmentation. Recurrent neural network approaches for computationally efficient image segmentation.',
     kind: 'education',
     accent: 'signal',
+    era: 'Mastering the Craft',
+    highlight: 'Distinction · Echo State Networks for image segmentation',
+    skills: ['Recurrent Neural Nets', 'Image Segmentation', 'Research'],
   },
   {
     period: '2017',
@@ -837,6 +864,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Project: Wildfire Estimation Using Kernel Density Estimators.',
     kind: 'education',
     accent: 'signal',
+    era: 'The Trials',
+    highlight: 'Wildfire estimation with kernel density estimators',
+    skills: ['Machine Learning', 'Statistics'],
   },
   {
     period: '2014 - 2016',
@@ -846,5 +876,8 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     description: 'Mathematical modelling, astrophysics, simulation, and numerical methods.',
     kind: 'education',
     accent: 'signal',
+    era: 'Where It Began',
+    highlight: 'Foundations in mathematics, astrophysics & simulation',
+    skills: ['Applied Mathematics', 'Astronomy', 'Numerical Methods'],
   },
 ]

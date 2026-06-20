@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowLeft, GraduationCap, Briefcase, Code, Gamepad2, Loader2, Volume2, VolumeX, Sparkles, MessageCircle } from 'lucide-react'
+import { ArrowLeft, GraduationCap, Briefcase, Code, Gamepad2, Loader2, Volume2, VolumeX, Sparkles, MessageCircle, Coins as CoinsIcon, Trophy } from 'lucide-react'
 import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
 import { setJoystick, resetInput } from './input'
 import { journeyAudio } from './audio'
@@ -113,6 +113,43 @@ function Joystick() {
   )
 }
 
+// ---- Celebration confetti ----
+
+function Confetti() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 70 }, (_, i) => ({
+        left: (i * 37) % 100,
+        delay: (i % 12) * 0.07,
+        dur: 2.2 + (i % 5) * 0.35,
+        color: ['#0ea5e9', '#f59e0b', '#06b6d4', '#ffd43b', '#ff6b6b', '#37b24d'][i % 6],
+        rot: (i * 53) % 360,
+        size: 7 + (i % 4) * 2,
+      })),
+    []
+  )
+  return (
+    <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
+      {pieces.map((p, i) => (
+        <motion.span
+          key={i}
+          initial={{ y: -40, opacity: 1, rotate: p.rot }}
+          animate={{ y: '110vh', opacity: [1, 1, 0.7], rotate: p.rot + 540 }}
+          transition={{ duration: p.dur, delay: p.delay, ease: 'easeIn' }}
+          style={{
+            position: 'absolute',
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size * 0.6,
+            background: p.color,
+            borderRadius: 2,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 // ---- Main experience ----
 
 export function CareerExperience() {
@@ -122,12 +159,30 @@ export function CareerExperience() {
   const [active, setActive] = useState<number | null>(null)
   const [started, setStarted] = useState(false)
   const [muted, setMuted] = useState(false)
+  const [coins, setCoins] = useState(0)
+  const [coinTotal, setCoinTotal] = useState(0)
+  const [banner, setBanner] = useState<number | null>(null)
+  const [celebrate, setCelebrate] = useState(false)
+  const celebrated = useRef(false)
 
   useEffect(() => {
     setSupported(hasWebGL())
     setCoarse(window.matchMedia('(pointer: coarse)').matches)
     setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   }, [])
+
+  // chapter banner on arrival + one-time celebration at the present-day stop
+  useEffect(() => {
+    if (active == null) return
+    setBanner(active)
+    const id = setTimeout(() => setBanner((b) => (b === active ? null : b)), 2800)
+    if (active === JOURNEY.length - 1 && !celebrated.current) {
+      celebrated.current = true
+      setCelebrate(true)
+      setTimeout(() => setCelebrate(false), 4500)
+    }
+    return () => clearTimeout(id)
+  }, [active])
 
   function begin() {
     journeyAudio.start()
@@ -138,6 +193,11 @@ export function CareerExperience() {
     const next = !muted
     setMuted(next)
     journeyAudio.setMuted(next)
+  }
+
+  function handleCoin(c: number, t: number) {
+    setCoins(c)
+    setCoinTotal(t)
   }
 
   if (supported === false) {
@@ -160,8 +220,15 @@ export function CareerExperience() {
   return (
     <section className="relative h-[100svh] w-full overflow-hidden bg-void">
       {supported && (
-        <CareerScene onActiveChange={setActive} lowPower={coarse} reducedMotion={reducedMotion} />
+        <CareerScene
+          onActiveChange={setActive}
+          onCoin={handleCoin}
+          lowPower={coarse}
+          reducedMotion={reducedMotion}
+        />
       )}
+
+      {celebrate && <Confetti />}
 
       {/* top bar */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 sm:p-6">
@@ -173,6 +240,12 @@ export function CareerExperience() {
           Resume
         </Link>
         <div className="flex items-center gap-2">
+          {started && coinTotal > 0 && (
+            <span className="flex items-center gap-1.5 rounded-full border border-signal/30 bg-surface/70 px-3 py-2 font-mono text-xs text-signal backdrop-blur-md">
+              <CoinsIcon className="h-4 w-4" />
+              {coins}/{coinTotal}
+            </span>
+          )}
           <span className="rounded-full border border-border bg-surface/70 px-4 py-2 font-mono text-xs text-muted backdrop-blur-md">
             {active != null ? `${active + 1} / ${JOURNEY.length}` : `${JOURNEY.length} stops`}
           </span>
@@ -219,6 +292,29 @@ export function CareerExperience() {
         </div>
       )}
 
+      {/* chapter title banner on arrival */}
+      <AnimatePresence>
+        {started && banner != null && (
+          <motion.div
+            key={banner}
+            initial={{ opacity: 0, y: -16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 22 }}
+            className="pointer-events-none absolute inset-x-0 top-28 z-20 flex justify-center px-4 sm:top-32"
+          >
+            <div className={`rounded-2xl border ${ACCENT_BORDER[JOURNEY[banner].accent] ?? 'border-border'} bg-void/70 px-6 py-3 text-center backdrop-blur-md`}>
+              <p className="font-mono text-[11px] uppercase tracking-widest text-muted">
+                Chapter {banner + 1} · {JOURNEY[banner].period}
+              </p>
+              <p className={`font-display text-xl font-bold ${ACCENT_TEXT[JOURNEY[banner].accent]}`}>
+                {JOURNEY[banner].era}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* intro overlay */}
       <AnimatePresence>
         {!started && (
@@ -232,7 +328,8 @@ export function CareerExperience() {
             <div>
               <h1 className="font-display text-3xl font-bold sm:text-4xl">Walk through my journey</h1>
               <p className="mx-auto mt-3 max-w-md text-muted">
-                Stroll the timeline from 2014 to today. Walk up to a glowing marker to learn about each chapter.
+                Sail through my career from 2014 to today. Walk up to each signpost to open its chapter,
+                and grab the golden coins along the way.
               </p>
             </div>
             <p className="font-mono text-xs text-muted/80">
@@ -271,11 +368,31 @@ export function CareerExperience() {
                     return <Icon className="h-5 w-5" />
                   })()}
                 </div>
-                <div>
-                  <span className="font-mono text-xs text-muted">{milestone.period}</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs text-muted">{milestone.period}</span>
+                    <span className={`rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${ACCENT_BORDER[milestone.accent]} ${ACCENT_TEXT[milestone.accent]}`}>
+                      {milestone.era}
+                    </span>
+                  </div>
                   <h2 className="font-display text-lg font-bold text-ivory">{milestone.role}</h2>
                   <p className={`mb-2 text-sm ${ACCENT_TEXT[milestone.accent]}`}>{milestone.org}</p>
-                  <p className="text-sm leading-relaxed text-muted">{milestone.description}</p>
+                  <p className="mb-3 text-sm leading-relaxed text-muted">{milestone.description}</p>
+
+                  {/* standout achievement */}
+                  <div className="mb-3 flex items-start gap-2 rounded-lg bg-white/5 px-3 py-2">
+                    <Trophy className={`mt-0.5 h-4 w-4 shrink-0 ${ACCENT_TEXT[milestone.accent]}`} />
+                    <span className="text-xs leading-snug text-ivory/90">{milestone.highlight}</span>
+                  </div>
+
+                  {/* skill chips */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {milestone.skills.map((s) => (
+                      <span key={s} className="rounded-full border border-border bg-white/5 px-2.5 py-1 text-[11px] text-muted">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 

@@ -121,6 +121,28 @@ class JourneyAudio {
     })
   }
 
+  /** A bright two-tone "ding" when collecting treasure. */
+  coin() {
+    const ctx = this.ctx
+    if (!ctx || !this.master || this.muted || !this.started) return
+    const t = ctx.currentTime
+    const notes = [988, 1319] // B5, E6
+    notes.forEach((f, i) => {
+      const o = ctx.createOscillator()
+      o.type = 'triangle'
+      o.frequency.value = f
+      const g = ctx.createGain()
+      const st = t + i * 0.05
+      g.gain.setValueAtTime(0, st)
+      g.gain.linearRampToValueAtTime(0.12, st + 0.01)
+      g.gain.exponentialRampToValueAtTime(0.0001, st + 0.25)
+      o.connect(g)
+      g.connect(this.master!)
+      o.start(st)
+      o.stop(st + 0.27)
+    })
+  }
+
   setMuted(m: boolean) {
     this.muted = m
     if (this.master && this.ctx) {

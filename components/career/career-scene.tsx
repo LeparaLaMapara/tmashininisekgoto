@@ -47,7 +47,17 @@ export function positionFor(i: number): [number, number, number] {
 
 // ---- Milestone monument: a wooden signpost with a floating "log pose" gem ----
 
-function Monument({ index, accent, label }: { index: number; accent: string; label: string }) {
+function Monument({
+  index,
+  accent,
+  label,
+  year,
+}: {
+  index: number
+  accent: string
+  label: string
+  year: string
+}) {
   const hex = ACCENT_HEX[accent] ?? ACCENT_HEX.synapse
   const crystal = useRef<THREE.Mesh>(null)
   const crystalMat = useRef<THREE.MeshStandardMaterial>(null)
@@ -55,9 +65,11 @@ function Monument({ index, accent, label }: { index: number; accent: string; lab
   const light = useRef<THREE.PointLight>(null)
   const ring = useRef<THREE.Mesh>(null)
   const ringMat = useRef<THREE.MeshBasicMaterial>(null)
+  const lid = useRef<THREE.Group>(null)
   const prevActive = useRef(false)
   const pulse = useRef(1)
   const pos = positionFor(index)
+  const chestSide = index % 2 === 0 ? 1.4 : -1.4
 
   useFrame((state, dt) => {
     const active = activeRef.index === index
@@ -72,6 +84,7 @@ function Monument({ index, accent, label }: { index: number; accent: string; lab
     lerp(crystalMat.current, active ? 2.6 : 1.2)
     lerp(padMat.current, active ? 0.8 : 0.2)
     if (light.current) light.current.intensity = THREE.MathUtils.lerp(light.current.intensity, active ? 5 : 1.2, t * 6)
+    if (lid.current) lid.current.rotation.x = THREE.MathUtils.lerp(lid.current.rotation.x, active ? -1.15 : 0, t * 6)
 
     if (active && !prevActive.current) pulse.current = 0
     prevActive.current = active
@@ -112,6 +125,42 @@ function Monument({ index, accent, label }: { index: number; accent: string; lab
         <meshBasicMaterial ref={ringMat} color={hex} transparent opacity={0} side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
       <pointLight ref={light} position={[0, 3, 0]} color={hex} intensity={1.2} distance={10} />
+
+      {/* treasure chest beside the signpost (opens when active) */}
+      <group position={[chestSide, 0, 0.6]} rotation={[0, chestSide > 0 ? -0.4 : 0.4, 0]}>
+        <mesh castShadow position={[0, 0.32, 0]}>
+          <boxGeometry args={[0.95, 0.64, 0.66]} />
+          <meshToonMaterial color="#7a4a1f" gradientMap={toonGradient} />
+        </mesh>
+        <mesh position={[0, 0.32, 0.34]}>
+          <boxGeometry args={[0.98, 0.16, 0.04]} />
+          <meshStandardMaterial color="#ffd43b" emissive="#ffb000" emissiveIntensity={0.3} metalness={0.6} roughness={0.3} toneMapped={false} />
+        </mesh>
+        <group ref={lid} position={[0, 0.64, -0.33]}>
+          <mesh castShadow position={[0, 0.08, 0.33]}>
+            <boxGeometry args={[0.95, 0.26, 0.66]} />
+            <meshToonMaterial color="#8a5a2b" gradientMap={toonGradient} />
+          </mesh>
+        </group>
+      </group>
+
+      {/* big translucent year behind the post */}
+      <Html position={[0, 2.7, -0.7]} center distanceFactor={34} zIndexRange={[5, 0]}>
+        <div
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+            fontFamily: 'var(--font-display), system-ui, sans-serif',
+            fontWeight: 800,
+            fontSize: '40px',
+            color: 'rgba(255,255,255,0.18)',
+          }}
+        >
+          {year}
+        </div>
+      </Html>
+
       <Html position={[0, 4.2, 0]} center distanceFactor={15} zIndexRange={[10, 0]}>
         <div
           style={{
@@ -679,9 +728,154 @@ function Seagulls({ count }: { count: number }) {
   )
 }
 
+// ---- Collectible treasure coins ----
+
+function Coins({ onCoin }: { onCoin: (collected: number, total: number) => void }) {
+  const spots = useMemo(() => {
+    const arr: [number, number, number][] = []
+    for (let i = 0; i < JOURNEY.length - 1; i++) {
+      const z = i * SPACING + 8 + SPACING / 2
+      arr.push([-1.6, 1, z])
+      arr.push([0, 1, z + 1.3])
+      arr.push([1.6, 1, z])
+    }
+    return arr
+  }, [])
+  const meshes = useRef<THREE.Mesh[]>([])
+  const collected = useRef<boolean[]>(spots.map(() => false))
+  const count = useRef(0)
+
+  useFrame((state, dt) => {
+    for (let i = 0; i < spots.length; i++) {
+      const m = meshes.current[i]
+      if (!m || collected.current[i]) continue
+      m.rotation.z += dt * 2.2
+      m.position.y = 1 + Math.sin(state.clock.elapsedTime * 2 + i) * 0.12
+      const dx = playerState.x - spots[i][0]
+      const dz = playerState.z - spots[i][2]
+      if (dx * dx + dz * dz < 1.4 * 1.4) {
+        collected.current[i] = true
+        m.visible = false
+        count.current += 1
+        journeyAudio.coin()
+        onCoin(count.current, spots.length)
+      }
+    }
+  })
+
+  return (
+    <group>
+      {spots.map((p, i) => (
+        <mesh
+          key={i}
+          ref={(el) => {
+            if (el) meshes.current[i] = el
+          }}
+          position={p}
+        >
+          <cylinderGeometry args={[0.32, 0.32, 0.07, 20]} />
+          <meshStandardMaterial
+            color="#ffd43b"
+            emissive="#ffb000"
+            emissiveIntensity={0.6}
+            metalness={0.6}
+            roughness={0.3}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+// ---- Lighthouse landmark at the present-day end ----
+
+function Lighthouse() {
+  const beam = useRef<THREE.Group>(null)
+  const lampMat = useRef<THREE.MeshStandardMaterial>(null)
+  useFrame((state) => {
+    if (beam.current) beam.current.rotation.y = state.clock.elapsedTime * 0.8
+    if (lampMat.current) lampMat.current.emissiveIntensity = 1.6 + Math.sin(state.clock.elapsedTime * 3) * 0.4
+  })
+  return (
+    <group position={[13, 0, PATH_END + 4]}>
+      <mesh castShadow position={[0, 3, 0]}>
+        <cylinderGeometry args={[1, 1.5, 6, 12]} />
+        <meshToonMaterial color="#f3f0ea" gradientMap={toonGradient} />
+      </mesh>
+      <mesh castShadow position={[0, 4, 0]}>
+        <cylinderGeometry args={[1.02, 1.15, 1, 12]} />
+        <meshToonMaterial color="#e03131" gradientMap={toonGradient} />
+      </mesh>
+      <mesh castShadow position={[0, 2, 0]}>
+        <cylinderGeometry args={[1.25, 1.4, 1, 12]} />
+        <meshToonMaterial color="#e03131" gradientMap={toonGradient} />
+      </mesh>
+      {/* lantern room */}
+      <mesh position={[0, 6.3, 0]}>
+        <sphereGeometry args={[0.7, 14, 14]} />
+        <meshStandardMaterial ref={lampMat} color="#fff7d6" emissive="#ffe066" emissiveIntensity={1.6} toneMapped={false} />
+      </mesh>
+      <mesh position={[0, 6.9, 0]}>
+        <coneGeometry args={[0.9, 1, 12]} />
+        <meshToonMaterial color="#c92a2a" gradientMap={toonGradient} />
+      </mesh>
+      <group ref={beam} position={[0, 6.3, 0]}>
+        <mesh position={[0, 0, 4]} rotation={[Math.PI / 2, 0, 0]}>
+          <coneGeometry args={[1.6, 8, 4, 1, true]} />
+          <meshBasicMaterial color="#fff3b0" transparent opacity={0.12} side={THREE.DoubleSide} toneMapped={false} />
+        </mesh>
+      </group>
+      <pointLight position={[0, 6.3, 0]} color="#ffe066" intensity={3} distance={20} />
+    </group>
+  )
+}
+
+// ---- "START" arch at the beginning ----
+
+function StartArch() {
+  return (
+    <group position={[0, 0, 1]}>
+      {[-3.2, 3.2].map((x) => (
+        <mesh key={x} castShadow position={[x, 1.6, 0]}>
+          <cylinderGeometry args={[0.22, 0.26, 3.2, 8]} />
+          <meshToonMaterial color="#8a5a2b" gradientMap={toonGradient} />
+        </mesh>
+      ))}
+      <mesh castShadow position={[0, 3.3, 0]}>
+        <boxGeometry args={[7.2, 0.5, 0.5]} />
+        <meshToonMaterial color="#b5793b" gradientMap={toonGradient} />
+      </mesh>
+      <Html position={[0, 3.35, 0]} center distanceFactor={20} zIndexRange={[8, 0]}>
+        <div
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+            fontFamily: 'var(--font-display), system-ui, sans-serif',
+            fontWeight: 800,
+            fontSize: '22px',
+            letterSpacing: '0.15em',
+            color: '#fff7e6',
+            textShadow: '0 2px 8px rgba(80,40,0,0.7)',
+          }}
+        >
+          START
+        </div>
+      </Html>
+    </group>
+  )
+}
+
 // ---- World ----
 
-function World({ reducedMotion }: { reducedMotion: boolean }) {
+function World({
+  reducedMotion,
+  onCoin,
+}: {
+  reducedMotion: boolean
+  onCoin: (collected: number, total: number) => void
+}) {
   return (
     <group>
       <SkyDome />
@@ -711,6 +905,9 @@ function World({ reducedMotion }: { reducedMotion: boolean }) {
       <Dock z={SPACING * 6 + 8} side={-1} />
       <Boat position={[22, 0, SPACING * 3 + 12]} />
       <Boat position={[-26, 0, SPACING * 7 + 6]} />
+      <StartArch />
+      <Lighthouse />
+      <Coins onCoin={onCoin} />
       {!reducedMotion && <Seagulls count={6} />}
     </group>
   )
@@ -720,10 +917,12 @@ function World({ reducedMotion }: { reducedMotion: boolean }) {
 
 export function CareerScene({
   onActiveChange,
+  onCoin,
   lowPower = false,
   reducedMotion = false,
 }: {
   onActiveChange: (i: number | null) => void
+  onCoin: (collected: number, total: number) => void
   lowPower?: boolean
   reducedMotion?: boolean
 }) {
@@ -741,9 +940,9 @@ export function CareerScene({
       <hemisphereLight args={['#bfe3ff', '#4a7a3a', 0.7]} />
       <SunLight shadows={shadows} />
 
-      <World reducedMotion={reducedMotion} />
+      <World reducedMotion={reducedMotion} onCoin={onCoin} />
       {JOURNEY.map((m, i) => (
-        <Monument key={i} index={i} accent={m.accent} label={m.shortOrg} />
+        <Monument key={i} index={i} accent={m.accent} label={m.shortOrg} year={m.period.slice(0, 4)} />
       ))}
       <Player onActiveChange={onActiveChange} reducedMotion={reducedMotion} />
 
