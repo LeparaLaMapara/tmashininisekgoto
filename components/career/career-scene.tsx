@@ -45,6 +45,135 @@ export function positionFor(i: number): [number, number, number] {
   return [side * 4.2, 0, i * SPACING + 8]
 }
 
+// ---- Per-stop themed prop (a small landmark hinting at each chapter) ----
+
+function ThemeProp({ kind }: { kind: string }) {
+  const wood = '#7a4a1f'
+  const metal = '#9aa5b1'
+  switch (kind) {
+    case 'BSc': // astronomy — telescope on a tripod
+      return (
+        <group>
+          <mesh castShadow position={[0, 0.9, 0]} rotation={[0.5, 0, 0]}>
+            <cylinderGeometry args={[0.16, 0.2, 1.3, 10]} />
+            <meshToonMaterial color={metal} gradientMap={toonGradient} />
+          </mesh>
+          {[0, 1, 2].map((i) => {
+            const a = (i / 3) * Math.PI * 2
+            return (
+              <mesh key={i} castShadow position={[Math.cos(a) * 0.3, 0.4, Math.sin(a) * 0.3]} rotation={[0, -a, 0.3]}>
+                <cylinderGeometry args={[0.04, 0.04, 1, 6]} />
+                <meshToonMaterial color={wood} gradientMap={toonGradient} />
+              </mesh>
+            )
+          })}
+        </group>
+      )
+    case 'Honours': // stack of books
+      return (
+        <group>
+          {['#e8590c', '#1971c2', '#2f9e44'].map((c, i) => (
+            <mesh key={i} castShadow position={[0, 0.18 + i * 0.22, 0]} rotation={[0, i * 0.3, 0]}>
+              <boxGeometry args={[0.8, 0.2, 0.6]} />
+              <meshToonMaterial color={c} gradientMap={toonGradient} />
+            </mesh>
+          ))}
+        </group>
+      )
+    case 'MSc': // graduation cap
+    case 'PhD':
+      return (
+        <group position={[0, 0.7, 0]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.3, 0.34, 0.4, 10]} />
+            <meshToonMaterial color="#222" gradientMap={toonGradient} />
+          </mesh>
+          <mesh castShadow position={[0, 0.25, 0]} rotation={[0, 0.5, 0]}>
+            <boxGeometry args={[0.9, 0.06, 0.9]} />
+            <meshToonMaterial color="#111" gradientMap={toonGradient} />
+          </mesh>
+          <mesh position={[0, 0.3, 0]}>
+            <sphereGeometry args={[0.06, 8, 8]} />
+            <meshStandardMaterial color="#ffd43b" emissive="#ffb000" emissiveIntensity={0.4} toneMapped={false} />
+          </mesh>
+        </group>
+      )
+    case 'CSIR': // satellite dish
+      return (
+        <group position={[0, 0.8, 0]} rotation={[0.7, 0.4, 0]}>
+          <mesh castShadow>
+            <sphereGeometry args={[0.6, 14, 14, 0, Math.PI * 2, 0, Math.PI / 2.2]} />
+            <meshToonMaterial color="#dfe3e8" gradientMap={toonGradient} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh castShadow position={[0, 0.3, 0]}>
+            <cylinderGeometry args={[0.03, 0.03, 0.6, 6]} />
+            <meshToonMaterial color={metal} gradientMap={toonGradient} />
+          </mesh>
+        </group>
+      )
+    case 'Wits BIS': // monitor / dashboard
+      return (
+        <group position={[0, 0.7, 0]}>
+          <mesh castShadow>
+            <boxGeometry args={[1, 0.7, 0.08]} />
+            <meshToonMaterial color="#2b2f36" gradientMap={toonGradient} />
+          </mesh>
+          <mesh position={[0, 0, 0.05]}>
+            <planeGeometry args={[0.86, 0.56]} />
+            <meshStandardMaterial color="#0ea5e9" emissive="#0ea5e9" emissiveIntensity={0.4} toneMapped={false} />
+          </mesh>
+          <mesh castShadow position={[0, -0.5, 0]}>
+            <cylinderGeometry args={[0.06, 0.1, 0.4, 8]} />
+            <meshToonMaterial color={metal} gradientMap={toonGradient} />
+          </mesh>
+        </group>
+      )
+    case 'IBM': // server rack
+      return (
+        <group position={[0, 0.6, 0]}>
+          <mesh castShadow>
+            <boxGeometry args={[0.7, 1.2, 0.6]} />
+            <meshToonMaterial color="#2b2f36" gradientMap={toonGradient} />
+          </mesh>
+          {[0.35, 0.1, -0.15, -0.4].map((y, i) => (
+            <mesh key={i} position={[0, y, 0.31]}>
+              <planeGeometry args={[0.6, 0.12]} />
+              <meshStandardMaterial color="#37d67a" emissive="#37d67a" emissiveIntensity={0.4} toneMapped={false} />
+            </mesh>
+          ))}
+        </group>
+      )
+    case 'Vodacom': // cell tower
+      return (
+        <group>
+          {[-0.18, 0.18].map((x) => (
+            <mesh key={x} castShadow position={[x, 1.2, 0]} rotation={[0, 0, x > 0 ? -0.05 : 0.05]}>
+              <cylinderGeometry args={[0.04, 0.06, 2.4, 6]} />
+              <meshToonMaterial color={metal} gradientMap={toonGradient} />
+            </mesh>
+          ))}
+          <mesh position={[0, 2.5, 0]}>
+            <sphereGeometry args={[0.12, 8, 8]} />
+            <meshStandardMaterial color="#e64980" emissive="#e64980" emissiveIntensity={0.6} toneMapped={false} />
+          </mesh>
+        </group>
+      )
+    case 'ABSA': // stacked coins
+      return (
+        <group>
+          {[0, 1, 2, 3].map((i) => (
+            <mesh key={i} castShadow position={[(i % 2) * 0.4 - 0.2, 0.08 + Math.floor(i / 2) * 0.16, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.26, 0.26, 0.12, 16]} />
+              <meshStandardMaterial color="#ffd43b" emissive="#ffb000" emissiveIntensity={0.4} metalness={0.6} roughness={0.3} toneMapped={false} />
+            </mesh>
+          ))}
+        </group>
+      )
+    default:
+      return null
+  }
+}
+
 // ---- Milestone monument: a wooden signpost with a floating "log pose" gem ----
 
 function Monument({
@@ -142,6 +271,11 @@ function Monument({
             <meshToonMaterial color="#8a5a2b" gradientMap={toonGradient} />
           </mesh>
         </group>
+      </group>
+
+      {/* themed prop opposite the chest */}
+      <group position={[-chestSide, 0, 0.4]}>
+        <ThemeProp kind={label} />
       </group>
 
       {/* big translucent year behind the post */}
@@ -305,6 +439,19 @@ function Player({
 
     g.position.x = THREE.MathUtils.clamp(g.position.x, -8, 8)
     g.position.z = THREE.MathUtils.clamp(g.position.z, -4, PATH_END)
+
+    // push out of signposts so you can't walk through them
+    for (let i = 0; i < JOURNEY.length; i++) {
+      const p = positionFor(i)
+      const dx = g.position.x - p[0]
+      const dz = g.position.z - p[2]
+      const d = Math.hypot(dx, dz)
+      if (d < 1.3 && d > 0.0001) {
+        g.position.x = p[0] + (dx / d) * 1.3
+        g.position.z = p[2] + (dz / d) * 1.3
+      }
+    }
+
     playerState.x = g.position.x
     playerState.z = g.position.z
 

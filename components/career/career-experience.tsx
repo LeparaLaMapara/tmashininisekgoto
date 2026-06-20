@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -113,6 +113,32 @@ function Joystick() {
   )
 }
 
+// ---- Error boundary: a runtime WebGL crash falls back gracefully ----
+
+class SceneErrorBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false }
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+  render() {
+    return this.state.hasError ? this.props.fallback : this.props.children
+  }
+}
+
+function SceneFallback() {
+  return (
+    <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 bg-void px-6 text-center">
+      <h2 className="font-display text-2xl font-bold">The journey hit a snag</h2>
+      <p className="max-w-md text-muted">
+        The 3D scene couldn&apos;t run on this device. You can explore the same career story on the resume timeline.
+      </p>
+      <Link href="/resume" className="rounded-full bg-synapse px-6 py-3 text-sm font-medium text-void hover:bg-synapse/90">
+        View the resume timeline
+      </Link>
+    </div>
+  )
+}
+
 // ---- Celebration confetti ----
 
 function Confetti() {
@@ -218,14 +244,28 @@ export function CareerExperience() {
   const milestone = active != null ? JOURNEY[active] : null
 
   return (
-    <section className="relative h-[100svh] w-full overflow-hidden bg-void">
+    <section className="relative h-[100svh] w-full overflow-hidden bg-void" aria-label="Interactive career journey">
+      {/* Accessible / crawlable version of the journey (the canvas is invisible to readers & bots) */}
+      <div className="sr-only">
+        <h1>Career journey of Thabang Mashinini-Sekgoto</h1>
+        <ol>
+          {JOURNEY.map((m) => (
+            <li key={m.shortOrg}>
+              <strong>{m.role}</strong>, {m.org} ({m.period}). {m.highlight}. {m.description}
+            </li>
+          ))}
+        </ol>
+      </div>
+
       {supported && (
-        <CareerScene
-          onActiveChange={setActive}
-          onCoin={handleCoin}
-          lowPower={coarse}
-          reducedMotion={reducedMotion}
-        />
+        <SceneErrorBoundary fallback={<SceneFallback />}>
+          <CareerScene
+            onActiveChange={setActive}
+            onCoin={handleCoin}
+            lowPower={coarse}
+            reducedMotion={reducedMotion}
+          />
+        </SceneErrorBoundary>
       )}
 
       {celebrate && <Confetti />}
@@ -241,9 +281,13 @@ export function CareerExperience() {
         </Link>
         <div className="flex items-center gap-2">
           {started && coinTotal > 0 && (
-            <span className="flex items-center gap-1.5 rounded-full border border-signal/30 bg-surface/70 px-3 py-2 font-mono text-xs text-signal backdrop-blur-md">
+            <span
+              title="Berries collected"
+              className="flex items-center gap-1.5 rounded-full border border-signal/30 bg-surface/70 px-3 py-2 font-mono text-xs text-signal backdrop-blur-md"
+            >
               <CoinsIcon className="h-4 w-4" />
               {coins}/{coinTotal}
+              <span className="hidden sm:inline">berries</span>
             </span>
           )}
           <span className="rounded-full border border-border bg-surface/70 px-4 py-2 font-mono text-xs text-muted backdrop-blur-md">
@@ -329,7 +373,7 @@ export function CareerExperience() {
               <h1 className="font-display text-3xl font-bold sm:text-4xl">Walk through my journey</h1>
               <p className="mx-auto mt-3 max-w-md text-muted">
                 Sail through my career from 2014 to today. Walk up to each signpost to open its chapter,
-                and grab the golden coins along the way.
+                and grab the golden berries along the way.
               </p>
             </div>
             <p className="font-mono text-xs text-muted/80">
