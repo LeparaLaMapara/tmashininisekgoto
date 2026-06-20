@@ -530,6 +530,155 @@ function Ocean() {
   )
 }
 
+// ---- Rocks ----
+
+function Rocks() {
+  const rocks = useMemo(() => {
+    const arr: { pos: [number, number, number]; s: number; c: string }[] = []
+    const greys = ['#7a8088', '#6b7177', '#868d95']
+    for (let i = 0; i < 18; i++) {
+      const left = i % 2 === 0
+      // some on the grass edge, some just offshore in the water
+      const shore = i % 3 === 0
+      const x = (left ? -1 : 1) * (shore ? 11 + ((i * 3) % 4) : 8.5 + ((i * 5) % 3))
+      const z = i * 7 - 4
+      arr.push({ pos: [x, shore ? -0.2 : 0.1, z], s: 0.5 + ((i * 7) % 5) * 0.22, c: greys[i % greys.length] })
+    }
+    return arr
+  }, [])
+  return (
+    <group>
+      {rocks.map((r, i) => (
+        <mesh key={i} castShadow position={r.pos} rotation={[i, i * 0.7, 0]} scale={[r.s * 1.2, r.s * 0.85, r.s]}>
+          <icosahedronGeometry args={[1, 0]} />
+          <meshToonMaterial color={r.c} gradientMap={toonGradient} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+// ---- Wooden dock reaching into the sea ----
+
+function Dock({ z, side }: { z: number; side: 1 | -1 }) {
+  const wood = '#9c6b35'
+  const planks = useMemo(() => Array.from({ length: 7 }, (_, i) => i), [])
+  return (
+    <group position={[0, 0, z]}>
+      {planks.map((i) => {
+        const x = side * (8 + i * 1.1)
+        return (
+          <group key={i}>
+            <mesh castShadow position={[x, 0.12, 0]}>
+              <boxGeometry args={[1.05, 0.12, 2.4]} />
+              <meshToonMaterial color={wood} gradientMap={toonGradient} />
+            </mesh>
+            {i % 2 === 0 && (
+              <>
+                <mesh castShadow position={[x, -0.5, 1]}>
+                  <cylinderGeometry args={[0.1, 0.1, 1.4, 6]} />
+                  <meshToonMaterial color="#6f4a22" gradientMap={toonGradient} />
+                </mesh>
+                <mesh castShadow position={[x, -0.5, -1]}>
+                  <cylinderGeometry args={[0.1, 0.1, 1.4, 6]} />
+                  <meshToonMaterial color="#6f4a22" gradientMap={toonGradient} />
+                </mesh>
+              </>
+            )}
+          </group>
+        )
+      })}
+    </group>
+  )
+}
+
+// ---- Small bobbing sailboat ----
+
+function Boat({ position }: { position: [number, number, number] }) {
+  const ref = useRef<THREE.Group>(null)
+  useFrame((state) => {
+    const g = ref.current
+    if (!g) return
+    g.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.8) * 0.12
+    g.rotation.z = Math.sin(state.clock.elapsedTime * 0.6) * 0.05
+  })
+  return (
+    <group ref={ref} position={position} rotation={[0, -0.4, 0]} scale={1.4}>
+      {/* hull */}
+      <mesh castShadow position={[0, 0.2, 0]}>
+        <boxGeometry args={[1.2, 0.5, 2.6]} />
+        <meshToonMaterial color="#8a5a2b" gradientMap={toonGradient} />
+      </mesh>
+      <mesh castShadow position={[0, 0.45, 1.45]} rotation={[0.5, 0, 0]}>
+        <boxGeometry args={[1.2, 0.5, 0.6]} />
+        <meshToonMaterial color="#8a5a2b" gradientMap={toonGradient} />
+      </mesh>
+      {/* mast */}
+      <mesh castShadow position={[0, 1.4, 0]}>
+        <cylinderGeometry args={[0.06, 0.06, 2, 6]} />
+        <meshToonMaterial color="#6f4a22" gradientMap={toonGradient} />
+      </mesh>
+      {/* sail */}
+      <mesh position={[0.01, 1.4, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[1.4, 1.6]} />
+        <meshToonMaterial color="#fbf3e2" gradientMap={toonGradient} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  )
+}
+
+// ---- Circling seagulls ----
+
+function Seagulls({ count }: { count: number }) {
+  const birds = useRef<THREE.Group[]>([])
+  const data = useMemo(
+    () =>
+      Array.from({ length: count }, (_, i) => ({
+        radius: 14 + (i % 4) * 5,
+        speed: 0.18 + (i % 3) * 0.05,
+        height: 13 + (i % 5) * 1.5,
+        offset: (i / count) * Math.PI * 2,
+        center: i * 18 + 10,
+      })),
+    [count]
+  )
+  useFrame((state) => {
+    const t = state.clock.elapsedTime
+    birds.current.forEach((b, i) => {
+      if (!b) return
+      const d = data[i]
+      const a = t * d.speed + d.offset
+      b.position.set(Math.cos(a) * d.radius, d.height + Math.sin(t + i) * 0.5, d.center + Math.sin(a) * d.radius)
+      b.rotation.y = -a
+      const flap = Math.sin(t * 8 + i) * 0.5
+      const wings = b.children as THREE.Mesh[]
+      if (wings[0]) wings[0].rotation.z = 0.3 + flap
+      if (wings[1]) wings[1].rotation.z = -0.3 - flap
+    })
+  })
+  return (
+    <group>
+      {data.map((_, i) => (
+        <group
+          key={i}
+          ref={(el) => {
+            if (el) birds.current[i] = el
+          }}
+        >
+          <mesh position={[0.35, 0, 0]}>
+            <boxGeometry args={[0.7, 0.04, 0.18]} />
+            <meshToonMaterial color="#f5f5f5" gradientMap={toonGradient} />
+          </mesh>
+          <mesh position={[-0.35, 0, 0]}>
+            <boxGeometry args={[0.7, 0.04, 0.18]} />
+            <meshToonMaterial color="#f5f5f5" gradientMap={toonGradient} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  )
+}
+
 // ---- World ----
 
 function World({ reducedMotion }: { reducedMotion: boolean }) {
@@ -557,6 +706,12 @@ function World({ reducedMotion }: { reducedMotion: boolean }) {
       </mesh>
 
       <Foliage />
+      <Rocks />
+      <Dock z={SPACING * 3 + 8} side={1} />
+      <Dock z={SPACING * 6 + 8} side={-1} />
+      <Boat position={[22, 0, SPACING * 3 + 12]} />
+      <Boat position={[-26, 0, SPACING * 7 + 6]} />
+      {!reducedMotion && <Seagulls count={6} />}
     </group>
   )
 }
