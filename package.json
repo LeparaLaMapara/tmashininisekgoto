@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "screenshot": "npx playwright test screenshot.spec.ts"
+    "screenshot": "npx playwright test screenshot.spec.ts",
+    "rag:reindex": "node scripts/rag/reindex.mjs"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.0",

@@ -1,11 +1,31 @@
-import { streamText } from 'ai'
+import { streamText, StreamData, type JSONValue } from 'ai'
 import { google } from '@ai-sdk/google'
-import { buildSystemPrompt } from '@/lib/knowledge-base'
+import { buildSystemPrompt, buildGroundedPrompt } from '@/lib/knowledge-base'
 import { headers } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
+import { isRagEnabled } from '@/lib/rag/config'
+import { searchKb, formatRetrievalContext, toSources, type SourceRef } from '@/lib/rag/retrieval'
 
 const DAILY_LIMIT = 10
 const MAX_CONVERSATION_MESSAGES = 20 // 10 user + 10 assistant
+
+interface ChatMessage { role: string; content?: unknown }
+
+/** Extract the latest user message text (content may be a string or parts). */
+function lastUserText(messages: ChatMessage[]): string {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i]
+    if (m.role !== 'user') continue
+    if (typeof m.content === 'string') return m.content
+    if (Array.isArray(m.content)) {
+      return m.content
+        .map((p) => (typeof p === 'string' ? p : (p as { text?: string })?.text ?? ''))
+        .join(' ')
+        .trim()
+    }
+  }
+  return ''
+}
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -90,14 +110,45 @@ export async function POST(req: Request) {
     )
   }
 
+  // Retrieval-augmented grounding. Falls back to the static knowledge base when
+  // RAG is disabled or no relevant context is found, so the page never regresses.
+  let system = buildSystemPrompt()
+  let sources: SourceRef[] = []
+
+  if (isRagEnabled()) {
+    const supabase = getSupabase()
+    const query = lastUserText(messages)
+    if (supabase && query) {
+      try {
+        const hits = await searchKb(supabase, query)
+        if (hits.length) {
+          system = buildGroundedPrompt(formatRetrievalContext(hits))
+          sources = toSources(hits)
+        }
+      } catch (err) {
+        console.error('Retrieval error (falling back to static KB):', err)
+      }
+    }
+  }
+
+  const data = new StreamData()
+
   const result = streamText({
     model: google('gemini-2.5-flash'),
-    system: buildSystemPrompt(),
+    system,
     messages,
     maxTokens: 2048,
+    onFinish: async () => {
+      // Attach cited sources to this assistant message for the UI.
+      if (sources.length) {
+        data.appendMessageAnnotation({ type: 'sources', sources } as unknown as JSONValue)
+      }
+      await data.close()
+    },
   })
 
   return result.toDataStreamResponse({
+    data,
     headers: { 'X-RateLimit-Remaining': String(remaining) },
     getErrorMessage: (error) => {
       console.error('AI SDK Error:', error)

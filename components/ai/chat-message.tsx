@@ -5,15 +5,29 @@ import type { Message } from 'ai'
 import ReactMarkdown from 'react-markdown'
 import { Copy, Check, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { SourceCitations, type SourceRef } from '@/components/ai/source-citations'
 
 interface ChatMessageProps {
   message: Message
   isLast: boolean
 }
 
+/** Pull cited sources out of the message annotations set by the chat route. */
+function extractSources(message: Message): SourceRef[] {
+  const annotations = message.annotations as
+    | Array<{ type?: string; sources?: SourceRef[] }>
+    | undefined
+  if (!annotations) return []
+  const entry = annotations.find(
+    (a) => a && typeof a === 'object' && a.type === 'sources'
+  )
+  return entry?.sources ?? []
+}
+
 export function ChatMessage({ message, isLast }: ChatMessageProps) {
   const [copied, setCopied] = useState(false)
   const isUser = message.role === 'user'
+  const sources = isUser ? [] : extractSources(message)
 
   async function handleCopy() {
     await navigator.clipboard.writeText(message.content)
@@ -113,6 +127,9 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
             {message.content}
           </ReactMarkdown>
         </div>
+
+        {/* Cited KB sources */}
+        {sources.length > 0 && <SourceCitations sources={sources} />}
 
         {/* Copy button */}
         <button
