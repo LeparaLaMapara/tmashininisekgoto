@@ -176,5 +176,19 @@ export function collectCorpus(): KbSource[] {
     text: TESTIMONIALS.map((t) => `"${t.quote}" — ${t.name}, ${t.role}`).join('\n\n'),
   })
 
+  // ── SekhotoMultiversity (what Thabang is also building) ──
+  sources.push({
+    sourceType: 'page',
+    sourceKey: 'sekhotomultiversity',
+    title: 'SekhotoMultiversity',
+    url: 'https://sekhotomultiversity.vercel.app',
+    text: [
+      'SekhotoMultiversity is an AI-powered learning and opportunity platform that Thabang is building for African families, students, workers, and communities.',
+      'The goal is to democratize access to AI, knowledge, and opportunities — helping people learn new skills, find jobs, scholarships and study opportunities, and apply AI in everyday life, with South African / African context.',
+      'It reflects Thabang\'s philosophy of building technology that uplifts communities. To partner or collaborate on SekhotoMultiversity, contact Thabang directly.',
+      'Explore it at https://sekhotomultiversity.vercel.app',
+    ].join('\n'),
+  })
+
   return sources
 }
