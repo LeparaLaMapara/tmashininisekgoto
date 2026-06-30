@@ -57,10 +57,11 @@ create table if not exists public.kb_chunks (
 -- Composite index LED BY app (tenancy convention), then document.
 create index if not exists kb_chunks_app_doc_idx
   on public.kb_chunks (app, document_id);
--- IVFFlat cosine index. NOTE: small corpus → lists=10 (see plan Risks).
--- Run `analyze public.kb_chunks;` after the first bulk load.
-create index if not exists kb_chunks_embedding_idx
-  on public.kb_chunks using ivfflat (embedding vector_cosine_ops) with (lists = 10);
+-- NO vector index for this corpus size. IVFFlat with few hundred rows produces
+-- empty/sparse k-means clusters and (probes=1) returns 0 rows for queries that
+-- land near an empty cluster. Exact (brute-force) scan over a few hundred 768-d
+-- vectors is sub-millisecond and 100% recall. Add HNSW only once the corpus is
+-- large (thousands+): create index ... using hnsw (embedding vector_cosine_ops);
 
 -- ── App-scoped similarity RPC ──────────────────────────────────────────────
 -- Granted to anon, but only ever returns published rows of the named app.
