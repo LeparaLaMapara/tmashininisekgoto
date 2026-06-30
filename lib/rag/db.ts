@@ -33,12 +33,13 @@ export function serviceClient(): SupabaseClient | null {
 }
 
 /**
- * Read client against the KB project, for retrieval. Prefers the service key
- * (local/admin), falls back to the public anon key so it works in any runtime.
- * match_kb_chunks is granted to anon and only returns published rows (RLS).
+ * Read client against the KB project, for retrieval. Uses the KB project's OWN
+ * key — NOT the generic SUPABASE_SERVICE_ROLE_KEY, which in some runtimes (e.g.
+ * prod) belongs to a different Supabase project and would be rejected as an
+ * invalid key. The publishable anon key is sufficient: match_kb_chunks is
+ * granted to anon and only returns published rows (RLS).
  */
 export function kbReadClient(): SupabaseClient {
-  return createClient(KB_URL, serviceKey() || KB_ANON_KEY, {
-    auth: { persistSession: false },
-  })
+  const key = process.env.KB_SUPABASE_SERVICE_KEY || KB_ANON_KEY
+  return createClient(KB_URL, key, { auth: { persistSession: false } })
 }
