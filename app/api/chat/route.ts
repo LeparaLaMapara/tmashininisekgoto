@@ -5,7 +5,7 @@ import { headers } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
 import { isRagEnabled } from '@/lib/rag/config'
 import { searchKb, formatRetrievalContext, toSources, type SourceRef } from '@/lib/rag/retrieval'
-import { readClient } from '@/lib/rag/db'
+import { kbReadClient } from '@/lib/rag/db'
 
 const DAILY_LIMIT = 10
 const MAX_CONVERSATION_MESSAGES = 20 // 10 user + 10 assistant
@@ -117,7 +117,7 @@ export async function POST(req: Request) {
   let sources: SourceRef[] = []
 
   if (isRagEnabled()) {
-    const supabase = readClient()
+    const supabase = kbReadClient()
     const query = lastUserText(messages)
     if (supabase && query) {
       try {
