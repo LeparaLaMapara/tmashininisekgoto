@@ -5,6 +5,7 @@ import { headers } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
 import { isRagEnabled } from '@/lib/rag/config'
 import { searchKb, formatRetrievalContext, toSources, type SourceRef } from '@/lib/rag/retrieval'
+import { readClient } from '@/lib/rag/db'
 
 const DAILY_LIMIT = 10
 const MAX_CONVERSATION_MESSAGES = 20 // 10 user + 10 assistant
@@ -116,11 +117,12 @@ export async function POST(req: Request) {
   let sources: SourceRef[] = []
 
   if (isRagEnabled()) {
-    const supabase = getSupabase()
+    const supabase = readClient()
     const query = lastUserText(messages)
     if (supabase && query) {
       try {
         const hits = await searchKb(supabase, query)
+        console.log(`RAG retrieval: ${hits.length} hits for "${query.slice(0, 60)}"`)
         if (hits.length) {
           system = buildGroundedPrompt(formatRetrievalContext(hits))
           sources = toSources(hits)
@@ -128,6 +130,8 @@ export async function POST(req: Request) {
       } catch (err) {
         console.error('Retrieval error (falling back to static KB):', err)
       }
+    } else {
+      console.error('RAG: retrieval skipped (no client or empty query)')
     }
   }
 
