@@ -68,7 +68,7 @@ export function Footer() {
         </div>
 
         {/* Social icons */}
-        <div className="flex items-center justify-center gap-5 mt-10 border-t border-border pt-8">
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-4 mt-10 border-t border-border pt-8">
           {socialIcons.map(({ href, icon: Icon, label }) => (
             <a
               key={label}
@@ -76,9 +76,9 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
-              className="p-3 rounded-full text-muted hover:text-synapse hover:bg-synapse/10 transition-all duration-200"
+              className="p-2.5 sm:p-3 rounded-full text-muted hover:text-synapse hover:bg-synapse/10 transition-all duration-200"
             >
-              <Icon className="w-5.5 h-5.5" />
+              <Icon className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
             </a>
           ))}
         </div>
