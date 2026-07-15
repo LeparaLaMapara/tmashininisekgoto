@@ -140,14 +140,15 @@ export const PROJECTS: Project[] = [
   // Building now
   {
     slug: 'thabangvision',
-    title: 'ThabangVision Studio',
+    title: 'ThabangVision',
     category: 'building-now',
     building: true,
-    problem: 'Editing video and photos is hours of manual timeline work. And the new AI editing tools generate first and check never, so you cannot trust what comes out.',
-    solution: 'An AI native video and photo studio where you direct the edit in plain language and an agent does the cutting, colour and layout, then verifies its own work before showing you. For creators and small studios who have footage and a story but not a post production team.',
-    impact: 'In active development for Windows. The one non negotiable design rule: the editor must check its own output the way an engineer checks a build.',
-    skills: ['TypeScript', 'Python', 'PyTorch'],
+    problem: "South Africa is full of talented photographers, videographers and crews, but booking them runs on DMs and luck. Clients cannot tell who is real, and creators with professional gear earn nothing from it on idle days.",
+    solution: "A marketplace to book South Africa's creators and gear. Verified photographers, videographers and production crews, equipment rentals with real time availability, secure payments with deposit protection, and an AI assistant, Ask Ubunye, that matches you to the right creator. For anyone with a shoot to book, and every creator with skills or equipment to earn from.",
+    impact: 'Live at thabangvision.com: verified creators, gear rentals from R500 a day, and secure payments through PayFast and Paystack. Growing the creator community now.',
+    skills: ['Next.js', 'TypeScript', 'PostgreSQL', 'AI'],
     image: '/projects/thabangvision.png',
+    productLink: 'https://thabangvision.com',
   },
   {
     slug: 'sekhoto-multiversity',
