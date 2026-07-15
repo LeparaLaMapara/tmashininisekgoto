@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { href: '/work', label: 'Work' },
   { href: '/blog', label: 'Blog' },
   { href: '/publications', label: 'Publications' },
-  { href: '/courses', label: 'Teaching' },
+  { href: '/talks', label: 'Talks' },
   { href: '/about', label: 'About' },
   { href: '/resume', label: 'CV' },
 ]
