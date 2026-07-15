@@ -57,7 +57,7 @@ export function WorkWithMe() {
         <p className="font-mono text-xs uppercase tracking-widest text-synapse">Work With Me</p>
         <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-ivory sm:text-4xl">
           Turn this into{' '}
-          <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">
+          <span className="text-synapse">
             something real
           </span>
         </h2>

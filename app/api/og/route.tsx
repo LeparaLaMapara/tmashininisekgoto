@@ -1,4 +1,4 @@
-﻿import { ImageResponse } from '@vercel/og'
+import { ImageResponse } from '@vercel/og'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
@@ -6,7 +6,8 @@ export const runtime = 'edge'
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const title = searchParams.get('title') ?? 'Thabang Mashinini-Sekgoto'
-  const subtitle = searchParams.get('subtitle') ?? 'Lead Data Scientist · AI & Analytics Engineering Leader'
+  const subtitle =
+    searchParams.get('subtitle') ?? 'I build AI systems that work in the real world.'
 
   return new ImageResponse(
     (
@@ -16,46 +17,64 @@ export async function GET(req: NextRequest) {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           padding: '60px 80px',
-          backgroundColor: '#0a0a0f',
-          backgroundImage: 'radial-gradient(circle at 25% 25%, #1a1a2e 0%, transparent 50%), radial-gradient(circle at 75% 75%, #0d1b2a 0%, transparent 50%)',
+          backgroundColor: '#faf6ee',
         }}
       >
+        {/* Blanket stripe */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '14px',
+            display: 'flex',
+          }}
+        >
+          <div style={{ flex: 4, backgroundColor: '#b5501e' }} />
+          <div style={{ flex: 1.5, backgroundColor: '#a8742a' }} />
+          <div style={{ flex: 2.5, backgroundColor: '#1f5c3a' }} />
+          <div style={{ flex: 2, backgroundColor: '#201911' }} />
+        </div>
+
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '20px',
+            marginTop: '40px',
           }}
         >
           <div
             style={{
-              fontSize: 48,
+              fontSize: 54,
               fontWeight: 700,
-              color: '#f5f0eb',
-              lineHeight: 1.2,
-              maxWidth: '900px',
+              color: '#201911',
+              lineHeight: 1.15,
+              maxWidth: '980px',
             }}
           >
             {title}
           </div>
           <div
             style={{
-              fontSize: 24,
-              color: '#8b8b9e',
-              maxWidth: '800px',
+              fontSize: 26,
+              color: '#6e6353',
+              maxWidth: '860px',
+              lineHeight: 1.4,
             }}
           >
             {subtitle}
           </div>
         </div>
+
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            marginTop: '40px',
           }}
         >
           <div
@@ -63,11 +82,11 @@ export async function GET(req: NextRequest) {
               width: '12px',
               height: '12px',
               borderRadius: '50%',
-              backgroundColor: '#00e5a0',
+              backgroundColor: '#b5501e',
             }}
           />
-          <div style={{ fontSize: 20, color: '#00e5a0' }}>
-            tmashininisekgoto.com
+          <div style={{ fontSize: 22, color: '#b5501e', fontWeight: 600 }}>
+            tmashininisekgoto.vercel.app
           </div>
         </div>
       </div>

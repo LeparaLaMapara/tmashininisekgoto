@@ -20,7 +20,7 @@ export default function TalksPage() {
         {/* Header */}
         <ScrollReveal>
           <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4">
-            Talks &{' '}<span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">Press</span>
+            Talks &{' '}<span className="text-synapse">Press</span>
           </h1>
           <p className="text-muted text-lg max-w-2xl mb-16">
             Conversations about AI, distributed systems, and making technology accessible.

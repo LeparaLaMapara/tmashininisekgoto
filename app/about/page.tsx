@@ -15,11 +15,11 @@ export default function AboutPage() {
       {/* Header */}
       <div className="mx-auto max-w-6xl px-6 mb-16">
         <p className="font-mono text-base text-synapse tracking-widest uppercase mb-3">
-          ~/about
+          Who I am
         </p>
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
           About{' '}
-          <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">
+          <span className="text-synapse">
             Me
           </span>
         </h1>
@@ -41,7 +41,7 @@ export default function AboutPage() {
         </p>
         <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight mb-10">
           From{' '}
-          <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">
+          <span className="text-synapse">
             Colleagues
           </span>
         </h2>
@@ -55,7 +55,7 @@ export default function AboutPage() {
         </p>
         <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight mb-10">
           Tech{' '}
-          <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">
+          <span className="text-synapse">
             Stack
           </span>
         </h2>

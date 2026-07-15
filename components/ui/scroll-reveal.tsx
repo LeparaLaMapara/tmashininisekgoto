@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, type Variants } from 'framer-motion'
+import { motion, useReducedMotion, type Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface ScrollRevealProps {
@@ -26,6 +26,11 @@ export function ScrollReveal({
   duration = 0.6,
 }: ScrollRevealProps) {
   const offset = directionOffsets[direction]
+  const reducedMotion = useReducedMotion()
+
+  if (reducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
 
   const variants: Variants = {
     hidden: { opacity: 0, ...offset },

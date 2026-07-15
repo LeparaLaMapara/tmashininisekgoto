@@ -18,7 +18,7 @@ export default function AIPage() {
         <div className="mb-8 text-center">
           <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
             Talk to{' '}
-            <span className="bg-gradient-to-r from-synapse to-accent bg-clip-text text-transparent">
+            <span className="text-synapse">
               Thabang AI
             </span>
           </h1>

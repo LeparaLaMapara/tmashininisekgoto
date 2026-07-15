@@ -19,7 +19,7 @@ export default function PublicationsPage() {
         {/* Header */}
         <ScrollReveal>
           <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">Publications</span>
+            <span className="text-synapse">Publications</span>
           </h1>
           <p className="text-muted text-lg max-w-2xl mb-6">
             Peer-reviewed research in occupational health AI, climate intelligence,

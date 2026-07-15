@@ -9,15 +9,12 @@ import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
   { href: '/work', label: 'Work' },
   { href: '/blog', label: 'Blog' },
   { href: '/publications', label: 'Publications' },
-  { href: '/talks', label: 'Talks' },
-  { href: '/courses', label: 'Courses' },
-  { href: '/resume', label: 'Resume' },
-  { href: '/career', label: 'Journey' },
+  { href: '/courses', label: 'Teaching' },
+  { href: '/about', label: 'About' },
+  { href: '/resume', label: 'CV' },
 ]
 
 export function Navbar() {
@@ -49,15 +46,9 @@ export function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="group relative font-mono text-2xl sm:text-3xl font-black tracking-widest uppercase"
+          className="group font-display text-2xl sm:text-[1.7rem] font-semibold tracking-tight text-ivory"
         >
-          <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent group-hover:from-signal group-hover:via-accent group-hover:to-synapse transition-all duration-500">
-            TM
-          </span>
-          <span className="inline-block w-2 h-0.5 bg-synapse mx-0.5 mb-1.5 group-hover:w-4 group-hover:bg-signal transition-all duration-300" />
-          <span className="bg-gradient-to-r from-signal via-accent to-synapse bg-clip-text text-transparent group-hover:from-synapse group-hover:via-accent group-hover:to-signal transition-all duration-500">
-            S
-          </span>
+          Thabang<span className="text-synapse group-hover:text-signal transition-colors duration-300">.</span>
         </Link>
 
         {/* Desktop links */}

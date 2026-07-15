@@ -20,8 +20,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Column 1: Brand */}
           <div>
-            <p className="font-display text-xl font-bold">TM-S</p>
-            <p className="text-muted text-sm">AI Systems Architect &amp; Researcher</p>
+            <p className="font-display text-xl font-semibold">
+              Thabang<span className="text-synapse">.</span>
+            </p>
+            <p className="text-muted text-sm mt-1">
+              AI systems that work in the real world. Built in South Africa, shared with
+              everyone.
+            </p>
           </div>
 
           {/* Column 2: Quick Links */}
@@ -32,8 +37,11 @@ export function Footer() {
                 { href: '/about', label: 'About' },
                 { href: '/work', label: 'Work' },
                 { href: '/blog', label: 'Blog' },
-                { href: '/courses', label: 'Courses' },
-                { href: '/resume', label: 'Resume' },
+                { href: '/publications', label: 'Publications' },
+                { href: '/talks', label: 'Talks' },
+                { href: '/courses', label: 'Teaching' },
+                { href: '/career', label: 'Journey' },
+                { href: '/resume', label: 'CV' },
               ].map(({ href, label }) => (
                 <Link
                   key={href}

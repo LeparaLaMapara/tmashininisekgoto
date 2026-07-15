@@ -15,7 +15,7 @@ export default function WorkPage() {
         <ScrollReveal>
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
             Work &{' '}
-            <span className="bg-gradient-to-r from-synapse via-accent to-signal bg-clip-text text-transparent">
+            <span className="text-synapse">
               Projects
             </span>
           </h1>

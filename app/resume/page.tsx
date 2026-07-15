@@ -36,7 +36,7 @@ export default function ResumePage() {
           <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
             <div>
               <h1 className="font-display text-4xl sm:text-5xl font-bold mb-2">
-                <span className="bg-gradient-to-r from-synapse via-signal to-accent bg-clip-text text-transparent">Resume</span>
+                <span className="text-synapse">Curriculum Vitae</span>
               </h1>
               <div className="flex items-center gap-2 text-muted">
                 <MapPin className="w-4 h-4" />
