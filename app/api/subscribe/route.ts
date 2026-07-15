@@ -1,6 +1,29 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
+function db() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  // Production Vercel stores this under SUPABASE_SERVICE_KEY; local uses the full name.
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY
+  if (!url || !key) return null
+  return createClient(url, key)
+}
+
+export async function GET() {
+  const supabase = db()
+  if (!supabase) {
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+  }
+  const { count, error } = await supabase
+    .from('blog_subscribers')
+    .select('id', { count: 'exact', head: true })
+  if (error) {
+    return NextResponse.json({ error: 'Could not count' }, { status: 500 })
+  }
+  return NextResponse.json({ count: count ?? 0 })
+}
+
 export async function POST(request: Request) {
   try {
     const { email } = await request.json()
@@ -21,18 +44,13 @@ export async function POST(request: Request) {
       )
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseServiceKey) {
+    const supabase = db()
+    if (!supabase) {
       return NextResponse.json(
         { error: 'Server configuration error' },
         { status: 500 }
       )
     }
-
-    // Use service role key server-side to bypass RLS
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { error } = await supabase
       .from('blog_subscribers')

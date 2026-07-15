@@ -1,14 +1,25 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Send, CheckCircle, AlertCircle } from 'lucide-react'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
+
+// Below this, "join N readers" impresses nobody; the line stays hidden.
+const SHOW_COUNT_FROM = 5
 
 export function SubscribeForm() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
+  const [count, setCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetch('/api/subscribe')
+      .then((r) => r.json())
+      .then((d) => typeof d.count === 'number' && setCount(d.count))
+      .catch(() => {})
+  }, [])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -46,6 +57,11 @@ export function SubscribeForm() {
       <p className="text-[0.9375rem] text-muted mb-6 leading-relaxed">
         New posts on AI systems, engineering craft, and lessons from building in production.
         No spam. Unsubscribe anytime.
+        {count !== null && count >= SHOW_COUNT_FROM && (
+          <span className="block mt-1.5 text-synapse font-medium">
+            Join {count.toLocaleString('en-ZA')} readers who get new posts first.
+          </span>
+        )}
       </p>
 
       {status === 'success' ? (
