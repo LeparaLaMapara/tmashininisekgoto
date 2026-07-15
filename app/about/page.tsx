@@ -24,8 +24,9 @@ export default function AboutPage() {
           </span>
         </h1>
         <p className="text-xl text-muted max-w-2xl leading-relaxed">
-          AI researcher, systems architect, and open-source builder designing
-          technology that creates real-world impact across Africa and beyond.
+          I am an AI researcher and builder from Soshanguve. I make AI systems
+          that survive the real world, for banks, for research, and for the
+          people and places I come from.
         </p>
       </div>
 

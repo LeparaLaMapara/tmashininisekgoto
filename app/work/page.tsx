@@ -20,8 +20,10 @@ export default function WorkPage() {
             </span>
           </h1>
           <p className="text-muted text-xl max-w-2xl mb-16 leading-relaxed">
-            Production systems, open-source tools, and research built across
-            telecoms, banking, education, and global research organizations.
+            What I have built and what I am building now. Production systems for
+            banks and telecoms, open source tools anyone can use, research, and
+            free websites for the businesses of Soshanguve. Every card says why
+            it exists and what it changed.
           </p>
         </ScrollReveal>
 
