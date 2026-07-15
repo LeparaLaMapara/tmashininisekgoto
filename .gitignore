@@ -36,3 +36,6 @@ yarn-error.log*
 
 Server/node_modules
 Server/config.js
+# TTS runtime logs
+tts_err.log
+tts_run.log
