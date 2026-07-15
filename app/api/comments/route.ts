@@ -9,7 +9,9 @@ const WINDOW_MINUTES = 10
 
 function db() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  // Production Vercel stores this under SUPABASE_SERVICE_KEY; local uses the full name.
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY
   if (!url || !key) return null
   return createClient(url, key)
 }
