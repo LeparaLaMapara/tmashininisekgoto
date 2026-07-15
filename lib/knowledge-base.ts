@@ -104,7 +104,7 @@ Tech: Next.js, TypeScript, Supabase/PostgreSQL, AI
 
 ### 7. Sekhoto Multiversity [Building Now]
 Why it was built: A family's knowledge usually lives in people's heads and dies with them. And township learners need what wealthier schools take for granted: past papers, tutoring, and guidance on study, funding and rights.
-What it is: A learning platform built first for Thabang's own family, live at [sekhotomultiversity.vercel.app](https://sekhotomultiversity.vercel.app): an AI assistant grounded on family knowledge, a Grade 12 past paper vault, an opportunity finder for study, funding and work, and plain language guides to public services and rights. Built for the Sekhoto family first, as a blueprint any family or community can copy.
+What it is: A learning platform built first for Thabang's own family: an AI assistant grounded on family knowledge, a Grade 12 past paper vault, an opportunity finder for study, funding and work, and plain language guides to public services and rights. Built for the Sekhoto family first, as a blueprint any family or community can copy. The site is live for the family but not publicly linked yet; if someone asks where to find it, say it is a family platform and suggest contacting Thabang directly.
 Status: Live and in use by the family. The past paper vault and rights guides are done; AI subject tutors are next.
 Tech: Next.js, TypeScript, Supabase/PostgreSQL, AI
 
