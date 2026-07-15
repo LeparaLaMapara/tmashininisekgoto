@@ -17,6 +17,8 @@ export interface Project {
   ghLink?: string
   productLink?: string
   paperLink?: string
+  /** Live sites shipped under this project, shown as a list on the card */
+  siteLinks?: { label: string; href: string }[]
 }
 
 export interface Talk {
@@ -118,11 +120,20 @@ export const PROJECTS: Project[] = [
     category: 'social-impact',
     problem: 'Township businesses run on word of mouth alone. Agencies charge more than a small business can spend, so most stay invisible online. Kasilam exists for the mass digitisation of township SMEs.',
     solution: 'A community non profit initiative that gives township businesses real websites, built with the same open source tools I use professionally, described in plain English with AI so no coding knowledge is needed. For spaza shops, restaurants, schools, artisans and anyone in the township with something to offer.',
-    impact: 'Live sites already shipped at no cost to their owners, including a pub and grill in Soshanguve, a high school, and a young chef’s culinary portfolio.',
+    impact: 'Seven live sites already shipped at no cost to their owners: restaurants, a school, a cleaning service, a photographer, a financial advisory, and more.',
     skills: ['HTML', 'CSS', 'JavaScript', 'React', 'AI', 'GitHub Pages'],
     image: '/projects/kasilam.png',
     ghLink: 'https://github.com/orgs/Kasilam-Projects/repositories',
     productLink: 'https://kasilamdigitialplatforms.vercel.app/',
+    siteLinks: [
+      { label: "Jay's Lifestyle Pub & Grill, Soshanguve", href: 'https://jayslifestyleresturant.vercel.app' },
+      { label: 'Reitumetse Secondary School', href: 'https://reitumetse-high.vercel.app' },
+      { label: 'LadyP Kitchen, personal chef & catering', href: 'https://ladypkitchen.vercel.app' },
+      { label: 'Mokebe Cleaning Services', href: 'https://mokebecleaners.vercel.app' },
+      { label: 'Zibuyile Gumede, director of photography', href: 'https://zibuyilegumede.vercel.app' },
+      { label: 'Pule Financial Advisory Consultants', href: 'https://pulegumede.vercel.app' },
+      { label: "Palesa's culinary portfolio", href: 'https://palesasekgoto.vercel.app' },
+    ],
   },
   // Professional & Research
   {

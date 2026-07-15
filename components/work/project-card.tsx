@@ -63,6 +63,30 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
 
+        {/* Live sites shipped under this project */}
+        {project.siteLinks && project.siteLinks.length > 0 && (
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+              Live sites built
+            </span>
+            <ul className="mt-2 space-y-1.5">
+              {project.siteLinks.map((site) => (
+                <li key={site.href}>
+                  <a
+                    href={site.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[0.9375rem] text-ivory/80 hover:text-synapse transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0 text-synapse/60" />
+                    {site.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Tech Stack Logos */}
         <div>
           <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
