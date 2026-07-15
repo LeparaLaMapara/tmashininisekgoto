@@ -8,7 +8,7 @@
 export interface Project {
   slug: string
   title: string
-  category: 'open-source' | 'telecoms' | 'banking' | 'research' | 'education' | 'social-impact'
+  category: 'open-source' | 'telecoms' | 'banking' | 'research' | 'education' | 'social-impact' | 'building-now'
   problem: string
   solution: string
   impact: string
@@ -19,6 +19,8 @@ export interface Project {
   paperLink?: string
   /** Live sites shipped under this project, shown as a list on the card */
   siteLinks?: { label: string; href: string }[]
+  /** Set for work in progress; the card shows a Building now badge */
+  building?: boolean
 }
 
 export interface Talk {
@@ -134,6 +136,30 @@ export const PROJECTS: Project[] = [
       { label: 'Pule Financial Advisory Consultants', href: 'https://pulegumede.vercel.app' },
       { label: "Palesa's culinary portfolio", href: 'https://palesasekgoto.vercel.app' },
     ],
+  },
+  // Building now
+  {
+    slug: 'thabangvision',
+    title: 'ThabangVision Studio',
+    category: 'building-now',
+    building: true,
+    problem: 'Editing video and photos is hours of manual timeline work. And the new AI editing tools generate first and check never, so you cannot trust what comes out.',
+    solution: 'An AI native video and photo studio where you direct the edit in plain language and an agent does the cutting, colour and layout, then verifies its own work before showing you. For creators and small studios who have footage and a story but not a post production team.',
+    impact: 'In active development for Windows. The one non negotiable design rule: the editor must check its own output the way an engineer checks a build.',
+    skills: ['TypeScript', 'Python', 'PyTorch'],
+    image: '/projects/thabangvision.png',
+  },
+  {
+    slug: 'sekhoto-multiversity',
+    title: 'Sekhoto Multiversity',
+    category: 'building-now',
+    building: true,
+    problem: "A family's knowledge usually lives in people's heads and dies with them. And township learners need what wealthier schools take for granted: past papers, tutoring, and guidance on study, funding and rights.",
+    solution: 'A learning platform built first for my own family: an AI assistant grounded on family knowledge, a Grade 12 past paper vault, an opportunity finder for study, funding and work, and plain language guides to public services and rights. Built for the Sekhoto family first, as a blueprint any family or community can copy.',
+    impact: 'Live and in use by the family. The past paper vault and rights guides are done; AI subject tutors are next.',
+    skills: ['Next.js', 'TypeScript', 'PostgreSQL', 'AI'],
+    image: '/projects/multiversity.png',
+    productLink: 'https://sekhotomultiversity.vercel.app',
   },
   // Professional & Research
   {
@@ -701,6 +727,7 @@ export const COURSES: Course[] = [
 ]
 
 export const PROJECT_CATEGORIES: Record<Project['category'], string> = {
+  'building-now': 'Building Now',
   'open-source': 'Open Source',
   'telecoms': 'Telecoms',
   'banking': 'Banking',

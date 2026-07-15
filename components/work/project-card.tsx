@@ -30,6 +30,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
+        {project.building && (
+          <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent text-void text-xs font-semibold uppercase tracking-wider">
+            Building now
+          </span>
+        )}
       </div>
 
       {/* Content */}
