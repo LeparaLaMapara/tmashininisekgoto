@@ -17,9 +17,16 @@ export function ThemeToggle() {
 
   const isDark = theme === 'dark'
 
+  const toggle = () => {
+    const root = document.documentElement
+    root.classList.add('theme-fade')
+    setTheme(isDark ? 'light' : 'dark')
+    window.setTimeout(() => root.classList.remove('theme-fade'), 600)
+  }
+
   return (
     <button
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      onClick={toggle}
       className={cn(
         'flex h-9 w-9 items-center justify-center rounded-full transition-colors',
         'bg-surface border border-border',

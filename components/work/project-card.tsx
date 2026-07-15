@@ -19,7 +19,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="group bg-surface rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_-5px_rgba(14,165,233,0.15)]"
+      className="group bg-surface rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(32,25,17,0.18)]"
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden">
@@ -41,14 +41,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <div className="space-y-4">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
-              Problem
+              Why it was built
             </span>
             <p className="text-[0.9375rem] text-muted mt-1 leading-relaxed">{project.problem}</p>
           </div>
 
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
-              Solution
+              What it is
             </span>
             <p className="text-[0.9375rem] text-ivory/80 mt-1 leading-relaxed">{project.solution}</p>
           </div>
@@ -66,7 +66,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {/* Tech Stack Logos */}
         <div>
           <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
-            Tech Stack
+            Built with
           </span>
           <div className="flex flex-wrap gap-2.5 mt-2">
             {project.skills.map((skill) => {
