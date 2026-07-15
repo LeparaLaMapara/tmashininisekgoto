@@ -2,225 +2,283 @@
 title: "Building a Data Science Team From Scratch: A Real Life Roadmap"
 date: 2026-07-15
 tags: [leadership, data science, mlops, engineering]
-summary: "Two years ago I joined a team of fewer than five people with no handover, no documentation, and production models nobody could explain. This is the roadmap I wish someone had given me: every phase with its constraint, its move, what it cost, and the signal that it worked."
+summary: "Two years ago I inherited a small data science team with no handover, no documentation, and production models nobody could explain. This is the conversation I wish someone had with me before I started: the challenges, the costs, the thinking behind every move, and the one belief that carried it all. Build systems that outlive the people who built them."
 ---
 
 # Building a Data Science Team From Scratch: A Real Life Roadmap
 
-> This is not a management book chapter. It is the honest record of two years spent
-> turning a small, undocumented, reactive data science team inside a large South African
-> financial services group into one that ships. I have written it as a roadmap, because
-> that is what I needed and could not find: not what good looks like, but what to do
-> first, under real constraints, when nothing is good yet.
+> Sit down, let us talk about building a data science team. Not the conference talk
+> version. The real one, from inside a large South African financial services group,
+> over two years, with a small team, a tight budget, and no map. I am going to tell
+> you what I was given, what I did about it, what it cost me, and what I would tell
+> you to do if you were starting tomorrow.
 
-## The box I was in
+## What I was given
 
-Every roadmap is shaped by its constraints, so here were mine. Yours will look similar.
+Picture your first week. You ask for the handover and there is none. Not a thin one.
+None. Models are running in production, real customers are depending on them every day,
+and there is no record anywhere of how they were built, what data feeds them, who uses
+their outputs, or how accurate they are. The products exist. The knowledge about them
+lives in nobody's hands.
 
-- **A team of fewer than five people**, carrying production systems that real customers
-  used every day.
-- **No handover.** The worst I have ever received, because there was none. No
-  documentation existed about which models were running, how they were built, which data
-  they used, who consumed them, or what their accuracy was.
-- **No mandate.** The team had no head of data science, so it reported directly to a
-  business executive. Nobody's job was to translate between what the business asked for
-  and what the team could sustainably build, so everything was done on the fly.
-- **Legacy infrastructure owned by other teams.** Deployments ran through
-  [Jenkins](https://www.jenkins.io) onto [Kubernetes](https://kubernetes.io) clusters
-  managed with [Rancher](https://www.rancher.com), a stack built for hosting
-  applications, not for distributed data work.
-- **A regulated environment.** Slow procurement, formal entitlements, real governance
-  obligations. You do not simply install things here.
-- **No extra budget on day one.** Not for platforms, not for training, and initially
-  not for people.
+The team is small and talented, but it has been running without structure, reporting
+into a manager whose world is the business, not the engineering. Everything is done on
+the fly because there has never been anyone whose job it was to decide how things should
+be done. The infrastructure is a legacy engineering stack built for hosting
+applications, solid for what it was designed for, and completely wrong for distributed
+data work. And the budget is tight. Not tight as in negotiate harder. Tight as in there
+is no line item for any of what you are about to need.
 
-If most of that list sounds like your situation, good. Here is the map.
+Here is the first thing I want you to understand, because everything else follows from
+it. In that situation, the temptation is to start fixing the loudest thing. Do not. The
+loudest thing is almost never the load bearing thing. What follows is the order that
+worked, and more importantly, the reasoning behind the order.
 
-## Phase 1: Structure before anything
+## First, make the work visible
 
-**The constraint.** A handful of people drowning in production issues, with work that
-started, stalled, and finished invisibly. I could not see the team, and the team could
-not see itself.
+You cannot lead what you cannot see. When I arrived, work started, stalled and finished
+invisibly. People were busy, genuinely busy, but the team could not answer the simplest
+question about itself: what are we working on, and how is it going?
 
-**The move.** I introduced [agile](https://agilemanifesto.org) working through
+So before touching any technology, I introduced structure:
+[agile](https://agilemanifesto.org) working through
 [Jira](https://www.atlassian.com/software/jira). Two week sprints. A standup every two
-days instead of every day, because a small team fighting fires does not need another
-daily meeting. At the end of every sprint we looked at what was done and what was not,
-asked why, and unblocked each other.
+days rather than daily, because a small team fighting production fires does not need
+another meeting, it needs a rhythm. At the end of each sprint we sat together and asked
+the honest questions. What got done? What did not? Why? Who is blocked, and on what?
 
-**What it cost.** Meeting fatigue at first, and some patience while people learned to
-work in tickets instead of in their heads. The cheapest phase on the whole map. It costs
-discipline, not money.
+If you have read [The Phoenix Project](https://itrevolution.com/product/the-phoenix-project/),
+you know the idea: invisible work is unmanageable work, and the first act of any
+turnaround is making the work visible. What visibility bought me was not speed. It was
+knowledge. Within a few sprints I could see who knew what, which skills we had and which
+we lacked, and exactly where work went to die. You are not building velocity in this
+phase. You are building sight.
 
-**The signal to move on.** Within a few sprints I could see who knew what, which skills
-the team had and lacked, and where work went to die. When your problem changes from "I
-cannot see the work" to "I can see the work and it all lives in people's heads", phase
-one is done. For us that was roughly the first three months.
+## Write everything down, like you might leave tomorrow
 
-## Phase 2: Write everything down
+Once I could see the work, the next problem introduced itself: every important thing
+lived inside someone's head. In a small team that is not a culture quirk, it is an
+existential risk. One resignation and a production system becomes an orphan.
 
-**The constraint.** Everything important sat in individual heads. With fewer than five
-people, one resignation could have taken a production system's entire knowledge with it.
-And I already knew the team would grow, because I was asking for heads, so whatever we
-knew had to stop being an oral tradition.
+So I introduced [Confluence](https://www.atlassian.com/software/confluence) and seeded
+it myself, starting with the onboarding guide I wished I had received: every tool we
+use, where to find it, how to get access, which entitlements to request, which
+regulations you must complete before you can do this work in a regulated environment.
+Then the harder job: we went into the backyard and reverse engineered our own production
+models. Every product the business relies on got documented. What it does. How it works.
+What feeds it. Who uses it. Nobody handed us that knowledge, so we dug it out ourselves,
+because the alternative was operating systems we did not understand.
 
-**The move.** I introduced [Confluence](https://www.atlassian.com/software/confluence)
-and seeded it myself with the things I had just suffered through. The onboarding guide
-came first, written from my own painful joining: every tool, where to find it, how to
-get access, which entitlements to request, which regulations to complete before you can
-work here as a data scientist, data engineer or machine learning engineer.
+Richard Feynman, when a historian described his notebooks as a record of his thinking,
+corrected him: the notes were not a record of the thinking, they were the thinking. That
+is what documentation is for a team. It is not admin after the real work. It is the team
+thinking in a form that survives.
 
-Then the hard part: we went into the backyard and reverse engineered our own production
-models. Every model the business used got documented: what it does, how it works, what
-feeds it, who uses it. Nobody handed this to us. We dug it out, because the alternative
-was operating systems we did not understand.
+And here is the part I did not fully predict. The documentation outgrew us. Our
+Confluence space now serves governance and audit purposes, and teams outside our own
+area use it to understand our models for their own work. Knowledge we wrote down to
+protect a small team became an asset the broader organisation draws on. When people
+later joined the team, they onboarded from a documented path, not from word of mouth.
+There is an old proverb that says the palest ink is better than the best memory. Believe
+it before your first resignation, not after.
 
-I documented the deployment process end to end, mapped who in technology we talk to and
-how, and where no formal process existed we created one, including an SLA document for
-business requests. Requests stopped being favours done on the fly and became tracked
-work with expectations on both sides. That was the start of governance.
+The cost of this phase was my own evenings, and I will not pretend otherwise. Nobody
+asks for documentation. You do it because you are building something that must not
+depend on you.
 
-**What it cost.** My own evenings, honestly. Documentation is unglamorous and nobody
-asks for it. I treated it as a leadership act anyway: writing the guide you wish you had
-received is the difference between a team and a collection of individuals who share a
-manager.
+## The long game against the short game
 
-**The signal to move on.** People started answering their own questions from Confluence
-instead of interrupting each other. And the real payoff came later: when we eventually
-added two new heads, they onboarded from a documented path, not from mouth to mouth.
+Now I must tell you about the hardest challenge of the whole two years, because it was
+not technical.
 
-## Phase 3: The infrastructure reckoning
+Management, quite reasonably, wanted immediate results. Things they could count this
+quarter. And almost everything I have described so far produces nothing you can count
+this quarter. Sprints, documentation, governance processes: these are investments whose
+returns arrive later and compound quietly. My strategy was long term, sustainability
+over spectacle, and that meant living inside a permanent tension between what the
+business wanted to see now and what the team needed to become.
 
-**The constraint.** A regulated group's procurement process, no infrastructure budget of
-my own, and a legacy stack owned by other teams. I could not simply buy a platform. And
-the workload was fundamentally mismatched: Jenkins and Kubernetes serve applications
-beautifully, but they are not a distributed data processing platform.
+I will be honest with you: sometimes holding that line means going against what
+management is asking of you in the moment, because you can see what a scalable data
+science capability requires and they cannot yet. That can end well or badly, and you
+should know that before you choose it. It is ownership in its purest form. If the long
+game pays off, you were a builder. If it does not, you were difficult. Warren Buffett
+put the principle better than I can: someone is sitting in the shade today because
+someone planted a tree a long time ago. I decided early that I was there to plant trees,
+and I accepted the cost of explaining, over and over, why I was digging when everyone
+wanted fruit.
 
-**The move.** I prepared the case for [Databricks](https://www.databricks.com) early,
-and reality made the argument for me. During a platform migration things broke, and one
-of our products began accumulating unprocessed records. The backlog passed 200 million.
-The legacy stack could never catch up.
+My belief, and by the end of this post I hope it becomes yours: a good data science team
+is one whose systems outlive the people who built them. If I leave, if anyone leaves, if
+the whole team leaves, the documentation, the pipelines, the patterns and the governance
+must keep working. There is a moment in One Piece where Dr. Hiluluk asks when a man
+truly dies, and answers: not when he is shot, but when he is forgotten. Systems are how
+a team remembers. Build so that nothing important dies with a resignation letter,
+including yours.
 
-Here is the roadmap lesson, and it is the most transferable thing on this page: **you do
-not get budget for infrastructure, you get budget for pain.** When the incident came, I
-did not bring a complaint to the executive. I brought a costed proposal that was already
-prepared. Then I carried it end to end: the contract, the environment with the platform
-team, the networking, and a migration framework off the legacy stack. A repeatable path,
-not a heroic one off.
+## When the infrastructure bill arrives
 
-**What it cost.** Months of patience while the case waited for its moment, and personal
-risk, because I owned the outcome. If the platform had failed, that was mine.
+Then reality did what reality does: it presented the bill for infrastructure choices
+made long before I arrived.
 
-**The signal to move on.** Processing that would have taken about two months on the old
-stack finished in a day. The backlog died, nobody argued about cloud strategy again, and
-cloud first became the default. Moving our data storage to
-[AWS](https://aws.amazon.com) is now one of the team's biggest running initiatives.
+During a platform migration, things broke, and one of our products began accumulating a
+backlog of unprocessed records that the legacy stack could never catch up on. It was
+never going to catch up, because the stack was built for hosting applications, not for
+distributed data processing. No amount of team discipline fixes a platform mismatch. The
+workload and the infrastructure simply did not share a shape.
 
-## Phase 4: Teach the team you have
+I had seen this coming, and I had prepared for it, and this is the most transferable
+lesson I own: **you do not get budget for infrastructure, you get budget for pain.**
+There is an old line, often credited to Churchill, about never letting a good crisis go
+to waste. When the backlog crisis arrived, I did not bring management a complaint. I
+brought a costed proposal for [Databricks](https://www.databricks.com) that was already
+prepared, and I carried it end to end: the contract, the environment stood up with the
+platform and networking teams, and a migration framework off the legacy stack. A
+repeatable path, not a heroic once off.
 
-**The constraint.** I could not hire my way to the new stack. The team I had was hired
-for a different world: models lived on laptops and virtual machines where nobody else
-could reach them, and [PySpark](https://spark.apache.org/docs/latest/api/python/) and
-Databricks were new to almost everyone. My training budget was zero.
+The risk was mine and I knew it. If the platform failed, there would be no confusion
+about whose idea it was. That is the ownership I keep talking about: putting your name
+on an outcome before you know how it ends.
 
-**The move.** I taught, over and over. Knowledge sharing sessions on Databricks, on
-PySpark, on Jira, on Confluence, always showing the value rather than announcing the
-policy. People adopt tools when they see their own problem get smaller: need something,
-it is on Confluence; need to prototype, Databricks beats your laptop.
+Processing that used to take months finished in a day. The backlog died. And something
+subtler happened: the team's default assumption shifted to cloud first, and moving our
+data storage fully to the cloud is now one of the team's biggest running initiatives.
+Nobody argued about strategy after that. Results ended the argument, which is the only
+way arguments like that ever end.
 
-Then I made it a permanent institution: show and tells, every Friday. The rules are
-loose on purpose. Share a model you are building, something you learned about the
-business, a course you are studying, a better way to do something, or a piece of tech
-news. The zero budget training programme, in other words. Stakeholders started attending
-and giving feedback, which quietly turned a team ritual into a business relationship.
-Alongside it I pushed people toward the studies the company sponsors, because in a team
-this small, personal development is not a perk. It is the growth strategy.
+## Teach the team you have
 
-**What it cost.** A few hours every Friday, protected fiercely, and the repetition tax:
-teaching the same thing five times until it sticks.
+Here is a constraint nobody warns you about: you will mostly not be allowed to hire your
+way out. The team you have is the team you build with, and my team had been hired for a
+different technical world. Models lived on laptops and personal virtual machines where
+nobody else could reach them. [PySpark](https://spark.apache.org/docs/latest/api/python/)
+and Databricks were new to almost everyone. And the training budget was, you already
+know, tight.
 
-**The signal to move on.** Models stopped living on personal machines. When the team
-reaches for the shared platform without being told, this phase has worked.
+So the training programme was us. I taught, over and over: sessions on Databricks, on
+PySpark, on Jira, on Confluence, always showing value rather than announcing policy,
+because people adopt tools when they watch their own problem get smaller, never because
+an email told them to.
 
-## Phase 5: Patterns, not heroics
+Then I made teaching an institution: show and tells, every Friday, with rules that are
+loose on purpose. Share the model you are building. Share something you learned about
+the business. Share the course you are studying, a better way to do something, a piece
+of technology news. Everyone becomes able to do a bit of everyone's job, which is the
+only real insurance a small team has. And this institution outgrew us exactly like the
+documentation did: people from across the business now attend and give feedback, which
+quietly turned a team ritual into a standing relationship with our stakeholders.
+Alongside it I pushed everyone toward the studies the company sponsors, because in a
+small specialised team, personal development is not a perk, it is the growth strategy.
+The proverb holds: if you want to go fast, go alone; if you want to go far, go together.
 
-**The constraint.** The team could now use real infrastructure, but everyone deployed by
-hand, running jobs directly on Databricks. It worked, and it was not reproducible,
-governed, or accessible to anyone but the person who did it. In a regulated environment
-that is not a style problem. It is a risk.
+## Patterns, not heroics
 
-**The move.** I introduced an MLOps and data engineering strategy layer: this is how we
-deploy here. Ingestion patterns. Model development patterns. Dashboarding patterns. A
-full [CI/CD](https://www.atlassian.com/continuous-delivery/continuous-integration) path
-with governance, reproducibility and access control, instead of jobs run by hand.
+By now the team could see its work, find its knowledge, and stand on real
+infrastructure. The remaining gap was discipline. Deployments happened by hand, jobs run
+directly on the platform by whoever built them. It worked, and in a regulated
+environment it was quietly dangerous: not reproducible, not governed, not accessible to
+anyone but the author.
 
-Underneath it sat work I took on myself, which also became part of my PhD research on
-distributed systems: an open source engine that lets you describe a data or machine
-learning pipeline once, as a small folder of config and Python, and run that same folder
-anywhere. That engine is
-[Ubunye Engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine/), and it became
-the backbone of how the team does data engineering. Its whole story is written up, from
-[why convention is the real deliverable](/blog/ubunye-series-part1-why-convention) to
-[how to use it with real examples](/blog/ubunye-series-part6-how-to-use-it).
+So we built the engineering layer: this is how we deploy here. Ingestion patterns, model
+development patterns, dashboarding patterns, and full
+[CI/CD](https://www.atlassian.com/continuous-delivery/continuous-integration) through
+[GitHub workflows](https://docs.github.com/en/actions), with governance,
+reproducibility and access control designed in rather than bolted on. The mathematician
+Alfred North Whitehead wrote that civilisation advances by extending the number of
+important operations we can perform without thinking about them. That is exactly what a
+pattern is: one person's hard won competence, converted into the team's default.
 
-Rolling it out was not an email. It was onboarding, practical sessions, two to three
-hands on hours every Friday, working through real pipelines together until the patterns
-were the team's own.
+And here I must tell the engine story properly, because the order matters. During my PhD
+research on distributed systems I had built an open source engine that lets you describe
+a data or machine learning pipeline once, as a small folder of configuration and Python,
+and run that same folder anywhere. It existed to serve my research. But standing in
+front of this team's engineering gap, I realised the thing I had already built was the
+stabiliser we needed. That engine is
+[Ubunye Engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine/), its whole story
+is written from [why convention is the real deliverable](/blog/ubunye-series-part1-why-convention)
+through [how to use it with real examples](/blog/ubunye-series-part6-how-to-use-it), and
+it became the backbone of how the team does data engineering. Research met reality, and
+they strengthened each other.
 
-**What it cost.** The engine cost me nights and weekends, which is why it doubled as PhD
-work, and the Friday sessions cost the team real delivery hours in the short term.
+Rolling patterns out is not an email. It was onboarding, practical sessions, hands on
+hours every Friday, working through real pipelines together until the patterns stopped
+being mine and became the team's.
 
-**The signal to move on.** A deployment stopped depending on who did it. Any pattern
-that survives its author is working.
+## Learn to let go
 
-## Phase 6: Learn to let go
+Eventually I hit the ceiling every builder hits, and the ceiling was me.
 
-**The constraint.** Me. I was trying to be the scrum master and the technical lead at
-the same time, and doing both badly on alternate days. Every structure I personally held
-together was a structure that failed when I was on leave.
-
-**The move.** I went to the executive and made the case for help. We added two heads to
+I was running the process and leading the engineering at the same time, and doing both
+badly on alternate days. Worse, every structure I personally held together was a
+structure that would fail the week I went on leave, which would have betrayed the entire
+philosophy of this build. So I went to management and made the case for help. We grew
 the team. We brought in a project manager and scrum masters to run the process. And we
-began handing some of the engineering capabilities we had built over to the platform
-teams, whose job that properly is, so they support us instead of us carrying everything.
+began handing engineering capabilities we had built over to the platform teams, whose
+job that properly is, so they support us instead of us carrying everything. If you want
+the theory underneath that move, [Team Topologies](https://teamtopologies.com/book) is
+the book: platform teams exist so that stream teams can flow.
 
-**What it cost.** Ego, mostly. Letting go of things you built and run well is harder
-than building them.
+Lao Tzu said a leader is best when people barely know he exists, and that when the work
+is done, the people say: we did it ourselves. I used to read that as poetry. I now read
+it as an engineering requirement. The cost of this phase is ego, and it is the cheapest
+price on this whole page once you understand what it buys.
 
-**The signal.** The team runs without me in the room. That was the goal the whole time.
+## What two years bought
 
-## What two years actually bought
+So what does all of this add up to? Told plainly, the way I would tell you across a
+table:
 
-- A new model goes to production in under a week. It used to be unbounded.
-- When a backlog builds up, we clear it in under a day. It used to take months and
-  sometimes broke entirely.
-- Two new team members onboarded from a documented path, not an oral tradition.
-- Every production model is documented: what it does, what feeds it, who uses it.
-- And the one that matters most: the team moved from fully reactive, always chasing the
-  latest fire, to proactive for most of what we do.
+A new model used to take an unbounded amount of time to reach production. Nobody could
+tell you how long, because nobody could see the path. Now it ships in days. When
+backlogs build up, they clear in a day, where they once took months and sometimes broke
+things entirely. New people onboard from a documented path instead of an oral tradition.
+Every production model is understood, documented, and governed, and other teams use that
+documentation for their own work. The research in
+[Accelerate](https://itrevolution.com/product/accelerate/) found that delivery speed and
+stability rise together or not at all, and that matched our experience exactly: we got
+faster because we got safer.
 
-## The roadmap on one page
+And the change that matters more than every number: the team stopped being reactive. We
+were once a team that chased whatever was on fire that day. We are now proactive for
+most of what we do, which means we choose our work instead of our work choosing us.
 
-1. **Structure before tools.** Sprints and visible work first. You cannot fix what you
-   cannot see, and no platform purchase fixes a team that cannot see its own work.
-2. **Documentation is a leadership act.** Write the onboarding guide you wish you had
-   received. Reverse engineer the systems nobody explained to you and write those down
-   too. Your team's knowledge should survive any single resignation, including yours.
-3. **You get budget for pain, not for infrastructure.** Prepare the proposal before the
-   incident, because the incident is coming. When it arrives, bring a costed plan, not a
-   complaint, and be willing to own the outcome personally.
-4. **Teach the team you have.** You will not always be allowed to hire. A weekly show
-   and tell is a training programme with a budget of zero, and it makes a small team
-   resilient because everyone can do a bit of everyone's job.
-5. **Patterns beat heroics.** Reusable ingestion, deployment and dashboarding patterns
-   turn one person's competence into the team's default. That is also
-   [why I build convention driven tools](/blog/ubunye-series-part1-why-convention).
-6. **Hire out your bottlenecks, including yourself.** The moment you are both the scrum
-   master and the lead, one of those jobs is being done badly. Ask for the project
-   manager. Hand the platform work to the platform teams.
-7. **Measure before and after.** Months to a day. Unbounded to under a week. Reactive to
-   proactive. Numbers end arguments that adjectives never will.
+The systems run whether I am in the room or not. That was the goal the whole time.
 
-None of this required genius. It required doing unglamorous things in the right order,
-under constraints that never fully went away, and refusing to skip the boring ones. That
-is most of what building a capability from scratch actually is.
+## The key takeaways
+
+If you are about to build a data science team from scratch, this is what I would say to
+you before anything else.
+
+1. **Decide what you believe, because everything else follows from it.** Mine was:
+   build systems that outlive the people who build them. Every move on this page is that
+   belief wearing different clothes.
+2. **Make the work visible before you touch technology.** You cannot fix a team you
+   cannot see, and no platform purchase repairs invisible work.
+3. **Documentation is leadership, not admin.** Write the guide you wish you had
+   received. It will outgrow your team and become the organisation's memory.
+4. **Play the long game, and know its price.** Management will want countable results
+   now, and your most important work will not be countable for months. Sometimes you
+   will hold your line against what is being asked, because you can see what a scalable
+   capability requires. Understand clearly: that can end as vision or as insubordination,
+   and which one it becomes depends on what you deliver. Take that ownership with open
+   eyes.
+5. **You get budget for pain, not for infrastructure.** Prepare the proposal before the
+   crisis, because the crisis is coming. When it arrives, bring a costed plan, not a
+   complaint, and put your name on the outcome.
+6. **Teach the team you have.** A weekly show and tell is a training programme with a
+   budget of zero, and a small team where everyone can do a bit of everything is more
+   resilient than a large team of silos.
+7. **Patterns beat heroics.** Convert individual competence into team defaults, and
+   automate the important operations until nobody has to think about them.
+8. **Let go on purpose.** Hand the process to process people and the platforms to
+   platform people. If the team only works when you are watching, you have built a
+   performance, not a capability.
+9. **Expect sacrifices, and choose them consciously.** This build cost evenings,
+   patience, political capital, and ego. Ownership means some of what you own may fail
+   with your name on it. I would pay all of it again, because the alternative is a team
+   that dies a little every time someone resigns.
+
+None of this required genius. It required knowing why I was doing each thing, doing the
+unglamorous ones in the right order, and refusing to skip the boring ones. That is what
+building a capability from scratch actually is: planting trees, in the right sequence,
+whose shade you may never personally sit in.
