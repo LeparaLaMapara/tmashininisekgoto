@@ -11,6 +11,8 @@ import { mdxComponents } from '@/components/blog/mdx-components'
 import { Comments } from '@/components/blog/comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
+import { ShareButtons } from '@/components/blog/share-buttons'
+import { RelatedPosts } from '@/components/blog/related-posts'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -119,6 +121,12 @@ export default async function BlogPostPage({ params }: PageProps) {
           }}
         />
       </article>
+
+      {/* Share */}
+      <ShareButtons title={post.title} url={`${SITE_URL}/blog/${slug}`} />
+
+      {/* Related posts */}
+      <RelatedPosts slug={slug} tags={post.tags} />
 
       {/* Subscribe CTA */}
       <div className="mt-16">
