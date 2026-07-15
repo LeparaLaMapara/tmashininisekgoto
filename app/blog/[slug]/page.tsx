@@ -8,7 +8,7 @@ import rehypeKatex from 'rehype-katex'
 import { getAllPosts, getPostBySlug } from '@/lib/blog'
 import { formatDate } from '@/lib/utils'
 import { mdxComponents } from '@/components/blog/mdx-components'
-import { GiscusComments } from '@/components/blog/giscus-comments'
+import { Comments } from '@/components/blog/comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
 
@@ -126,7 +126,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       </div>
 
       {/* Comments */}
-      <GiscusComments slug={slug} />
+      <Comments slug={slug} />
     </section>
   )
 }
