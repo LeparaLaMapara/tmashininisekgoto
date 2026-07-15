@@ -1,0 +1,277 @@
+---
+title: "Ubunye Engine Part 6: How to Use It, With Real Examples"
+date: 2026-07-15
+tags: [open source, engineering, python, mlops, ubunye series]
+summary: "The engine is now on version 0.5.0. This part shows how to actually use it: install it, write your first pipeline, run it on your laptop, then run the exact same folder on Docker, Kubernetes and Databricks. Every snippet here was run before it was written."
+---
+
+# Ubunye Engine Part 6: How to Use It, With Real Examples
+
+*Part 6 of 6 in the Ubunye Engine series.*
+[Part 1: Why Convention](/blog/ubunye-series-part1-why-convention) ·
+[Part 2: The Model Registry](/blog/ubunye-series-part2-model-registry) ·
+[Part 3: The Boring Work](/blog/ubunye-series-part3-boring-work) ·
+[Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production) ·
+[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent)
+
+---
+
+> The earlier parts told the story of building the engine. This part is different. It is
+> the part you read when you want to use it. Everything below was run before it was
+> written. Nothing here is aspirational.
+
+---
+
+## Where the Engine Is Now
+
+Since Part 5 the engine went through two releases, 0.4.0 and 0.5.0, and both were about
+one idea: a pipeline should not know where it is running.
+
+That sounds like a slogan, so here is the proof. There is one example pipeline, a folder
+with one config file and one Python file, that has now produced the exact same output on
+seven different environments:
+
+1. Plain Spark on a laptop
+2. A Docker container
+3. A Kubernetes cluster
+4. Object storage through MinIO, speaking the S3 protocol
+5. A bare spark submit job
+6. Databricks serverless
+7. A fresh install from the built package on a Windows machine
+
+Same folder. Same bytes. On every one of them, the output tables hash to the same value:
+
+```
+067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+```
+
+That hash is not a screenshot claim. It is asserted in CI on every pull request. If any
+environment ever drifts, the build goes red.
+
+## The Mental Model in One Paragraph
+
+A pipeline is a folder. The folder holds a `config.yaml` that says what data comes in and
+what tables go out, and a `transformations.py` that holds your business logic. The engine
+reads the config, loads your code, runs it on Spark, writes the outputs, and records
+lineage. That is the whole model. Everything else in this post is detail.
+
+## Install It
+
+```bash
+pip install "ubunye-engine[spark]"
+```
+
+Extras exist for the pieces you need and nothing more: `ml` for the model lifecycle,
+`rest` for calling HTTP APIs, `delta` for Delta tables on plain Spark, `objectstore` for
+writing models to cloud storage. On Databricks you install the bare package, because
+Spark and Delta are already there.
+
+## Your First Pipeline
+
+Create the folder. The path itself carries meaning: use case, then package, then task.
+
+```
+pipelines/
+  weather/
+    ingestion/
+      hourly_forecast/
+        config.yaml
+        transformations.py
+```
+
+The config says what goes in and what comes out:
+
+```yaml
+MODEL: "etl"
+VERSION: "1.0.0"
+
+ENGINE:
+  spark_conf:
+    spark.sql.shuffle.partitions: "2"
+  profiles:
+    DEV:
+      spark_conf:
+        spark.sql.shuffle.partitions: "1"
+    PROD: {}
+
+CONFIG:
+  inputs:
+    forecast:
+      format: rest_api
+      url: "https://api.open-meteo.com/v1/forecast"
+      params:
+        latitude: -26.2
+        longitude: 28.04
+        hourly: temperature_2m
+
+  transform: {}
+
+  outputs:
+    hourly_temps:
+      format: s3
+      path: "file:///tmp/ubunye/hourly_temps"
+      mode: merge
+      merge_keys: ["reading_time"]
+      file_format: delta
+```
+
+Do not let the name `s3` mislead you. It is a generic path connector. Give it
+`file://` and it writes to disk. Give it `s3a://` and it writes to object storage.
+Give it `gs://` and it writes to Google Cloud. The connector does not care.
+
+The Python file holds the only code you write. A class with one method:
+
+```python
+from pyspark.sql import functions as F
+from ubunye.core.interfaces import Task
+
+
+class HourlyForecast(Task):
+    def transform(self, sources):
+        forecast = sources["forecast"]
+        return {
+            "hourly_temps": forecast.select(
+                F.col("time").alias("reading_time"),
+                F.col("temperature_2m").alias("temp_c"),
+            )
+        }
+```
+
+The keys line up by name. `sources["forecast"]` is the input called `forecast` in the
+config, already read and handed to you as a DataFrame. The dictionary you return maps
+each output name to the DataFrame that should land there. You never open a connection,
+never write a path, never call `.write`. The config owns that.
+
+## Run It
+
+Check the config before anything touches Spark:
+
+```bash
+ubunye validate -d pipelines -u weather -p ingestion --all
+```
+
+Then run it:
+
+```bash
+ubunye run -d pipelines -u weather -p ingestion -t hourly_forecast -m DEV -dt 2026-07-15
+```
+
+The flags read like the folder path: directory, use case, package, task. Then the mode,
+which picks a profile from the config, and the data timestamp, which your config can use
+anywhere as `{{ dt }}`.
+
+Two small things that save time. `run --all` runs every task in the package in order.
+And `ubunye test run` does the same as `run` but with lineage on by default, which is
+what you want while developing.
+
+## The Same Folder, Anywhere Else
+
+Here is the part that took two releases to earn. To move that folder to another
+platform, you change nothing inside it. You set at most three environment variables:
+
+```bash
+SPARK_MASTER      # where the compute is. Unset means the platform decides.
+UBUNYE_SINK       # what kind of table to write: s3, delta, hive, unity
+UBUNYE_DATA_ROOT  # where the data lives: file://, s3a://, gs://, /Volumes/...
+```
+
+On a laptop you set none of them and get local files. On Databricks you set
+`UBUNYE_SINK=unity` and the same output block writes a Unity Catalog table. Inside a
+container you point `UBUNYE_DATA_ROOT` at a mounted volume. That is the entire
+portability surface.
+
+This works because of what the config is not allowed to say. A config cannot set
+`spark.master`. It used to be possible, and it was a quiet disaster: on a cloud
+cluster the config would override the platform, the whole job would run inside the
+driver, ignore every executor you were paying for, and report success. Since 0.4.0
+the engine raises an error instead. Which machine runs the job is a fact about the
+platform, not about the pipeline, so the engine refuses to let a pipeline claim it.
+
+## A Real Example: Files In, Search Ready Chunks Out
+
+The pipeline that produced the hash above is public. It reads a folder of text files,
+gives each document an identity based on its content, and cuts the text into
+overlapping chunks ready for embedding. The interesting choices:
+
+```yaml
+  inputs:
+    files:
+      format: binary
+      path: "{{ env.UBUNYE_DATA_ROOT | default('file:///tmp/ubunye') }}/corpus"
+      path_glob_filter: "*.txt"
+      recursive: true
+
+  outputs:
+    documents:
+      format: "{{ env.UBUNYE_SINK | default('s3') }}"
+      path: "{{ env.UBUNYE_DATA_ROOT | default('file:///tmp/ubunye') }}/documents"
+      table: "workspace.ubunye_examples.portable_documents"
+      mode: merge
+      merge_keys: ["doc_id"]
+      file_format: delta
+```
+
+Notice that `path` and `table` are both set. They are not alternatives you choose
+between. The path connector reads `path` and ignores `table`. The Unity connector reads
+`table` and ignores `path`. One output block serves both worlds, and the environment
+decides which one is real.
+
+And in the Python file, `doc_id` is a hash of the document text, not the file path. The
+same document is the same document whether it arrived from `/tmp`, from `s3a://` or from
+a Databricks volume. That single decision is what makes `mode: merge` idempotent across
+platforms, not just across runs.
+
+## The ML Lifecycle, From Config
+
+The model story from Part 2 is now real and it runs from config. Five task folders make
+a full lifecycle: pull data, build features, train, validate, predict. The train task is
+just another config:
+
+```yaml
+  transform:
+    type: model
+    params:
+      action: train
+      model_name: fare_model
+      register_stage: staging
+```
+
+Training registers the model into a versioned registry. A separate validate task loads
+that candidate, scores it on data it has never seen, and promotes it to production only
+if the numbers clear the gates you declared. The predict task loads whatever is in
+production and writes predictions. If a promotion turns out to be a mistake:
+
+```bash
+ubunye models rollback -u nyc_taxi -m fare_model
+```
+
+Since 0.5.0 the registry writes to cloud storage directly. Set the store to an
+`s3://` or `gs://` path and the models, versions and metrics live there, with no code
+change. On a laptop the same registry is just a folder.
+
+## What I Learned Writing This Part
+
+Three of the examples had never left Databricks when I started claiming portability.
+Writing this post forced the honest test: run every example everywhere and compare
+hashes. That test found real bugs. Line endings on Windows silently changed the corpus
+and broke the hash. A helper script exported settings into a subshell where they could
+not survive. A default `spark.master` hiding in one config would have crippled any
+cloud run. Each fix made the engine stricter, and the CI matrix now guards all of it.
+
+The lesson is the same one this series keeps arriving at. A claim you do not test is a
+story. The seven identical hashes are the difference between saying the pipeline runs
+anywhere and knowing it.
+
+## Where to Go
+
+- The examples repository, with eleven worked examples from ingestion to a full ML
+  lifecycle, each with commands for laptop, Docker, Kubernetes and Databricks:
+  [github.com/ubunye-ai-ecosystems/ubunye-examples](https://github.com/ubunye-ai-ecosystems/ubunye-examples)
+- The documentation site, grouped by what you are trying to do:
+  [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine)
+- The engine itself:
+  [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine)
+
+Start with the examples. Clone the repo, run the first one on your laptop, then run the
+same folder in Docker and watch it produce the same answer. That moment is the whole
+pitch.

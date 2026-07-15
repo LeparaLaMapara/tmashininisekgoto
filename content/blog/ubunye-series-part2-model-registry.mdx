@@ -7,11 +7,12 @@ summary: "The model registry was where the project went from interesting framewo
 
 # Ubunye Engine Part 2: The Model Registry and Hexagonal Architecture
 
-*Part 2 of 5 in the Ubunye Engine series.*
+*Part 2 of 6 in the Ubunye Engine series.*
 [Part 1: Why Convention](/blog/ubunye-series-part1-why-convention) ·
 [Part 3: The Boring Work](/blog/ubunye-series-part3-boring-work) ·
 [Part 4: From Kaggle to Production](/blog/ubunye-series-part4-kaggle-to-production) ·
-[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent)
+[Part 5: Building With an Agent](/blog/ubunye-series-part5-building-with-agent) ·
+[Part 6: How to Use It](/blog/ubunye-series-part6-how-to-use-it)
 
 ---
 
@@ -168,9 +169,9 @@ class PandasDataFrameAdapter:
 
 ---
 
-## Why This Is Not In the Current Version
+## Why This Was Not In That Version
 
-It is a migration. Every `transform()` function currently receives a `pyspark.sql.DataFrame`. Every `Reader.read()` returns one. Adding `DataFramePort` as the official interface requires a v0.2.0 with a clear migration path.
+It is a migration. Every `transform()` function at the time received a `pyspark.sql.DataFrame`. Every `Reader.read()` returned one. Adding `DataFramePort` as the official interface needed a release with a clear migration path.
 
 The right approach for the next phase:
 
@@ -179,6 +180,8 @@ The right approach for the next phase:
 3. Ship `PandasDataFrameAdapter` as the local/test backend
 4. Add `--backend pandas` to `ubunye run`
 5. Let `UbunyeModel.train(df)` accept `DataFramePort` in the contract
+
+**Update, July 2026.** Version 0.5.0 shipped steps 1 to 3 exactly as written above. `DataFramePort` is now a real Protocol in the engine, Spark DataFrames satisfy it without modification, and `PandasDataFrameAdapter` exists for tests and local work. Step 4, a full pandas execution backend, is tracked as an open issue on the repo. It is a good feeling when a design section becomes a changelog entry. [Part 6](/blog/ubunye-series-part6-how-to-use-it) shows the engine as it stands now.
 
 ---
 
