@@ -5,7 +5,7 @@ import { WorkWithMe } from '@/components/ai/work-with-me'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
 export const metadata: Metadata = {
-  title: 'Talk to Thabang AI',
+  title: 'Talk to Thabang AI Assist',
   description:
     'Chat with an AI representation of Thabang Mashinini-Sekgoto, grounded on his work, writing, talks, and projects — then explore how to work together: talks, consulting, hiring, collaboration, and SekhotoMultiversity.',
 }
@@ -19,13 +19,13 @@ export default function AIPage() {
           <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
             Talk to{' '}
             <span className="text-synapse">
-              Thabang AI
+              Thabang AI Assist
             </span>
           </h1>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">
-            An AI grounded on my work, writing, talks, and projects. Ask about my
-            experience, philosophy, or how we could work together — then take the
-            next step below.
+            My AI assistant, grounded on my work, writing, talks and projects. It
+            knows what I have built and how I think, but it is not me. Ask it about
+            my experience or how we could work together, then take the next step below.
           </p>
         </div>
 

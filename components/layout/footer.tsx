@@ -62,7 +62,7 @@ export function Footer() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-synapse/10 text-synapse text-sm border border-synapse/20 hover:bg-synapse/20 transition-all"
             >
               <Sparkles className="w-4 h-4" />
-              Talk to Thabang AI
+              Talk to Thabang AI Assist
             </Link>
           </div>
         </div>

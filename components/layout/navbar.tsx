@@ -92,7 +92,7 @@ export function Navbar() {
             )}
           >
             <Sparkles className="w-4 h-4" />
-            Talk to Thabang AI
+            Talk to Thabang AI Assist
           </Link>
 
           <ThemeToggle />
@@ -143,7 +143,7 @@ export function Navbar() {
                 className="mt-3 flex items-center justify-center gap-2 px-5 py-3 text-base font-medium rounded-full bg-synapse/10 text-synapse border border-synapse/20"
               >
                 <Sparkles className="w-4 h-4" />
-                Talk to Thabang AI
+                Talk to Thabang AI Assist
               </Link>
               <div className="mt-3 flex justify-center">
                 <ThemeToggle />

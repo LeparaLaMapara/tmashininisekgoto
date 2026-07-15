@@ -56,7 +56,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-synapse/40 text-synapse font-medium text-base hover:bg-synapse/10 transition-all"
               >
                 <Sparkles className="w-4 h-4" />
-                Talk to Thabang AI
+                Talk to Thabang AI Assist
               </Link>
             </div>
           </ScrollReveal>

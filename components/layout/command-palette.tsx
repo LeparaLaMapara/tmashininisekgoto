@@ -12,7 +12,7 @@ const PAGES = [
   { name: 'Work', href: '/work', icon: FolderOpen },
   { name: 'Blog', href: '/blog', icon: BookOpen },
   { name: 'Talks', href: '/talks', icon: Mic },
-  { name: 'Talk to Thabang AI', href: '/ai', icon: Sparkles },
+  { name: 'Talk to Thabang AI Assist', href: '/ai', icon: Sparkles },
   { name: 'Resume', href: '/resume', icon: FileText },
 ]
 

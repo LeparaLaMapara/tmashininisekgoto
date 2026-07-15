@@ -26,7 +26,7 @@ export default function NotFound() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-synapse/10 text-synapse text-sm font-medium border border-synapse/20 hover:bg-synapse/20 transition-all"
           >
             <Sparkles className="w-4 h-4" />
-            Ask Thabang AI
+            Ask Thabang AI Assist
           </Link>
         </div>
       </div>
