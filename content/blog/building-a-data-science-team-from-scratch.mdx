@@ -1,0 +1,209 @@
+---
+title: "Building a Data Science Team From Scratch: What I Actually Did"
+date: 2026-07-15
+tags: [leadership, data science, mlops, engineering]
+summary: "Two years ago I joined a team with no handover, no documentation, and production models nobody could explain. This is the honest record of how it became a team that ships models in under a week. Not theory. The actual moves, in order."
+---
+
+# Building a Data Science Team From Scratch: What I Actually Did
+
+> This is not a management book chapter. It is the honest record of two years spent
+> turning a small, undocumented, reactive data science team inside a large South African
+> financial services group into one that ships. If you have just been handed a team like
+> that, or you are about to build one, this is the order of operations I wish someone
+> had given me.
+
+## What I inherited
+
+The handover was the worst I have ever received, because there was none.
+
+There was no documentation of any kind. Models were running in production, with real
+customers depending on them, and there was no record of how they were built, which data
+sources they used, who consumed their outputs, or what their accuracy was. The products
+existed. The knowledge about them lived nowhere.
+
+The team was small and it had no head of data science, so it reported directly to a
+business executive. That matters more than it sounds: there was nobody whose job it was
+to translate between what the business asked for and what the team could sustainably
+build, so everything was done on the fly.
+
+The infrastructure was legacy. Deployments ran through
+[Jenkins](https://www.jenkins.io) onto [Kubernetes](https://kubernetes.io) clusters
+managed with [Rancher](https://www.rancher.com), a stack built for hosting applications,
+not for data science. Nothing about it was distributed or scalable in the way data work
+needs, and later we would feel that pain fully.
+
+So: no map, no owner, no scale. Here is what I did about it, in the order I did it.
+
+## Phase 1: Structure before anything
+
+The team's first problem was not technical. It was that work had no shape. Things
+started, stalled, and finished invisibly.
+
+So the first thing I introduced was [agile](https://agilemanifesto.org) working through
+[Jira](https://www.atlassian.com/software/jira). Two week sprints. A standup every two
+days, not every day, because a small team drowning in production issues does not need
+another daily meeting. At the end of each sprint we met, looked at what was done and
+what was not, asked why, and unblocked each other.
+
+I want to be honest about what this actually bought us, because it was not speed. It was
+visibility. Within a few sprints you could see who knew what, which skills the team had
+and lacked, and where work went to die. You cannot fix a team you cannot see.
+
+## Phase 2: Write everything down
+
+Once the work was visible, the next problem announced itself: everything important was
+sitting in people's heads. If one person left, their models left with them.
+
+So I introduced [Confluence](https://www.atlassian.com/software/confluence) as the
+team's documentation home, and I seeded it myself with the things I had just suffered
+through. The onboarding guide came first, written from my own painful experience of
+joining: every tool we use, where to find it, how to get access, which entitlements to
+request, and which regulations you must complete before you can work as a data
+scientist, data engineer or machine learning engineer here. The vision was simple. The
+team was going to grow, and growth must not depend on knowledge passed from mouth to
+mouth.
+
+Then came the hard part: we went into the backyard and reverse engineered our own
+production models. Every model, every product the business was using, got documented:
+what it does, how it works, what feeds it, who uses it. Nobody handed this to us. We dug
+it out ourselves, because the alternative was operating systems we did not understand.
+
+I documented the deployment process end to end, through Jenkins and Kubernetes, who owns
+which step and what has to happen. I mapped the parties involved: who in technology we
+talk to, and how. And where no formal process existed, we created one, including an SLA
+document for business requests, so that requests stopped being favours done on the fly
+and became tracked work with expectations on both sides. That was the beginning of
+governance for us.
+
+Documentation gets treated as admin. It is not. Writing down how everything works, when
+nobody wrote it down for you, is a leadership act. It is the difference between a team
+and a collection of individuals who happen to share a manager.
+
+## Phase 3: The infrastructure reckoning
+
+Then the infrastructure taught us the lesson I knew was coming.
+
+During a platform migration, things broke, and one of our products started accumulating
+a backlog of unprocessed records. The backlog grew past 200 million. The legacy stack
+could not catch up, because it was never built for this: Jenkins and Kubernetes serve
+applications beautifully, but they are not a distributed data processing platform. We
+were paying the price of infrastructure chosen for a different job.
+
+I looked around and made the case for [Databricks](https://www.databricks.com). And I
+mean the whole case, end to end: getting the contract in place, standing up the
+environment with the platform team, working through the networking, until we had a full
+working environment. Then I built a migration framework to move us off the legacy stack:
+a repeatable path, not a heroic one off.
+
+The result made the argument better than any slide deck. Processing that would have
+taken about two months on the old stack finished in a day. The backlog died. And the
+team's mindset shifted with it: cloud first became the default assumption, and moving
+our data storage to [AWS](https://aws.amazon.com) is now one of the team's biggest
+running initiatives.
+
+The lesson is not "buy Databricks". The lesson is that infrastructure must follow the
+shape of the work. When your workload is distributed data processing and your platform
+is an app server, no amount of team discipline fixes that mismatch.
+
+## Phase 4: Teach relentlessly
+
+A platform nobody can use is a very expensive way to feel modern.
+
+The team had been working on laptops and virtual machines. Models lived on personal
+machines where nobody else could reach them. [PySpark](https://spark.apache.org/docs/latest/api/python/)
+and Databricks were new to almost everyone. So I taught, over and over: knowledge
+sharing sessions on Databricks, on PySpark, on Jira, on Confluence, showing the value
+rather than announcing the policy. People adopt tools when they see their own problem
+get smaller, and slowly that happened: need something, it is on Confluence; need to
+prototype, Databricks is faster than your laptop.
+
+Then I made teaching a permanent institution: show and tells, every Friday. The rules
+are loose on purpose. Share a model you are building. Share something you learned about
+the business. Share a course you are studying, a better way to do something, or a piece
+of technology news. The point is that everyone becomes able to do a bit of everyone
+else's job, which is the only real insurance a small team has. Stakeholders started
+attending and giving feedback, which quietly turned a team ritual into a business
+relationship.
+
+Alongside that, I pushed people toward the studies the company sponsors, because
+personal development is not a perk. In a small specialised team it is the growth
+strategy.
+
+## Phase 5: Patterns, not heroics
+
+By now the team could see its work, find its knowledge, and use real infrastructure.
+The next gap was discipline: people were deploying by running jobs directly on
+Databricks, by hand. It worked, but it was not reproducible, governed or accessible to
+anyone but the person who did it.
+
+So I introduced an MLOps and data engineering strategy layer for the team: this is how
+we deploy here, these are the practices. Ingestion patterns. Model development patterns.
+Dashboarding patterns on Databricks. A full [CI/CD](https://www.atlassian.com/continuous-delivery/continuous-integration)
+path with governance, reproducibility and access control, instead of jobs run by hand.
+
+And underneath all of it sat a piece of work I took on myself, which also became part of
+my PhD research on distributed systems: I built an open source engine that lets you
+describe a data or machine learning pipeline once, as a small folder of config and
+Python, and run that same folder anywhere. That engine is
+[Ubunye Engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine/), and it became
+the backbone of how the team does data engineering. I have written its whole story,
+from [why convention is the real deliverable](/blog/ubunye-series-part1-why-convention)
+to [how to use it with real examples](/blog/ubunye-series-part6-how-to-use-it), so I
+will not repeat it here.
+
+Rolling it out was not an email. It was onboarding, practical sessions, two to three
+hands on hours every Friday, working through real pipelines together until the patterns
+were the team's own.
+
+## Phase 6: Learn to let go
+
+Around this point I ran into my own ceiling: I was trying to be the scrum master and the
+technical lead at the same time, and doing both badly on alternate days.
+
+So I went to the executive and made the case for help. We brought in a project manager
+and scrum masters to run the process. And we began handing some of the engineering
+capabilities we had built over to the platform teams, whose job that properly is, so
+they could support us instead of us carrying everything.
+
+If you are building a team from scratch, this phase is not optional. Every structure you
+personally hold together is a structure that fails when you are on leave. The goal was
+never for me to run everything. It was for the team to run without me.
+
+## What changed
+
+Two years, measured plainly:
+
+- A new model goes to production in under a week. It used to be unbounded.
+- When a backlog builds up, we clear it in under a day. It used to take months and
+  sometimes broke entirely.
+- Onboarding is a documented path, not an oral tradition.
+- Every production model is documented: what it does, what feeds it, who uses it.
+- And the one that matters most: the team moved from fully reactive, always chasing the
+  latest fire, to proactive for most of what we do.
+
+## The order of operations, if you are starting from scratch
+
+1. **Structure before tools.** Sprints and visible work first. You cannot fix what you
+   cannot see, and no platform purchase fixes a team that cannot see its own work.
+2. **Documentation is a leadership act.** Write the onboarding guide you wish you had
+   received. Reverse engineer the systems nobody explained to you, and write those down
+   too. Your team's knowledge should survive any single resignation, including yours.
+3. **Infrastructure must follow the shape of the work.** App infrastructure for app
+   workloads, distributed platforms for data workloads. The mismatch always sends the
+   bill eventually, and ours arrived as 200 million unprocessed records.
+4. **Teach relentlessly and in public.** Weekly show and tells, hands on sessions,
+   sponsored studies. A small team where everyone can do a bit of everything is more
+   resilient than a big team of specialists in silos.
+5. **Patterns beat heroics.** Reusable ingestion, deployment and dashboarding patterns
+   turn one person's competence into the team's default. That is also
+   [why I build convention driven tools](/blog/ubunye-series-part1-why-convention).
+6. **Hire out your bottlenecks, including yourself.** The moment you are both the scrum
+   master and the lead, one of those jobs is being done badly. Ask for the project
+   manager. Hand the platform work to the platform teams.
+7. **Measure before and after.** Months to a day. Unbounded to under a week. Reactive to
+   proactive. Numbers end arguments that adjectives never will.
+
+None of this required genius. It required doing unglamorous things in the right order
+and refusing to skip the boring ones. That is most of what building a capability from
+scratch actually is.

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { existsSync } from 'fs'
+import path from 'path'
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
@@ -13,6 +15,7 @@ import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
 import { ShareButtons } from '@/components/blog/share-buttons'
 import { RelatedPosts } from '@/components/blog/related-posts'
+import { AudioPlayer } from '@/components/blog/audio-player'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -55,6 +58,11 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params
   const post = getPostBySlug(slug)
   if (!post) notFound()
+
+  const hasAudio = existsSync(path.join(process.cwd(), 'public', 'audio', `${slug}.mp3`))
+
+  // Posts open with their own H1; the page header already shows the title.
+  const content = post.content.trimStart().replace(/^# .*\r?\n/, '')
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -105,13 +113,16 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
       </header>
 
+      {/* Listen to this post */}
+      {hasAudio && <AudioPlayer src={`/audio/${slug}.mp3`} />}
+
       {/* Table of Contents */}
-      <TableOfContents content={post.content} />
+      <TableOfContents content={content} />
 
       {/* MDX content */}
       <article className="prose prose-lg max-w-3xl mx-auto">
         <MDXRemote
-          source={post.content}
+          source={content}
           components={mdxComponents}
           options={{
             mdxOptions: {
