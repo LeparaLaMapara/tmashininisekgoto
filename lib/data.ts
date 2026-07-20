@@ -160,9 +160,9 @@ export const PROJECTS: Project[] = [
     impact: 'Live and in use by the family. The past paper vault and rights guides are done; AI subject tutors are next.',
     skills: ['Next.js', 'TypeScript', 'PostgreSQL', 'AI'],
     image: '/projects/multiversity.png',
-    productLink: 'https://sekhotomultiversity.vercel.app',
+    productLink: 'https://sekhotomultiversity.com',
     siteLinks: [
-      { label: 'sekhotomultiversity.vercel.app', href: 'https://sekhotomultiversity.vercel.app' },
+      { label: 'sekhotomultiversity.com', href: 'https://sekhotomultiversity.com' },
     ],
   },
 
