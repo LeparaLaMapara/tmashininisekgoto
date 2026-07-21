@@ -128,13 +128,7 @@ export const PROJECTS: Project[] = [
     ghLink: 'https://github.com/orgs/Kasilam-Projects/repositories',
     productLink: 'https://kasilamdigitialplatforms.vercel.app/',
     siteLinks: [
-      { label: "Jay's Lifestyle Pub & Grill, Soshanguve", href: 'https://jayslifestyleresturant.vercel.app' },
-      { label: 'Reitumetse Secondary School', href: 'https://reitumetse-high.vercel.app' },
-      { label: 'LadyP Kitchen, personal chef & catering', href: 'https://ladypkitchen.vercel.app' },
-      { label: 'Mokebe Cleaning Services', href: 'https://mokebecleaners.vercel.app' },
-      { label: 'Zibuyile Gumede, director of photography', href: 'https://zibuyilegumede.vercel.app' },
-      { label: 'Pule Financial Advisory Consultants', href: 'https://pulegumede.vercel.app' },
-      { label: "Palesa's culinary portfolio", href: 'https://palesasekgoto.vercel.app' },
+      { label: 'Kasilam Projects', href: 'https://kasilamdigitialplatforms.vercel.app/' },
     ],
   },
   // Building now
