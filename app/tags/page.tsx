@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { getAllTags } from '@/lib/blog'
 
 export const metadata: Metadata = {
-  title: 'Tags',
-  description: 'Browse blog posts by topic.',
+  title: 'Topics: MLOps, Agentic AI, Python',
+  description:
+    'Browse the writing by topic: MLOps, agentic AI, Python packaging, data science leadership, and production machine learning engineering.',
+  alternates: { canonical: '/tags' },
 }
 
 export default function TagsPage() {
@@ -13,15 +15,18 @@ export default function TagsPage() {
   return (
     <section className="mx-auto max-w-3xl px-6 py-24">
       <h1 className="font-display text-4xl font-bold tracking-tight text-ivory">
-        Tags
+        Topics
       </h1>
-      <p className="mt-3 text-muted text-lg">Browse posts by topic.</p>
+      <p className="mt-3 text-muted text-lg">
+        Every topic written about here, from MLOps and Python tooling to leading a
+        data science team. Each one is its own page.
+      </p>
 
       <div className="mt-12 flex flex-wrap gap-3">
         {tags.map((tag) => (
           <Link
-            key={tag.name}
-            href={`/tags/${encodeURIComponent(tag.name)}`}
+            key={tag.slug}
+            href={`/tags/${tag.slug}`}
             className="group rounded-full border border-border bg-surface px-4 py-2 text-sm font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
           >
             {tag.name}

@@ -12,7 +12,7 @@ Here is a clean, professional **README.md** tailored for your portfolio. It high
 
 Welcome to the repository for my personal portfolio website. This site is built to showcase my journey, projects, and technical skills as a developer.
 
-Live Demo: [https://tmashininisekgoto.vercel.app](https://tmashininisekgoto.vercel.app)
+Live site: [https://www.tmashininisekgoto.com](https://www.tmashininisekgoto.com)
 
 ---
 

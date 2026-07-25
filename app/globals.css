@@ -25,6 +25,11 @@
   --color-surface-hover: #f2ebdd;
   --color-synapse: #b5501e;
   --color-synapse-dim: #ecd7c4;
+  /* Accessible variant of synapse, for small text sitting on a synapse tint
+     (the `bg-synapse/10` pills). The brand orange measures 4.12:1 there, just
+     under the 4.5:1 minimum; this measures 4.7:1. The brand colour itself is
+     unchanged, so anything not small-text-on-tint keeps using --color-synapse. */
+  --color-synapse-ink: #a84819;
   --color-signal: #1f5c3a;
   --color-signal-dim: #d9e7dc;
   --color-accent: #a8742a;
@@ -50,6 +55,9 @@
   --color-surface-hover: #2a231b;
   --color-synapse: #d97742;
   --color-synapse-dim: #7a3d17;
+  /* Dark mode already passes: light orange on a dark tint. Same value as the
+     brand colour so the token is safe to use everywhere. */
+  --color-synapse-ink: #d97742;
   --color-signal: #7cb593;
   --color-signal-dim: #24402f;
   --color-accent: #d3a253;

@@ -31,7 +31,10 @@ export function Footer() {
 
           {/* Column 2: Quick Links */}
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-muted mb-3">Quick Links</h4>
+            {/* h2, not h4: pages go h1 -> h2, so an h4 here skipped two levels
+                and broke the heading outline for screen readers. Styling is
+                unchanged. */}
+            <h2 className="text-xs uppercase tracking-wider text-muted mb-3">Quick Links</h2>
             <nav className="flex flex-col">
               {[
                 { href: '/about', label: 'About' },
@@ -56,10 +59,10 @@ export function Footer() {
 
           {/* Column 3: Get in Touch */}
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-muted mb-3">Get in Touch</h4>
+            <h2 className="text-xs uppercase tracking-wider text-muted mb-3">Get in Touch</h2>
             <Link
               href="/ai"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-synapse/10 text-synapse text-sm border border-synapse/20 hover:bg-synapse/20 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-synapse/10 text-synapse-ink text-sm border border-synapse/20 hover:bg-synapse/20 transition-all"
             >
               <Sparkles className="w-4 h-4" />
               Talk to Thabang AI Assist
@@ -85,7 +88,9 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="text-center mt-6">
-          <p className="text-sm text-muted/60">
+          {/* Full-strength muted, not /60: the faded version composited to
+              #a69e91 on paper, a 2.45:1 contrast ratio. This measures 5.45:1. */}
+          <p className="text-sm text-muted">
             &copy; {new Date().getFullYear()} Thabang Mashinini-Sekgoto. All rights reserved.
           </p>
         </div>

@@ -1,7 +1,16 @@
+import type { Metadata } from 'next'
 import { ImpactCounters } from '@/components/home/impact-counters'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
+import { JsonLd } from '@/components/seo/json-ld'
+import { personSchema } from '@/lib/schema'
 import Link from 'next/link'
 import { Sparkles, ArrowRight } from 'lucide-react'
+
+// Title and description come from the root layout's defaults; this only pins the
+// canonical so the homepage points at itself rather than inheriting anything.
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 const AUDIENCES = [
   { label: 'For banks and telecoms', detail: 'production AI at enterprise scale' },
@@ -13,24 +22,30 @@ const AUDIENCES = [
 export default function Home() {
   return (
     <>
-      {/* Hero — paper, ink, and one clear sentence */}
+      <JsonLd data={personSchema()} />
+      {/* Hero — paper, ink, and one clear sentence.
+          Deliberately NOT wrapped in ScrollReveal. That component starts at
+          opacity 0 and waits for the element to scroll into view, but the hero
+          is already in view on load, so it only ever delayed the paint of the
+          LCP element (this h1) until framer-motion had hydrated. Reveal
+          animations start below the fold, where they actually mean something. */}
       <section className="relative min-h-[88vh] flex items-center px-6 pt-28 pb-16">
         <div className="mx-auto max-w-5xl w-full">
-          <ScrollReveal delay={0.1}>
+          <div>
             <p className="text-sm font-mono text-synapse tracking-widest uppercase mb-6">
               Thabang means rejoice · Ubunye means unity
             </p>
-          </ScrollReveal>
+          </div>
 
-          <ScrollReveal delay={0.25}>
+          <div>
             <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tight leading-[1.05] mb-8">
               I build AI systems that work
               <br />
               in the real world<span className="text-synapse">.</span>
             </h1>
-          </ScrollReveal>
+          </div>
 
-          <ScrollReveal delay={0.4}>
+          <div>
             <div className="grid sm:grid-cols-2 gap-x-10 gap-y-3 max-w-2xl mb-10">
               {AUDIENCES.map((a) => (
                 <p key={a.label} className="text-lg text-ivory/85 leading-snug">
@@ -40,9 +55,9 @@ export default function Home() {
                 </p>
               ))}
             </div>
-          </ScrollReveal>
+          </div>
 
-          <ScrollReveal delay={0.55}>
+          <div>
             <div className="flex items-center gap-4 flex-wrap">
               <Link
                 href="/work"
@@ -59,7 +74,7 @@ export default function Home() {
                 Talk to Thabang AI Assist
               </Link>
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </section>
 

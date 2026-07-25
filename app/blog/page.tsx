@@ -2,13 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Clock } from 'lucide-react'
 import { getAllPosts, getAllTags } from '@/lib/blog'
+import { slugifyTag } from '@/lib/topics'
 import { formatDate } from '@/lib/utils'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 
 export const metadata: Metadata = {
-  title: 'Blog',
+  title: 'Blog: MLOps, Data Science & AI Engineering',
   description:
     'Writing on AI systems, MLOps, open source engineering, and the craft of building real-world machine learning infrastructure.',
+  alternates: { canonical: '/blog' },
 }
 
 export default function BlogPage() {
@@ -43,8 +45,8 @@ export default function BlogPage() {
       <div className="mt-10 flex flex-wrap gap-2">
         {tags.map((tag) => (
           <Link
-            key={tag.name}
-            href={`/tags/${encodeURIComponent(tag.name)}`}
+            key={tag.slug}
+            href={`/tags/${tag.slug}`}
             className="rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
           >
             {tag.name}
@@ -93,7 +95,7 @@ export default function BlogPage() {
                     {post.tags.map((tag) => (
                       <Link
                         key={tag}
-                        href={`/tags/${encodeURIComponent(tag.toLowerCase())}`}
+                        href={`/tags/${slugifyTag(tag)}`}
                         className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                       >
                         {tag}

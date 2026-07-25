@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
             }}
           />
           <div style={{ fontSize: 22, color: '#b5501e', fontWeight: 600 }}>
-            tmashininisekgoto.vercel.app
+            www.tmashininisekgoto.com
           </div>
         </div>
       </div>

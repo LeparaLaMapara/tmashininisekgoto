@@ -5,9 +5,10 @@ import { COURSES } from '@/lib/data'
 import { CourseCard } from '@/components/courses/course-card'
 
 export const metadata: Metadata = {
-  title: 'Courses',
+  title: 'Courses: Practical AI & Data Science',
   description:
-    'Practitioner-first AI and data science courses by Thabang Mashinini-Sekgoto. From zero-code AI agents to agentic engineering with Claude Code, MCP, and Codex.',
+    'Practitioner-first AI and data science courses: from zero-code AI agents to agentic engineering with Claude Code, MCP, and Codex.',
+  alternates: { canonical: '/courses' },
 }
 
 // Re-fetch waitlist counts from Supabase every 60 seconds (ISR)

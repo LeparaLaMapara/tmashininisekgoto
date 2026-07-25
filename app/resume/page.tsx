@@ -5,8 +5,10 @@ import Link from 'next/link'
 import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
 
 export const metadata: Metadata = {
-  title: 'Resume',
-  description: 'Resume and career timeline of Thabang Mashinini-Sekgoto.',
+  title: 'Resume: Lead Data Scientist',
+  description:
+    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA, previously Vodacom and IBM Research, MSc and PhD candidate at Wits.',
+  alternates: { canonical: '/resume' },
 }
 
 const KIND_ICON: Record<MilestoneKind, typeof GraduationCap> = {

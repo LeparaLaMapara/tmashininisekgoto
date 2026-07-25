@@ -7,6 +7,7 @@ import GitHubCalendar from 'react-github-calendar'
 import type { Activity } from 'react-github-calendar'
 import { TECH_STACK, TECH_CATEGORIES, REPO_CATEGORY_MAP, type TechItem, type Project } from '@/lib/data'
 import { cn } from '@/lib/utils'
+import { useEnterAnimation } from '@/lib/use-enter-animation'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
 type FilterKey = 'all' | TechItem['category']
@@ -34,6 +35,7 @@ const TECH_TO_PROJECT_CATEGORY: Partial<Record<TechItem['category'], Project['ca
 }
 
 export function TechStack() {
+  const animateIn = useEnterAnimation()
   const [active, setActive] = useState<FilterKey>('all')
   const [categoryData, setCategoryData] = useState<
     Record<string, Record<string, number>> | null
@@ -119,7 +121,7 @@ export function TechStack() {
             <motion.div
               key={item.name}
               layout
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={animateIn ? { opacity: 0, scale: 0.9 } : false}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.25 }}

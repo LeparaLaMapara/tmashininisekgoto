@@ -3,9 +3,10 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ProjectFilter } from '@/components/work/project-filter'
 
 export const metadata: Metadata = {
-  title: 'Work',
+  title: 'AI & Machine Learning Projects',
   description:
     'Projects spanning open-source frameworks, telecoms optimization, banking ML platforms, geospatial research, and education technology.',
+  alternates: { canonical: '/work' },
 }
 
 export default function WorkPage() {

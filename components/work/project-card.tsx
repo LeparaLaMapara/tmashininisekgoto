@@ -5,17 +5,22 @@ import { motion } from 'framer-motion'
 import { Github, ExternalLink, FileText } from 'lucide-react'
 import type { Project } from '@/lib/data'
 import { SKILL_ICON_MAP } from '@/lib/data'
+import { useEnterAnimation } from '@/lib/use-enter-animation'
 
 interface ProjectCardProps {
   project: Project
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  // Cards present at page load render visible; cards that appear from a filter
+  // change still fade in.
+  const animateIn = useEnterAnimation()
+
   return (
     <motion.div
       layout
       layoutId={project.slug}
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={animateIn ? { opacity: 0, scale: 0.95 } : false}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}

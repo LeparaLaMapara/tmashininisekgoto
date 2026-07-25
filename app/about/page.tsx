@@ -4,9 +4,10 @@ import { Testimonials } from '@/components/about/testimonials'
 import { TechStack } from '@/components/about/tech-stack'
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About: AI Researcher & Data Science Leader',
   description:
     'Learn more about Thabang Mashinini-Sekgoto. AI Systems Architect, researcher at Wits University, and founder of Ubunye AI Ecosystems.',
+  alternates: { canonical: '/about' },
 }
 
 export default function AboutPage() {

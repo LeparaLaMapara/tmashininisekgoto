@@ -1,6 +1,5 @@
 import { getAllPosts } from '@/lib/blog'
-
-const SITE_URL = 'https://tmashininisekgoto.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
@@ -35,6 +34,9 @@ export function GET() {
     `- [Talks](${SITE_URL}/talks): talks and media`,
     `- [Teaching](${SITE_URL}/courses): courses and sessions`,
     `- [CV](${SITE_URL}/resume): full career history`,
+    `- [Career journey](${SITE_URL}/career): the path from BSc at Wits to Lead Data Scientist`,
+    `- [Now](${SITE_URL}/now): what he is working on at the moment`,
+    `- [Topics](${SITE_URL}/tags): the writing grouped by subject, each topic its own page`,
     `- [Thabang AI Assist](${SITE_URL}/ai): an AI assistant grounded on his work (it is an assistant, not him)`,
     '',
     '## Related sites',

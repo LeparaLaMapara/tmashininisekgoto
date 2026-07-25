@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { SITE_URL } from '@/lib/site'
 
 // AI crawlers are welcomed by name so there is no ambiguity: being readable
 // by AI search (ChatGPT, Claude, Perplexity, Google AI) is a distribution
@@ -23,6 +24,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: '*', allow: '/' },
       ...AI_CRAWLERS.map((userAgent) => ({ userAgent, allow: '/' })),
     ],
-    sitemap: 'https://tmashininisekgoto.vercel.app/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
   }
 }

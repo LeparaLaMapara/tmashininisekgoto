@@ -4,8 +4,10 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ExternalLink, BookOpen } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Talks & Press',
-  description: 'Talks, interviews, and press coverage featuring Thabang Mashinini-Sekgoto.',
+  title: 'Talks & Press on AI and Data Science',
+  description:
+    'Conference talks, sessions, interviews, and press coverage on AI, machine learning, and data science in South Africa, featuring Thabang Mashinini-Sekgoto.',
+  alternates: { canonical: '/talks' },
 }
 
 export default function TalksPage() {

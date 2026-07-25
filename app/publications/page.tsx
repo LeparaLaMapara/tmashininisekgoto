@@ -1,12 +1,15 @@
 import type { Metadata } from 'next'
 import { PUBLICATIONS } from '@/lib/data'
+import { JsonLd } from '@/components/seo/json-ld'
+import { publicationsSchema } from '@/lib/schema'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ExternalLink, GraduationCap, Brain, Sparkles } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Publications',
+  title: 'Publications: ML & Deep Learning Research',
   description:
     'Peer-reviewed publications, conference papers, and thesis work by Thabang Mashinini-Sekgoto in AI, ML, and computational science.',
+  alternates: { canonical: '/publications' },
 }
 
 export default function PublicationsPage() {
@@ -15,6 +18,7 @@ export default function PublicationsPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
+      <JsonLd data={publicationsSchema()} />
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <ScrollReveal>

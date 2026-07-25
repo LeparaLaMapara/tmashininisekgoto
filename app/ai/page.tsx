@@ -5,9 +5,10 @@ import { WorkWithMe } from '@/components/ai/work-with-me'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
 export const metadata: Metadata = {
-  title: 'Talk to Thabang AI Assist',
+  title: 'Thabang AI Assist: Ask About My Work',
   description:
-    'Chat with an AI representation of Thabang Mashinini-Sekgoto, grounded on his work, writing, talks, and projects — then explore how to work together: talks, consulting, hiring, collaboration, and SekhotoMultiversity.',
+    'Ask an AI assistant grounded on the real work, writing, talks, and projects of Thabang Mashinini-Sekgoto. Every answer cites its sources.',
+  alternates: { canonical: '/ai' },
 }
 
 export default function AIPage() {

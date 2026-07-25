@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Clock, BookOpen, Users, ChevronDown, ChevronUp, Zap } from 'lucide-react'
 import type { Course } from '@/lib/data'
 import { cn } from '@/lib/utils'
+import { useEnterAnimation } from '@/lib/use-enter-animation'
 import { RegisterForm } from './register-form'
 
 interface CourseCardProps {
@@ -20,11 +21,12 @@ const levelColors: Record<Course['level'], string> = {
 export function CourseCard({ course }: CourseCardProps) {
   const [expanded, setExpanded] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const animateIn = useEnterAnimation()
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 20 }}
+      initial={animateIn ? { opacity: 0, y: 20 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="group bg-surface rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(14,165,233,0.1)]"
