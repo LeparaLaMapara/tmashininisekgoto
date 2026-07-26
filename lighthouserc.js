@@ -34,23 +34,32 @@
 /**
  * The looser budget for /about.
  *
- * Measured mobile, median of three, after lazy-loading the GitHub contribution
- * calendar: performance 80, total blocking time 433ms. Every other route sits
- * at 89-92 with TBT under 90ms.
+ * The page is a genuine outlier: performance 80 against 89-92 everywhere else,
+ * and total blocking time in the hundreds of milliseconds against under 90ms.
+ * The GitHub contribution calendar was the largest single cost (performance 64,
+ * TBT 1365ms) before it moved behind `next/dynamic`; what is left is the
+ * hydration cost of the bento grid, the testimonials carousel and the
+ * tech-stack filter, all client components that render on first paint.
+ * Splitting those is real work and is not attempted here.
  *
- * The calendar was the largest single cost (performance 64 and TBT 1365ms
- * before it moved behind `next/dynamic`); what is left is the hydration cost of
- * the bento grid, the testimonials carousel and the tech-stack filter, all of
- * which are client components that render on first paint. Splitting those is
- * real work and is not attempted here.
+ * **The numbers below are calibrated on a GitHub runner, not on a laptop.**
+ * That matters, and it cost a red build to learn. Measured locally, /about
+ * blocks for 433ms; on the runner the same commit produced 2151ms, 649ms and
+ * 676ms across three runs. The 2151ms is the first run on a cold machine, which
+ * is exactly what median-of-three exists to absorb, but even the median lands
+ * around 650ms.
  *
- * These numbers are a ratchet, not a target: they are set just below what the
- * page does today so it cannot get worse, and they should come down as the page
- * gets faster.
+ * So the ceiling is 800ms: above the runner's real median with room for a bad
+ * day, and far enough below the 1365ms of the unfixed page that a regression of
+ * that size still fails. A budget tuned to the fastest machine it will ever run
+ * on is not a budget, it is a source of flaky builds that get ignored.
+ *
+ * These are a ratchet, not a target. They should come down as the page gets
+ * faster.
  */
 const ABOUT = {
   'categories:performance': ['error', { minScore: 0.75 }],
-  'total-blocking-time': ['error', { maxNumericValue: 600 }],
+  'total-blocking-time': ['error', { maxNumericValue: 800 }],
 }
 
 /** The standard budget, with per-route overrides merged over it. */
