@@ -25,20 +25,23 @@
  * emails your followers. So `--publish` is required, every time, and without it
  * this prints a diff and exits.
  *
- * ## Medium and LinkedIn
+ * ## Medium
  *
- * Neither is automated here, for different reasons.
+ * Automated when `MEDIUM_TOKEN` is set. api.medium.com/v1 is unmaintained but
+ * live, and it supports `canonicalUrl`, which is the field that matters. It has
+ * no update endpoint, so a post sent once is never sent again from here.
  *
- * Medium retired its publishing API (integration tokens stopped being issued in
- * 2023). Its import tool sets `rel="canonical"` back to the source URL by
- * itself, which is better than anything the API did, so the right move is a
- * paste rather than a POST.
+ * Whether a given account can still mint an integration token (Settings ->
+ * Security and apps) varies. Without one, the script writes an import checklist
+ * instead: medium.com/p/import sets the canonical by itself and keeps more of
+ * the formatting than a markdown POST does.
  *
- * LinkedIn has no canonical mechanism at all. Republishing an article there in
- * full creates a copy that outranks the original for your own name and gives
- * nothing back. So this generates a short post with a link instead.
+ * ## LinkedIn
  *
- * Both get files written to data/syndication-drafts/ ready to paste.
+ * Not automated, and should not be. LinkedIn has no canonical mechanism at all,
+ * so republishing an article in full creates a copy that competes with the
+ * original for your own name and gives nothing back. This writes a short post
+ * with a link instead, to data/syndication-drafts/.
  */
 
 import fs from 'node:fs'
@@ -82,6 +85,7 @@ const ENV = {
   devtoKey: process.env.DEVTO_API_KEY,
   hashnodeToken: process.env.HASHNODE_TOKEN,
   hashnodePublicationId: process.env.HASHNODE_PUBLICATION_ID,
+  mediumToken: process.env.MEDIUM_TOKEN,
 }
 
 const wants = (platform) => !args.platform || args.platform === platform
@@ -373,29 +377,122 @@ async function syndicateHashnode(posts, state) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Medium and LinkedIn: files to paste                                        */
+/* Medium                                                                     */
 /* -------------------------------------------------------------------------- */
 
-function writeManualDrafts(posts) {
-  console.log('\nMedium and LinkedIn (manual)')
+/**
+ * Medium's API is unmaintained but alive: api.medium.com/v1 still answers, and
+ * it supports `canonicalUrl`, which is the only field that matters here.
+ *
+ * Two things make it unlike the others:
+ *
+ * 1. **There is no update endpoint.** You can create a post and nothing else.
+ *    So a post that has been sent once is never sent again, whatever changed
+ *    locally. Editing a Medium copy is a manual job, and the alternative is
+ *    silently posting the same article twice.
+ * 2. **New integration tokens may no longer be issued.** Reports conflict, and
+ *    it depends on the account. If Settings -> Security and apps has no
+ *    "Integration tokens" section, use the import route instead: it sets the
+ *    canonical automatically and the checklist below is written for it.
+ */
+async function mediumRequest(pathname, { method = 'GET', body } = {}) {
+  const response = await fetch(`https://api.medium.com/v1${pathname}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${ENV.mediumToken}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+
+  const text = await response.text()
+  if (!response.ok) {
+    throw new Error(`Medium ${method} ${pathname} -> ${response.status}: ${text.slice(0, 300)}`)
+  }
+  return JSON.parse(text).data
+}
+
+async function syndicateMedium(posts, state) {
+  if (!ENV.mediumToken) {
+    console.log('Medium API: skipped, MEDIUM_TOKEN is not set (import checklist written below)')
+    return false
+  }
+
+  console.log('\nMedium')
+  const me = await mediumRequest('/me')
+  console.log(`  authenticated as @${me.username}`)
+
+  for (const post of posts) {
+    const tracked = state.posts[post.slug]?.medium
+
+    // No update endpoint, so "already there" is the end of the story.
+    if (tracked?.id) {
+      console.log(`  already posted  ${post.slug} -> ${tracked.url}`)
+      continue
+    }
+
+    if (!args.publish) {
+      console.log(`  would create  ${post.slug}`)
+      continue
+    }
+
+    const result = await mediumRequest(`/users/${me.id}/posts`, {
+      method: 'POST',
+      body: {
+        title: post.title,
+        contentFormat: 'markdown',
+        content: syndicationBody(post, SITE_URL),
+        canonicalUrl: `${SITE_URL}/blog/${post.slug}`,
+        tags: post.tags.slice(0, 5),
+        publishStatus: args.draft ? 'draft' : 'public',
+        // Followers are notified about the original, not the copy.
+        notifyFollowers: false,
+      },
+    })
+
+    state.posts[post.slug] = {
+      ...state.posts[post.slug],
+      medium: { id: result.id, url: result.url, syncedAt: new Date().toISOString() },
+    }
+    console.log(`  created   ${post.slug} -> ${result.url}`)
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
+
+  return true
+}
+
+/* -------------------------------------------------------------------------- */
+/* LinkedIn, and Medium without a token: files to paste                       */
+/* -------------------------------------------------------------------------- */
+
+function writeManualDrafts(posts, { mediumHandled = false } = {}) {
+  console.log('\nManual drafts')
   fs.mkdirSync(DRAFTS_DIR, { recursive: true })
 
-  const mediumChecklist = [
-    '# Medium import checklist',
-    '',
-    'Medium retired its publishing API, but its importer is better than the API',
-    'was: it sets rel="canonical" back to the source URL automatically, so the',
-    'ranking credit stays on tmashininisekgoto.com.',
-    '',
-    'For each URL below: open https://medium.com/p/import, paste the URL, import,',
-    'check the canonical link in story settings, publish.',
-    '',
-    ...posts.map((post) => `- [ ] ${SITE_URL}/blog/${post.slug}`),
-    '',
-  ].join('\n')
+  // Only when the API route is unavailable. Writing an import checklist for
+  // posts that were just sent through the API would produce duplicates.
+  if (!mediumHandled) {
+    const mediumChecklist = [
+      '# Medium import checklist',
+      '',
+      'Use this when MEDIUM_TOKEN is not set, i.e. when the account can no longer',
+      'generate an integration token under Settings -> Security and apps.',
+      '',
+      'The importer is arguably the better route anyway: it sets rel="canonical"',
+      'back to the source URL by itself, so the ranking credit stays on',
+      'tmashininisekgoto.com, and it preserves formatting the API would flatten.',
+      '',
+      'For each URL below: open https://medium.com/p/import, paste the URL,',
+      'import, check the canonical link in story settings, publish.',
+      '',
+      ...posts.map((post) => `- [ ] ${SITE_URL}/blog/${post.slug}`),
+      '',
+    ].join('\n')
 
-  fs.writeFileSync(path.join(DRAFTS_DIR, 'medium-import.md'), mediumChecklist, 'utf-8')
-  console.log(`  wrote ${path.relative(ROOT, path.join(DRAFTS_DIR, 'medium-import.md'))}`)
+    fs.writeFileSync(path.join(DRAFTS_DIR, 'medium-import.md'), mediumChecklist, 'utf-8')
+    console.log(`  wrote ${path.relative(ROOT, path.join(DRAFTS_DIR, 'medium-import.md'))}`)
+  }
 
   // LinkedIn gets an excerpt and a link, never the full article. There is no
   // canonical mechanism there, so a full republish creates a copy that competes
@@ -448,7 +545,8 @@ async function main() {
 
   if (wants('devto')) await syndicateDevto(posts, state)
   if (wants('hashnode')) await syndicateHashnode(posts, state)
-  if (wants('manual')) writeManualDrafts(posts)
+  const mediumHandled = wants('medium') ? await syndicateMedium(posts, state) : false
+  if (wants('manual')) writeManualDrafts(posts, { mediumHandled })
 
   if (args.publish) {
     writeState(state)

@@ -104,9 +104,14 @@ to which post. dev.to is also queried live and matched on canonical URL, because
 the state file can be stale after a manual edit there, and posting a duplicate is
 the one failure mode that cannot be quietly fixed.
 
-**Medium** retired its publishing API in 2023. Its importer is better than the
-API was — it sets `rel="canonical"` back to the source automatically — so the
-script writes an import checklist instead of pretending to automate it.
+**Medium** is automated when `MEDIUM_TOKEN` is set. `api.medium.com/v1` is
+unmaintained but live — it answers with a proper `{"errors":[{"code":6003}]}` to
+a bad token rather than a 404 — and it supports `canonicalUrl`, which is the
+only field that matters here. Two caveats, both handled: there is **no update
+endpoint**, so a post sent once is never sent again from here, and whether a
+given account can still mint an integration token varies. Without a token the
+script writes an import checklist instead; `medium.com/p/import` sets the
+canonical by itself and preserves more formatting than a markdown POST does.
 
 **LinkedIn** has no canonical mechanism at all, so republishing in full creates a
 copy that competes with the original for your own name. The script writes an
