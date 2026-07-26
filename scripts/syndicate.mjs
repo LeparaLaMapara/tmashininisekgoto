@@ -280,8 +280,22 @@ async function syndicateDevto(posts, state) {
 /* Hashnode                                                                   */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The Hashnode GraphQL endpoint.
+ *
+ * `gql.hashnode.com` now 301s to an announcement page, and a 301 turns a POST
+ * into a GET in every fetch implementation, so the request fails in a way that
+ * looks like a bad query rather than a moved endpoint. The live host is
+ * gql-beta.
+ *
+ * Note also that Hashnode put the API behind its Pro plan on 13 May 2026, for
+ * reads as well as writes. Reads work on this account today; if publishing
+ * starts returning an authorisation error, that is the reason, not the token.
+ */
+const HASHNODE_ENDPOINT = 'https://gql-beta.hashnode.com/'
+
 async function hashnodeRequest(query, variables) {
-  const response = await fetch('https://gql.hashnode.com/', {
+  const response = await fetch(HASHNODE_ENDPOINT, {
     method: 'POST',
     headers: {
       Authorization: ENV.hashnodeToken,
