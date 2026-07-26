@@ -36,7 +36,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         {project.building && (
-          <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent text-void text-xs font-semibold uppercase tracking-wider">
+          <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent-ink text-void text-xs font-semibold uppercase tracking-wider">
             Building now
           </span>
         )}
@@ -44,27 +44,27 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
       {/* Content */}
       <div className="p-6 space-y-5">
-        <h3 className="font-display text-xl font-bold text-ivory leading-snug">
+        <h2 className="font-display text-xl font-bold text-ivory leading-snug">
           {project.title}
-        </h3>
+        </h2>
 
         <div className="space-y-4">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
               Why it was built
             </span>
             <p className="text-[0.9375rem] text-muted mt-1 leading-relaxed">{project.problem}</p>
           </div>
 
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
               What it is
             </span>
             <p className="text-[0.9375rem] text-ivory/80 mt-1 leading-relaxed">{project.solution}</p>
           </div>
 
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
               Impact
             </span>
             <p className="text-[0.9375rem] text-synapse font-medium mt-1 leading-relaxed">
@@ -76,7 +76,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {/* Live sites shipped under this project */}
         {project.siteLinks && project.siteLinks.length > 0 && (
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
               Live sites built
             </span>
             <ul className="mt-2 space-y-1.5">
@@ -99,7 +99,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
         {/* Tech Stack Logos */}
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+          <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
             Built with
           </span>
           <div className="flex flex-wrap gap-2.5 mt-2">

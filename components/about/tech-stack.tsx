@@ -3,8 +3,25 @@
 import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import GitHubCalendar from 'react-github-calendar'
+import dynamic from 'next/dynamic'
 import type { Activity } from 'react-github-calendar'
+
+/**
+ * The contribution calendar renders a year of SVG rects and fetches its own
+ * data. Hydrating it with the rest of the page cost /about 1.3s of total
+ * blocking time on a throttled phone and dropped the Lighthouse performance
+ * score to 64; every other route scored ~90.
+ *
+ * Loading it on demand, client-side only, takes it off the critical path. It
+ * sits well below the fold, it is decorative, and it is the only thing on the
+ * page that is not worth blocking for.
+ */
+const GitHubCalendar = dynamic(() => import('react-github-calendar'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[140px] w-full animate-pulse rounded-xl bg-surface" />
+  ),
+})
 import { TECH_STACK, TECH_CATEGORIES, REPO_CATEGORY_MAP, type TechItem, type Project } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { useEnterAnimation } from '@/lib/use-enter-animation'

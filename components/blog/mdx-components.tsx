@@ -54,7 +54,7 @@ function Pre({
   return (
     <div className="group relative">
       {language && (
-        <span className="absolute left-4 top-2 text-[11px] font-mono uppercase tracking-wider text-muted/60">
+        <span className="absolute left-4 top-2 text-[11px] font-mono uppercase tracking-wider text-code-muted">
           {language}
         </span>
       )}
@@ -72,7 +72,7 @@ function InlineCode({
 }: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>) {
   return (
     <code
-      className="rounded-md bg-surface px-1.5 py-0.5 text-sm font-mono text-accent before:content-none after:content-none"
+      className="rounded-md bg-surface px-1.5 py-0.5 text-sm font-mono text-accent-ink before:content-none after:content-none"
       {...props}
     >
       {children}

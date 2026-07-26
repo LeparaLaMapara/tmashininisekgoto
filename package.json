@@ -9,7 +9,12 @@
     "lint": "next lint",
     "screenshot": "npx playwright test screenshot.spec.ts",
     "rag:reindex": "node scripts/rag/reindex.mjs",
-    "tts": "node scripts/tts/generate.mjs"
+    "tts": "node scripts/tts/generate.mjs",
+    "syndicate": "node scripts/syndicate.mjs",
+    "syndicate:publish": "node scripts/syndicate.mjs --publish",
+    "pubs:sync": "node scripts/publications/sync.mjs",
+    "pubs:check": "node scripts/publications/sync.mjs --check",
+    "lighthouse": "npm run build && npx --yes @lhci/cli@0.14.x autorun"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.0",

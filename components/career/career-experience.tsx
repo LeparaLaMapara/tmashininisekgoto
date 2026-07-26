@@ -21,7 +21,7 @@ const KIND_ICON: Record<MilestoneKind, typeof GraduationCap> = {
 const ACCENT_TEXT: Record<string, string> = {
   synapse: 'text-synapse',
   signal: 'text-signal',
-  accent: 'text-accent',
+  accent: 'text-accent-ink',
 }
 const ACCENT_BORDER: Record<string, string> = {
   synapse: 'border-synapse/30',

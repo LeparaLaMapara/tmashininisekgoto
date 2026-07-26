@@ -53,7 +53,7 @@ export default function AIPage() {
         <div className="mx-auto max-w-5xl">
           <ScrollReveal>
             <div className="glass rounded-2xl border border-border p-8 sm:p-10">
-              <p className="font-mono text-xs uppercase tracking-widest text-accent">Also building</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-accent-ink">Also building</p>
               <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-ivory sm:text-3xl">
                 SekhotoMultiversity
               </h2>

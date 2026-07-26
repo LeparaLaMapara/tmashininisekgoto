@@ -59,7 +59,7 @@ export default function BlogPage() {
       <div className="mt-16 space-y-16">
         {Array.from(grouped.entries()).map(([year, yearPosts]) => (
           <div key={year}>
-            <h2 className="font-display text-xl font-semibold text-muted/60 mb-6">
+            <h2 className="font-display text-xl font-semibold text-muted mb-6">
               {year}
             </h2>
             <div className="space-y-10">

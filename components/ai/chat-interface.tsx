@@ -129,7 +129,7 @@ export function ChatInterface() {
             <Send className="h-4 w-4" />
           </button>
         </form>
-        <p className="mt-2 text-center text-xs text-muted/60">
+        <p className="mt-2 text-center text-xs text-muted">
           AI representation. Responses are based on Thabang&apos;s public work and writing
         </p>
       </div>

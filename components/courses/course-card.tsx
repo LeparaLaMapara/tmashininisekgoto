@@ -115,7 +115,7 @@ export function CourseCard({ course }: CourseCardProps) {
               <div className="space-y-5 pt-2">
                 {/* Modules */}
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
                     What you'll learn
                   </span>
                   <ul className="mt-2 space-y-2">
@@ -133,7 +133,7 @@ export function CourseCard({ course }: CourseCardProps) {
 
                 {/* Who is it for */}
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-synapse/70">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
                     Who is this for
                   </span>
                   <ul className="mt-2 space-y-2">

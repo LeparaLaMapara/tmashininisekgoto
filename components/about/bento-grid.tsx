@@ -30,9 +30,9 @@ export function BentoGrid() {
           <span className="inline-block font-mono text-xs text-synapse tracking-wider uppercase mb-4">
             Who I Am
           </span>
-          <h3 className="font-display text-2xl font-bold mb-4">
+          <h2 className="font-display text-2xl font-bold mb-4">
             {BIO.name}
-          </h3>
+          </h2>
           <p className="text-ivory/80 leading-relaxed mb-4">
             {BIO.shortBio}
           </p>
@@ -40,7 +40,7 @@ export function BentoGrid() {
             {[
               { label: 'Impact', color: 'text-synapse', text: 'Built AI systems that cut processing times by up to 90%, contributed to R1B+ in savings, and improved forecast accuracy for climate risk intelligence.' },
               { label: 'Open Source', color: 'text-signal', text: 'Creator of the Ubunye Engine, an open-source ML framework with declarative ETL, feature stores, and YAML-driven pipelines. I build tools so others can build faster.' },
-              { label: 'Teaching', color: 'text-accent', text: 'Training the next generation in practical AI through hands-on courses, from zero-code AI agents for everyday professionals to advanced agentic engineering for developers.' },
+              { label: 'Teaching', color: 'text-accent-ink', text: 'Training the next generation in practical AI through hands-on courses, from zero-code AI agents for everyday professionals to advanced agentic engineering for developers.' },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-synapse/50 flex-shrink-0" />
@@ -133,7 +133,7 @@ export function BentoGrid() {
       <ScrollReveal delay={0.3}>
         <div className="glass border border-border rounded-2xl p-8 h-full flex flex-col justify-between">
           <div>
-            <span className="inline-block font-mono text-xs text-accent tracking-wider uppercase mb-4">
+            <span className="inline-block font-mono text-xs text-accent-ink tracking-wider uppercase mb-4">
               Collaborate
             </span>
             <h3 className="font-display text-xl font-bold mb-3">

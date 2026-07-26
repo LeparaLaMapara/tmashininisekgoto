@@ -1,0 +1,85 @@
+name: Syndicate
+
+# Cross-post to dev.to and Hashnode when a post changes on main.
+#
+# The workflow will not push anything unless BOTH of these hold:
+#   - the run is on main (a pull request only ever gets a dry run), and
+#   - the platform's secret is present in the repository.
+#
+# Missing secrets are not an error. The dry run is genuinely useful on its own:
+# it prints which posts would be created and which already exist, which is the
+# check you want before handing the job real credentials.
+#
+# Publishing to third-party platforms from CI is deliberately gated on a manual
+# `workflow_dispatch` as well, so the first real push is a decision rather than
+# a side effect of merging.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/blog/**'
+      - 'lib/post-markdown.mjs'
+      - 'scripts/syndicate.mjs'
+  pull_request:
+    paths:
+      - 'content/blog/**'
+      - 'lib/post-markdown.mjs'
+      - 'scripts/syndicate.mjs'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Actually push to dev.to and Hashnode'
+        type: boolean
+        default: false
+      post:
+        description: 'Limit to a single post slug (optional)'
+        type: string
+
+jobs:
+  syndicate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Dry run
+        if: github.event_name != 'workflow_dispatch' || inputs.publish != true
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
+          HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
+        run: node scripts/syndicate.mjs ${{ inputs.post && format('--post {0}', inputs.post) || '' }}
+
+      - name: Publish
+        if: github.event_name == 'workflow_dispatch' && inputs.publish == true
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
+          HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
+        run: node scripts/syndicate.mjs --publish ${{ inputs.post && format('--post {0}', inputs.post) || '' }}
+
+      # The state file records which remote article belongs to which post. If it
+      # is lost, the next run re-creates every article as a duplicate, so it is
+      # committed straight back rather than left as a build artefact.
+      - name: Commit syndication state
+        if: github.event_name == 'workflow_dispatch' && inputs.publish == true
+        run: |
+          if git diff --quiet -- data/syndication.json; then
+            echo "No state change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/syndication.json
+          git commit -m "chore(syndication): record cross-post ids"
+          git push
