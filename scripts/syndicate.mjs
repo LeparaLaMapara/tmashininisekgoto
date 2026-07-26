@@ -186,22 +186,51 @@ function writeState(state) {
 /* dev.to                                                                     */
 /* -------------------------------------------------------------------------- */
 
-async function devtoRequest(pathname, { method = 'GET', body } = {}) {
-  const response = await fetch(`https://dev.to/api${pathname}`, {
-    method,
-    headers: {
-      'api-key': ENV.devtoKey,
-      'Content-Type': 'application/json',
-      accept: 'application/vnd.forem.api-v1+json',
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  })
+/**
+ * dev.to rate-limits article *creation* far harder than the general API: one
+ * article, then a 300-second cooldown, and it says so in the body:
+ *
+ *   429 {"error":"Rate limit reached, try again in 300 seconds","status":429}
+ *
+ * Found the hard way, publishing a six-part series. Part 3 went through and
+ * parts 4, 5 and 6 all failed on the same second. Without this, a backfill
+ * publishes one article and reports three errors, which looks like a broken
+ * script rather than a working one being throttled.
+ *
+ * So a 429 is waited out rather than thrown. The wait comes from the message
+ * when it is there, because guessing at someone else's cooldown is how you get
+ * throttled twice.
+ */
+async function devtoRequest(pathname, { method = 'GET', body, retries = 4 } = {}) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const response = await fetch(`https://dev.to/api${pathname}`, {
+      method,
+      headers: {
+        'api-key': ENV.devtoKey,
+        'Content-Type': 'application/json',
+        accept: 'application/vnd.forem.api-v1+json',
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    })
 
-  const text = await response.text()
-  if (!response.ok) {
-    throw new Error(`dev.to ${method} ${pathname} -> ${response.status}: ${text.slice(0, 300)}`)
+    const text = await response.text()
+
+    if (response.status === 429 && attempt < retries) {
+      const stated = Number(text.match(/try again in (\d+) seconds/)?.[1])
+      // +5s of slack: retrying on the exact second the window closes tends to
+      // land just inside it.
+      const wait = (Number.isFinite(stated) ? stated : 300) + 5
+      console.log(`  rate limited, waiting ${wait}s (attempt ${attempt + 1}/${retries})`)
+      await new Promise((resolve) => setTimeout(resolve, wait * 1000))
+      continue
+    }
+
+    if (!response.ok) {
+      throw new Error(`dev.to ${method} ${pathname} -> ${response.status}: ${text.slice(0, 300)}`)
+    }
+    return text ? JSON.parse(text) : null
   }
-  return text ? JSON.parse(text) : null
+  throw new Error(`dev.to ${method} ${pathname}: still rate limited after ${retries} retries`)
 }
 
 /**
@@ -274,8 +303,10 @@ async function syndicateDevto(posts, state) {
     }
     console.log(`  ${action}d   ${post.slug} -> ${result.url}`)
 
-    // dev.to allows roughly 30 article writes per 30 seconds. One second
-    // between calls keeps a full backfill inside that without thinking about it.
+    // A courtesy pause only. The real throttle on article creation is roughly
+    // one per 300 seconds and is handled by the 429 retry in devtoRequest; a
+    // backfill of ten posts therefore takes the better part of an hour, and
+    // that is dev.to's pace, not something to work around.
     await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 }
