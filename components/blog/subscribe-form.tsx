@@ -51,9 +51,9 @@ export function SubscribeForm() {
 
   return (
     <div className="glass rounded-2xl p-8 md:p-10">
-      <h3 className="font-display text-xl font-bold text-ivory mb-2">
+      <h2 className="font-display text-xl font-bold text-ivory mb-2">
         Stay in the loop
-      </h3>
+      </h2>
       <p className="text-[0.9375rem] text-muted mb-6 leading-relaxed">
         New posts on AI systems, engineering craft, and lessons from building in production.
         No spam. Unsubscribe anytime.

@@ -34,6 +34,13 @@ for (const page of PAGES) {
 
 // Mobile screenshots
 test('mobile screenshots', async ({ browser }) => {
+  // Seven page loads, each waiting for networkidle plus a two-second settle,
+  // inside one test. That is over 28s of unavoidable waiting against Playwright's
+  // 30s default, so this failed or passed depending on the weather. /about waits
+  // on the GitHub contribution calendar, which now loads after hydration rather
+  // than with it, and /talks waits on YouTube embeds.
+  test.setTimeout(150_000)
+
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 }, // iPhone 14 Pro
   })

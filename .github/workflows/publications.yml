@@ -1,0 +1,45 @@
+name: Refresh publications
+
+# Citation counts change without anyone touching the repo, so they are pulled on
+# a schedule rather than by hand. Weekly is the right cadence: the numbers move
+# a handful of times a year, and Semantic Scholar rate-limits unauthenticated
+# callers.
+#
+# A pull request rather than a direct push, because the run can also discover a
+# paper that is on the author profile but not on the site, and that needs a
+# hand-written summary before it goes anywhere near /publications.
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch citation counts
+        run: node scripts/publications/sync.mjs | tee sync-output.txt
+
+      - name: Open a pull request if anything changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: data/publications.remote.json
+          branch: chore/refresh-publications
+          title: 'chore(publications): refresh citation counts'
+          commit-message: 'chore(publications): refresh citation counts'
+          body-path: sync-output.txt
+          delete-branch: true

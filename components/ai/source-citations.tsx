@@ -22,7 +22,7 @@ export function SourceCitations({ sources }: { sources: SourceRef[] }) {
 
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1.5">
-      <span className="text-[10px] uppercase tracking-wide text-muted/60">Sources</span>
+      <span className="text-[10px] uppercase tracking-wide text-muted">Sources</span>
       {sources.map((s, i) => {
         const isInternal = s.url?.startsWith('/')
         const label = (

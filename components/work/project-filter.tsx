@@ -29,7 +29,7 @@ export function ProjectFilter() {
           className={cn(
             'px-5 py-2 rounded-full text-[0.9375rem] font-medium border transition-colors',
             active === null
-              ? 'bg-synapse/20 text-synapse border-synapse/30'
+              ? 'bg-synapse/20 text-synapse-ink border-synapse/30'
               : 'bg-surface text-muted border-border hover:text-ivory'
           )}
         >
@@ -42,7 +42,7 @@ export function ProjectFilter() {
             className={cn(
               'px-5 py-2 rounded-full text-[0.9375rem] font-medium border transition-colors',
               active === key
-                ? 'bg-synapse/20 text-synapse border-synapse/30'
+                ? 'bg-synapse/20 text-synapse-ink border-synapse/30'
                 : 'bg-surface text-muted border-border hover:text-ivory'
             )}
           >

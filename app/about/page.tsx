@@ -2,12 +2,14 @@ import type { Metadata } from 'next'
 import { BentoGrid } from '@/components/about/bento-grid'
 import { Testimonials } from '@/components/about/testimonials'
 import { TechStack } from '@/components/about/tech-stack'
+import { profileOpenGraph } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'About: AI Researcher & Data Science Leader',
   description:
     'Learn more about Thabang Mashinini-Sekgoto. AI Systems Architect, researcher at Wits University, and founder of Ubunye AI Ecosystems.',
   alternates: { canonical: '/about' },
+  openGraph: profileOpenGraph('/about'),
 }
 
 export default function AboutPage() {

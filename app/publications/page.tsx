@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
-import { PUBLICATIONS } from '@/lib/data'
 import { JsonLd } from '@/components/seo/json-ld'
 import { publicationsSchema } from '@/lib/schema'
+import { citations } from '@/lib/citations'
+import { citationTotal, citationsFetchedAt, getPublications } from '@/lib/publications'
+import { CiteBox } from '@/components/publications/cite-box'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
-import { ExternalLink, GraduationCap, Brain, Sparkles } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
+import { ExternalLink, GraduationCap, Brain, Sparkles, FileDown } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Publications: ML & Deep Learning Research',
@@ -13,8 +16,9 @@ export const metadata: Metadata = {
 }
 
 export default function PublicationsPage() {
-  const sorted = [...PUBLICATIONS].sort((a, b) => b.year - a.year)
-  const totalCitations = PUBLICATIONS.reduce((sum, p) => sum + (p.citations ?? 0), 0)
+  const publications = getPublications()
+  const sorted = [...publications].sort((a, b) => b.year - a.year)
+  const totalCitations = citationTotal()
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
@@ -29,14 +33,31 @@ export default function PublicationsPage() {
             Peer-reviewed research in occupational health AI, climate intelligence,
             probabilistic forecasting, and computer vision.
           </p>
-          <div className="flex flex-wrap gap-4 text-sm font-mono text-muted mb-16">
+          <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-muted mb-4">
             <span className="rounded-full border border-border bg-surface px-4 py-1.5">
-              {PUBLICATIONS.length} publications
+              {publications.length} publications
             </span>
             <span className="rounded-full border border-border bg-surface px-4 py-1.5">
               {totalCitations} citations
             </span>
+            {/* Plain <a>: /publications.bib is a route handler, not a page, so a
+                soft navigation would have nothing to render. */}
+            <a
+              href="/publications.bib"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-1.5 transition-colors hover:border-synapse/30 hover:text-ivory"
+            >
+              <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
+              BibTeX for all
+            </a>
           </div>
+          {/* Where the numbers come from, stated rather than implied. The counts
+              are refreshed by scripts/publications/sync.mjs; see lib/publications.ts
+              for why the highest of the three sources is the one shown. */}
+          <p className="text-xs font-mono text-muted mb-16">
+            Citation counts are the highest reported by Google Scholar, Semantic
+            Scholar or CrossRef, each labelled with its source. Last refreshed{' '}
+            {formatDate(citationsFetchedAt())}.
+          </p>
         </ScrollReveal>
 
         {/* Publications list */}
@@ -62,13 +83,22 @@ export default function PublicationsPage() {
 
                   {/* Year and venue */}
                   <div className="flex items-center gap-3 text-sm font-mono text-muted mb-3">
-                    <span className="text-synapse font-semibold">{pub.year}</span>
+                    <span className="text-synapse-ink font-semibold">{pub.year}</span>
                     <span className="text-border">|</span>
                     <span className="line-clamp-1">{pub.venue}</span>
-                    {pub.citations !== undefined && (
+                    {pub.bestCitation && (
                       <>
                         <span className="text-border">|</span>
-                        <span>{pub.citations} citations</span>
+                        <span
+                          title={pub.citationCounts
+                            .map((c) => `${c.source}: ${c.count}`)
+                            .join(' · ')}
+                        >
+                          {/* No opacity on the source label: dimming small text
+                              below full --color-muted is what caused the two
+                              contrast failures fixed in SEO-AUDIT.md. */}
+                          {pub.bestCitation.count} citations ({pub.bestCitation.source})
+                        </span>
                       </>
                     )}
                   </div>
@@ -83,7 +113,7 @@ export default function PublicationsPage() {
 
                   {/* AI Summary */}
                   <div className="rounded-xl border border-synapse/15 bg-synapse/[0.04] p-4 mb-5">
-                    <div className="flex items-center gap-2 text-synapse text-sm font-medium mb-2">
+                    <div className="flex items-center gap-2 text-synapse-ink text-sm font-medium mb-2">
                       <Brain className="w-4 h-4" />
                       AI Summary
                     </div>
@@ -115,11 +145,15 @@ export default function PublicationsPage() {
                     href={pub.scholarUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-synapse hover:text-synapse/80 transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-synapse-ink hover:text-synapse transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
                     {isThesis ? 'View on WIReDSpace' : 'View on Google Scholar'}
                   </a>
+
+                  {/* Generated on the server so the strings are deterministic;
+                      the client component only toggles and copies. */}
+                  <CiteBox citations={citations(pub)} />
                 </article>
               </ScrollReveal>
             )

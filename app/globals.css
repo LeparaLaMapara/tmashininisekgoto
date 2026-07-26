@@ -25,14 +25,30 @@
   --color-surface-hover: #f2ebdd;
   --color-synapse: #b5501e;
   --color-synapse-dim: #ecd7c4;
-  /* Accessible variant of synapse, for small text sitting on a synapse tint
-     (the `bg-synapse/10` pills). The brand orange measures 4.12:1 there, just
-     under the 4.5:1 minimum; this measures 4.7:1. The brand colour itself is
-     unchanged, so anything not small-text-on-tint keeps using --color-synapse. */
-  --color-synapse-ink: #a84819;
+  /* Accessible variants of the two brand colours, for SMALL TEXT only. The
+     brand colours themselves are untouched: headings, icons, borders, large
+     type and every decorative use keep --color-synapse and --color-accent.
+
+     Use -ink whenever brand-coloured text is under ~18px, or sits on a tint
+     rather than the page background. Measured against every surface it lands
+     on (WCAG AA needs 4.5:1 for small text):
+
+       synapse-ink #9c4315   white 6.5   void 6.0   synapse/10 5.3   synapse-dim 4.6
+       accent-ink  #8a5f22   white 5.6   void 5.2
+
+     The values that made those the minimum: --color-synapse at 15px measured
+     3.6:1 on --color-synapse-dim (the /work filter buttons) and 4.28:1 on the
+     publication cards, and --color-accent measured 4.04:1 on white (inline
+     code in posts). All three failed. */
+  --color-synapse-ink: #9c4315;
   --color-signal: #1f5c3a;
   --color-signal-dim: #d9e7dc;
   --color-accent: #a8742a;
+  --color-accent-ink: #8a5f22;
+  /* Code blocks are dark in both themes (`.prose pre` hardcodes #211b15), so
+     the language label above them needs its own colour rather than --color-muted,
+     which is dark ink in light mode and measured 1.84:1 there. 5.8:1 on #211b15. */
+  --color-code-muted: #a2957f;
   --color-ivory: #201911;
   --color-muted: #6e6353;
   --color-border: rgba(32, 25, 17, 0.1);
@@ -55,12 +71,14 @@
   --color-surface-hover: #2a231b;
   --color-synapse: #d97742;
   --color-synapse-dim: #7a3d17;
-  /* Dark mode already passes: light orange on a dark tint. Same value as the
-     brand colour so the token is safe to use everywhere. */
+  /* Dark mode already passes: light brand colours on dark surfaces. Both -ink
+     tokens equal their brand colour here, so using -ink anywhere is safe and
+     changes nothing in dark. */
   --color-synapse-ink: #d97742;
   --color-signal: #7cb593;
   --color-signal-dim: #24402f;
   --color-accent: #d3a253;
+  --color-accent-ink: #d3a253;
   --color-ivory: #ece2d0;
   --color-muted: #998c78;
   --color-border: rgba(236, 226, 208, 0.1);
@@ -164,7 +182,7 @@ html.theme-fade * {
   --tw-prose-headings: var(--color-ivory);
   --tw-prose-links: var(--color-synapse);
   --tw-prose-bold: var(--color-ivory);
-  --tw-prose-code: var(--color-accent);
+  --tw-prose-code: var(--color-accent-ink);
   --tw-prose-quotes: var(--color-muted);
   --tw-prose-quote-borders: var(--color-synapse-dim);
   --tw-prose-counters: var(--color-muted);

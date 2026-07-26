@@ -88,7 +88,7 @@ export function Navbar() {
               'ml-4 flex items-center gap-2 px-5 py-2.5 text-[0.9375rem] font-medium rounded-full transition-all',
               pathname === '/ai'
                 ? 'bg-synapse text-void'
-                : 'bg-synapse/10 text-synapse hover:bg-synapse/20 border border-synapse/20'
+                : 'bg-synapse/10 text-synapse-ink hover:bg-synapse/20 border border-synapse/20'
             )}
           >
             <Sparkles className="w-4 h-4" />
@@ -130,7 +130,7 @@ export function Navbar() {
                     className={cn(
                       'px-4 py-3 text-base font-medium rounded-lg transition-colors',
                       isActive
-                        ? 'text-synapse bg-synapse/10'
+                        ? 'text-synapse-ink bg-synapse/10'
                         : 'text-muted hover:text-ivory'
                     )}
                   >
@@ -140,7 +140,7 @@ export function Navbar() {
               })}
               <Link
                 href="/ai"
-                className="mt-3 flex items-center justify-center gap-2 px-5 py-3 text-base font-medium rounded-full bg-synapse/10 text-synapse border border-synapse/20"
+                className="mt-3 flex items-center justify-center gap-2 px-5 py-3 text-base font-medium rounded-full bg-synapse/10 text-synapse-ink border border-synapse/20"
               >
                 <Sparkles className="w-4 h-4" />
                 Talk to Thabang AI Assist

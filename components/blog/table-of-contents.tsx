@@ -60,7 +60,7 @@ export function TableOfContents({ content }: { content: string }) {
       >
         <List className="h-4 w-4" />
         <span>Table of Contents</span>
-        <span className="text-xs text-muted/60">({headings.length} sections)</span>
+        <span className="text-xs text-muted">({headings.length} sections)</span>
         <svg
           className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
           fill="none"

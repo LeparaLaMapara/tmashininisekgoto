@@ -20,6 +20,8 @@ import { TableOfContents } from '@/components/blog/table-of-contents'
 import { ShareButtons } from '@/components/blog/share-buttons'
 import { RelatedPosts } from '@/components/blog/related-posts'
 import { AudioPlayer } from '@/components/blog/audio-player'
+import { PostSummary } from '@/components/blog/post-summary'
+import { postSummaryText } from '@/lib/post-markdown.mjs'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -46,7 +48,19 @@ export async function generateMetadata({
     description,
     // `post.canonical` only applies when a post was first published elsewhere.
     // Originals stay self-referencing so the ranking credit lands here.
-    alternates: { canonical: post.canonical ?? url },
+    alternates: {
+      canonical: post.canonical ?? url,
+      // Advertises the plain-markdown copy to anything that prefers text over a
+      // React page. Same content, no navigation, no comment form.
+      //
+      // The RSS entry is repeated from the root layout because a child's
+      // `alternates` replaces the parent's rather than merging into it, so
+      // declaring `types` here would otherwise drop the feed link.
+      types: {
+        'text/markdown': `${url}.md`,
+        'application/rss+xml': '/feed.xml',
+      },
+    },
     openGraph: {
       title: post.title,
       description,
@@ -127,6 +141,10 @@ export default async function BlogPostPage({ params }: PageProps) {
           ))}
         </div>
       </header>
+
+      {/* Fixed-format summary: the first prose on every post, for readers who
+          want the thesis before the essay and for anything indexing the page. */}
+      <PostSummary slug={slug} summary={postSummaryText(post)} />
 
       {/* Listen to this post */}
       {hasAudio && <AudioPlayer src={`/audio/${slug}.mp3`} />}

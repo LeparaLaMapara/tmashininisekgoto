@@ -22,8 +22,13 @@ export function GET() {
     '',
     '## Blog posts',
     '',
+    'Every post is also served as plain markdown by appending `.md` to its URL, which',
+    'is the copy to fetch: the HTML page wraps the prose in navigation, a table of',
+    'contents, comments and a subscribe form.',
+    '',
     ...posts.map(
-      (p) => `- [${p.title}](${SITE_URL}/blog/${p.slug}): ${p.summary}`
+      (p) =>
+        `- [${p.title}](${SITE_URL}/blog/${p.slug}) ([md](${SITE_URL}/blog/${p.slug}.md)): ${p.summary}`
     ),
     '',
     '## Main pages',
@@ -46,7 +51,13 @@ export function GET() {
     '- [Kasilam Digital Platforms](https://kasilamdigitialplatforms.vercel.app)',
     '- [ThabangVision](https://thabangvision.com)',
     '',
-    `RSS feed: ${SITE_URL}/feed.xml`,
+    '## Machine-readable files',
+    '',
+    `- [/ai.txt](${SITE_URL}/ai.txt): identity, research focus, expertise and the terms for quoting this material`,
+    `- [/llms-full.txt](${SITE_URL}/llms-full.txt): this index with the full text of every post and publication inlined`,
+    `- [/publications.bib](${SITE_URL}/publications.bib): BibTeX for every publication`,
+    `- [/feed.xml](${SITE_URL}/feed.xml): RSS`,
+    `- [/sitemap.xml](${SITE_URL}/sitemap.xml): every indexable URL`,
     '',
   ]
 

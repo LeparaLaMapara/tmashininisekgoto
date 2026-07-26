@@ -7,7 +7,7 @@ import { Quote } from 'lucide-react'
 const contextColors = {
   impact: 'text-synapse border-synapse/20 bg-synapse/10',
   teaching: 'text-signal border-signal/20 bg-signal/10',
-  engineering: 'text-accent border-accent/20 bg-accent/10',
+  engineering: 'text-accent-ink border-accent/20 bg-accent/10',
 }
 
 const contextLabels = {

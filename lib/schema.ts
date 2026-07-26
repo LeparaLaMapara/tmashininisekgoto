@@ -1,9 +1,9 @@
 import {
-  PUBLICATIONS,
   SEMANTIC_SCHOLAR_AUTHOR_ID,
   SOCIAL_LINKS,
   type Publication,
 } from '@/lib/data'
+import { getPublications } from '@/lib/publications'
 import { SITE_URL, absoluteUrl } from '@/lib/site'
 
 /**
@@ -231,9 +231,18 @@ export function publicationSchema(pub: Publication) {
   return base
 }
 
-/** All publications, for the /publications page. */
+/**
+ * All publications, for the /publications page.
+ *
+ * Reads the enriched list rather than the raw one so `interactionStatistic`
+ * carries the same citation figure the page prints. Two different numbers for
+ * the same paper, one in the markup and one on screen, is the kind of mismatch
+ * that gets structured data ignored.
+ */
 export function publicationsSchema() {
-  return PUBLICATIONS.map(publicationSchema)
+  return getPublications().map((pub) =>
+    publicationSchema({ ...pub, citations: pub.bestCitation?.count ?? pub.citations })
+  )
 }
 
 /** Breadcrumbs for nested routes. `path` is site-relative. */

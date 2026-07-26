@@ -1,0 +1,35 @@
+{
+  "fetchedAt": "2026-07-25T21:53:15.480Z",
+  "source": "https://api.semanticscholar.org/graph/v1/author/1419516441/papers",
+  "papers": {
+    "e1e1b14c8862a9e73b79ca06f3756e7c1f5d1057": {
+      "title": "Mine workers threshold shift estimation via optimization algorithms for deep recurrent neural networks",
+      "year": 2019,
+      "citations": 10,
+      "crossrefCitations": 13,
+      "venue": "IFAC-PapersOnLine",
+      "doi": "10.1016/j.ifacol.2019.09.174",
+      "url": "https://www.semanticscholar.org/paper/e1e1b14c8862a9e73b79ca06f3756e7c1f5d1057"
+    },
+    "8e3e6948efbd0f5c392eecba48085724579d39db": {
+      "title": "Noise level policy advising system for mine workers",
+      "year": 2019,
+      "citations": 8,
+      "crossrefCitations": 10,
+      "venue": "IFAC-PapersOnLine",
+      "doi": "10.1016/j.ifacol.2019.09.195",
+      "url": "https://www.semanticscholar.org/paper/8e3e6948efbd0f5c392eecba48085724579d39db"
+    },
+    "7655474fe5524b7e1aa5ebeb9de6a7464f3eb8bc": {
+      "title": "Long-Range Seasonal Forecasting of 2m-Temperature with Machine Learning",
+      "year": 2021,
+      "citations": 3,
+      "arxiv": "2102.00085",
+      "url": "https://www.semanticscholar.org/paper/7655474fe5524b7e1aa5ebeb9de6a7464f3eb8bc"
+    }
+  },
+  "newPapers": [],
+  "unmatched": [
+    "Learning Level Set Method by Echo State Network for Image Segmentation"
+  ]
+}

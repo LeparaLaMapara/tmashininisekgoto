@@ -3,12 +3,14 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
+import { profileOpenGraph } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Resume: Lead Data Scientist',
   description:
     'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA, previously Vodacom and IBM Research, MSc and PhD candidate at Wits.',
   alternates: { canonical: '/resume' },
+  openGraph: profileOpenGraph('/resume'),
 }
 
 const KIND_ICON: Record<MilestoneKind, typeof GraduationCap> = {
@@ -20,7 +22,7 @@ const KIND_ICON: Record<MilestoneKind, typeof GraduationCap> = {
 const ACCENT_TEXT: Record<string, string> = {
   synapse: 'text-synapse',
   signal: 'text-signal',
-  accent: 'text-accent',
+  accent: 'text-accent-ink',
 }
 
 const DOT_STYLES: Record<string, string> = {
