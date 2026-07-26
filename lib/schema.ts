@@ -64,6 +64,12 @@ function sameAsProfiles(): string[] {
     SOCIAL_LINKS.twitter,
     SOCIAL_LINKS.youtube,
     SOCIAL_LINKS.instagram,
+    // The syndication targets. A cross-post carries a canonical back here, but
+    // the canonical is a hint about which copy ranks, not a statement about who
+    // wrote it. Declaring the profiles says the dev.to and Medium accounts are
+    // the same person, rather than someone reposting his work.
+    SOCIAL_LINKS.devto,
+    SOCIAL_LINKS.medium,
     `https://www.semanticscholar.org/author/${SEMANTIC_SCHOLAR_AUTHOR_ID}`,
   ]
 }

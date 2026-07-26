@@ -66,6 +66,10 @@ export const SOCIAL_LINKS = {
   twitter: 'https://x.com/thabangline',
   email: 'thabangvisionstudios@gmail.com',
   scholar: 'https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ',
+  // Where the blog is syndicated. Listed so the copies are declared as the same
+  // person's work rather than looking like someone reposting it.
+  devto: 'https://dev.to/thabanglukheth0',
+  medium: 'https://medium.com/@thabangline',
   booking: 'https://calendar.app.google/JzUn4JQ2pnzmmjLx5',
 } as const
 
