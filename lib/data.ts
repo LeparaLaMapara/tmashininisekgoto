@@ -64,7 +64,7 @@ export const SOCIAL_LINKS = {
   youtube: 'https://www.youtube.com/@tmashininisekgoto',
   instagram: 'https://www.instagram.com/thabanglukheto',
   twitter: 'https://x.com/thabangline',
-  email: 'thabangvisionstudios@gmail.com',
+  email: 'thabangline@gmail.com',
   scholar: 'https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ',
   // Where the blog is syndicated. Listed so the copies are declared as the same
   // person's work rather than looking like someone reposting it.
@@ -135,35 +135,6 @@ export const PROJECTS: Project[] = [
       { label: 'Kasilam Projects', href: 'https://kasilamdigitialplatforms.vercel.app/' },
     ],
   },
-  // Building now
-  {
-    slug: 'thabangvision',
-    title: 'ThabangVision',
-    category: 'building-now',
-    building: true,
-    problem: "South Africa is full of talented photographers, videographers and crews, but booking them runs on DMs and luck. Clients cannot tell who is real, and creators with professional gear earn nothing from it on idle days.",
-    solution: "A marketplace to book South Africa's creators and gear. Verified photographers, videographers and production crews, equipment rentals with real time availability, secure payments with deposit protection, and an AI assistant, Ask Ubunye, that matches you to the right creator. For anyone with a shoot to book, and every creator with skills or equipment to earn from.",
-    impact: 'Live at thabangvision.com: verified creators, gear rentals from R500 a day, and secure payments through PayFast and Paystack. Growing the creator community now.',
-    skills: ['Next.js', 'TypeScript', 'PostgreSQL', 'AI'],
-    image: '/projects/thabangvision.png',
-    productLink: 'https://thabangvision.com',
-  },
-  {
-    slug: 'sekhoto-multiversity',
-    title: 'Sekhoto Multiversity',
-    category: 'building-now',
-    building: true,
-    problem: "A family's knowledge usually lives in people's heads and dies with them. And township learners need what wealthier schools take for granted: past papers, tutoring, and guidance on study, funding and rights.",
-    solution: 'A learning platform built first for my own family: an AI assistant grounded on family knowledge, a Grade 12 past paper vault, an opportunity finder for study, funding and work, and plain language guides to public services and rights. Built for the Sekhoto family first, as a blueprint any family or community can copy.',
-    impact: 'Live and in use by the family. The past paper vault and rights guides are done; AI subject tutors are next.',
-    skills: ['Next.js', 'TypeScript', 'PostgreSQL', 'AI'],
-    image: '/projects/multiversity.png',
-    productLink: 'https://sekhotomultiversity.com',
-    siteLinks: [
-      { label: 'sekhotomultiversity.com', href: 'https://sekhotomultiversity.com' },
-    ],
-  },
-
   // Professional & Research
   {
     slug: 'vodacom-smart-generators',
@@ -729,8 +700,7 @@ export const COURSES: Course[] = [
   },
 ]
 
-export const PROJECT_CATEGORIES: Record<Project['category'], string> = {
-  'building-now': 'Building Now',
+export const PROJECT_CATEGORIES: Partial<Record<Project['category'], string>> = {
   'open-source': 'Open Source',
   'telecoms': 'Telecoms',
   'banking': 'Banking',

@@ -32,7 +32,7 @@ const CHECK_ONLY = process.argv.includes('--check')
 // CrossRef and Semantic Scholar both ask for a contact address in the
 // User-Agent and give the "polite pool" better rate limits in return.
 const USER_AGENT =
-  'tmashininisekgoto-site/1.0 (https://www.tmashininisekgoto.com; mailto:thabangvisionstudios@gmail.com)'
+  'tmashininisekgoto-site/1.0 (https://www.tmashininisekgoto.com; mailto:thabangline@gmail.com)'
 
 /* -------------------------------------------------------------------------- */
 /* Reading the curated record                                                 */

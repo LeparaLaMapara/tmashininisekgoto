@@ -7,7 +7,6 @@ import {
   Briefcase,
   UserPlus,
   Handshake,
-  Network,
   GraduationCap,
   CalendarDays,
   ArrowRight,
@@ -31,7 +30,6 @@ const CARDS: Card[] = [
   { icon: Briefcase, title: 'AI / data science consulting', blurb: 'Production ML, analytics, and AI strategy — from messy data to shipped systems.', interest: 'consulting' },
   { icon: UserPlus, title: 'Recruit or hire me', blurb: 'Lead/principal data science & AI engineering roles. See what I am suited for.', interest: 'recruitment' },
   { icon: Handshake, title: 'Collaborate on applied AI', blurb: 'Research-to-product work, open source, and applied AI projects.', interest: 'collaboration' },
-  { icon: Network, title: 'SekhotoMultiversity partnerships', blurb: 'Partner on the AI-powered learning & opportunity platform for African communities.', interest: 'sekhotomultiversity' },
   { icon: GraduationCap, title: 'AI learning & career resources', blurb: 'Courses and guidance to start or level up in AI and data science.', href: '/courses' },
 ]
 

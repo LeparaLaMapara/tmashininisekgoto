@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import { ArrowUpRight } from 'lucide-react'
 import { ChatInterface } from '@/components/ai/chat-interface'
 import { WorkWithMe } from '@/components/ai/work-with-me'
-import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
 export const metadata: Metadata = {
   title: 'Thabang AI Assist: Ask About My Work',
@@ -45,33 +43,6 @@ export default function AIPage() {
       <section className="px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <WorkWithMe />
-        </div>
-      </section>
-
-      {/* SekhotoMultiversity */}
-      <section className="px-6 pb-24">
-        <div className="mx-auto max-w-5xl">
-          <ScrollReveal>
-            <div className="glass rounded-2xl border border-border p-8 sm:p-10">
-              <p className="font-mono text-xs uppercase tracking-widest text-accent-ink">Also building</p>
-              <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-ivory sm:text-3xl">
-                SekhotoMultiversity
-              </h2>
-              <p className="mt-4 max-w-2xl text-muted">
-                Thabang is also building SekhotoMultiversity, an AI-powered learning and
-                opportunity platform for African families, students, workers, and communities.
-              </p>
-              <a
-                href="https://sekhotomultiversity.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-synapse px-6 py-3 text-sm font-semibold text-void transition-all hover:bg-synapse/90"
-              >
-                Explore SekhotoMultiversity
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
     </>

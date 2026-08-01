@@ -11,7 +11,6 @@ export const INTEREST_OPTIONS: { value: string; label: string }[] = [
   { value: 'workshop', label: 'Workshop / training' },
   { value: 'speaking', label: 'Speaking invite' },
   { value: 'collaboration', label: 'Collaboration' },
-  { value: 'sekhotomultiversity', label: 'SekhotoMultiversity' },
   { value: 'learning', label: 'Learning AI' },
   { value: 'other', label: 'Other' },
 ]

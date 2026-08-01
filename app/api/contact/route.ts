@@ -7,7 +7,6 @@ const ALLOWED_INTERESTS = new Set([
   'workshop',
   'speaking',
   'collaboration',
-  'sekhotomultiversity',
   'learning',
   'other',
 ])

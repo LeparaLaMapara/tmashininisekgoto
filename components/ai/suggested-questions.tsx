@@ -35,8 +35,6 @@ const QUESTION_GROUPS: { key: string; label: string; questions: string[] }[] = [
     key: 'collaborators',
     label: 'Collaborators & Builders',
     questions: [
-      'What is Thabang building with SekhotoMultiversity?',
-      'What is ThabangVision Applied AI / research-to-product work?',
       'How can I collaborate with Thabang?',
     ],
   },
