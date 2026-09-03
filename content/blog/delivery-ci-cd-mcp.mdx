@@ -1,0 +1,186 @@
+---
+title: "Delivery: Planning, Gates, Deployment and the MCP Toolchain"
+seoTitle: "CI Gates, Deployment and MCP in an Agentic Workflow"
+date: 2026-09-03
+published: true
+tags: [ci/cd, devops, claude code, agentic ai, engineering]
+summary: "How work is planned as write scoped contracts, how architecture rules are enforced by a pipeline rather than by memory, a deployment failure that produced no record at all, and the model context protocol toolchain that lets an agent read live infrastructure instead of guessing at it."
+seoDescription: "Task contracts, pipeline gates that enforce architecture, a silent deploy failure, and an MCP toolchain that gives an agent real infrastructure context."
+---
+
+# Delivery: Planning, Gates, Deployment and the MCP Toolchain
+
+*Deep dive six of six. Start at [the system map](/blog/thabangvision-system-design) for how this layer fits the rest.*
+
+---
+
+## The question this layer answers
+
+Every other post in this series describes a property of the running system. This one describes the loop that produces it, and the question is: **what stops the architecture in those five posts from decaying?**
+
+The answer is not discipline. Discipline is what you have on a Tuesday morning and what you do not have at eleven on a Friday night. The answer is that every rule worth keeping is enforced by something that is not a person.
+
+That matters more here than in a team setting, because this system is built by one person working with AI agents. An agent will follow a written rule with more consistency than I will, and it will also violate one in twenty files rather than one file if the rule is ambiguous. Both properties argue for the same thing: **make the rules mechanical.**
+
+---
+
+## Planning: a task is a write scope contract
+
+Work is queued as files, and the header of each one carries a field I now consider non negotiable.
+
+```text
+  # TASK-031: Marketplace ranking
+  ## Priority: HIGH | Phase: V3 | Depends on: none
+  ## Files allowed: lib/ranking/calculate.ts,
+                    app/api/admin/recalculate-rankings/route.ts
+  ## Acceptance criteria
+  - [ ] scoring function implements the agreed formula
+  - [ ] build passes
+  - [ ] tests pass
+```
+
+Four things are doing work there.
+
+**Files allowed is a declared blast radius**, handed over before any code is written. It converts "do not change things outside this task" from a hopeful instruction into a checkable property. When a diff touches a file outside the list, that is a fact rather than an opinion, and it is reviewable in seconds.
+
+**Acceptance criteria always end with the build and the tests.** Not because that is thorough, but because it makes "done" a claim that something else can verify.
+
+**Dependencies are explicit**, so the queue has an order rather than a mood.
+
+**The format degrades usefully.** Some tasks carry a files allowed value of none, with a note that the work is a dashboard setting or an owner decision. The same field that scopes an implementation is also how work that cannot be implemented gets marked. A planning format that can express its own limits is a format people keep using.
+
+Where this broke is worth recording. The queue is a directory, and a directory has no uniqueness constraint, so several task numbers ended up in both the completed folder and the pending one. Nobody noticed for months. The format also drifted: the early tasks are nine line contracts, one later one is a thousand line prose document, which is not a task but a wish. The recent ones snap back, and one of them contains the sentence that is this entire post in miniature:
+
+> It should not depend on somebody remembering.
+
+---
+
+## Gates: the same rule in more than one place
+
+Three architecture rules from the earlier posts are load bearing: business values live in one module, no page imports a vendor library directly, and no secrets are committed. All three were written down long before they were enforced, and all three were being broken while written down.
+
+They are now enforced in three different places, aimed at three different things that can break them.
+
+| The rule | Before a merge is proposed | In the pipeline | On the repository |
+| --- | --- | --- | --- |
+| Business values in one module | A command the agent runs and reports on | A step that fails the build | The module is an owned path requiring review |
+| No vendor library outside the abstraction | A command with per file exemptions | A step that fails the build | The provider directories are owned paths |
+| No secrets committed | A command | A step that fails the build | Every environment file is an owned path |
+
+The pipeline job is the one that actually holds, because it does not care who or what wrote the code. It runs on every push and every proposed merge, and a violation exits non zero.
+
+The full pipeline is unglamorous and that is the point: install, type check, build, unit tests, then a separate job for the three architecture checks. Nothing clever. The type check and the build catch different things, which is why both are there: a build can succeed on code the type checker would reject if the build does not type check.
+
+One honest caveat I would fix. The pipeline builds against a different payment provider than production runs, which means the live payment path is never exercised in the pipeline. The abstraction makes that harmless for a type check and a build, and it is still a gap I would rather not have.
+
+### An ownership file is only a control if something enforces it
+
+The repository has an ownership file listing paths that require review. It is a one person file, which is not as odd as it sounds: the purpose is not to route review to colleagues, it is to make a diff on an expensive path visible before it lands.
+
+But I want to be precise, because writing this series is what made me check. An ownership file **is not enforced unless branch protection requires it**, and an owner approving their own change is not a gate in any meaningful sense. Treating it as a control without verifying that is exactly the mistake this whole series argues against.
+
+Worse, mine had drifted. It still guards two files that no longer exist, and it still points at the old interceptor path from before a framework upgrade renamed it, which means **the file performing origin validation is not covered by the tripwire meant to cover security critical paths.** The tripwire drifted off the thing it was guarding, and I did not notice for months.
+
+That is the same failure mode as documentation drift, occurring inside the control system I built to prevent documentation drift. It is also the strongest argument in this post for preferring the pipeline check over the ownership file: one of them fails loudly when it is wrong, and the other fails silently.
+
+---
+
+## Deployment, and a failure that left no record
+
+This is the most useful operational thing I know about this platform.
+
+I changed one scheduled job to run more frequently and added a second. The platform then stopped deploying the repository entirely.
+
+Not a failed build. Not a red mark. **Nothing.** Pushes landed and no deployment appeared. I checked the integration, the tokens, the branch configuration, the webhook delivery log. All healthy.
+
+On this plan, schedules more frequent than daily are rejected at **configuration validation**, which happens before a deployment record is created. An invalid schedule therefore does not produce a failed deploy. It produces no deploy, silently, and every symptom points at a broken integration rather than at the file just edited.
+
+The generalisable lesson: **when something did not happen, check whether the platform rejected your configuration before you investigate your pipeline.** A failed thing leaves evidence. A rejected thing sometimes does not, and the absence of a record feels like an infrastructure problem rather than an input problem.
+
+The resolution I wrote into the project instructions is the part I am fondest of. One route is named for a frequency it does not run at. The instruction to my future self is to **rename the route rather than fix the schedule**, and to confirm the plan permits a faster cadence before touching it again. A misleading name that stops somebody re breaking production is worth more than an accurate name that invites it.
+
+The scheduled work itself is deliberately unintelligent: maintenance, retention cleanup, reporting, and a nightly consistency sweep. All of it authenticated with a shared secret, where a **missing** secret is treated as a failure rather than as permission. That default matters. A configuration check that treats absence as allowed is how a protected endpoint becomes public during a botched environment migration.
+
+---
+
+## The MCP toolchain
+
+Model context protocol servers are how an agent reaches real systems instead of reasoning about them from memory. Four are configured here, all over HTTP: the database, the source host, the deployment platform, and the CDN.
+
+What that changes is specific and larger than it sounds.
+
+**The agent reads the live schema rather than inferring it.** Before this, a question like "does this table have that column" was answered from whatever the model had absorbed from the code, which is a guess that looks like a fact. With a database server connected it is a query. The difference between a plausible schema and the actual schema is the difference between a migration that applies and one that fails at three in the morning.
+
+**Deployment state is observable in the loop.** Build logs and deployment status are readable where the work is happening, rather than requiring a context switch to a dashboard and a summary typed back in. That matters most for exactly the failure described above, where the useful signal was the **absence** of a deployment record, which is much easier to notice when you can list them.
+
+**Credentials stay out of the file.** The configuration references environment variables rather than embedding tokens. That is the minimum bar and it is worth stating, because the convenient version of this file is the one with the secrets in it, and that file gets committed eventually.
+
+Two limits I would state plainly rather than discover later. A connected server is **write capable**, so the blast radius of a confused agent now includes production infrastructure rather than just the working directory. And it makes the agent's context depend on live systems, so a slow or unavailable server degrades the loop rather than just failing a tool call. Both are acceptable in exchange for the agent knowing what is actually true. Neither is free.
+
+---
+
+## The loop, and one rule pointed at me
+
+The most useful piece of the workflow is a command that decides what to work on next. It reads the current state, cross references what exists against the roadmap, walks a priority chain, writes a plan in a fixed template, and then stops and waits.
+
+The rule at the bottom of the priority chain is a prohibition:
+
+> Never skip a priority level. Fix broken things before building new things.
+
+Read that as a control system rather than as automation. **It refuses me.** Fixing what is broken is first, the first impression a customer gets is second, and new features are further down than I would ever naturally place them late at night, when the feature is the interesting thing and the broken thing is not. It is a commitment device pointed at its own author, and it is the single most useful thing in the harness.
+
+When work is genuinely parallel, it is split by an unglamorous rule keyed on scope: below a small file count, work alone; above it, run separate agents in isolated working copies, each of which must build before it merges. I went back and read the branches from one of those runs while writing this. Three vertical slices, non overlapping file groups, migration files with adjacent timestamps, and no conflicts between them. The dispatch rule worked as specified, which surprised me more than it should have.
+
+### The review that argued itself into code
+
+The best output of this workflow was not code. It was an argument against something I was about to build.
+
+I wanted a panel of persona agents: a software engineer agent, a security agent, a data agent. A structured adversarial review talked me out of it, and the reasoning is now a commit message I reread whenever the idea returns:
+
+> A job title has no testable success predicate, so it cannot be evaluated or improved. Its scope overlaps every other title, so one stuck payment yields five opinions about one incident. The unit that works is the invariant: a property that must hold, owned by one deterministic check, with a precision you can measure and a mute you can pull.
+
+So instead of personas, a nightly consistency sweep. It calls **no model at all**, deliberately, and the reason is written in the file: a model asked whether the platform is healthy will answer healthy, because that is the most probable output over log text.
+
+Two rules govern what is allowed into it. Only properties that have actually been violated become checks, because an invariant nobody has ever broken is a guess and guesses are the noise that trains you to ignore the sweep. And roughly half the tests are negative cases, proving each detector stays quiet on healthy but unusual data, because a checker that has never said "nothing to do here" has not been shown to work.
+
+It found real defects on its first run, including one meaning most of the notification system had been silently doing nothing.
+
+I also refused to call it self healing. The honest name is **self observing**. It notices, deduplicates, and tells a human once. Anything that acts on findings comes later, and calling it the more impressive name would have been the first step towards trusting it further than it deserves.
+
+---
+
+## What this layer buys
+
+| Practice | Scalability | Efficiency | Cost | Portability |
+| --- | --- | --- | --- | --- |
+| Write scoped task contracts | Strong, work parallelises safely | Strong, review is bounded | Neutral | Strong, the format is not tool specific |
+| Architecture rules as pipeline gates | Strong, rules survive contributors | Strong, violations caught in minutes | Neutral | Strong |
+| Ownership paths | Weak unless branch protection enforces it | Neutral | Neutral | Neutral |
+| Scheduled work, secret required | Strong | Neutral | Neutral | Weak, host specific declaration |
+| MCP servers for live context | Neutral | Strongest single effect in the loop | Neutral | Moderate, configuration is portable |
+| Retrospective invariants only | Strong, the sweep stays readable | Strong, low false positive rate | Strong, catches money defects | Strong, they are plain queries |
+
+The one axis that dominates here is efficiency, and specifically the efficiency of the loop between deciding something and finding out whether it worked. Every other axis in this series is a property of the running system. This one determines how quickly all of them can be improved, which is why a delivery pipeline that fails loudly is worth more than any individual optimisation inside it.
+
+---
+
+## Where this is still weak
+
+The dependency audit is a moment rather than a state. I cleared the known vulnerabilities once, the check that would keep them cleared is still queued, and findings have appeared since. Most of the original set had fixes available long before I looked, which is the actual lesson: nobody was looking.
+
+Migrations are still applied by hand, with no runner and no automated parity check between environments.
+
+And the whole system has one author. Every abstraction in this series survives me leaving. None of the context does, and no pipeline gate fixes that.
+
+---
+
+## The series
+
+- [The system map](/blog/thabangvision-system-design)
+- [Software design](/blog/software-engineering-design)
+- [Architectural design](/blog/architectural-design-portability)
+- [AI engineering](/blog/ai-engineering-gateway)
+- [Data engineering](/blog/data-engineering-schema)
+- [Network architecture and security](/blog/network-architecture-security)
+
+*Built in Johannesburg.*

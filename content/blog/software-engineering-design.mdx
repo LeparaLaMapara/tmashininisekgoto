@@ -1,0 +1,152 @@
+---
+title: "Software Design: Boundaries That Make Change Cheap"
+seoTitle: "Software Design Practices for a Production Marketplace"
+date: 2026-09-03
+published: true
+tags: [engineering, architecture, systems, web development, next.js]
+summary: "Where correctness lives in a production marketplace, why the domain logic is forbidden from touching the network, how the type system is used as a constraint rather than as documentation, and the class of bug a type checker will happily approve."
+seoDescription: "Pure decision modules, integer money, branded state machines, and the silent error pattern a type checker approves. Software design practices from a live system."
+---
+
+# Software Design: Boundaries That Make Change Cheap
+
+*Deep dive one of six. Start at [the system map](/blog/thabangvision-system-design) for how this layer fits the rest.*
+
+---
+
+## The question this layer answers
+
+Every codebase accumulates two kinds of code: code that encodes what your business actually does, and code that talks to something else. The first kind is small, valuable and yours. The second kind is large, replaceable and somebody else's API surface.
+
+Almost every maintenance problem I have had came from those two being mixed together in the same function.
+
+So the organising rule for this system is a separation, and it is enforced rather than encouraged: **the modules that make decisions cannot perform input or output.**
+
+---
+
+## Pure decision modules
+
+Availability, cart pricing, delivery quoting, booking validation, ranking and the consistency detectors are all pure functions. Each one takes data that has already been fetched and returns a decision. None of them opens a connection.
+
+```text
+   route handler
+        |
+        |  fetch rows          <- IO lives here
+        v
+   +----------------------+
+   |  pure decision       |    no database
+   |  module              |    no network
+   |  data in, answer out |    no clock
+   +----------------------+
+        |
+        |  write result       <- and here
+        v
+   database
+```
+
+That looks like ceremony until you notice what it makes possible.
+
+**The test suite needs no infrastructure.** Three hundred assertions run in well under a second with no database, no network and no API key. Every genuinely hard rule in the product is covered: unit aware availability, expiring checkout holds, bulk discounts, cancellation windows, distance priced delivery. Not one of those tests can be flaky, because there is nothing in them that can be slow or unavailable.
+
+**The rules are readable as rules.** When someone asks what happens if a rental is cancelled inside the notice window, the answer is a function I can point at, not a behaviour distributed across a route handler, a database trigger and a scheduled job.
+
+**The domain survives a framework change.** These modules import nothing from the web framework. Moving them is a copy.
+
+### What it buys, honestly
+
+| Axis | Effect |
+| --- | --- |
+| Portability | Strong. The decision layer has no dependency on the framework, the database or the host. |
+| Efficiency | Strong in the development loop. A rule change is verified in under a second rather than by clicking through a staging environment. |
+| Scalability | Neutral. Pure functions do not make a system faster. They make the slow parts easy to find, because the slow parts are all in one place. |
+| Cost effectiveness | Neutral to positive, indirectly. Most of my expensive mistakes were logic errors that a fast test would have caught. |
+
+The cost is one extra indirection: something has to fetch the rows and pass them in. Across six months, that is the entire bill. This is the practice I would carry to any system without thinking about it.
+
+---
+
+## Money is an integer, always
+
+Booking amounts are stored and computed as integer cents. Never a floating point number, at any point in the path.
+
+This is old advice and it is still routinely ignored, so the concrete version. Binary floating point cannot represent most decimal fractions exactly. Add enough of them together, in an order that varies with how a cart happens to be sorted, and two code paths that should agree produce totals that differ by a cent. In a system that reconciles a payment gateway's amount against its own expected total before confirming anything, a one cent disagreement is not a rounding artefact. It is a booking that refuses to confirm and a customer who has been charged.
+
+Integers do not have this problem, and the discipline is cheap: convert once at the display boundary, and never let a fraction into the domain.
+
+The related rule is that the tax rate, the deposit percentage and every published price live in exactly one module. Over a hundred files read from it. A pipeline step greps the application directory and fails the build if a business value appears anywhere else. That is what makes a price change a one line edit rather than an archaeology exercise.
+
+---
+
+## Using the type system as a constraint, not as documentation
+
+Most TypeScript is written to describe what the code already does. It is more useful when written to make something impossible.
+
+Two examples from this system.
+
+**Two booking types that must never be conflated.** Service bookings sell time. Equipment bookings sell dates. They have different lifecycles, different payout mechanics, and different terminal states: a service booking reaches `paid`, an equipment booking reaches `confirmed`.
+
+I learned that distinction the way you would expect. My first consistency checker treated both with one vocabulary and reported a false positive on every single service booking in the database. The fix was not a smarter check. It was two separate sets of valid states, so a function written against one cannot silently accept the other.
+
+**Identifiers that are all strings underneath.** A database hands out identifiers that are structurally identical. Nothing but the type system stops a listing id being passed where a user id belongs, and in a function that decides who gets paid, that mistake is worth making impossible rather than catching in review.
+
+The general form of the rule: **when a mistake would be expensive and the compiler could refuse it, make the compiler refuse it.** That is different from typing everything thoroughly. Thorough typing is documentation. Making an illegal state unrepresentable is a control.
+
+---
+
+## The bug a type checker approves
+
+Here is the highest leverage defect I found in this codebase, and the reason I no longer trust a clean compile as evidence of much.
+
+The database client does not throw on failure. It returns an object with a data field and an error field. So this line, which I wrote without thinking dozens of times:
+
+```ts
+const { data } = await supabase.from('bookings').select()
+```
+
+discards the error **at the destructuring site**. No exception is raised. A surrounding try block never runs. The data field is null, the next line reads null as "nothing found yet", and the code proceeds confidently to do the wrong thing.
+
+There were roughly two dozen of those. One pattern, written once and copied, and it produced **every silent failure I found in a week of review.** The worst instance was a missing table: the query returned null, a check read that null as "no usage recorded today", and a daily cap I believed was enforcing itself was in fact unlimited.
+
+Everything about that code was valid. It compiled, it type checked, it passed review, and it was wrong.
+
+Three things I changed as a result.
+
+**Treat an error field as a value that must be handled, not a field you may ignore.** The safe form destructures both and checks the error, every time. It is more typing. It is also the difference between a system that fails loudly and one that fails politely.
+
+**Assert on writes that must affect a row.** An update that matches zero rows is a successful statement and a failed operation. Those are different things, and only one of them is reported by default.
+
+**Do not conclude from a clean compile that the code is correct.** A type checker verifies the shapes you described. It has no opinion about whether you looked at them.
+
+---
+
+## Testing, and what a red suite actually costs
+
+The unit tests cover the pure modules, which is the easy and valuable case. The browser tests cover the paths a customer walks.
+
+The browser suite went through a phase of being partly red for long enough that I stopped reading it. When I finally sat down and fixed it, the commit that closed it out was titled for what I found: greening the suite and the three real defects it had been hiding.
+
+That is the actual cost of a tolerated failing test. It is not the missing coverage. It is that **a suite which is normally red launders real failures as known noise.** Every genuine regression arrives disguised as the thing you have already decided to ignore. A suite that is red is worse than no suite at all, because no suite at least does not lie to you.
+
+The related discipline, which came out of building consistency checks rather than tests: roughly half of those checks are negative cases, proving the detector stays quiet on data that is healthy but unusual. A checker that has never said "nothing to do here" has not been shown to work. It has only been shown to fire.
+
+---
+
+## What this layer buys
+
+| Practice | Scalability | Efficiency | Cost | Portability |
+| --- | --- | --- | --- | --- |
+| Pure decision modules | Neutral, isolates the slow parts | Strong in the dev loop | Indirect | Strong |
+| Integer money | Neutral | Neutral | Prevents reconciliation failures | Strong |
+| Business values in one module | Neutral | Strong for change | Strong, no stale prices | Strong |
+| Illegal states unrepresentable | Neutral | Strong, fewer review cycles | Prevents expensive mistakes | Strong |
+| Handling the error field | Neutral | Strong, failures are visible | Strong, this hid a broken cap | Neutral |
+
+Nothing in this layer makes the system handle more traffic. That is not what it is for. It makes **change cheap and mistakes visible**, and those two properties are what let every other layer be improved without fear.
+
+---
+
+## Next
+
+[Architectural design](/blog/architectural-design-portability) is the layer above this one: the interfaces that make vendors replaceable, and what that abstraction actually bought when a payment provider had to change.
+
+*Built in Johannesburg.*

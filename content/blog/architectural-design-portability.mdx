@@ -1,0 +1,153 @@
+---
+title: "Architectural Design: Swapping Providers Without Touching Pages"
+seoTitle: "Provider Abstraction and Portability in Production"
+date: 2026-09-03
+published: true
+tags: [architecture, systems, engineering, supabase, devops]
+summary: "Interfaces selected by environment variable, route groups that exist because layouts differ, per route rendering strategy, and an honest ledger of what the abstraction bought when a payment provider had to be replaced under commercial pressure, and what it cost."
+seoDescription: "Provider interfaces chosen by env var, route groups, rendering strategy, and an honest account of what abstraction buys and what it costs in a live system."
+---
+
+# Architectural Design: Swapping Providers Without Touching Pages
+
+*Deep dive two of six. Start at [the system map](/blog/thabangvision-system-design) for how this layer fits the rest.*
+
+---
+
+## The question this layer answers
+
+Which parts of this system will I be forced to replace, and what will that cost me on the day it happens?
+
+That is a more useful framing than "is this well architected", because it produces a testable answer. Abstraction is not free. Every interface is indirection somebody has to read through. So the only honest way to decide where to put one is to ask which vendors are genuinely replaceable and which are load bearing forever.
+
+I got some of those calls right and some wrong, and the wrong ones are visible in the codebase as dead code.
+
+---
+
+## The pattern
+
+Every external service sits behind an interface, with a concrete implementation per vendor and an environment variable selecting which one runs.
+
+```text
+   pages and routes
+        |
+        |  import from the abstraction only
+        v
+   +-----------------------------------------+
+   |  payments   ai   storage   email search  |
+   +-----+-------+-----+--------+-------+----+
+         |       |     |        |       |
+      env var selects the implementation
+         |       |     |        |       |
+         v       v     v        v       v
+      vendor sdk, and nothing above sees it
+```
+
+The rule that makes it real: **no page and no route handler imports a vendor library directly.** That is not a convention. A pipeline step greps the application directory for provider imports and fails the build.
+
+Without that check, the pattern decays within weeks. Someone needs one field the interface does not expose, imports the vendor library "just here", and now the abstraction is decorative. I know this because I have done it in other projects. The grep is what makes the architecture true rather than aspirational.
+
+---
+
+## What it actually bought
+
+Two swaps happened under real commercial pressure, not as exercises.
+
+**A payment provider changed.** The gateway taking money and paying creators out was replaced. Not one page changed. Not one route handler changed. The checkout flow, the webhook handling, the payout path, all of it moved behind the interface. The previous provider stayed switchable rather than being deleted, which cost nothing and meant the decision was reversible.
+
+**A model provider changed.** The assistant moved from a proprietary model to an open weight one on a different host. Again, no page changed. That one is covered in the [AI engineering deep dive](/blog/ai-engineering-gateway), because the model layer needed more than an interface to be genuinely swappable.
+
+**Two embedding providers coexist at different vector dimensions.** The free option produces vectors of one size, the paid option another. They cannot share an index, so the abstraction carries a migration per dimension and switching providers means a full reindex rather than a config flip. The interface makes the swap possible. It does not make it cheap, and pretending otherwise would be the kind of claim that gets found out.
+
+---
+
+## What it cost
+
+Three adapters exist and have never run: an object storage alternative, a database storage alternative, and a search alternative. They compile. They are typed. They are dead code that looks like capability.
+
+This is the standard failure mode of the pattern and it is worth naming precisely. An interface with one real implementation and three stubs is a **design sketch presented as an architecture**. The honest word for that system is extensible. The dishonest word, which I used in my own documentation for a while, is supported.
+
+The cheap version of the rule, which I would apply next time: **write the interface when the second implementation is actually on the table, not when you imagine it might be.** The first implementation tells you nothing about what the interface should look like. The second one tells you everything. Writing it early means designing an abstraction against a sample size of one, which is how you get interfaces that fit exactly one vendor and have to be rewritten anyway.
+
+---
+
+## Structure: route groups and why they exist
+
+The application is divided into four route groups: marketing, platform, admin and immersive.
+
+The reason they exist is not URL tidiness. Route groups do not appear in the URL at all. They exist because **each one has a genuinely different layout and a genuinely different access posture.**
+
+| Group | Contains | Access | Layout |
+| --- | --- | --- | --- |
+| Marketing | Home, about, careers, press, legal, auth | Public | Public header and footer |
+| Platform | Studio, rentals, catalogue, dashboard, onboarding | Mixed | Public shell, some routes gated |
+| Admin | The internal console | Guarded in the layout | Admin shell |
+| Immersive | The full screen assistant | Signed in | No chrome at all |
+
+The admin group is the one that earns its keep. The access check lives in the group's layout, which means every route inside it is guarded by existing rather than by remembering. A new admin page is protected the moment it is created. That is a structural control rather than a procedural one, and structural controls are the only kind that survive a tired evening.
+
+---
+
+## Rendering strategy is a per route decision
+
+There is no global rendering mode. Each route declares what it is.
+
+| Route kind | Strategy | Why |
+| --- | --- | --- |
+| Legal, privacy, auth forms | Static | Content changes on a human timescale |
+| Home, catalogue, press, careers | Revalidated on an interval | Fresh enough for a listing, cached enough to be fast |
+| Dashboard, admin, assistant | Always dynamic | Every response is specific to one signed in person |
+
+This is the highest leverage performance decision in the whole system and it costs one line per route.
+
+The trap it avoids is the common one: choosing dynamic rendering globally because one page needs it. That makes every marketing page pay for the dashboard's requirements, which is a permanent tax on the pages most likely to be somebody's first impression.
+
+The trap it introduces is subtler. A revalidated page serves stale content for the length of its window, and if a route reads something that must never be stale, the interval is a correctness bug rather than a performance setting. Pricing pages are dynamic here for exactly that reason.
+
+---
+
+## Where the framework itself is a design input
+
+Two structural facts about the current framework version shaped the architecture more than any of my own choices.
+
+**The request interceptor is a root level module, not middleware.** It is where session refresh and origin validation happen for every request. That is the correct place for both, and it means those two controls cannot be forgotten by an individual route.
+
+**Cookie access is asynchronous.** That sounds trivial and it is not, because it means anything that reads a session is async, which means anything that builds a client is async, which propagates outward until either your call graph is async or you are caching a client you should not be caching. The abstraction absorbed this by resolving configuration at call time rather than at module load.
+
+That second one has a general lesson attached. **Reading configuration at module scope bakes it into the build.** An environment variable changed on the host is then ignored until the next deploy, and tests cannot stub it at all. Every provider in this system resolves its configuration inside the function that needs it, which costs a negligible amount of work per call and buys the ability to change behaviour without shipping code.
+
+---
+
+## The ledger
+
+| Rule | What it bought | What it cost |
+| --- | --- | --- |
+| One source of truth for business values | Price, tax and identity changes are one line, everywhere | That module is now large enough to be its own coupling point |
+| Every vendor behind an interface | Two real swaps with no page changes | Three adapters that have never run |
+| Route groups by layout and access | New admin routes are guarded by existing | A little indirection when tracing a URL to a file |
+| Rendering chosen per route | Marketing pages stay fast, dashboards stay correct | A stale window that is a bug if you choose it carelessly |
+| Configuration read at call time | Behaviour changes without a deploy | A negligible cost per call, paid on every call |
+
+---
+
+## Portability, stated concretely
+
+The useful version of "is this portable" is not a yes or a no. It is a list of what would have to be rewritten.
+
+**Moves unchanged:** the pure decision modules, the domain types, the test suite for both.
+
+**Moves behind its interface:** payments, storage, email, search, the AI gateway. New adapter, same callers.
+
+**Would be rewritten:** the row level security policies, which are database specific and are also the actual security boundary. The scheduled jobs, which are declared in a host specific configuration file. The request interceptor, which is framework specific.
+
+**Would be renegotiated rather than rewritten:** identity verification, because it is bound to a payment provider's recipient model and to South African regulatory requirements at the same time.
+
+That list is the honest portability answer. Most of the value is portable, the security model is not, and knowing which is which before you need to move is the entire point of asking the question early.
+
+---
+
+## Next
+
+[AI engineering](/blog/ai-engineering-gateway) is where this abstraction met its hardest test, because a model provider interface turned out not to be enough on its own.
+
+*Built in Johannesburg.*

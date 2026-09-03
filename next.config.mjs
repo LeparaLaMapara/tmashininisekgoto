@@ -23,6 +23,26 @@ const nextConfig = {
       { source: '/blog/:slug.md', destination: '/api/md/blog/:slug' },
     ]
   },
+  async redirects() {
+    return [
+      // Two ThabangVision posts published on 2026-09-03 were reorganised the
+      // same day into the seven part system design series. Their slugs named a
+      // commit count and a thesis rather than a subject, which no longer
+      // matches the content, so both point at the series map.
+      //
+      // Permanent because the old slugs are retired for good, not paused.
+      {
+        source: '/blog/building-a-marketplace-in-176-days',
+        destination: '/blog/thabangvision-system-design',
+        permanent: true,
+      },
+      {
+        source: '/blog/the-platform-is-a-design-input',
+        destination: '/blog/thabangvision-system-design',
+        permanent: true,
+      },
+    ]
+  },
   // Note: the old percent-encoded tag URLs (/tags/open%20source, /tags/ci%2Fcd)
   // are redirected inside app/tags/[tag]/page.tsx, not here. `redirects()` did
   // not match those paths, and doing it in the route also covers any future tag

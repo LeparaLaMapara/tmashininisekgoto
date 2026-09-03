@@ -1,0 +1,150 @@
+---
+title: "Data Engineering: Schema, Migrations and the Event Log"
+seoTitle: "Schema Design, Migrations and Event Logging in Production"
+date: 2026-09-03
+published: true
+tags: [data engineering, supabase, architecture, systems, engineering]
+summary: "Modelling two booking domains that must never be conflated, why money is an integer, retention as a scheduled job rather than a policy document, tokenising bank details, an event log designed for questions nobody has asked yet, and the migration discipline that broke."
+seoDescription: "Schema design for two booking domains, retention as a job, tokenised banking data, a JSONB event log, and what hand applied migrations actually cost."
+---
+
+# Data Engineering: Schema, Migrations and the Event Log
+
+*Deep dive four of six. Start at [the system map](/blog/thabangvision-system-design) for how this layer fits the rest.*
+
+---
+
+## The question this layer answers
+
+A schema is the longest lived artefact in any product. Application code gets rewritten, frameworks get replaced, and the tables outlive all of it, because migrating data is the one operation you cannot do casually on a live system.
+
+So the question is not what shape fits today's features. It is: **which of these decisions will I be unable to reverse, and have I thought hardest about those?**
+
+---
+
+## Two domains that look like one table
+
+The most consequential modelling decision in this system was refusing to merge two things that superficially matched.
+
+A service booking sells **time**. Somebody hires a photographer for a shoot. A rental booking sells **dates**. Somebody takes a camera on Thursday and returns it on Monday.
+
+Both have a customer, a price, a start and an end, and a status. A single bookings table with a type column is the obvious design and it is wrong, because the lifecycles diverge everywhere that matters.
+
+| | Service booking | Rental booking |
+| --- | --- | --- |
+| The unit sold | A block of someone's time | A physical item over a date range |
+| Availability question | Is this person free | Are enough units of this item free |
+| Money out | A payout to the creator | A deposit released after return |
+| Terminal state after payment | Paid | Confirmed |
+| Can it be partially fulfilled | No | Yes, some items returned late |
+
+That fourth row caused a real bug. My first consistency checker treated both with one vocabulary and reported a false positive on every service booking in the database, because it was looking for the rental terminal state.
+
+The lesson is not "use separate tables". It is that **two records with the same columns are not the same entity if they have different lifecycles.** Column overlap is the weakest possible evidence of sameness, and it is the evidence people most often act on. The question to ask instead is whether the two things can reach the same set of states in the same order. If they cannot, they are different, however similar the rows look.
+
+The related discipline is a shared vocabulary. Every state name in the system is enumerated in one place, so a check written against one domain cannot silently accept a state from the other.
+
+---
+
+## Money is an integer, at rest and in flight
+
+Booking amounts are stored as integer cents and computed as integer cents. Never a floating point number at any point.
+
+I covered why in the [software design deep dive](/blog/software-engineering-design), but there is a data specific version of the argument. This system reconciles a payment gateway's reported amount against its own expected total before confirming a booking. If those two numbers are computed by different code paths on floating point values, they will eventually disagree by a fraction of a cent, and the system will correctly refuse to confirm a payment that is actually fine.
+
+That failure mode is the worst kind: rare, non deterministic, and it looks exactly like fraud detection working. Integers remove the entire class.
+
+One related bug worth naming, because it was subtle. The reconciliation originally re derived the expected total from the listing price. That was wrong, because the stored price excludes deposits, bulk discounts and delivery. A correct payment looked like a mismatch and the booking was pushed back to pending. The fix was to reconcile against **what was actually recorded at checkout**, not against a figure recomputed later.
+
+The general rule: **reconcile against the number you committed to, not against a number you can recalculate.** A recalculation is a second opinion, and a second opinion is not evidence of what was agreed.
+
+---
+
+## Compliance as a schema decision
+
+South African privacy law governs the identity documents this system stores. Two schema choices carry that obligation, and both are cheap.
+
+**Consent is versioned, not boolean.** The profile records when consent was given and **which version of the privacy notice** was agreed to. A boolean tells you somebody clicked something once. A version tells you what they actually agreed to, which is the thing a regulator asks about after the notice has been revised twice. Marketing consent is a separate column with its own default of false, because bundling it with processing consent is precisely what the law exists to prevent.
+
+**The retention clock starts at review, not at upload.** Identity documents are deleted a fixed period after the verification decision, not after the file arrives. That single predicate means a document sitting in a review queue is never destroyed underneath the person waiting on it. It is one clause in one query and it is the difference between a retention policy and a data loss incident.
+
+Retention is enforced by a nightly job that removes the stored objects and nulls the path columns, not by a note in a document. **A policy nothing executes is a policy you do not have.**
+
+### Tokenisation, and writing a migration for either deploy order
+
+Full bank account numbers are not stored. The payment provider holds the real number against a recipient identifier, and the database keeps only the last few digits for display, because payouts run off the recipient identifier and nothing in the system needs the rest.
+
+The interesting part is not the redaction. It is that the migration was written to be correct **regardless of whether it ran before or after the code that depends on it.**
+
+If the migration lands first, the old build writes a fresh number on the next save, but every number already stored is gone. If the code lands first, it simply never writes the column. And the now dead column is deliberately kept and documented rather than dropped, so a rolling deploy cannot break on an instance still running the previous build.
+
+Schema changes and code deploys do not land at the same instant. Treating them as simultaneous is a category of outage that only appears under load, when the rollout is slow enough for both versions to be serving at once.
+
+---
+
+## The event log
+
+Every meaningful interaction is written to a single events table through one function: what happened, what category it belongs to, who did it or an anonymous identifier if they were not signed in, where it happened, and a flexible JSONB payload for whatever is specific to that event type.
+
+One table, one writer, indexed on the four dimensions anyone actually filters by.
+
+The case for this shape at this stage is honest and narrow: **I do not yet know which questions I will want to ask.** Designing a dimensional model requires knowing the queries, and inventing them in advance produces a schema optimised for questions nobody turns out to have. One wide table with a flexible column defers that decision until the data can inform it, at the cost of query performance I do not currently need.
+
+The case against it is equally clear, and I would rather state it than be caught by it. One wide table with JSONB is comfortable at modest volume and painful at large volume. There is no schema enforcement on the payload, so a typo in an event's field name creates a silently different shape that only surfaces when an analysis returns fewer rows than expected. And the migration out of it later is a project rather than a task.
+
+That is a deliberately deferred bill, and the trigger for paying it is knowing which slices matter enough to promote into real columns.
+
+---
+
+## Semantic search and the embedding pipeline
+
+Vector search runs on a Postgres extension rather than a separate vector database. An indexer builds a text representation of each content type and stores its embedding; retrieval runs a nearest neighbour query through a database function.
+
+Two design points.
+
+**The embedding provider is behind an interface, and switching is not free.** The free option produces vectors of one dimension, the paid option another. Vectors of different dimensions cannot share an index, so each has its own migration and switching means a full reindex. The abstraction makes the swap possible. It does not make it cheap, and the code says so rather than implying otherwise.
+
+**Keeping vectors in the main database is the right call at this size.** One system to back up, one to secure, one set of credentials, and joins between an embedding and the row it describes are ordinary joins. A dedicated vector service wins on scale and loses on every operational axis, and scale is not currently the constraint. The point at which that flips is a volume I can name, which is the only responsible way to defer an architectural decision.
+
+---
+
+## The debt
+
+Migrations are numbered SQL files applied by hand. There is no runner, no table recording which have been applied, and no automated parity check between environments.
+
+The consequences arrived exactly as you would predict.
+
+**Numbers collide.** Two branches each allocated the same number more than once, because a directory has no uniqueness constraint. Nothing detected it.
+
+**Environments drift.** The bill came due as a commit that had to align two databases and fix three bugs the manual inventory exposed. I had to compare two schemas by hand to discover they had diverged, and the divergence was hiding live defects.
+
+**Nobody can answer what state a database is in** without reading it directly, which means the answer is always a measurement rather than a fact.
+
+A migration runner is cheap on the first day and expensive on the hundredth. I know the price precisely, because I paid it.
+
+The related lesson is about verification rather than tooling. One migration in this system ran, reported success, and changed nothing, because it revoked a privilege that the target roles held by inheritance rather than directly. It was caught only by querying the actual privileges afterwards. That story belongs to the [network and security deep dive](/blog/network-architecture-security), but the data engineering version of it is short: **a statement that succeeded is not a statement that did what you meant.** Verify the resulting state, not the exit code.
+
+---
+
+## What this layer buys
+
+| Decision | Scalability | Efficiency | Cost | Portability |
+| --- | --- | --- | --- | --- |
+| Separate booking domains | Strong, each scales on its own access pattern | Strong, no type branching everywhere | Neutral | Strong |
+| Integer money | Neutral | Neutral | Strong, prevents failed reconciliation | Strong |
+| Versioned consent | Neutral | Neutral | Strong, compliance is not retrofitted | Strong |
+| Retention as a job | Strong, storage does not grow forever | Neutral | Strong | Neutral, host specific scheduler |
+| Tokenised banking data | Neutral | Neutral | Strong, reduces breach impact | Strong |
+| One event table with JSONB | Weak at volume, deliberately | Strong to write | Strong now, a bill later | Strong |
+| Vectors in the main database | Weak at large scale | Strong, joins are ordinary joins | Strong, no extra service | Moderate |
+| Hand applied migrations | Weak | Weak | Weak | Weak |
+
+That last row is the only one in these six posts where every axis loses. It is in the table because leaving it out would make the rest less believable.
+
+---
+
+## Next
+
+[Network architecture and security](/blog/network-architecture-security): the request path, the webhook trust chain, and why the database is the only boundary that actually holds.
+
+*Built in Johannesburg.*

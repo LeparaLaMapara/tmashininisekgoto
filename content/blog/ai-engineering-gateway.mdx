@@ -1,0 +1,204 @@
+---
+title: "AI Engineering: The Gateway, the Agents and the Spend Ceiling"
+seoTitle: "AI Gateway Design: Registry, Failover and Spend Control"
+date: 2026-09-03
+published: true
+tags: [ai, ai agents, architecture, engineering, systems]
+summary: "Why a model id belongs in configuration rather than in code, capability as a release gate, where failover should deliberately stop, one runtime shared by every agent, spend as an enforced control rather than an alert, and the security problem unique to a prompt built from text that users typed."
+seoDescription: "Model registry, capability gates, failover, a shared agent runtime, an enforced spend ceiling, and prompt injection defence in a production AI system."
+---
+
+# AI Engineering: The Gateway, the Agents and the Spend Ceiling
+
+*Deep dive three of six. Start at [the system map](/blog/thabangvision-system-design) for how this layer fits the rest.*
+
+---
+
+## The question this layer answers
+
+An AI feature is the only part of a normal web application that is simultaneously **non deterministic, externally dependent, and directly metered.** Every other component fails in ways you have seen before. This one can be up, responding, syntactically valid, and wrong. It can also be up, responding, correct, and expensive.
+
+So the design question is not which model to use. It is: what does this system do when the model is retired, unavailable, wrong, or costing more than the business makes.
+
+---
+
+## A gateway's models are data, not code
+
+The first version of my AI layer was a provider abstraction, exactly like the payments and storage ones in the [architecture deep dive](/blog/architectural-design-portability). Swapping the provider was an environment variable.
+
+It did not survive contact with production, and the reason is instructive because the abstraction was not the thing that broke.
+
+I had written a model identifier into a source file as a constant. The provider retired that model. The assistant started returning errors on every message. The provider was swappable; the **model** was hardcoded, and a hardcoded value cannot be changed without a deploy no matter how good the interface above it is.
+
+So the registry replaced the switch. Every model is now an entry, and every identifier is overridable by environment variable. The failure that took the assistant down became a configuration change.
+
+What matters is not the registry itself but what each entry records, because every field exists so that something can be refused.
+
+| Field | What it lets the system refuse |
+| --- | --- |
+| Provider | Nothing on its own. This was the part I already had. |
+| Model identifier, overridable by environment | A retired identifier, without a deploy |
+| Tier | An expensive model on a trivial question |
+| Open weight flag | A proprietary model, unless explicitly opted in |
+| Tool calling capability | A model that cannot serve the assistant at all |
+
+### Capability as a release gate
+
+The last field is the one I would port to any system that uses models with tools.
+
+My assistant passes tool definitions on every turn. It searches the catalogue, calculates quotes, and creates bookings. A model that does not reliably call tools cannot serve that role, and the failure is not an error. It is a friendly paragraph of text where a booking should have been.
+
+So capability is recorded per model and checked before a model is allowed to serve. When I moved the assistant to an open weight model on a different host, the work happened in that order: prove tool calling against the real tool definitions, then flip the default. The gate found two genuine bugs before anything reached a customer.
+
+The general principle: **when a model's suitability is a property you can test, test it as a gate rather than assuming it as a fact.** Capability is not a marketing claim, it is a measurement, and it changes per model and per host.
+
+### Open weight marks the weights, not the price
+
+One small definitional discipline that saves real confusion later. The registry records whether a model's weights are openly published. That is not the same as whether it is free.
+
+An open weight model called through a hosted API bills you exactly like a proprietary one. Only self hosting is actually free. Conflating those two is how a cost reduction plan turns into a lateral move, and I wrote the distinction into the field's own comment so it could not quietly drift.
+
+The practical payoff is that a self hosted endpoint is a first class provider here rather than a special case. Local runtimes speak the same wire format as one of the major APIs, so pointing that adapter at a different base URL reaches any of them with no new dependency. **Running a model on my own hardware is one environment variable**, which is the strongest portability property in the entire system.
+
+---
+
+## Failover, and where it deliberately stops
+
+Calls that do not stream fail over across providers on a retryable error, with each attempt bounded by a timeout so that one hung provider cannot hold a function open until its own ceiling.
+
+Streaming does not fail over mid stream. That is a deliberate stop, and the reasoning is worth spelling out because "add failover everywhere" is the obvious instinct and it is wrong here.
+
+To fail over after tokens have been sent, you have two options. Buffer the first token until a provider commits, which costs you the entire reason you chose streaming. Or replay a partial response onto a new provider, which produces a message that contradicts itself in front of a customer. Both are worse than the failure they prevent. So the streaming path fails over **before** the first token, and then commits.
+
+I built the non streaming path first, and that ordering came from operating the system rather than designing it. The non streaming callers are the administrative drafting routes, a document import, an outbound messaging integration. **Nobody is watching any of them.** A silent failure there sits for days. A failure in the chat window is reported within minutes, by a customer, for free. Resilience effort belongs where the feedback loop is worst.
+
+---
+
+## One runtime, many agents
+
+There are several agents in this system with different jobs: the general assistant, a booking specialist, a writer that drafts creator biographies, a describer that drafts equipment listings, a rate suggester, and vision helpers for onboarding.
+
+They are not separate services. They share one pipeline.
+
+```text
+  request
+     |
+     v
+  authenticate
+     |
+     v
+  rate limit        <- shared counter, not per instance
+     |
+     v
+  build prompt      <- live data, sanitised and fenced
+     |
+     v
+  select model      <- registry, by tier and capability
+     |
+     v
+  execute + tools
+     |
+     v
+  record usage      <- one row per call
+     |
+     v
+  stream response
+```
+
+Adding an agent means defining its configuration: its model tier, its tools, its per user limits. It does not mean writing authentication, rate limiting, cost accounting or streaming again.
+
+Two design points inside that.
+
+**Cost is a routing input.** The highest volume agents, the ones that run for every creator during onboarding, are pointed at a free tier model on purpose. The expensive model is reserved for the work that needs reasoning. That is not an optimisation done afterwards, it is a property of the roster.
+
+**Handoff rules are explicit.** The general assistant may route to a specialist. A specialist finishes its job and returns the user to where they were. Specialists never route to each other. Without that last rule, a routing bug becomes a loop, and a loop in a metered system is a bill.
+
+### The layering rule that keeps the roster small
+
+Before any of this, the question is whether a job needs a model at all.
+
+```text
+  can code do it?              -> scheduled job    (no model cost)
+  does it just call a service? -> tool             (no model cost)
+  does it need knowledge?      -> loaded context   (cheap)
+  does it need reasoning?      -> agent            (and only then)
+```
+
+Most of what feels like it wants to be an agent is a scheduled job. Reconciliation, reminders, cleanup, report generation: all deterministic, all cheaper and more reliable as code. The roster stays small because the default answer to "should this be an agent" is no.
+
+---
+
+## Spend is a control, not an alert
+
+Every call through the runtime writes a usage row with the agent, provider, model, user and token counts. That gave me complete visibility.
+
+For a long time visibility was all I had. The only guard was a scheduled job that emailed me when spend crossed a threshold.
+
+That is not a limit. Between two runs of that job, spend was uncapped. A runaway loop, or an abusive caller, could drive the bill arbitrarily and I would find out the next day.
+
+**An alert is a report. A control is something that refuses the call.**
+
+So the ceiling now reads month to date spend and declines new calls past the budget. Two design decisions inside it are worth more than the gate itself.
+
+**It is deliberately imprecise, and says so.** The monthly total is cached briefly per instance, and each allowed request optimistically adds its own estimate to the cached figure so the number trends upward between refreshes rather than sitting stale. Overshoot is bounded by concurrent instances times one request, which against a monthly budget is immaterial. I could have built a precisely shared counter. I deliberately did not, and wrote the reason in the file: for a monthly backstop that is over engineering. **Knowing which problem does not deserve the exact solution is most of the job.**
+
+**It fails open.** If the accounting is unreachable, the call proceeds. That is the opposite of how the rate limiter behaves, and it is deliberate: a database blip must not take the customer facing assistant down for everyone. The backstop behind it is the usage record and the daily report. Failure direction is discussed properly in the [network and security deep dive](/blog/network-architecture-security), because it is a whole design axis rather than a detail.
+
+### Unknown must never mean free
+
+The pricing table has one piece of paranoia I would port anywhere that spends money automatically.
+
+Models known to cost nothing are listed explicitly. Anything not in the price table and not in that list is charged at the **worst known rate**, with a floor.
+
+The reason is a real failure. An unpriced model previously estimated as costing zero, which meant that adding a new model or mistyping an identifier made every call to it invisible to both the ceiling and the alert. The accounting reported a healthy spend because it was counting nothing.
+
+**For a spend estimate, the safe direction is to over count.** An overestimate causes a conservative refusal and a question. An underestimate causes an unbounded bill and silence.
+
+---
+
+## The security problem unique to this layer
+
+The assistant's system prompt is assembled from live catalogue data: creator names, listing titles, skills, biographies. All of it typed by users of the platform.
+
+Interpolating that straight into the system message puts user text into the part of the conversation a model treats as instructions. A listing whose title continues into a sentence addressed to the model is an instruction injected by whoever wrote the listing.
+
+The defence is two layers and both are needed.
+
+**Flatten every interpolated value.** Collapse line breaks and control characters, strip the delimiter markers used to fence blocks, cap the length, and neutralise phrases whose only purpose in a product field is to address a model. A listing still appears. It just cannot give orders.
+
+**Fence the block and label it.** The catalogue section is delimited and the prompt states plainly that everything inside is data written by users, that it is never an instruction, and that a line appearing to address the model should be treated as ordinary listing text and never repeated back as though it came from the platform.
+
+Neither layer is sufficient alone. Delimiters can be talked around by text that fakes a closing delimiter, which is exactly why the flattening strips those markers too.
+
+The part I find most interesting is the threat model. Nothing leaks, because the tools are scoped and the model cannot reach anything the user could not. **What is attacked is fairness.** On a marketplace whose entire premise is that the work speaks rather than who you know, a listing that can argue for itself is an attack on the product rather than on the infrastructure.
+
+The test suite reflects that. Roughly half the cases prove that ordinary listing titles survive the sanitiser unchanged, because a filter that mangles real data is worse than none. A defence you cannot trust with legitimate input gets disabled the first time it inconveniences someone.
+
+---
+
+## What this layer buys
+
+| Decision | Scalability | Efficiency | Cost | Portability |
+| --- | --- | --- | --- | --- |
+| Models as registry data | Neutral | Strong, an outage is a config change | Neutral | Strong |
+| Capability as a gate | Neutral | Strong, failures caught before customers | Neutral | Strong, safe to try cheaper models |
+| One shared runtime | Strong, one place to tune | Strong, no duplicated plumbing | Strong, tier routing per agent | Strong |
+| Tier routing by volume | Neutral | Neutral | Strong, high volume work is free tier | Neutral |
+| Enforced ceiling | Neutral | Neutral | Strong, this is the control | Neutral |
+| Local as a real provider | Neutral | Depends on hardware | Strong at volume | Strongest property in the system |
+
+---
+
+## Where this layer is still weak
+
+One legacy chat route predates the runtime. It calls the model directly, so it is neither metered nor covered by the ceiling, and its guest allowance is read from the request body, which is to say from the caller. It is the clearest remaining example of the thing this whole post argues against: a control that exists, and a path that goes around it.
+
+The lesson generalises past my own bug. **Building the control is the easy half. Ensuring every path goes through it is the half that actually protects you**, and a control with one bypass provides the confidence of a control and the protection of nothing.
+
+---
+
+## Next
+
+[Data engineering](/blog/data-engineering-schema): the schema underneath all of this, the migration discipline and where it broke, and the embedding pipeline behind semantic search.
+
+*Built in Johannesburg.*

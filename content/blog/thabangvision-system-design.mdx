@@ -1,0 +1,170 @@
+---
+title: "How ThabangVision Is Designed: A System Map"
+seoTitle: "ThabangVision System Design: A Technical Map"
+date: 2026-09-03
+published: true
+tags: [architecture, systems, engineering, ai, devops]
+summary: "One marketplace, six layers, and the decisions that hold them together. This is the map: how software design, architecture, AI engineering, data engineering, delivery and network security fit together in a live production system, and what each choice buys in scalability, efficiency, cost and portability."
+seoDescription: "A technical map of one production marketplace: software design, architecture, AI engineering, data engineering, delivery and network security, and how they integrate."
+---
+
+# How ThabangVision Is Designed: A System Map
+
+*The overview. Six deep dives follow, one per layer, each linked below.*
+
+---
+
+## What the system has to do
+
+ThabangVision is a two sided marketplace for South African film and photography. Creators publish their work and list equipment. Clients find them, book them, and pay. Money then has to reach the creator, gear has to come back, and when something goes wrong a human has to be able to adjudicate it.
+
+That sentence hides four genuinely hard requirements, and every design decision in this system traces to one of them.
+
+**It handles money in both directions.** Taking a payment is the easy half. Paying a creator out means holding banking details, proving identity, releasing a deposit against a returned item, and reversing a charge when a booking is cancelled. Every one of those is a place where a silent failure costs someone real money.
+
+**It handles identity documents.** Verification means storing an ID and a selfie, which puts the system under South African privacy law and makes the database a target rather than a convenience.
+
+**It answers questions in natural language.** An assistant that quotes prices and recommends creators is not a chat widget bolted on the side. It reads live catalogue data, calls tools that can create bookings, and spends money on every message.
+
+**It runs on someone else's platform.** Serverless functions, a hosted database, a hosted media service, a hosted payment gateway. That is the right choice for a system this size, and it means the platform's limits are design inputs rather than deployment details.
+
+---
+
+## The map
+
+```text
+        browser
+           |
+   +-------v--------+   session refresh
+   |     proxy      |   origin validation
+   +-------+--------+
+           |
+   +-------v--------+   +----------------+
+   |  route groups  |   |  webhooks      |  signature
+   |  marketing     |   |  payments      |  verified
+   |  platform      |   +--------+-------+
+   |  admin         |            |
+   |  immersive     |            |
+   +-------+--------+            |
+           |                     |
+   +-------v---------------------v-------+
+   |          lib boundary               |
+   |  pure decision modules  (no IO)     |
+   |  provider interfaces    (swappable) |
+   |  ai gateway             (registry)  |
+   +-------+-----------------------------+
+           |
+   +-------v--------+
+   |    database    |  row level security
+   |    storage     |  is the real boundary
+   +----------------+
+```
+
+Read that top to bottom and the layers are ordinary. What makes it a design rather than a stack is the rule at each seam, and there are only four rules in the whole system.
+
+**One source of truth for anything a business person can change.** Prices, tax rate, deposit percentage, contact details, model pricing. One module holds them, over a hundred files read from it, and a pipeline check fails the build if a value appears anywhere else.
+
+**Every external service sits behind an interface chosen by environment variable.** Payments, AI, storage, email, search. No page and no route imports a vendor library directly.
+
+**Decisions live in modules that cannot perform input or output.** Availability, pricing, delivery quoting, booking validation, ranking, consistency checks. Data in, decision out, and the database call somewhere else entirely.
+
+**Checks are written only after a real defect.** A property that has never been violated is a guess, and a guess in a monitoring sweep is noise that trains you to ignore the sweep.
+
+---
+
+## The four questions I judge every layer against
+
+The layers are different. The evaluation is the same. For each one I ask what the design buys along four axes, and I try to be honest about which axis a decision actually serves, because they trade against each other constantly.
+
+| Axis | The question |
+| --- | --- |
+| Scalability | What breaks first when volume grows, and do I know what that is? |
+| Efficiency | What does one request cost in time, and where does it wait? |
+| Cost effectiveness | What does one request cost in money, and what stops that number running away? |
+| Portability | If I had to move this off its current vendor, what would I rewrite? |
+
+The interesting cases are where an axis loses on purpose. Storing money as integer cents costs a little developer convenience and buys correctness forever. Keeping the domain logic pure costs an extra indirection and buys a test suite that runs without a database. Charging unknown AI models at the worst known rate is deliberately wrong in the safe direction, because the opposite default is an unbounded bill.
+
+A design where every axis wins is usually a design where nobody has measured any of them.
+
+---
+
+## The six layers
+
+### Software design
+
+The practices underneath everything else: where correctness lives, why the domain logic cannot reach the network, how the type system is used as a constraint rather than as documentation, and the class of bug that a type checker will happily approve.
+
+Buys **portability** and **efficiency**. The decision modules move to another framework unchanged, and they are testable without any infrastructure at all.
+
+Read it: [Software design: boundaries that make change cheap](/blog/software-engineering-design)
+
+### Architectural design
+
+Provider interfaces and the environment variables that select them, the route group structure, per route rendering strategy, and what the abstraction bought when a payment provider had to be replaced under commercial pressure. Also what it cost, which was three adapters that have never run.
+
+Buys **portability** above all, and pays for it in indirection.
+
+Read it: [Architectural design: swapping providers without touching pages](/blog/architectural-design-portability)
+
+### AI engineering
+
+The model gateway and registry, why a model id belongs in configuration rather than in code, capability as a release gate, failover and where it deliberately stops, the agent runtime, and spend as an enforced control rather than an alert. Also the security problem unique to this layer, which is a prompt assembled from text that users typed.
+
+Buys **cost effectiveness** and **portability**. A model swap is a configuration change, and a self hosted model is one variable away.
+
+Read it: [AI engineering: the gateway, the agents and the spend ceiling](/blog/ai-engineering-gateway)
+
+### Data engineering
+
+Schema design for two different booking domains that must never be conflated, money as integer cents, the migration discipline and where it broke, the event log, retention as a scheduled job, and the embedding pipeline behind semantic search.
+
+Buys **scalability**, and carries the system's largest single piece of debt.
+
+Read it: [Data engineering: schema, migrations and the event log](/blog/data-engineering-schema)
+
+### Network architecture and security
+
+The request path and what validates it at each hop, response headers, the webhook trust chain, why row level security is the only real boundary when the client key is public by design, and the denial of wallet class of attack that arrives with any AI feature.
+
+Buys correctness under adversarial conditions, which is not one of the four axes and is a precondition for all of them.
+
+Read it: [Network architecture and security: where the boundary actually is](/blog/network-architecture-security)
+
+### Delivery
+
+How work is planned, gated and shipped: the task queue and its write scope contracts, the pipeline that enforces the architecture rules mechanically, deployment on a platform that can reject configuration silently, and the model context protocol toolchain that lets an agent read the live schema instead of guessing at it.
+
+Buys **efficiency** in the only place it compounds, which is the loop between deciding something and knowing whether it worked.
+
+Read it: [Delivery: planning, gates, deployment and the MCP toolchain](/blog/delivery-ci-cd-mcp)
+
+---
+
+## How the layers actually integrate
+
+Three examples, because integration is where design either holds or does not.
+
+**A booking is created.** The request passes the proxy, which refreshes the session and validates the origin. The route authenticates and rate limits through shared primitives. A pure module validates the booking, and a second pure module prices it, neither touching the database. The payment provider is resolved through an interface, so the route does not know which gateway it is talking to. The row is written with money as integer cents. Later a webhook arrives, its signature is verified over the raw body, and the amount is reconciled against what was recorded at checkout before anything is confirmed. Overnight, a sweep checks that every confirmed payment has a booking that actually advanced.
+
+Six layers, one action, and the only place that knows the payment vendor's name is one module in the abstraction.
+
+**A customer asks the assistant for a camera under a certain price.** The request hits the agent runtime, which authenticates, checks the rate limit against a shared counter, and checks month to date spend against a ceiling that can refuse the call. The system prompt is assembled from live catalogue rows, every one of which is flattened and fenced first, because they were typed by users. The registry resolves a model by tier, checking that it can call tools before serving it. The response streams. One usage row is written.
+
+**A price changes.** Someone edits one module. Over a hundred files see the new value. The pipeline check confirms the number appears nowhere else. The assistant's cached context refreshes and it starts quoting the new figure without a deploy, because the prompt is built from data rather than baked into a string.
+
+---
+
+## What I would tell someone starting one of these
+
+Pick the four axes before you pick the stack, and write down which one you are optimising. Most architecture arguments are two people optimising different axes without saying so.
+
+Put every rule somewhere that can refuse it. A rule in a document is a wish. A rule in a pipeline check that fails a build is a control.
+
+Keep the part of the system that encodes your actual domain free of everything else. It is the only part that is genuinely yours, and it is the part most likely to outlive the framework you wrote it in.
+
+---
+
+*Six deep dives follow, and each stands alone. If you only read one, read the [network architecture and security](/blog/network-architecture-security) piece, because it is the layer where being wrong is least recoverable.*
+
+*Built in Johannesburg.*
