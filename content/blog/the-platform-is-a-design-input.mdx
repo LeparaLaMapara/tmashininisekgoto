@@ -1,0 +1,197 @@
+---
+title: "The Platform Is a Design Input, Not a Deployment Target"
+seoTitle: "Infrastructure and Security Lessons From One Marketplace"
+date: 2026-09-04
+published: true
+tags: [devops, architecture, systems, supabase, engineering]
+summary: "A deploy that silently never happened, a rate limiter that was not a limit, and a revoke statement that reported success and did nothing. Six months of infrastructure, security and data decisions on one live South African marketplace, and the bill each one sent."
+seoDescription: "A silent deploy failure, a rate limiter that did not limit, and row level security as the real boundary, from six months on Vercel and Supabase."
+---
+
+# The Platform Is a Design Input, Not a Deployment Target
+
+*Part two of two. [Part one](/blog/building-a-marketplace-in-176-days) covered the AI layer and the process around it. This one is the infrastructure, the security boundary, the data, and the architecture ledger.*
+
+---
+
+## The same idea, one layer down
+
+In part one I argued that a design is only real where something refuses, and traced it through the AI layer. This half is the same idea applied to everything underneath: the platform, the database, the request boundary.
+
+The difference down here is that **you are not the only one doing the refusing.** Vercel refuses configurations. Postgres refuses grants in ways you did not ask for. A serverless runtime refuses to keep your state. Most of my worst days came from a platform saying no in a way I could not hear.
+
+ThabangVision is a booking and equipment rental platform for South African filmmakers. Next.js 16 and React 19 on Vercel, Postgres and auth and storage on Supabase, Cloudinary for media, Paystack for money. 257 commits, 176 days, one author.
+
+---
+
+## The deploy that never happened
+
+This is the most useful thing I know about deploying on Vercel and it cost me hours to learn.
+
+I changed one scheduled job from daily to hourly and added a second one running every thirty minutes. Then Vercel stopped deploying my repository.
+
+Not a failed build. Not a red cross. **Nothing.** Pushes landed on GitHub and no deployment appeared at all. I checked the integration, the tokens, the branch settings, the webhook delivery log. All fine.
+
+On my plan, cron schedules more frequent than daily are rejected at **config validation**, which happens before a deployment record is created. So an invalid schedule does not produce a failed deploy. It produces no deploy, silently, and every symptom points at a broken integration rather than at the file you just edited.
+
+The lesson generalises past Vercel: **when something did not happen, check whether the platform rejected your configuration before you go looking at your pipeline.** A failed thing leaves evidence. A rejected thing sometimes does not.
+
+The fix I wrote into my project instructions is the part I am fondest of. My route is called `hourly-checks` and it runs daily at six in the morning. The instruction to my future self is to **rename the route rather than fix the schedule**, and to confirm the plan allows a faster cadence before touching it again. A misleading name that stops somebody re breaking production is worth more than an accurate name that invites it.
+
+Five jobs run on that schedule now. The one that earns its place is a nightly consistency sweep, which I covered in part one. All of them require a shared secret on the request, and a missing secret is treated as a failure rather than as permission.
+
+---
+
+## Five per minute per warm instance
+
+My rate limiter kept its counters in a module level map. It looked correct. It had tests. It was not a limit.
+
+On a serverless platform every instance has its own module scope, and that scope dies when the instance is recycled. So a cap that read as "five requests per minute" actually meant **five per minute per warm instance, until it is recycled.** Under any real concurrency the ceiling was unbounded, and it reset constantly.
+
+Worse, that applied to the sensitive operations too: payouts, suspensions, role changes, dispute resolution. Every one of those protections read stronger than it behaved.
+
+The replacement is a single atomic upsert in Postgres. One statement inserts the row or increments it and returns the new count, so two instances cannot both read a stale number and both decide they are under the limit. Fixed windows rather than a sliding log, which permits at most twice the limit across a window boundary, and I wrote that trade into the migration rather than hiding it. Twice the limit is a rounding error compared to no shared state at all.
+
+Two details from that change I would repeat anywhere.
+
+**I renamed the function instead of changing it.** Moving from memory to the database made it async. If I had kept the name, every existing call site would have read `if (!checkRateLimit(...))` against a Promise, which is always falsy, so **every rate limit in the application would have silently switched off while still type checking perfectly.** Renaming forced the compiler to point at every caller. When a change alters a function's contract rather than its body, take the name away.
+
+**It degrades rather than failing open or closed.** If the shared counter is unreachable, it falls back to the old per instance map. A database blip narrows the limit instead of removing it. Locking everyone out would be worse than a loose limit; allowing unlimited requests would be worse still.
+
+That last decision is one of four I made in opposite directions on purpose, which I come back to at the end.
+
+---
+
+## The row that refuses the reader
+
+Here is the thing that took me longest to internalise about building on a hosted database.
+
+The anon key is public **by design**. It ships in the browser. Anyone who has ever loaded your site has it, along with your project URL. Which means every guard you wrote in an API route can be bypassed entirely by not using your API.
+
+```text
+   what I thought                what is actually true
+
+   browser                       browser
+      |                             |    \
+      v                             v      \
+   my API route                  my API      \
+      |                             |          \
+   requireAuth()                requireAuth()    \
+      |                             |             |
+      v                             v             v
+   database                     database <-- direct query
+                                              with the public key
+```
+
+Route level authentication is real, and it protects the path through your code. **Row level security is the only thing protecting the database itself.** Everything else is a suggestion to callers who agree to use the front door.
+
+I learned this the way most people do, by getting it wrong and tightening it afterwards. Three lessons survive the specifics, and all three are worth more than the incident.
+
+**Row level security is row level, so a column filter has to be a view.** You cannot write a policy that says "this reader may see these eight columns". You write a view that selects those eight columns and grant on the view. The line I put in the migration comment is the clearest way I have found to say it: **the view is the column filter, and the WHERE clause is the row filter.** Two different mechanisms, two different jobs, and confusing them is how a column nobody meant to publish gets published.
+
+**An update policy without a check clause is a privilege escalation waiting to be found.** A policy that says a user may update their own row, with nothing constraining what they may set it to, permits that user to set their own role. The fix is a check clause that pins every field the user must not control to its current value. Read your update policies and ask what a user could set, not just which row they could touch.
+
+**Write down why you deviated.** One of my views is flagged as an error by the platform's own linter, and it is correct anyway, because the view exists precisely to expose a safe column subset to anonymous readers and the alternative would require opening the underlying table. I put that argument in a comment on the view itself. A deviation with a written justification is a design decision. The same deviation without one is a mistake nobody has caught yet.
+
+### The revoke that reported success and did nothing
+
+This is my favourite bug of the entire project and it discloses nothing, so I can tell it in full.
+
+Supabase publishes every function in the public schema over its REST API. Its linter told me several of mine were callable without signing in. Each was guarded internally, so this was defence in depth rather than an open door, but a door should be locked rather than watched.
+
+So I wrote a migration revoking execute from the anonymous and authenticated roles. It ran. It reported success.
+
+Afterwards, out of habit rather than suspicion, I checked the actual privileges. Every one of those functions was still executable by anonymous callers.
+
+Postgres grants execute on a new function to the `PUBLIC` role by default. `anon` and `authenticated` both **inherit** from `PUBLIC`. Revoking a privilege from a role does not remove one that role inherits. My migration had revoked something those roles never had directly, and reported that it had done so, truthfully, while changing nothing.
+
+The second migration takes the grant from `PUBLIC` itself, then hands it back only where it is genuinely needed. The line I wrote at the top of it is the whole thesis of both these posts compressed into one sentence:
+
+> Checking the result rather than trusting success is what caught it.
+
+A statement that succeeded is not the same as a statement that did what you meant. This is the same failure as the destructuring bug in part one, at a completely different layer of the stack, and I did not see the connection until I sat down to write these.
+
+One more piece of that pass is worth keeping, because it is the opposite decision made deliberately. One function stayed callable by anonymous users, and I documented why: seventeen policies call it, policy expressions are evaluated as the querying role, and revoking it would make the entire public catalogue fail to load. The function only reports whether the caller is an admin, which the caller already knows. Leaving it open costs nothing. **That written argument is what separates a design from a configuration.**
+
+---
+
+## Data, and the things a schema can promise
+
+Three data decisions I would make again, and one debt I am still paying.
+
+**Consent is versioned, and marketing is a separate opt in defaulting to false.** Under South African privacy law a consent record has to say what was consented to and when. So the profile carries a consent timestamp and a **version string**, not a boolean. When the privacy notice changes, I can tell who agreed to which text. Marketing consent is a different column with a different default, because bundling them is exactly the thing the law is about.
+
+**The retention clock starts at review, not at upload.** Identity documents are deleted thirty days after the verification decision, not thirty days after the file arrives. That single choice means a review sitting in a queue is never destroyed underneath the person waiting on it. It is one predicate in one query and it is the difference between a retention policy and a data loss bug.
+
+**Bank account numbers are tokenised, not masked.** I stopped storing them entirely. The payment provider holds the real number against a recipient code, and my database keeps the last four digits for display. Nothing in my system needs the rest, because payouts run off the recipient code.
+
+The part of that migration I want to point at is not the redaction. It is that it was written to be correct **in either deploy order**. If the migration lands before the code, the old build writes a fresh number on the next save but every number already stored is gone. If the code lands first, it never writes the column at all. And the dead column is deliberately kept and documented rather than dropped, so a rolling deploy cannot break on an instance still running the previous build. Schema changes and code changes do not land at the same instant, and pretending they do is a category of outage.
+
+### The debt
+
+My migrations are numbered SQL files that I apply by hand. There is no runner, no table recording which have been applied, and no parity check between environments. There are sixty one files and four duplicated numbers, because two branches each allocated the same one and nothing stopped them.
+
+The bill came due in August as a commit titled "align dev with prod, and three bugs the inventory exposed". I had to inventory two databases by hand to discover they had drifted, and the drift was hiding live defects.
+
+A migration runner is cheap on day one and expensive on day one hundred and fifty. I know this precisely because I did not build one.
+
+---
+
+## The ledger: four rules and the bill each one sent
+
+Four rules held for six months. None of them were free.
+
+| Rule | What it bought | What it cost |
+| --- | --- | --- |
+| One source of truth for anything a business person can change | Matching my registered company details, changing tax disclosure and taking plans off sale were each a one line edit | That file now has over a hundred dependents and is its own coupling point |
+| Every external service behind an interface and an env var | Swapped payment providers with no route changed. Swapped a proprietary model for an open weight one with no page changed | Three adapters exist as stubs and have never run. The honest word is extensible, not supported |
+| Decisions live in pure modules with no input or output | 300 unit assertions that run in under half a second with no database and no key | Nothing I can find in six months of log. This is the one to copy |
+| Only real defects become invariants | A nightly sweep short enough that I read its output, which found five live bugs | It cannot warn you about anything that has not already happened once |
+
+The second row is the one people argue about, so let me be precise. The abstraction paid for itself twice, decisively, and both times it was a real swap under commercial pressure rather than a hypothetical. It also produced three dead adapters. Both outcomes were predictable in advance from asking one question: **is this a thing the business will actually replace?** Payments and models were. Storage and search were not. I got that call right by luck as often as by judgement, and the cheap version of the rule is to write the interface only after the second implementation is genuinely on the table.
+
+### Failure posture, which is where the design actually lives
+
+If you read one table from either of these posts, read this one. Four controls in the same codebase, pointing in different directions, each argued in a comment at the time.
+
+| Control | Fails how | Why that direction | What backs it up |
+| --- | --- | --- | --- |
+| AI spend ceiling | Open | A database blip must not take the assistant down for every customer | Usage tracking, plus the daily report |
+| Rate limiter | Degraded, not open | A loose limit beats no limit; locking everyone out beats neither | The per instance counter it falls back to |
+| Request origin check | Open on a missing header | Server to server callers legitimately send no origin | Cookie same site policy as the second layer |
+| Webhook signature | Closed | There is no legitimate caller without a valid signature, and the payload moves money | Nothing. It should not need anything |
+
+The reason I think this table is the most senior thing in either post: **there is no house style here.** Two controls fail open, one degrades, one fails shut, and every one of those is the right answer for its own blast radius. A codebase where everything fails the same way has not thought about any of them.
+
+The way to use it is to ask two questions of every control you write. What happens when this control itself is unavailable? And which is worse, the outage or the bypass? The answer is different for a spend cap than for a signature check, and writing the answer down next to the code is what stops somebody later "fixing" your deliberate choice.
+
+---
+
+## Where the refusals are still fake
+
+**Preview and production share one database.** My branch strategy protects code and does not protect data, which means the safety of the whole model stops at the application layer. This is the same class of problem as the hand run migrations and it has the same fix, which is to pay for the second project.
+
+**Documentation drifts.** There is a commit in my history titled "bring the documentation back in step with the code", and parts of my own reference still describe the rate limiter as the in memory version it stopped being. If you are reading a system's docs to learn its behaviour, read its tests instead.
+
+**The dependency check is a moment, not a state.** Cleared to zero in August, still not in the pipeline, and two moderate findings have appeared since.
+
+**One author.** Every abstraction here survives me leaving. None of the context does.
+
+---
+
+## What I would take to another system
+
+1. The platform is a design input. Its limits shape your architecture whether or not you read them first.
+2. When something did not happen, suspect a rejected configuration before a broken pipeline.
+3. Serverless keeps nothing. Any counter that must be shared belongs in the database as one atomic statement.
+4. Take the name away when you change a contract, so the compiler finds the callers instead of your users.
+5. Route auth protects the path through your code. Row level security protects the data. Only one of those is the boundary.
+6. Check the result, do not trust the success. A statement that succeeded is not a statement that did what you meant.
+7. Write schema changes to be correct in either deploy order, because they never land at the same instant as the code.
+8. Decide the failure direction of every control deliberately, and write the reason next to it.
+
+---
+
+*Part one, on the AI layer and the agent harness: [where the system says no](/blog/building-a-marketplace-in-176-days).*
+
+*Built in Johannesburg. Every claim here is checkable in the repository, and the numbers were measured the morning I published it.*
