@@ -29,7 +29,11 @@ export async function GET(
   const { slug } = await params
   const post = getPostBySlug(slug)
 
-  if (!post) {
+  // `published: false` has to 404 here too, not just drop out of the listing.
+  // generateStaticParams only controls what is prerendered; an unlisted slug is
+  // still served on demand, so a scheduled post would be readable early by
+  // anyone who knew or guessed the URL.
+  if (!post || !post.published) {
     return new Response('Not found\n', {
       status: 404,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },

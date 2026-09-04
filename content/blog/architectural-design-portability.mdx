@@ -1,8 +1,8 @@
 ---
 title: "Architectural Design: Swapping Providers Without Touching Pages"
 seoTitle: "Provider Abstraction and Portability in Production"
-date: 2026-09-03
-published: true
+date: 2026-10-11
+published: false
 tags: [architecture, systems, engineering, supabase, devops]
 summary: "Interfaces selected by environment variable, route groups that exist because layouts differ, per route rendering strategy, and an honest ledger of what the abstraction bought when a payment provider had to be replaced under commercial pressure, and what it cost."
 seoDescription: "Provider interfaces chosen by env var, route groups, rendering strategy, and an honest account of what abstraction buys and what it costs in a live system."
@@ -55,7 +55,7 @@ Two swaps happened under real commercial pressure, not as exercises.
 
 **A payment provider changed.** The gateway taking money and paying creators out was replaced. Not one page changed. Not one route handler changed. The checkout flow, the webhook handling, the payout path, all of it moved behind the interface. The previous provider stayed switchable rather than being deleted, which cost nothing and meant the decision was reversible.
 
-**A model provider changed.** The assistant moved from a proprietary model to an open weight one on a different host. Again, no page changed. That one is covered in the [AI engineering deep dive](/blog/ai-engineering-gateway), because the model layer needed more than an interface to be genuinely swappable.
+**A model provider changed.** The assistant moved from a proprietary model to an open weight one on a different host. Again, no page changed. That one gets its own deep dive later in the series, because the model layer needed more than an interface to be genuinely swappable.
 
 **Two embedding providers coexist at different vector dimensions.** The free option produces vectors of one size, the paid option another. They cannot share an index, so the abstraction carries a migration per dimension and switching providers means a full reindex rather than a config flip. The interface makes the swap possible. It does not make it cheap, and pretending otherwise would be the kind of claim that gets found out.
 
@@ -148,6 +148,6 @@ That list is the honest portability answer. Most of the value is portable, the s
 
 ## Next
 
-[AI engineering](/blog/ai-engineering-gateway) is where this abstraction met its hardest test, because a model provider interface turned out not to be enough on its own.
+AI engineering is where this abstraction met its hardest test, because a model provider interface turned out not to be enough on its own. It is next in the series, and [the system map](/blog/thabangvision-system-design) lists everything still to come.
 
 *Built in Johannesburg.*

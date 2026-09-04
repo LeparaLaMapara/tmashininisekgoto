@@ -1,8 +1,8 @@
 ---
 title: "Data Engineering: Schema, Migrations and the Event Log"
 seoTitle: "Schema Design, Migrations and Event Logging in Production"
-date: 2026-09-03
-published: true
+date: 2026-12-11
+published: false
 tags: [data engineering, supabase, architecture, systems, engineering]
 summary: "Modelling two booking domains that must never be conflated, why money is an integer, retention as a scheduled job rather than a policy document, tokenising bank details, an event log designed for questions nobody has asked yet, and the migration discipline that broke."
 seoDescription: "Schema design for two booking domains, retention as a job, tokenised banking data, a JSONB event log, and what hand applied migrations actually cost."
@@ -122,7 +122,7 @@ The consequences arrived exactly as you would predict.
 
 A migration runner is cheap on the first day and expensive on the hundredth. I know the price precisely, because I paid it.
 
-The related lesson is about verification rather than tooling. One migration in this system ran, reported success, and changed nothing, because it revoked a privilege that the target roles held by inheritance rather than directly. It was caught only by querying the actual privileges afterwards. That story belongs to the [network and security deep dive](/blog/network-architecture-security), but the data engineering version of it is short: **a statement that succeeded is not a statement that did what you meant.** Verify the resulting state, not the exit code.
+The related lesson is about verification rather than tooling. One migration in this system ran, reported success, and changed nothing, because it revoked a privilege that the target roles held by inheritance rather than directly. It was caught only by querying the actual privileges afterwards. That story belongs to the network and security deep dive later in the series, but the data engineering version of it is short: **a statement that succeeded is not a statement that did what you meant.** Verify the resulting state, not the exit code.
 
 ---
 
@@ -145,6 +145,6 @@ That last row is the only one in these six posts where every axis loses. It is i
 
 ## Next
 
-[Network architecture and security](/blog/network-architecture-security): the request path, the webhook trust chain, and why the database is the only boundary that actually holds.
+Network architecture and security: the request path, the webhook trust chain, and why the database is the only boundary that actually holds. It is next in the series, and [the system map](/blog/thabangvision-system-design) lists everything still to come.
 
 *Built in Johannesburg.*

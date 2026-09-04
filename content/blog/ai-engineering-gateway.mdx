@@ -1,8 +1,8 @@
 ---
 title: "AI Engineering: The Gateway, the Agents and the Spend Ceiling"
 seoTitle: "AI Gateway Design: Registry, Failover and Spend Control"
-date: 2026-09-03
-published: true
+date: 2026-11-11
+published: false
 tags: [ai, ai agents, architecture, engineering, systems]
 summary: "Why a model id belongs in configuration rather than in code, capability as a release gate, where failover should deliberately stop, one runtime shared by every agent, spend as an enforced control rather than an alert, and the security problem unique to a prompt built from text that users typed."
 seoDescription: "Model registry, capability gates, failover, a shared agent runtime, an enforced spend ceiling, and prompt injection defence in a production AI system."
@@ -142,7 +142,7 @@ So the ceiling now reads month to date spend and declines new calls past the bud
 
 **It is deliberately imprecise, and says so.** The monthly total is cached briefly per instance, and each allowed request optimistically adds its own estimate to the cached figure so the number trends upward between refreshes rather than sitting stale. Overshoot is bounded by concurrent instances times one request, which against a monthly budget is immaterial. I could have built a precisely shared counter. I deliberately did not, and wrote the reason in the file: for a monthly backstop that is over engineering. **Knowing which problem does not deserve the exact solution is most of the job.**
 
-**It fails open.** If the accounting is unreachable, the call proceeds. That is the opposite of how the rate limiter behaves, and it is deliberate: a database blip must not take the customer facing assistant down for everyone. The backstop behind it is the usage record and the daily report. Failure direction is discussed properly in the [network and security deep dive](/blog/network-architecture-security), because it is a whole design axis rather than a detail.
+**It fails open.** If the accounting is unreachable, the call proceeds. That is the opposite of how the rate limiter behaves, and it is deliberate: a database blip must not take the customer facing assistant down for everyone. The backstop behind it is the usage record and the daily report. Failure direction gets its own treatment in the network and security deep dive later in the series, because it is a whole design axis rather than a detail.
 
 ### Unknown must never mean free
 
@@ -199,6 +199,6 @@ The lesson generalises past my own bug. **Building the control is the easy half.
 
 ## Next
 
-[Data engineering](/blog/data-engineering-schema): the schema underneath all of this, the migration discipline and where it broke, and the embedding pipeline behind semantic search.
+Data engineering: the schema underneath all of this, the migration discipline and where it broke, and the embedding pipeline behind semantic search. It is next in the series, and [the system map](/blog/thabangvision-system-design) lists everything still to come.
 
 *Built in Johannesburg.*

@@ -37,7 +37,9 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const post = getPostBySlug(slug)
-  if (!post) return {}
+  // Unpublished posts get no metadata, so a scheduled title cannot leak into a
+  // link preview before its release date.
+  if (!post || !post.published) return {}
 
   const url = `${SITE_URL}/blog/${slug}`
   const description = metaDescription(post)
@@ -77,7 +79,12 @@ export async function generateMetadata({
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params
   const post = getPostBySlug(slug)
-  if (!post) notFound()
+  // `published: false` must 404, not merely drop out of the listing.
+  // generateStaticParams decides what is prerendered, not what is reachable:
+  // an unlisted slug is still rendered on demand, so without this check a
+  // scheduled post is readable by anyone who knows the URL, and a retired
+  // draft never actually goes away.
+  if (!post || !post.published) notFound()
 
   const hasAudio = existsSync(path.join(process.cwd(), 'public', 'audio', `${slug}.mp3`))
 

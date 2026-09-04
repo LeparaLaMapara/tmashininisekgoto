@@ -1,8 +1,8 @@
 ---
 title: "Software Design: Boundaries That Make Change Cheap"
 seoTitle: "Software Design Practices for a Production Marketplace"
-date: 2026-09-03
-published: true
+date: 2026-09-11
+published: false
 tags: [engineering, architecture, systems, web development, next.js]
 summary: "Where correctness lives in a production marketplace, why the domain logic is forbidden from touching the network, how the type system is used as a constraint rather than as documentation, and the class of bug a type checker will happily approve."
 seoDescription: "Pure decision modules, integer money, branded state machines, and the silent error pattern a type checker approves. Software design practices from a live system."
@@ -147,6 +147,6 @@ Nothing in this layer makes the system handle more traffic. That is not what it 
 
 ## Next
 
-[Architectural design](/blog/architectural-design-portability) is the layer above this one: the interfaces that make vendors replaceable, and what that abstraction actually bought when a payment provider had to change.
+Architectural design is the layer above this one: the interfaces that make vendors replaceable, and what that abstraction actually bought when a payment provider had to change. It is next in the series, and [the system map](/blog/thabangvision-system-design) lists everything still to come.
 
 *Built in Johannesburg.*

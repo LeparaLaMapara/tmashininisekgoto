@@ -10,7 +10,7 @@ seoDescription: "A technical map of one production marketplace: software design,
 
 # How ThabangVision Is Designed: A System Map
 
-*The overview. Six deep dives follow, one per layer, each linked below.*
+*The overview. Six deep dives follow, one per layer, one a month. Dates are listed below and each one is linked here as it goes out.*
 
 ---
 
@@ -65,13 +65,15 @@ A design where every axis wins is usually a design where nobody has measured any
 
 ## The six layers
 
+One deep dive publishes each month, in the order below. Each one stands alone, so you can read them out of order once they are all out.
+
 ### Software design
 
 The practices underneath everything else: where correctness lives, why the domain logic cannot reach the network, how the type system is used as a constraint rather than as documentation, and the class of bug that a type checker will happily approve.
 
 Buys **portability** and **efficiency**. The decision modules move to another framework unchanged, and they are testable without any infrastructure at all.
 
-Read it: [Software design: boundaries that make change cheap](/blog/software-engineering-design)
+**Software design: boundaries that make change cheap.** Publishing 11 September 2026.
 
 ### Architectural design
 
@@ -79,7 +81,7 @@ Provider interfaces and the environment variables that select them, the route gr
 
 Buys **portability** above all, and pays for it in indirection.
 
-Read it: [Architectural design: swapping providers without touching pages](/blog/architectural-design-portability)
+**Architectural design: swapping providers without touching pages.** Publishing 11 October 2026.
 
 ### AI engineering
 
@@ -87,7 +89,7 @@ The model gateway and registry, why a model id belongs in configuration rather t
 
 Buys **cost effectiveness** and **portability**. A model swap is a configuration change, and a self hosted model is one variable away.
 
-Read it: [AI engineering: the gateway, the agents and the spend ceiling](/blog/ai-engineering-gateway)
+**AI engineering: the gateway, the agents and the spend ceiling.** Publishing 11 November 2026.
 
 ### Data engineering
 
@@ -95,7 +97,7 @@ Schema design for two different booking domains that must never be conflated, mo
 
 Buys **scalability**, and carries the system's largest single piece of debt.
 
-Read it: [Data engineering: schema, migrations and the event log](/blog/data-engineering-schema)
+**Data engineering: schema, migrations and the event log.** Publishing 11 December 2026.
 
 ### Network architecture and security
 
@@ -103,7 +105,7 @@ The request path and what validates it at each hop, response headers, the webhoo
 
 Buys correctness under adversarial conditions, which is not one of the four axes and is a precondition for all of them.
 
-Read it: [Network architecture and security: where the boundary actually is](/blog/network-architecture-security)
+**Network architecture and security: where the boundary actually is.** Publishing 11 January 2027.
 
 ### Delivery
 
@@ -111,7 +113,7 @@ How work is planned, gated and shipped: the task queue and its write scope contr
 
 Buys **efficiency** in the only place it compounds, which is the loop between deciding something and knowing whether it worked.
 
-Read it: [Delivery: planning, gates, deployment and the MCP toolchain](/blog/delivery-ci-cd-mcp)
+**Delivery: planning, gates, deployment and the MCP toolchain.** Publishing 11 February 2027.
 
 ---
 
@@ -139,6 +141,6 @@ Keep the part of the system that encodes your actual domain free of everything e
 
 ---
 
-*Six deep dives follow, and each stands alone. If you only read one, read the [network architecture and security](/blog/network-architecture-security) piece, because it is the layer where being wrong is least recoverable.*
+*Six deep dives follow, one a month, and each stands alone. The one I would not skip is network architecture and security, because it is the layer where being wrong is least recoverable.*
 
 *Built in Johannesburg.*
