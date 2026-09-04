@@ -1,0 +1,264 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1600px;
+    height: 848px;
+    background: #211b15;
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #ece2d0;
+    overflow: hidden;
+  }
+
+  .sheet { width: 1600px; height: 848px; padding: 46px 54px 38px; }
+
+  /* ---- columns --------------------------------------------------------- */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 244px 40px 232px 40px 262px 40px 262px 40px 262px;
+    align-items: start;
+  }
+
+  .colhead {
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #998c78;
+    margin-bottom: 16px;
+    white-space: nowrap;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: 11px; }
+
+  .box {
+    background: #2a231b;
+    border: 1px solid #4a3f33;
+    border-radius: 9px;
+    padding: 13px 15px;
+  }
+  .box b {
+    display: block;
+    font-size: 19.5px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .box span {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.42;
+    color: #998c78;
+    margin-top: 5px;
+  }
+
+  .hold     { border-color: #7cb593; }
+  .hold b   { color: #7cb593; }
+  .refuse   { border-color: #d3a253; }
+  .refuse b { color: #d3a253; }
+  .bound    { border-color: #b5501e; border-width: 2px; }
+  .bound b  { color: #e0743c; }
+
+  .chev {
+    display: flex; align-items: center; justify-content: center;
+    height: 58px; margin-top: 30px; color: #6d6152; font-size: 24px;
+  }
+
+  /* ---- the bypass lane -------------------------------------------------- */
+
+  .lane {
+    margin-top: 40px;
+    border: 2px solid #b5501e;
+    border-radius: 11px;
+    background: rgba(181, 80, 30, 0.06);
+    padding: 20px 26px 22px;
+  }
+  .lane-head {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #e0743c;
+    margin-bottom: 16px;
+  }
+  .lane-row { display: flex; align-items: center; gap: 0; }
+
+  .endcap {
+    border: 1px solid #b5501e;
+    border-radius: 8px;
+    padding: 11px 18px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #e0743c;
+    white-space: nowrap;
+    background: #2a231b;
+  }
+  .endcap small {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #a8907c;
+    letter-spacing: 0.06em;
+    margin-top: 3px;
+  }
+
+  .dash {
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(
+      to right, #b5501e 0 12px, transparent 12px 22px
+    );
+  }
+  .head {
+    width: 0; height: 0;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 14px solid #b5501e;
+  }
+
+  .skipped { display: flex; gap: 26px; padding: 0 22px; }
+  .skipped span {
+    font-size: 16px;
+    color: #7a6e5e;
+    text-decoration: line-through;
+    text-decoration-color: #b5501e;
+    white-space: nowrap;
+  }
+
+  .lane-note {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #c4b8a4;
+    line-height: 1.5;
+  }
+  .lane-note em { font-style: normal; color: #e0743c; }
+
+  /* ---- bottom strip ------------------------------------------------------ */
+
+  .strip {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 22px;
+    border-top: 1px solid #362e25;
+    padding-top: 22px;
+  }
+  .striplabel {
+    font-size: 14px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #998c78;
+  }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip {
+    border: 1px dashed #4a3f33; border-radius: 999px;
+    padding: 8px 17px; font-size: 15px; color: #c4b8a4; white-space: nowrap;
+  }
+
+  .legend {
+    margin-top: 20px;
+    display: flex;
+    gap: 26px;
+    font-size: 13.5px;
+    color: #998c78;
+  }
+  .legend i { font-style: normal; display: flex; align-items: center; gap: 8px; }
+  .sw { width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid; }
+</style>
+
+<div class="sheet">
+
+  <div class="cols">
+
+    <div>
+      <div class="colhead">Clients</div>
+      <div class="stack">
+        <div class="box"><b>Customer</b><span>browses, books, pays</span></div>
+        <div class="box"><b>Creator</b><span>lists gear, gets paid</span></div>
+        <div class="box"><b>Payment gateway</b><span>webhooks, no session</span></div>
+        <div class="box"><b>Scheduler</b><span>nightly jobs, shared secret</span></div>
+      </div>
+    </div>
+
+    <div class="chev">&rsaquo;</div>
+
+    <div>
+      <div class="colhead">Edge</div>
+      <div class="stack">
+        <div class="box hold"><b>Proxy</b><span>session refresh and origin validation, on every request</span></div>
+        <div class="box refuse"><b>Signature</b><span>verified over the raw body, before parsing</span></div>
+      </div>
+    </div>
+
+    <div class="chev">&rsaquo;</div>
+
+    <div>
+      <div class="colhead">Application</div>
+      <div class="stack">
+        <div class="box"><b>Marketing</b><span>static and revalidated</span></div>
+        <div class="box"><b>Platform</b><span>mixed, some gated</span></div>
+        <div class="box hold"><b>Admin</b><span>guarded in the layout</span></div>
+        <div class="box"><b>API and webhooks</b><span>always dynamic</span></div>
+      </div>
+    </div>
+
+    <div class="chev">&rsaquo;</div>
+
+    <div>
+      <div class="colhead">Domain and providers</div>
+      <div class="stack">
+        <div class="box hold"><b>Pure modules</b><span>pricing, availability, ranking, checks. No input or output</span></div>
+        <div class="box"><b>Provider interfaces</b><span>payments, storage, email, search. Chosen by env var</span></div>
+        <div class="box refuse"><b>AI gateway</b><span>registry, capability gate, spend ceiling, agent runtime</span></div>
+      </div>
+    </div>
+
+    <div class="chev">&rsaquo;</div>
+
+    <div>
+      <div class="colhead">Data</div>
+      <div class="stack">
+        <div class="box bound"><b>Postgres</b><span>row level security is the real boundary</span></div>
+        <div class="box"><b>Auth</b><span>sessions and roles</span></div>
+        <div class="box"><b>Object storage</b><span>documents, retention job</span></div>
+        <div class="box"><b>Vector index</b><span>embeddings for search</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="lane">
+    <div class="lane-head">The path people forget</div>
+    <div class="lane-row">
+      <span class="endcap">Any client<small>public key</small></span>
+      <span class="dash"></span>
+      <span class="skipped">
+        <span>Proxy</span><span>Routes</span><span>Abstraction</span>
+      </span>
+      <span class="dash"></span>
+      <span class="head"></span>
+      <span class="endcap">Postgres<small>row level security</small></span>
+    </div>
+    <p class="lane-note">
+      The client key ships in the browser, so a direct query reaches the database
+      without touching anything above. <em>On this path, row level security is the
+      only control.</em> Everything to the left of it protects the path through the code.
+    </p>
+  </div>
+
+  <div class="strip">
+    <div class="striplabel">External</div>
+    <div class="chips">
+      <span class="chip">Payments</span>
+      <span class="chip">Media CDN</span>
+      <span class="chip">Model providers</span>
+      <span class="chip">Self hosted model</span>
+      <span class="chip">Email</span>
+      <span class="chip">Each one behind an interface, selected by environment variable</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <i><span class="sw" style="border-color:#7cb593"></span>enforces a rule</i>
+    <i><span class="sw" style="border-color:#d3a253"></span>refuses a request</i>
+    <i><span class="sw" style="border-color:#b5501e"></span>the security boundary</i>
+  </div>
+
+</div>

@@ -32,35 +32,9 @@ That sentence hides four genuinely hard requirements, and every design decision 
 
 ## The map
 
-```text
-        browser
-           |
-   +-------v--------+   session refresh
-   |     proxy      |   origin validation
-   +-------+--------+
-           |
-   +-------v--------+   +----------------+
-   |  route groups  |   |  webhooks      |  signature
-   |  marketing     |   |  payments      |  verified
-   |  platform      |   +--------+-------+
-   |  admin         |            |
-   |  immersive     |            |
-   +-------+--------+            |
-           |                     |
-   +-------v---------------------v-------+
-   |          lib boundary               |
-   |  pure decision modules  (no IO)     |
-   |  provider interfaces    (swappable) |
-   |  ai gateway             (registry)  |
-   +-------+-----------------------------+
-           |
-   +-------v--------+
-   |    database    |  row level security
-   |    storage     |  is the real boundary
-   +----------------+
-```
+![The ThabangVision architecture. Five columns left to right: clients, edge, application, domain and providers, and data. Below them, a dashed path runs from any client straight to Postgres, crossing out the proxy, the routes and the abstraction, because the client key is public and row level security is the only control on that path.](/posts/thabangvision_architecture.png)
 
-Read that top to bottom and the layers are ordinary. What makes it a design rather than a stack is the rule at each seam, and there are only four rules in the whole system.
+Read that left to right and the layers are ordinary. What makes it a design rather than a stack is the rule at each seam, and there are only four rules in the whole system.
 
 **One source of truth for anything a business person can change.** Prices, tax rate, deposit percentage, contact details, model pricing. One module holds them, over a hundred files read from it, and a pipeline check fails the build if a value appears anywhere else.
 
