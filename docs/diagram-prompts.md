@@ -308,3 +308,127 @@ remove one rather than to shrink the text.
 
 Then add the image to the post with a real alt description, run `npm run build`
 to confirm it resolves, and push.
+
+---
+
+## The full architecture diagram
+
+This one has around twenty labels, which is well past what image generation
+renders legibly. Ask for code instead. Paste the whole block below into a fresh
+Gemini conversation, then save the output as `.html`, open it, and screenshot it.
+
+Or regenerate the existing one directly:
+
+```
+node docs/diagrams/render.mjs \
+  docs/diagrams/thabangvision_architecture.html \
+  public/posts/thabangvision_architecture.png
+```
+
+### The prompt
+
+```
+Produce a single self contained HTML file that draws a system architecture
+diagram. Inline CSS only. No JavaScript, no external fonts, no images, no SVG
+files, no frameworks, no comments in the output. Return only the HTML.
+
+CANVAS
+Body exactly 1600px wide and 848px tall, overflow hidden, padding 46px 54px 38px.
+
+PALETTE
+Page background #211b15, completely flat.
+Box fill #2a231b, box border 1px #4a3f33, border radius 9px.
+Primary text #ece2d0. Secondary text #998c78.
+Green #7cb593 means this control enforces a rule.
+Gold #d3a253 means this control refuses a request.
+Terracotta #b5501e means this is the security boundary.
+Font: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif.
+
+LAYOUT
+A CSS grid of five content columns separated by four thin chevron characters.
+Each column has an uppercase letter spaced heading in secondary text, then a
+vertical stack of boxes with 11px gaps. Each box has a bold title around 19px
+and a smaller description around 13.5px in secondary text.
+
+COLUMN 1, heading "Clients"
+  Customer / browses, books, pays
+  Creator / lists gear, gets paid
+  Payment gateway / webhooks, no session
+  Scheduler / nightly jobs, shared secret
+
+COLUMN 2, heading "Edge"
+  Proxy / session refresh and origin validation, on every request  [green]
+  Signature / verified over the raw body, before parsing  [gold]
+
+COLUMN 3, heading "Application"
+  Marketing / static and revalidated
+  Platform / mixed, some gated
+  Admin / guarded in the layout  [green]
+  API and webhooks / always dynamic
+
+COLUMN 4, heading "Domain and providers"
+  Pure modules / pricing, availability, ranking, checks. No input or output  [green]
+  Provider interfaces / payments, storage, email, search. Chosen by env var
+  AI gateway / registry, capability gate, spend ceiling, agent runtime  [gold]
+
+COLUMN 5, heading "Data"
+  Postgres / row level security is the real boundary  [terracotta, 2px border]
+  Auth / sessions and roles
+  Object storage / documents, retention job
+  Vector index / embeddings for search
+
+BELOW THE COLUMNS, a full width panel with a 2px terracotta border, radius 11px,
+and a background of rgba(181, 80, 30, 0.06). Inside it:
+  A small uppercase terracotta heading: "The path people forget"
+  Then one horizontal row containing, left to right:
+    a bordered box reading "Any client" with "public key" beneath it in small text,
+    a flexible dashed terracotta horizontal line,
+    three words in secondary text with a line through them: Proxy, Routes, Abstraction,
+    another flexible dashed terracotta line,
+    a solid triangular arrowhead pointing right,
+    a bordered box reading "Postgres" with "row level security" beneath it.
+  Then one paragraph: "The client key ships in the browser, so a direct query
+  reaches the database without touching anything above. On this path, row level
+  security is the only control. Everything to the left of it protects the path
+  through the code." Colour the middle sentence terracotta.
+
+BELOW THAT, a thin top border, then a row with the uppercase label "External"
+on the left and a set of pill shaped chips with dashed borders on the right:
+Payments, Media CDN, Model providers, Self hosted model, Email, and one wider
+chip reading "Each one behind an interface, selected by environment variable".
+
+FINALLY a small legend row: a green swatch with "enforces a rule", a gold swatch
+with "refuses a request", a terracotta swatch with "the security boundary".
+
+RULES
+No gradients, no shadows, no glow, no 3D, no rounded blobs, no icons, no emoji.
+Flat shapes and text only. Generous negative space. Nothing may overlap. All
+content must fit inside 848px of height without scrolling.
+```
+
+### Rendering it
+
+Save the output as `docs/diagrams/<name>.html`, then:
+
+```
+node docs/diagrams/render.mjs docs/diagrams/<name>.html public/posts/<name>.png
+```
+
+The render script uses a device scale factor of 2, so a 1600px wide canvas
+produces a 3200px PNG that stays sharp on a retina screen while `next/image`
+serves it down to 800.
+
+### Asking for variations
+
+Once you have a version you like, iterate with short follow ups rather than
+re running the whole prompt:
+
+```
+Same file, but make the five column headings larger and move the legend to the
+top right. Keep every colour and all the text exactly as it is.
+```
+
+```
+Same file, but drop the External strip entirely and give the extra height to
+the bypass panel.
+```
