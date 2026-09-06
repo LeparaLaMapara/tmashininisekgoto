@@ -63,7 +63,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const postPages = posts.map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
+    // The revision date, not the publish date. A rewritten post that still
+    // advertises its original date tells crawlers there is nothing to re-read.
+    lastModified: new Date(post.lastModified),
     changeFrequency: 'yearly' as const,
     priority: 0.6,
   }))

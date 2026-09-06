@@ -105,7 +105,10 @@ export default async function BlogPostPage({ params }: PageProps) {
             slug,
             title: post.title,
             description: metaDescription(post),
-            datePublished: post.date,
+            // post.date is a stringified Date ("Wed Jul 15 2026 00:00:00
+            // GMT+0000 (Coordinated Universal Time)"). schema.org wants
+            // ISO 8601, so normalise before it reaches the JSON-LD.
+            datePublished: new Date(post.date).toISOString(),
             dateModified: post.lastModified,
             tags: post.tags,
             imageUrl: `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}`,

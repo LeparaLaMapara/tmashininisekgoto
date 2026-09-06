@@ -16,9 +16,17 @@ export interface BlogPost {
   content: string
   published: boolean
   /**
-   * When the source file was last edited, ISO format. Used for `dateModified`
-   * in BlogPosting schema and for sitemap freshness. Falls back to `date` when
-   * the mtime is unavailable.
+   * When the content was last meaningfully revised, ISO format. Used for
+   * `dateModified` in BlogPosting schema and for sitemap freshness.
+   *
+   * Comes from the optional `updated` frontmatter field, falling back to
+   * `date`. It deliberately does NOT use the file mtime: git does not preserve
+   * mtimes, so on a fresh CI checkout every post looks like it changed at
+   * deploy time. That tells crawlers all eighteen posts were revised on every
+   * push, which is false and trains them to ignore the signal.
+   *
+   * Set `updated` by hand when a post is substantively rewritten. A typo fix
+   * does not need it.
    */
   lastModified: string
   /**
@@ -89,12 +97,12 @@ function parsePost(fileName: string): BlogPost {
   const stats = readingTime(content)
 
   const publishedAt = data.date?.toString() ?? ''
-  let lastModified = publishedAt
-  try {
-    lastModified = fs.statSync(filePath).mtime.toISOString()
-  } catch {
-    /* keep the published date */
+  const toIso = (value: unknown): string | null => {
+    if (!value) return null
+    const parsed = new Date(value.toString())
+    return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString()
   }
+  const lastModified = toIso(data.updated) ?? toIso(publishedAt) ?? publishedAt
 
   return {
     slug,
