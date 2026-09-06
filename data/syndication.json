@@ -5,7 +5,9 @@
         "id": 4236218,
         "url": "https://dev.to/thabanglukheth0/ubunye-engine-part-1-why-convention-is-the-real-deliverable-1oof",
         "hash": "9ae2c4a80421a878",
-        "syncedAt": "2026-07-26T10:47:08.682Z"
+        "syncedAt": "2026-07-26T10:47:08.682Z",
+        "unpublishedAt": "2026-09-06T21:03:22.828Z",
+        "published": false
       }
     },
     "ubunye-series-part2-model-registry": {
@@ -13,7 +15,9 @@
         "id": 4238254,
         "url": "https://dev.to/thabanglukheth0/ubunye-engine-part-2-the-model-registry-and-hexagonal-architecture-3in5",
         "hash": "1177cb9afd14c6c6",
-        "syncedAt": "2026-07-26T18:54:18.601Z"
+        "syncedAt": "2026-07-26T18:54:18.601Z",
+        "unpublishedAt": "2026-09-06T21:03:33.679Z",
+        "published": false
       }
     },
     "ubunye-series-part3-boring-work": {
@@ -21,7 +25,9 @@
         "id": 4238263,
         "url": "https://dev.to/thabanglukheth0/ubunye-engine-part-3-the-boring-work-that-ships-software-22m8",
         "hash": "1ab5fbf1417f2930",
-        "syncedAt": "2026-07-26T18:56:37.003Z"
+        "syncedAt": "2026-07-26T18:56:37.003Z",
+        "unpublishedAt": "2026-09-06T21:03:36.773Z",
+        "published": false
       }
     },
     "ubunye-series-part5-building-with-agent": {
@@ -29,7 +35,9 @@
         "id": 4238294,
         "url": "https://dev.to/thabanglukheth0/ubunye-engine-part-5-building-with-an-agent-the-real-numbers-ekf",
         "hash": "b0b16bd019240872",
-        "syncedAt": "2026-07-26T19:03:33.816Z"
+        "syncedAt": "2026-07-26T19:03:33.816Z",
+        "unpublishedAt": "2026-09-06T21:03:39.552Z",
+        "published": false
       }
     },
     "ubunye-series-part6-how-to-use-it": {
@@ -37,7 +45,9 @@
         "id": 4238295,
         "url": "https://dev.to/thabanglukheth0/ubunye-engine-part-6-how-to-use-it-with-real-examples-2op7",
         "hash": "50ca7c301653ae45",
-        "syncedAt": "2026-07-26T19:03:38.024Z"
+        "syncedAt": "2026-07-26T19:03:38.024Z",
+        "unpublishedAt": "2026-09-06T21:03:42.087Z",
+        "published": false
       }
     },
     "ubunye-series-part4-kaggle-to-production": {
@@ -45,7 +55,9 @@
         "id": 4238316,
         "url": "https://dev.to/thabanglukheth0/ubunye-engine-part-4-from-kaggle-to-production-1gim",
         "hash": "0f8485465d77e3c0",
-        "syncedAt": "2026-07-26T19:10:22.141Z"
+        "syncedAt": "2026-07-26T19:10:22.141Z",
+        "unpublishedAt": "2026-09-06T21:03:44.683Z",
+        "published": false
       }
     },
     "building-a-data-science-team-from-scratch": {

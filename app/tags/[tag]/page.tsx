@@ -52,6 +52,10 @@ export default async function TagPage({ params }: PageProps) {
       supabase: 'data-engineering',
       career: 'leadership',
       'south-africa': 'data-science',
+      // The Ubunye Engine series is temporarily unpublished pending a rewrite,
+      // which empties this tag and would 404 an indexed page. Point it at the
+      // nearest surviving grouping until the series comes back.
+      'ubunye-series': 'open-source',
     }
     const successor = RETIRED[slug]
     if (successor && getTagNameBySlug(successor)) {
