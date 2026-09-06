@@ -88,14 +88,25 @@ function MdxImage({
 
   return (
     <span className="block my-8">
-      <Image
-        src={src}
-        alt={alt ?? ''}
-        width={800}
-        height={450}
-        className="rounded-xl border border-border w-full h-auto"
-        sizes="(max-width: 768px) 100vw, 800px"
-      />
+      {/* Diagrams are dense and landscape, so on a phone the labels fall below
+          about six pixels. Opening the source PNG gives the reader something
+          they can pinch and zoom instead. */}
+      <a
+        href={src}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block cursor-zoom-in"
+        aria-label={alt ? `${alt} (open full size)` : 'Open image full size'}
+      >
+        <Image
+          src={src}
+          alt={alt ?? ''}
+          width={800}
+          height={450}
+          className="rounded-xl border border-border w-full h-auto"
+          sizes="(max-width: 768px) 100vw, 800px"
+        />
+      </a>
     </span>
   )
 }
