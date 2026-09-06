@@ -28,18 +28,24 @@ const nextConfig = {
       // Two ThabangVision posts published on 2026-09-03 were reorganised the
       // same day into the seven part system design series. Their slugs named a
       // commit count and a thesis rather than a subject, which no longer
-      // matches the content, so both point at the series map.
+      // matches the content, so both pointed at the series map.
       //
-      // Permanent because the old slugs are retired for good, not paused.
+      // The map is now unpublished, so those redirects were sending a
+      // permanent 308 to a 404. They land on the blog index instead until the
+      // series goes live.
+      //
+      // Temporary on purpose: the source slugs are retired for good, but this
+      // destination is not the real one. When the map is published, point both
+      // back at it and make them permanent again.
       {
         source: '/blog/building-a-marketplace-in-176-days',
-        destination: '/blog/thabangvision-system-design',
-        permanent: true,
+        destination: '/blog',
+        permanent: false,
       },
       {
         source: '/blog/the-platform-is-a-design-input',
-        destination: '/blog/thabangvision-system-design',
-        permanent: true,
+        destination: '/blog',
+        permanent: false,
       },
     ]
   },
