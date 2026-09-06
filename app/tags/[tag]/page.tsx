@@ -35,6 +35,29 @@ export default async function TagPage({ params }: PageProps) {
   const name = getTagNameBySlug(slug)
 
   if (!name) {
+    // The tag vocabulary was consolidated from twenty two down to ten, because
+    // half of it was used once and `agentic ai` and `ai agents` were the same
+    // idea split across two pages. These slugs were live and indexed, so they
+    // move to whichever tag absorbed them rather than 404ing.
+    const RETIRED: Record<string, string> = {
+      'agentic-ai': 'ai-agents',
+      'claude-code': 'ai-agents',
+      systems: 'architecture',
+      engineering: 'software-engineering',
+      'web-development': 'software-engineering',
+      'next.js': 'software-engineering',
+      devops: 'software-engineering',
+      'ci-cd': 'software-engineering',
+      'behind-the-scenes': 'software-engineering',
+      supabase: 'data-engineering',
+      career: 'leadership',
+      'south-africa': 'data-science',
+    }
+    const successor = RETIRED[slug]
+    if (successor && getTagNameBySlug(successor)) {
+      permanentRedirect(`/tags/${successor}`)
+    }
+
     // Tag pages used to be addressed by the raw tag, so `/tags/open source`
     // and `/tags/ci/cd` were live and linked. Send those to the slug rather
     // than 404ing, and do it here so any future tag with punctuation is
