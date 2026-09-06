@@ -52,6 +52,26 @@ import matter from 'gray-matter'
 import { syndicationBody } from '../lib/post-markdown.mjs'
 
 const ROOT = process.cwd()
+
+// The tokens live in .env.local, which a plain node script does not read the
+// way Next does. Without this every platform reported "key is not set" and the
+// run quietly did nothing, which looks identical to a successful dry run.
+// Same minimal loader as scripts/rag/reindex.mjs. Real env vars win.
+function loadEnvLocal() {
+  const file = path.join(ROOT, '.env.local')
+  if (!fs.existsSync(file)) return
+  for (const line of fs.readFileSync(file, 'utf-8').split('\n')) {
+    const m = line.match(/^\s*([\w.-]+)\s*=\s*(.*)\s*$/)
+    if (!m) continue
+    let val = m[2].trim()
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1)
+    }
+    if (!(m[1] in process.env)) process.env[m[1]] = val
+  }
+}
+loadEnvLocal()
+
 const CONTENT_DIR = path.join(ROOT, 'content', 'blog')
 const STATE_FILE = path.join(ROOT, 'data', 'syndication.json')
 const DRAFTS_DIR = path.join(ROOT, 'data', 'syndication-drafts')
@@ -574,9 +594,26 @@ async function main() {
 
   const state = readState()
 
-  if (wants('devto')) await syndicateDevto(posts, state)
-  if (wants('hashnode')) await syndicateHashnode(posts, state)
-  const mediumHandled = wants('medium') ? await syndicateMedium(posts, state) : false
+  // One platform failing must not discard what another platform already did.
+  // Hashnode throwing on a missing Pro plan used to abort main() before
+  // writeState(), so a successful dev.to publish went unrecorded, and
+  // publishing is not undoable. Each platform now fails on its own.
+  const failures = []
+  const attempt = async (name, fn) => {
+    try {
+      return await fn()
+    } catch (error) {
+      failures.push(name)
+      console.error(`${name}: ${error.message}`)
+      return false
+    }
+  }
+
+  if (wants('devto')) await attempt('dev.to', () => syndicateDevto(posts, state))
+  if (wants('hashnode')) await attempt('Hashnode', () => syndicateHashnode(posts, state))
+  const mediumHandled = wants('medium')
+    ? await attempt('Medium', () => syndicateMedium(posts, state))
+    : false
   if (wants('manual')) writeManualDrafts(posts, { mediumHandled })
 
   if (args.publish) {
@@ -586,6 +623,11 @@ async function main() {
 
   console.log('\nReminder: publish here first and let the post be indexed, then')
   console.log('syndicate. The canonical tag is on the copies, never on the original.')
+
+  if (failures.length) {
+    console.error(`\nFailed on: ${failures.join(', ')}. Anything that did succeed is recorded above.`)
+    process.exitCode = 1
+  }
 }
 
 main().catch((error) => {
