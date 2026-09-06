@@ -1,0 +1,134 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1600px;
+    height: 848px;
+    background: #211b15;
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #ece2d0;
+    overflow: hidden;
+  }
+
+  .sheet {
+    width: 1600px;
+    height: 848px;
+    padding: 66px 70px 60px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .eyebrow {
+    font-size: 22px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #998c78;
+  }
+
+  h1 {
+    margin-top: 14px;
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .row {
+    margin: 58px 0 52px;
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 22px;
+  }
+
+  .stage {
+    position: relative;
+    background: #2a231b;
+    border: 1px solid #4a3f33;
+    border-radius: 14px;
+    padding: 30px 26px 34px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .num {
+    font-size: 21px;
+    color: #6d6152;
+    letter-spacing: 0.12em;
+  }
+
+  .verb {
+    margin-top: 20px;
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .say {
+    margin-top: 20px;
+    font-size: 24px;
+    line-height: 1.4;
+    color: #998c78;
+  }
+
+  .stage + .stage::before {
+    content: "\203A";
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 36px;
+    color: #6d6152;
+  }
+
+  .one .verb { color: #d3a253; }
+  .one { border-color: #d3a253; }
+
+  .five { border-color: #7cb593; border-width: 2px; }
+  .five .verb { color: #7cb593; }
+
+  .foot {
+    margin-top: auto;
+    border-top: 1px solid #4a3f33;
+    padding-top: 28px;
+    font-size: 29px;
+    color: #998c78;
+  }
+
+  .foot b { color: #e0743c; font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <div class="eyebrow">Leadership progression</div>
+  <h1>Building yourself out of the critical path</h1>
+
+  <div class="row">
+    <div class="stage one">
+      <div class="num">STAGE 01</div>
+      <div class="verb">Solve</div>
+      <div class="say">I solve the problem myself</div>
+    </div>
+    <div class="stage">
+      <div class="num">STAGE 02</div>
+      <div class="verb">Pattern</div>
+      <div class="say">We turn the solution into something repeatable</div>
+    </div>
+    <div class="stage">
+      <div class="num">STAGE 03</div>
+      <div class="verb">Teach</div>
+      <div class="say">The team can run the pattern without me</div>
+    </div>
+    <div class="stage">
+      <div class="num">STAGE 04</div>
+      <div class="verb">Federate</div>
+      <div class="say">The wider engineering organisation adopts and supports it</div>
+    </div>
+    <div class="stage five">
+      <div class="num">STAGE 05</div>
+      <div class="verb">Step back</div>
+      <div class="say">It keeps working when I am not in the room</div>
+    </div>
+  </div>
+
+  <div class="foot"><b>Different parts of a capability sit at different stages.</b> Knowing which is which is most of the job.</div>
+</div>

@@ -1,0 +1,154 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1600px;
+    height: 848px;
+    background: #211b15;
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #ece2d0;
+    overflow: hidden;
+  }
+
+  .sheet {
+    width: 1600px;
+    height: 848px;
+    padding: 70px 70px 60px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .eyebrow {
+    font-size: 22px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #998c78;
+  }
+
+  h1 {
+    margin-top: 14px;
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .row {
+    margin: 62px 0 56px;
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 18px;
+  }
+
+  .step {
+    position: relative;
+    background: #2a231b;
+    border: 1px solid #4a3f33;
+    border-radius: 14px;
+    padding: 26px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .num {
+    font-size: 20px;
+    color: #6d6152;
+    letter-spacing: 0.12em;
+  }
+
+  .label {
+    margin-top: 18px;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .desc {
+    margin-top: 16px;
+    font-size: 21px;
+    line-height: 1.42;
+    color: #998c78;
+  }
+
+  .step + .step::before {
+    content: "\203A";
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 34px;
+    color: #6d6152;
+  }
+
+  .last {
+    border-color: #7cb593;
+  }
+  .last .label { color: #7cb593; }
+
+  .band {
+    margin-top: auto;
+    border: 2px solid #b5501e;
+    border-radius: 14px;
+    padding: 26px 34px;
+    display: flex;
+    align-items: baseline;
+    gap: 26px;
+  }
+
+  .band b {
+    font-size: 30px;
+    font-weight: 600;
+    color: #e0743c;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .band span {
+    font-size: 26px;
+    color: #ece2d0;
+  }
+</style>
+
+<div class="sheet">
+  <div class="eyebrow">The operating model</div>
+  <h1>How work reaches the team</h1>
+
+  <div class="row">
+    <div class="step">
+      <div class="num">01</div>
+      <div class="label">Demand</div>
+      <div class="desc">A need from anywhere in the business</div>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <div class="label">Intake</div>
+      <div class="desc">One front door, not a person's inbox</div>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <div class="label">Priority</div>
+      <div class="desc">Weighed against what is already committed</div>
+    </div>
+    <div class="step">
+      <div class="num">04</div>
+      <div class="label">Book of work</div>
+      <div class="desc">Everything the team has said yes to</div>
+    </div>
+    <div class="step">
+      <div class="num">05</div>
+      <div class="label">Sprint</div>
+      <div class="desc">Pulled in when there is capacity</div>
+    </div>
+    <div class="step last">
+      <div class="num">06</div>
+      <div class="label">Delivery</div>
+      <div class="desc">Shipped, and visible that it shipped</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <b>Visibility across every step</b>
+    <span>for the people doing the work and the people who asked for it</span>
+  </div>
+</div>

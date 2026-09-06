@@ -1,0 +1,134 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1600px;
+    height: 848px;
+    background: #211b15;
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #ece2d0;
+    overflow: hidden;
+  }
+
+  .sheet {
+    width: 1600px;
+    height: 848px;
+    padding: 66px 70px 60px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .eyebrow {
+    font-size: 22px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #998c78;
+  }
+
+  .headline {
+    margin-top: 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+
+  .headline b {
+    font-size: 78px;
+    font-weight: 600;
+    color: #e0743c;
+    letter-spacing: -0.02em;
+  }
+
+  .headline span {
+    font-size: 30px;
+    color: #ece2d0;
+  }
+
+  .sub {
+    margin-top: 12px;
+    font-size: 24px;
+    color: #998c78;
+  }
+
+  .cols {
+    margin-top: 54px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 44px;
+  }
+
+  .panel {
+    background: #2a231b;
+    border: 1px solid #4a3f33;
+    border-radius: 18px;
+    padding: 40px 44px 44px;
+    min-height: 340px;
+  }
+
+  .panel .who {
+    font-size: 24px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #998c78;
+  }
+
+  .panel .what {
+    margin-top: 12px;
+    font-size: 27px;
+    color: #ece2d0;
+  }
+
+  .big {
+    margin-top: 40px;
+    font-size: 112px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .unit {
+    margin-top: 16px;
+    font-size: 30px;
+    color: #998c78;
+  }
+
+  .old { border-color: #d3a253; }
+  .old .big { color: #d3a253; }
+
+  .new { border-color: #7cb593; border-width: 2px; }
+  .new .big { font-size: 88px; }
+  .new .big { color: #7cb593; }
+
+  .foot {
+    margin-top: auto;
+    font-size: 25px;
+    color: #998c78;
+  }
+</style>
+
+<div class="sheet">
+  <div class="eyebrow">One backlog, two platforms</div>
+  <div class="headline">
+    <b>250 million</b>
+    <span>records to work through, after a migration broke</span>
+  </div>
+  <div class="sub">Against a normal day of roughly five million records</div>
+
+  <div class="cols">
+    <div class="panel old">
+      <div class="who">Legacy stack</div>
+      <div class="what">Built for hosting applications</div>
+      <div class="big">3 to 4</div>
+      <div class="unit">months to clear it</div>
+    </div>
+
+    <div class="panel new">
+      <div class="who">Databricks</div>
+      <div class="what">Built for distributed data work</div>
+      <div class="big">Under a day</div>
+      <div class="unit">for a comparable workload</div>
+    </div>
+  </div>
+
+  <div class="foot">Not a benchmark. The same class of work, on infrastructure that matches its shape.</div>
+</div>

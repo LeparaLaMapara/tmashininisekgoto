@@ -67,16 +67,16 @@ export const TOPICS: Record<string, Topic> = {
   'data-science': {
     heading: 'Data science',
     intro:
-      'The parts of data science that are not modelling: inheriting a team with no handover, deciding what to build, and the roadmap from analyst to someone trusted with production systems. Written from inside a large South African enterprise.',
+      'The parts of data science that are not modelling: inheriting a function and modernising it, deciding what to build, and the roadmap from analyst to someone trusted with production systems. Written from inside a large South African enterprise.',
     description:
       'Data science beyond modelling: leading teams, choosing what to build, and the path to owning production systems.',
   },
   leadership: {
     heading: 'Leadership',
     intro:
-      'Building and leading a data science team from scratch: inheriting undocumented models nobody could explain, the cost of every decision, and the belief that carried it, which is to build systems that outlive the people who built them.',
+      'Modernising a data science capability from the inside: inheriting a function with capable people and an incomplete system around them, deciding what to own and what to federate, and the belief that carried it, which is to build systems that outlive the people who built them.',
     description:
-      'Building a data science team from scratch in a regulated enterprise: the real decisions, costs, and what actually worked.',
+      'Modernising a data science capability inside a regulated enterprise: the operating model, the capability mix, and what actually changed.',
   },
   career: {
     heading: 'Career',
