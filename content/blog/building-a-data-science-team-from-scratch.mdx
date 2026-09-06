@@ -10,180 +10,154 @@ seoDescription: "A small data science team already existed. The capability aroun
 # Building a Data Science Capability in Under Two Years: A Real Life Roadmap
 
 > I did not build a data science team from scratch. The team was already there,
-> and the people in it were carrying real production work for real parts of the
-> business. What was not there was the system around them. There was no handover.
-> There was no useful documentation. Models were already running in production,
-> and I had to work out what they did while helping keep them running. This is
-> the story of building the capability around a team that already existed, in
-> under two years, including the parts I got wrong.
+> and the people in it were carrying real production work. What was not there was
+> the system around them. There was no handover. There was no useful
+> documentation. Models were already running in production, and I had to work out
+> what they did while helping keep them running. This is the story of building
+> the capability around a team that already existed, and what I would do again.
 
 ## What I walked into
 
-Let me be exact about the starting point, because everything else follows from
-it.
-
 There was no handover. There was no useful documentation for the systems and
-models I inherited. Not thin documentation. Not out of date documentation. None
-that helped.
+models I inherited. Not thin documentation. Not out of date documentation. None.
 
-Meanwhile the work was live. Models were running in production. The environment
-was handling roughly five million records a day. Parts of the business were
-making decisions using the output. Some problems were already happening. So I
-had to learn what existed at the same time as helping keep it working.
+The work was live. Models were running in production. The environment was
+handling roughly five million records a day. Parts of the business were making
+decisions with the output. Some problems were already happening. So I had to
+learn what existed while helping keep it working.
 
 The knowledge did exist. It just lived inside people's heads. If you wanted to
-know how a model worked, or what fed it, or why someone had made a particular
-choice two years ago, you had to find the right person and hope they remembered.
-Standards were inconsistent, because everyone had solved the same problems in
-their own way. Nobody could give you a straight answer to simple questions:
-what do we have, who owns it, how does it work, and why was it built like that?
+know how a model worked, or why someone chose something two years ago, you had
+to find the right person and hope they remembered.
+
+In that situation the temptation is to start fixing the loudest thing. Do not.
+**The loudest thing is almost never the load bearing thing.**
 
 The team was not underperforming. The people were good. The system around them
-was incomplete. That distinction matters, because if you read it backwards you
-start replacing people, and you end up with a new team inside the same broken
-system, with less memory of how anything works than before.
+was incomplete. Read that backwards and you start replacing people, and end up
+with a new team inside the same broken system.
 
 **Having a data science team is not the same thing as having a data science
-capability.**
+capability.** A team is people. A capability is those people plus the platform,
+the data foundation, the practices and the standards that let them deliver again
+and again without heroics.
 
-A team is people. A capability is those people plus the platform, the data
-foundation, the practices and the standards that let them deliver again and
-again without heroics. We had the first. We had to build the second.
+Inheriting systems that only lived in someone's memory taught me the idea this
+whole story runs on: build systems that outlive the people who built them.
+Everything below is me trying to make sure the next person did not inherit the
+same darkness I did.
 
 | What I inherited | Where it is now |
 | --- | --- |
 | No handover, no useful documentation | Written down, and used by other teams |
-| Requests arriving anywhere, worked on immediately | Requests enter one door and get prioritised |
+| Requests arriving anywhere, worked on immediately | One front door, priorities agreed |
 | No dedicated data engineering | A data engineer in the team, specialists shared |
 | Every model deployed its own way | Reusable patterns, five production models moved onto them |
-| A stack built for running applications | Databricks for large scale data work |
+| A stack built for running applications | A platform built for large scale data work |
 | Roughly a quarter to get a use case live | Roughly two weeks, or a month with legacy systems |
 
-None of that came from replacing people. It came from changing the system around
-them, in an order that mattered.
+## Make the work visible
 
-## First, make the work visible
-
-The first problem was not technical. Nobody, including me, could answer a simple
-question: what is this team working on, and how did we decide that?
+Nobody, including me, could answer a simple question: what is this team working
+on, and how did we decide that?
 
 Work arrived directly. Someone who needed something asked the person they knew,
-and it became work that afternoon, because saying yes is easier than having a
-process that can say later. That produces a team which is permanently busy and
-permanently behind, where the loudest request wins.
+and it became work that afternoon. That produces a team which is permanently
+busy and permanently behind, where the loudest request wins.
 
-So we built a front door. Jira and two week sprints are the visible part, and
-honestly the least interesting part. What mattered was the shape underneath. A
-request now arrives in one place rather than in someone's inbox. It gets weighed
-against everything the team has already promised. It goes into a list of agreed
-work, and it gets picked up when there is room for it. Then everyone can see
-where it is, including the person who asked.
+So we built a front door. [Jira](https://www.atlassian.com/software/jira) and two
+week sprints are the visible part and the least interesting part. What mattered
+was the shape underneath. A request arrives in one place. It gets weighed against
+what the team already promised. It goes into an agreed list, and it gets picked
+up when there is room.
 
 ![The demand flow: a request enters an intake, is prioritised against existing commitments, lands in the book of work, is pulled into a sprint and delivered, with visibility across every step](/posts/ds_demand_flow.png)
 
-This is not process for its own sake. It changed what conversations were
-possible. Before, the answer to "can you also do this" was yes, or an argument
-with whoever pushed hardest. Now the answer is a comparison: here is what it
-would push out, and here is what that costs. Choosing work stops being a
-popularity contest and becomes a decision the business can actually make.
+This changed what conversations were possible. Before, the answer to "can you
+also do this" was yes, or an argument with whoever pushed hardest. Now it is a
+comparison: here is what it would push out, and here is what that costs.
 
-We kept the ceremony light. Standup every second day rather than daily, because
-a small team fighting production issues does not need another meeting, it needs
-a rhythm. At the end of each sprint, the honest questions: what got done, what
-did not, why, and who is stuck.
+What I did not expect was that visibility is what makes a team self managing. A
+sprint is not a list of twenty tasks with hourly updates. It is a shared
+direction, a time window and agreed priorities. Once people can see the work,
+they know what they own, they pace themselves, they ask for help when stuck, and
+they help each other without being told to. Nobody has to chase anybody.
 
-The first thing visibility bought us was not speed. It was knowledge. Within a
-few sprints I could see which skills we had, which we were missing, and exactly
-where work went to die. You cannot decide what to build or who to hire until you
-can see the work.
+That only worked because my manager gave us room. He trusted the team and did not
+try to run the implementation from above. It is very hard to build an independent
+team if the people above it will not let go, and I would not want this story read
+as though I did it alone.
 
-## Writing down what nobody had written down
+## Write down what nobody wrote down
 
-Once the work was visible, the next problem showed itself. Almost everything
-important was in somebody's head. In a small team that is not a quirk of
-culture. It is a single point of failure with a resignation letter attached.
+Almost everything important was in somebody's head. In a small team that is not a
+quirk of culture. It is a single point of failure with a resignation letter
+attached.
 
-Confluence was the tool. Turning private knowledge into shared knowledge was the
-job, and those are not the same project.
+[Confluence](https://www.atlassian.com/software/confluence) was the tool. Turning
+private knowledge into shared knowledge was the job.
 
-We started with the onboarding guide I wished someone had handed me: every tool
-we use, where to find it, how to get access, what to request, and what training
-a regulated environment requires before you touch anything. Then the harder
-work, which was going back into our own production systems and working out what
-they did. What each model does. How it works. What data feeds it. Who uses the
-output. Then the deployment steps, the jobs that run every month, the patterns
-we kept reusing, and a straight answer to the question that wastes more time
-than any other: does this already exist somewhere?
+We started with the onboarding guide I wished someone had handed me: every tool,
+where to find it, how to get access, what training a regulated environment
+requires before you touch anything. Then the harder work of going back into our
+own production systems and working out what they did. What each model does. What
+data feeds it. Who uses the output. And a straight answer to the question that
+wastes the most time: does this already exist somewhere?
 
-Richard Feynman was once told that his notebooks were a record of his thinking.
-He corrected the historian. The notes were not a record of the thinking, he
-said. They were the thinking. That is what documentation is for a team. Not
-admin done after the real work. The team thinking, in a form that survives the
-team.
+Richard Feynman was once told his notebooks were a record of his thinking. He
+corrected the historian. The notes were not a record of the thinking. They were
+the thinking. That is what documentation is for a team.
 
-Then it paid off in a way I did not plan for.
-
-Production models came under audit, compliance review and model governance.
-Reviewers wanted to know what a model did, how it worked, what data it used, why
-certain choices had been made, what controls existed and what evidence backed
-any of it.
-
-I want to be careful here. Writing something down does not make it compliant.
-That is not the claim. The claim is smaller and more useful. Because we had
-already done the work of understanding these systems and writing them down, we
-were not starting from zero when somebody finally asked. We could hand over real
-information and walk reviewers through the models instead of spending weeks
-rediscovering our own production estate under pressure.
+Then it paid off in a way I did not plan for. Production models came under audit,
+compliance review and model governance. Reviewers wanted to know what a model
+did, what data it used, why choices were made, and what evidence backed any of
+it. Writing something down does not make it compliant, and that is not the claim.
+The claim is smaller. We were not starting from zero when somebody finally asked.
 
 Months earlier, documentation had felt like extra work. During audit, it became
 evidence.
 
 ## The infrastructure we actually had
 
-It would be easy, and wrong, to say there was no infrastructure. There was
-plenty.
+It would be easy, and wrong, to say there was no infrastructure.
 
-We had Kubernetes. We had Jenkins and CI pipelines. We had Microsoft SQL Server
-running on premises, PostgreSQL databases, Windows virtual machines, and the
-usual application infrastructure around them. Some work also depended on
-somebody's laptop, which is its own kind of risk. A few database environments
-were not well looked after either, in ordinary ways: unclear permissions, unclear
-access, unclear ownership, nobody obviously responsible for the housekeeping.
+We had [Kubernetes](https://kubernetes.io/). We had [Jenkins](https://www.jenkins.io/)
+and CI pipelines. We had [Microsoft SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/)
+on premises, [PostgreSQL](https://www.postgresql.org/) databases, Windows virtual
+machines. Some work depended on somebody's laptop, which is its own risk. A few
+database environments were not well looked after in ordinary ways: unclear
+permissions, unclear ownership, nobody obviously responsible for housekeeping.
 
-None of those technologies are bad. Kubernetes is not bad. Jenkins is not bad.
-SQL Server and PostgreSQL are not bad. Virtual machines are not bad. I want to
-be clear about that, because the lazy version of this story is a fight between
-tools, and that is not what happened.
+None of those technologies are bad. The lazy version of this story is a fight
+between tools, and that is not what happened.
 
-The problem was fit. Almost all of it had been designed around applications:
-software that serves requests, keeps a service up, and touches a modest amount
-of data at a time. Our work was going the other way. We needed to move large
-amounts of data, process large datasets, rerun history when something changed,
-train models, run experiments, and repeat all of that reliably.
-
-Here is the simplest way I can say it:
+The problem was fit. Almost all of it was designed around applications: software
+that serves requests, stays up, and touches a modest amount of data at a time.
+Our work went the other way. We needed to move and process large amounts of data,
+rerun history when something changed, train models and repeat all of it reliably.
 
 **We had plenty of places to run software. What we did not have was a good place
 to do data science at scale.**
 
-Those are different problems, and they want different infrastructure.
-
 ## The month the records kept arriving
 
-Then reality presented the bill for infrastructure decisions made long before I
+Then reality presented the bill for infrastructure decisions made before I
 arrived.
 
-The business migrated to a new core policy administration environment. During
-that migration things broke, and one of our production products started falling
-behind. It could no longer process records at the rate they were arriving.
+The business migrated to a new core policy administration environment. Things
+broke, and one of our production products fell behind. It could not process
+records at the rate they arrived.
 
 By the time it was contained, the backlog was roughly 250 million records,
 against a normal daily volume of roughly five million. On the existing stack,
 working through that took roughly three to four months.
 
-The part people underestimate is that the data does not wait for you. It kept
-arriving at the same rate the whole time. Every day we did not catch up, another
-day of records joined the queue behind the ones already there.
+We first tried the obvious thing, which was to make the existing setup go faster.
+It was not enough. That is the useful part of the story, because it proved the
+problem was not effort or tuning. The work was large scale data processing and
+the platform was built for running applications.
+
+The part people underestimate is that the data does not wait for you.
 
 ```text
 arriving faster than we process
@@ -197,70 +171,65 @@ processing faster than it arrives
    -> the backlog finally clears
 ```
 
-You cannot fix that with discipline. It was not a tuning problem or a code
-quality problem. The work was large scale data processing and the platform was
-built for running applications. The two did not fit, and every hour we spent
-being clever inside that limit was an hour spent proving the limit.
+It was not only a technical inconvenience. Clients complained. The business
+pushed hard, and reasonably so. Cancellations were happening around the wider
+issue. People were under real stress for weeks.
 
-It was not just a technical inconvenience either. Clients complained. The
-business pushed hard, and reasonably so. Cancellations were happening around the
-wider issue. People on the team were under real stress for weeks.
-
-I had seen this coming, and this is the most transferable thing I know:
+I had seen it coming, and this is the most transferable thing I know:
 **you do not get budget for infrastructure. You get budget for pain.**
 
-When the backlog arrived I did not bring management a complaint. I brought a
-costed proposal that was already written, and then I carried it through: the
-commercial case, standing up the environment with the platform and networking
-teams, and a route off the legacy stack that other workloads could follow later.
+So when the backlog arrived I did not bring management a complaint. I brought a
+costed proposal that was already written, then carried it through: the commercial
+case, standing up the environment with the platform and networking teams, and a
+route off the legacy stack that other workloads could follow.
 
-Once that workload moved into Databricks, a comparable volume could be processed
-in under a day.
+Once that workload moved into [Databricks](https://www.databricks.com/), a
+comparable volume could be processed in under a day.
 
 ![The processing comparison: roughly 250 million records took three to four months on the old stack, and a comparable workload runs in under a day on Databricks](/posts/ds_backlog_processing.png)
 
-I want to be careful with that comparison, because it is the strongest number
-here and it would be easy to oversell. It is not a benchmark. It is the same
-kind of work, running on infrastructure shaped for it instead of against it. The
-argument about strategy ended there, which is the only way arguments like that
-ever end.
+That is not a benchmark. It is the same kind of work, running on infrastructure
+shaped for it instead of against it.
 
-## It was also a problem of trust
+## Trust, quality and control
 
-The migration did not only leave us behind on volume. It also introduced
+The migration did not only leave us behind on volume. It introduced
 inconsistencies in the data itself.
 
 That matters more than it sounds. Some of those values feed calculations with
 real financial consequences, including payouts. I am not claiming wrong payments
-went out. I am saying it was a risk we had to get under control, and quickly.
+went out. I am saying it was a risk we had to control quickly.
 
 So the problem was never simply "process the backlog". It was three things at
-once. Clear the backlog. Keep up with everything still arriving each day. And
-make sure the data can be trusted before anything downstream uses it.
+once: clear the backlog, keep up with what still arrives daily, and make sure the
+data can be trusted before anything downstream uses it.
 
-That third one is what quietly set our engineering agenda. It is where the need
-came from for proper ingestion and ETL, for checks that catch bad values before
-they spread, for reconciliation so we could prove a number, for monitoring and
-alerts so we heard about problems from our systems rather than from a client,
-for logging and lineage so we could trace where a value came from, and for the
-ability to reprocess history safely when we found something wrong.
+That third one set our engineering agenda. It is where the need came from for
+proper ingestion and ETL, checks that catch bad values before they spread,
+reconciliation so we could prove a number, monitoring and alerts so we heard
+about problems from our systems rather than from a client, and the ability to
+safely reprocess history.
 
-None of that is a shopping list of platform features. Each one is an answer to a
-question somebody was going to ask us.
+The same pressure applied to control. A regulated environment asks questions that
+compute alone cannot answer. Who can access this data? Where did it come from?
+What happened to it on the way? Did the quality checks pass? Which version
+produced this result? Can we reproduce it, explain it, and safely run it again?
+
+Governance is not paperwork you add at the end. It is a set of questions your
+system should be able to answer on any given Tuesday.
 
 **Scale is not only about processing more data. It is about processing more data
 without losing control of it.**
 
-## Why the fix had to start underneath
+## The foundation underneath
 
-This is the central lesson of the whole story, and it took a crisis to make it
-obvious to me.
+This is the central lesson, and it took a crisis to make it obvious to me.
 
-Data science is not only analysis, notebooks, reports and models. Before anyone
-can build a model worth trusting, somebody has to make sure the data can be
-found, accessed, moved, understood, cleaned, transformed, checked, governed,
-reproduced and monitored. If that layer is weak, everything above it is guessing
-with extra steps.
+Data science is not only analysis, notebooks and models. Before anyone can build
+a model worth trusting, somebody has to make sure the data can be found,
+accessed, moved, understood, cleaned, checked, governed, reproduced and
+monitored. If that layer is weak, everything above it is guessing with extra
+steps.
 
 I could have spent that period improving how we built models. It would not have
 helped. The models were not the weak part.
@@ -268,45 +237,25 @@ helped. The models were not the weak part.
 **At scale, data science is only as reliable as the data foundation underneath
 it.**
 
-So we invested in data engineering, deliberately, as the thing that had to come
-first.
+It is fair to ask how I knew where to look. Before this role I worked at IBM and
+Vodacom, in environments with much more mature data science and data engineering
+practice. I saw production data science that was genuinely engineered, large
+scale data processing treated as a discipline, and deployment and reproducibility
+taken seriously. I am not saying those places were perfect, and I did not copy
+them. The point is narrower. I had seen what a more mature capability looks like,
+so I had something to compare against. That comparison is what let me read the
+situation correctly. These were not model problems. They were capability
+problems.
 
-## Where this thinking came from
+## The first pattern we could reuse
 
-It is fair to ask how I knew where to look.
-
-Before this role I worked at IBM and Vodacom, in environments with much more
-mature data science and data engineering practice than I found later. I saw
-production data science that was genuinely engineered. I saw large scale data
-processing treated as a discipline of its own. I saw deployment, automation and
-reproducibility taken seriously, and technical roles working together rather
-than throwing work over a wall.
-
-I am not saying those places were perfect, and I am not saying I copied them.
-The point is narrower than that. I had already seen what a more mature
-capability looks like, so I had something to compare against.
-
-That comparison is what let me read the situation correctly. Walking into no
-handover, no documentation, infrastructure that did not fit, and a production
-system falling behind, it would have been easy to treat each one as its own
-emergency. Having seen the alternative, I could recognise them for what they
-were. These were not model problems. They were capability problems.
-
-## Databricks, and the first pattern we could reuse
-
-I helped bring in Databricks as part of modernising the capability. Not because
-it was fashionable, but because the work we were doing needed a platform built
-for large scale data processing, and we had just been shown what happens when it
-is not.
-
-During the worst of the backlog pressure, I built the first version of something
+During the worst of the backlog pressure I built the first version of something
 we needed repeatedly: a reliable way to get data out of our on premises systems
-and into the cloud data environment and catalog, using JDBC connections. Once
-that worked, it was written down and taught, so the next person did not have to
-solve it again from first principles.
+into the cloud data environment and catalog over
+[JDBC](https://docs.oracle.com/javase/tutorial/jdbc/). Once it worked, it was
+written down and taught, so the next person did not solve it again from scratch.
 
-That sequence is the actual pattern, and it matters more than the specific
-technology:
+That sequence matters more than the technology:
 
 ```text
 understand the problem
@@ -321,45 +270,26 @@ understand the problem
 ```
 
 The point was never for me to become the person who moves every dataset forever.
-The point was to turn a problem we kept solving badly into something the team
-could do repeatedly, and then get out of the way.
+If I solve something once, the team should not need me to solve it again.
 
-## Better practices above the platform
+With a platform that fit and a data layer we could rely on, we could improve how
+we did data science itself. Work went into source control so another person could
+pick it up and run it. Reproducibility improved, with testing where it earned its
+place. We built repeatable ways to develop models, deploy them and move them from
+experiment into production, with CI/CD through
+[GitHub Actions](https://docs.github.com/en/actions), and with access control and
+monitoring designed in rather than bolted on.
 
-With a platform that fit the work and a data layer we could rely on, we could
-finally improve how we did data science itself. We standardised how work was
-structured and kept in source control, so a piece of analysis was something
-another person could pick up and run. We improved reproducibility, and added
-testing where it genuinely earned its place. We built repeatable ways to develop
-models, deploy them, and move them from an experiment into production, with
-CI/CD through GitHub workflows, and with governance, access control and
-monitoring designed in rather than bolted on afterwards.
-
-The order was not an accident:
-
-```text
-platform
-   compute, storage, catalog
-data engineering
-   ingestion, ETL, quality
-practices
-   source control, testing, CI/CD
-data science
-   experiments, models, deployment
-monitoring
-   governance, alerts, lineage
-```
-
-Each layer bought room to improve the one above it. We could start making model
-work repeatable instead of treating every project as a brand new engineering
-problem.
+That same foundation now carries a wide range of work: ingestion, ETL,
+transformation, model workloads, deployment and orchestration, and increasingly
+LLM and agent workloads too. The point is not the list. It is that one foundation
+can carry many kinds of data and AI work, which is exactly what you lose when
+every project invents its own.
 
 ## A capability is more than a platform
 
-If you take one thing from this, take this. Buying Databricks does not give you
-a data science capability, any more than buying a piano makes you a musician.
-
-A capability is a stack, and most of it is not technology:
+Buying Databricks does not give you a data science capability, any more than
+buying a piano makes you a musician.
 
 ```text
            PEOPLE
@@ -386,209 +316,162 @@ Take any layer out and the ones above it wobble. That is why the tool decision
 was the smallest part of this story, even though it is the part people ask about
 most.
 
-## Building people, not only technology
+## Where Ubunye Engine fitted
 
-Budget was limited. We could not hire a finished specialist for every gap, and
-even with money I am not sure we should have.
+[Ubunye Engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine/) did not
+start at work. It began in my own research, where I kept rebuilding the same
+scaffolding for every experiment and got tired of it, and I carried on developing
+it independently afterwards. It is open source and available on
+[PyPI](https://pypi.org/project/ubunye-engine/). I mention the history only
+because provenance is worth being accurate about.
 
-One of the most valuable people in this story already worked in the
-organisation. They had strong data management knowledge and, more importantly,
-they knew the place: where data lived, which databases mattered, how the
-business actually used them. They then grew into the data engineering role. That
-combination, real knowledge of the organisation plus a genuine appetite to
-develop, was worth more to us than hiring a stronger generalist from outside,
-because the scarce thing was context, not raw skill.
+Later, solving professional data engineering problems, I recognised that some of
+the same ideas helped: reproducibility, portability, configuration, conventions,
+and not doing one off work twice. The ideas I had worked out building it shaped
+how I approached our problem, and helped shape some of the patterns we adopted as
+a team.
 
-We also brought in a junior data scientist, and that was about capacity rather
-than seniority. A large part of our demand was recurring, ad hoc analysis:
-genuinely valuable, effectively endless, and quietly fatal to any sustained
-production work. Giving that a proper home created room for everyone else.
+A manager who builds something and introduces it to his own team is one bad
+decision away from vanity engineering, so the test was simple. It had to solve a
+problem the team already had, and survive other engineers looking at it properly.
 
-The habit that holds all of this together is a show and tell every Friday, and
-the rules are loose on purpose. Bring the model you are building. Bring
-something you learned about the business. Bring a technology you are curious
-about, a lesson from a course, a practice you want to argue for, an experiment
-that worked, or one that did not. Failures count, and saying so out loud is most
-of what makes it work. The purpose is to move knowledge sideways, so that
-expertise stops collecting in one person, and it costs nothing.
+It is worth keeping two things apart. A **platform** is compute, storage, catalog
+and execution. A **framework** is the conventions and reusable ways you structure
+and run work on top of it. Databricks is the first. Ubunye is the second. It does
+not replace Databricks, platform engineering or CI/CD, and any explanation that
+suggests otherwise is selling you something.
 
-## Deciding what to own and what to share
+Five production models have been modernised onto the newer patterns so far. The
+number I care about is not how many models run in production, but that existing
+work is moving onto something standard instead of piling up.
+
+## People, relationships and teaching
+
+Budget was limited. We could not hire a finished specialist for every gap.
+
+One of the most valuable people in this story already worked in the organisation.
+They had strong data management knowledge and, more importantly, they knew the
+place: where data lived, which databases mattered, how the business used them.
+Given the opportunity, engineering direction, support and real responsibility,
+they grew into the data engineering role. Building capability means developing
+people, not only installing technology.
+
+We also brought in a junior data scientist, for capacity rather than seniority. A
+large part of our demand was recurring ad hoc analysis: valuable, endless, and
+quietly fatal to sustained production work. Giving it a home created room for
+everyone else.
+
+For everything beyond that, I built relationships instead of headcount. Platform
+engineers, data engineers, engineering specialists and technical leaders
+elsewhere who had solved similar problems. We lined up on shared technical and
+business goals, and that made it possible to pull in real expertise when we
+needed it. **You do not need everyone to report to you to build something
+together.** What makes that work is not process. It is trust, honest
+communication and being technically credible enough that people want to help.
+
+Then we taught. Databricks, [PySpark](https://spark.apache.org/docs/latest/api/python/),
+the engineering patterns, the documentation habit, deployment. The Friday show
+and tell is where a lot of it landed, and the rules are loose on purpose. Bring
+the model you are building, something you learned about the business, a practice
+you want to argue for, an experiment that worked, or one that did not. Failures
+count. The purpose is to move knowledge sideways so that expertise stops
+collecting in one person, and it costs nothing.
+
+## Giving it away
 
 There is a difference between building capability and hoarding it.
 
-We did not try to permanently own every skill we occasionally needed. That is
-not only a budget argument. Keeping a specialist you need twice a year inside a
-small team is poor design on its own terms. It creates expertise with nothing to
-do and quietly duplicates a function the organisation already has.
+We built some of these things only because there was a gap and the business
+needed them filled. That is fine at the time and a bad permanent arrangement,
+because a small data science team maintaining its own engineering platform is a
+small data science team that has stopped doing data science.
 
-So where we needed deep specialist help and a permanent hire was not justified,
-we worked with the central technology teams and brought people in for the
-specific problem: platform engineering, data engineering, AI engineering,
-solution architecture and the central AI capability.
+So as the patterns matured we moved them outward, to the technology, data
+engineering and platform teams who should own them long term.
+[Team Topologies](https://teamtopologies.com/) has the cleanest language for
+this: platform teams exist so that other teams can flow. It also happens to be
+how a pattern survives you, because anything living inside one team dies when
+that team is reorganised, and teams are always reorganised.
 
 ![The capability model: a core team of data science, data engineering and analysis, alongside federated central capability in platform engineering, AI engineering, solution architecture and central AI](/posts/ds_capability_mix.png)
 
-Some things we built early only because nobody else was going to. That is fine
-at the time and a bad permanent arrangement, because a small data science team
-maintaining its own engineering platform is a small data science team that has
-stopped doing data science. So we handed those things outward on purpose, to the
-teams whose job they properly are.
+**Good technical leadership is not owning everything forever. Sometimes you build
+what is missing, prove it, teach it, and then give it to the team that should own
+it.**
 
-Deciding that split is a real part of the job. Own everything and you build a
-silo you cannot sustain. Share everything and you have no capability of your own.
-It also happens to be how a pattern survives you, because anything that lives
-inside one team dies when that team is reorganised, and teams are always
-reorganised.
-
-## Where Ubunye Engine fitted
-
-[Ubunye Engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine/) is an open
-source engine I built during my PhD research on distributed systems. You describe
-a data or machine learning pipeline once, as configuration and a small amount of
-Python, and run that same description in different places.
-
-I am aware of how that looks. A manager who builds something and then introduces
-it to his own team is one bad decision away from vanity engineering. So the test
-was simple. It had to solve a problem the team already had, and it had to survive
-other engineers looking at it properly.
-
-The problem it speaks to is the one in the section above. We needed one standard
-way to build things instead of a new custom answer for every use case. The ideas
-I had worked out while building Ubunye, about repeatability and running the same
-work in different environments, shaped how I approached that, and helped shape
-some of the patterns we adopted as a team.
-
-There was a second reason that mattered as much. The team came from analytics and
-data science backgrounds rather than platform engineering. Telling that team to
-adopt strong engineering conventions in the abstract achieves very little. Giving
-them a concrete pattern to work inside, while we build the skills alongside it,
-achieves a great deal. Conventions teach.
-
-Databricks and Ubunye are complementary, and the boundary is worth stating
-plainly. Databricks is the platform: the compute, the storage, the catalog.
-Ubunye is a way of writing pipelines that can run across environments. It does
-not replace Databricks, platform engineering, Kubernetes or CI/CD, and any
-explanation that suggests otherwise is selling you something.
-
-Five production models have been modernised onto the newer patterns so far. The
-number I care about is not how many models run in production. It is that existing
-production work is actively moving onto something standard and maintainable,
-instead of piling up.
-
-## What changed in delivery
-
-Numbers with their caveats attached, because these are observations, not
-promises.
-
-Getting a use case properly into production used to take roughly a quarter. Very
-little of that quarter was the data science. It was engineering and integration
-that somebody had already done before, being done again.
-
-With the newer patterns, a reasonably straightforward use case without heavy
-legacy integration typically moves from prototype toward production in roughly
-two weeks. Where serious legacy integration is involved, closer to a month. The
-variable is almost always the integration, not the modelling.
-
-Recently we delivered at least three use cases inside a single month. Through the
-old approach, a comparable set of work could have taken a significant part of a
-year. I am not going to turn that into a saving figure, because the honest claim
-is about order of magnitude, not accuracy to the rand.
-
-The change I value most is not on that list. The team stopped being reactive. We
-used to chase whatever was on fire that day. We now choose most of our work.
-
-## Learning to influence instead of insisting I was right
-
-The hardest part of these two years was not technical, and the way I used to tell
-this story was wrong.
-
-I used to frame it as holding a line against management. That version is
-flattering and useless. What is actually happening is that two groups are working
-to different clocks. Management needs delivery it can measure this quarter, which
-is a fair requirement and not an obstacle. Engineering can see investments whose
-returns arrive over years. Both views are legitimate. Neither is complete alone.
-
-My job was not to win. It was to translate. An infrastructure investment does not
-become fundable because it is architecturally correct. It becomes fundable when
-it is described in terms the organisation can weigh: delivery time, operational
-risk, reliability, cost and business impact.
-
-Sometimes translating changed my own mind, and the answer that survived a cost
-constraint was better than the one I walked in with. Other times it meant waiting
-and gathering evidence until the investment was obvious to everyone rather than
-only to me. Databricks is the clearest example. I did not win that argument by
-being right about distributed processing. I won it when the pain had a number
-attached, and I already had the proposal written.
-
-## Building myself out of the critical path
-
-Now the part I got wrong.
-
-For a stretch, I was holding too much of it together personally: the process, the
-technical direction, the engineering decisions, the delivery. It felt like
-commitment. It was actually a bottleneck with good intentions, and it put a
-ceiling on the team that had nothing to do with their ability.
-
-The way out was to move deliberately through stages:
+I had to learn that on myself first. For a stretch I was holding too much
+together personally: the process, the technical direction, the delivery. It felt
+like commitment. It was a bottleneck with good intentions, and it put a ceiling
+on the team that had nothing to do with their ability.
 
 ![The leadership progression: solve the problem, turn it into a pattern, teach the pattern, federate it into the wider organisation, then step out of the critical path](/posts/ds_leadership_stages.png)
 
-Solve the problem. Turn the solution into a pattern. Teach the pattern. Connect
-it into the wider organisation. Then step back, so the work no longer needs you.
+Bringing in a project manager and scrum masters to run the process was part of
+this, and so was handing platform work to platform people. The cost of this stage
+is ego, and it is the cheapest price on this page.
 
-We are not at the final stage everywhere, and I want to be honest about that.
-Some things are close. Some are still at stage one. Knowing which is which is
-most of the job. Bringing in a project manager and scrum masters to run the
-process was part of this, and so was handing platform work to platform people.
-The cost of this stage is ego, and it is the cheapest price on this page once you
-understand what it buys.
+## Where we are now
 
-I used to think the point of leading was being the person who could always fix
-it. I now think it is the opposite. The measure of the job is whether the team
-can say they did it themselves and be right about it.
+We are not finished, and I am not going to pretend otherwise. Some foundational
+ownership is still moving toward the teams that should hold it. Some things are
+close. Some are still at stage one.
 
-## What I would carry into the next team
+What has changed is real, though. Getting a use case properly into production
+used to take roughly a quarter, and very little of that was the data science. It
+was engineering somebody had already done before, being done again. Now a
+reasonably straightforward use case moves from prototype toward production in
+roughly two weeks, or closer to a month where serious legacy integration is
+involved. Recently we delivered at least three use cases inside a single month.
+Through the old approach that could have taken a significant part of a year. I am
+not turning that into a savings figure, because the honest claim is about order
+of magnitude.
 
-1. **Diagnose the system before you judge the people.** Good people inside an
-   incomplete system look exactly like a weak team.
-2. **Make the work visible first.** You cannot prioritise what you cannot see,
-   and you cannot plan skills or hiring until the work is in the open.
-3. **Write things down while you learn them.** You are not doing admin. You are
-   building the only version of the knowledge that survives someone leaving.
-4. **Check whether your infrastructure fits your problem.** Good tools aimed at
-   the wrong shape of work will still fail you.
-5. **Fix the foundation before the models.** At scale, data science is only as
-   reliable as the data underneath it.
-6. **Write the costed proposal before the crisis.** Funding follows visible
-   pain, so have the answer ready for the day the pain arrives.
-7. **Patterns are what compress delivery.** Most of that old quarter was
-   rebuilding decisions somebody had already made.
-8. **Decide what to own, develop and share.** All three, on purpose.
-9. **Grow the people you have.** Knowledge of the organisation is harder to hire
-   than technical skill.
-10. **Build yourself out of the critical path deliberately.** Solve, pattern,
-    teach, share, step back.
+The hardest part was never technical. I used to frame it as holding a line
+against management, which is flattering and useless. Two groups were working to
+different clocks. Management needed delivery it could measure this quarter, which
+is fair. Engineering could see investments that pay back over years. My job was
+not to win but to translate, because an infrastructure investment does not become
+fundable by being architecturally correct. It becomes fundable when it is
+described in delivery time, risk, reliability and cost. Sometimes that changed my
+own mind, and the answer that survived a cost constraint was better than the one I
+walked in with.
+
+The change I value most is not on any of those lists. Our data scientists now
+work on this platform and have adopted the patterns and the thinking. It is
+increasingly how the team works rather than how I think we should work.
+
+## The roadmap, in order
+
+1. Understand what you inherited before you change it.
+2. Make the work visible. You cannot prioritise what you cannot see.
+3. Document what matters while you are learning it.
+4. Find the real bottleneck, not the loudest one.
+5. Fix the data foundation before the models.
+6. Choose infrastructure that fits the workload you actually have.
+7. Turn one off solutions into repeatable patterns.
+8. Improve how data science itself is engineered, once the base is stable.
+9. Build quality, monitoring and governance in rather than on.
+10. Teach continuously, so knowledge stops living in one head.
+11. Build relationships outside your reporting line.
+12. Give people ownership instead of managing their hours.
+13. Move mature responsibilities to the teams that should own them.
+14. Keep going. It is not finished.
 
 ## The thing I did not expect to learn
 
 The most valuable thing I took from this had very little to do with any tool.
 
-I learned how to build a capability in an environment where the structure was
-not already there. That meant working when roles were not neatly defined,
-resources were limited, priorities competed with each other, production was on
-fire, and most of the people I needed did not report to me.
+I learned how to build a capability where the structure was not already there.
+That meant working when roles were not neatly defined, resources were limited,
+priorities competed, production was on fire, and most of the people I needed did
+not report to me.
 
-It forced me to develop skills I did not expect to need. Working out what was
-actually broken rather than what was loudest. Finding the right people and
-building real relationships with them. Asking for resources and negotiating for
-them. Managing expectations honestly. Balancing this quarter against next year.
-Explaining the same technical problem in three different ways for three
-different audiences. Knowing when to take ownership, and when to give it away.
-Creating enough structure for people to work well, without creating bureaucracy
-nobody wanted.
-
-I did not expect that to become one of the most useful things I would take from
-the experience. It did.
+It forced skills I did not expect to need. Working out what was actually broken
+rather than what was loudest. Finding the right people and building real
+relationships. Negotiating for resources. Managing expectations honestly.
+Balancing this quarter against next year. Explaining one technical problem three
+different ways for three different audiences. Knowing when to take ownership, and
+when to give it away.
 
 Tools change. Databricks will change, the databases will change, the frameworks
 certainly will. Walking into an unstructured environment, working out what is
