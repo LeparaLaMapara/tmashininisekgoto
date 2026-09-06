@@ -1,13 +1,13 @@
 ---
-title: "Modernising a Data Science Capability From the Inside"
+title: "Rebuilding a Data Science Capability in Under Two Years: A Real Life Roadmap"
 date: 2026-07-15
 updated: 2026-09-06
 tags: [leadership, data science, data engineering, mlops, engineering]
 summary: "I did not build a data science team from scratch. I inherited one, with capable people and real gaps in the system around them: ad hoc demand, knowledge living in individual heads, no dedicated data engineering, deployment by hand, and infrastructure that was never designed for the scale we were starting to ask of it. This is what it took to modernise that from the inside. An operating model, documented institutional memory, a deliberate capability mix, Databricks, reusable engineering patterns, and the part where I was the bottleneck. The belief underneath all of it: build systems that outlive the people who built them."
-seoDescription: "I inherited a data science function with capable people and gaps in the system around them. What it took to modernise it from the inside, over two years."
+seoDescription: "I inherited a data science function with capable people and gaps in the system around them. What it took to modernise it from the inside, in under two years."
 ---
 
-# Modernising a Data Science Capability From the Inside
+# Rebuilding a Data Science Capability in Under Two Years: A Real Life Roadmap
 
 > I did not build a data science team from scratch. I inherited one. There were
 > capable people already carrying real production work for real parts of the
@@ -16,7 +16,7 @@ seoDescription: "I inherited a data science function with capable people and gap
 > individual heads, there was no dedicated data engineering, deployment happened
 > by hand, and the infrastructure underneath had never been designed for the
 > scale we were starting to ask of it. This is the honest account of changing
-> that from the inside, over two years, including the part where I was the
+> that from the inside, in under two years, including the part where I was the
 > bottleneck.
 
 ## The system I inherited
@@ -275,11 +275,12 @@ it to his own team is one bad decision away from vanity engineering. The test I
 held it to was simple: it had to solve a problem the team already had, and it
 had to survive other engineers looking at it.
 
-The problem it solved is the one in the previous section. We needed a standard
-engineering pattern instead of another bespoke implementation per use case, and
-we needed repeatability, scalability, portability, standardisation and reusable
-execution patterns out of it. The backlog had made the cost of not having that
-extremely visible.
+The problem it speaks to is the one in the previous section. We needed a
+standard engineering pattern instead of another bespoke implementation per use
+case, and the ideas I had worked out while building Ubunye, about repeatability,
+scalability, portability and reusable execution patterns, shaped how I
+approached that and helped shape some of the patterns we ended up adopting as a
+team. The backlog had made the cost of not having that extremely visible.
 
 There was a second reason, and it mattered as much. The team came from
 analytics, data science and business analytics backgrounds rather than MLOps or
@@ -302,7 +303,7 @@ that sit on top of and across execution environments. It does not replace
 Databricks, platform engineering, Kubernetes, CI/CD or architecture, and any
 explanation that implies otherwise is selling you something.
 
-Five production models have been modernised onto this approach so far. The
+Five production models have been modernised onto the newer patterns so far. The
 number I care about is not the total running in production. It is that existing
 production workloads are actively moving into a more standardised, scalable and
 maintainable architecture instead of accumulating in place.
@@ -437,9 +438,9 @@ this, and so was handing platform work to platform people. The cost of this
 phase is ego, and it is the cheapest price on this page once you understand what
 it buys.
 
-Lao Tzu wrote that a leader is best when people barely know he exists, and that
-when the work is done they say: we did it ourselves. I used to read that as
-poetry. I now read it as an engineering requirement.
+I used to think the point of leading was being the person who could always fix
+it. I now think it is the opposite. The measure of the job is whether the team
+can say they did it themselves and be right about it.
 
 ## What I would carry into the next team
 
