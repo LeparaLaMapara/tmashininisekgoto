@@ -56,8 +56,23 @@ export default async function TagPage({ params }: PageProps) {
       // which empties this tag and would 404 an indexed page. Point it at the
       // nearest surviving grouping until the series comes back.
       'ubunye-series': 'open-source',
+      // Posts now carry at most two tags, which left these four with no
+      // published post behind them. They were indexed, so they move to the
+      // nearest tag that still has posts rather than disappearing.
+      ai: 'ai-agents',
+      architecture: 'software-engineering',
+      'data-engineering': 'data-science',
+      mlops: 'data-science',
     }
-    const successor = RETIRED[slug]
+    // Follow the chain, because a successor can itself have been retired
+    // later. `systems` pointed at `architecture`, which stopped having posts
+    // when the tag limit came in, and a single hop would have 404'd.
+    let successor = RETIRED[slug]
+    const seen = new Set([slug])
+    while (successor && !getTagNameBySlug(successor) && !seen.has(successor)) {
+      seen.add(successor)
+      successor = RETIRED[successor]
+    }
     if (successor && getTagNameBySlug(successor)) {
       permanentRedirect(`/tags/${successor}`)
     }
