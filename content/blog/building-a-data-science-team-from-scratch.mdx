@@ -225,20 +225,46 @@ like. Here I learned what it takes to help build one.
 
 I had seen this coming, and I had prepared for it, and this is the most transferable
 lesson I own: **you do not get budget for infrastructure, you get budget for pain.**
-When the backlog crisis arrived, I did not bring management a complaint. I
-brought a costed proposal for [Databricks](https://www.databricks.com) that was already
-prepared, and I carried it end to end: the contract, the environment stood up with the
-platform and networking teams, and a migration framework off the legacy stack. A
-repeatable path, not a heroic once off.
 
-Part of that path was a first working pattern for getting data out of our on premises
-databases and into the cloud environment and catalog over JDBC, which is simply the
-standard way applications and data systems connect to relational databases. I built the
-first one, proved it on real work, wrote it down and taught it. The point was never for
-me to become the person who moves every dataset. It was that the next person should not
-have to solve it again from scratch.
+But the first thing I did when the backlog arrived was not to go and design a platform.
+It was to go and look at what the group already had. Large organisations are full of
+capability that one team built and nobody else knows about, and rebuilding something that
+already exists two floors away is an expensive way to look busy. So I went looking, and I
+found another team in the group already running
+[Databricks](https://www.databricks.com). I went to them, asked how they had set it up,
+and learned from what they had already worked out.
 
-The risk was mine and I knew it. If the platform failed, there would be no confusion
+That is where the honest version of this story sits, and it is worth being precise about.
+I did not introduce Databricks to the group. It was already there. What it was not was a
+capability our team could use. Getting it from the first thing to the second was only
+partly a technical problem.
+
+The technical part I could do. I piloted it against our own workloads, got our data into
+it, and built the first working pipelines. Part of that was a pattern for pulling data
+out of our on premises databases into the cloud environment and catalog over JDBC, which
+is simply the standard way applications and data systems connect to relational databases.
+I built the first one, proved it on a real business problem rather than a demo, wrote it
+down and taught it. The point was never for me to become the person who moves every
+dataset. It was that the next person should not have to solve it again from scratch.
+
+The rest of it was organisational, and I underestimated how much of it there would be.
+Working with the team that already had the capability. Bringing in our architecture
+people. Getting the commercial arrangements and the cost allocation in place. Pulling in
+platform, infrastructure and networking where we needed them. Working through access and
+enablement so people could actually log in and do something. That turned out to be the
+real lesson of the whole exercise: getting a platform to work technically is only part of
+bringing it into a team. Architecture, funding, contracts, access, support and adoption
+all have to move with it. The code can be running perfectly while the capability still
+does not exist.
+
+All of this while production was still under pressure, which meant two tracks at once.
+Track one was today: get enough of our data onto the platform, processing, and supporting
+the business right now. Track two was the slower work of turning that into a real
+capability rather than an emergency measure. You do not get to finish the second before
+the first becomes urgent, and pretending otherwise is how people end up with a beautiful
+architecture and an angry business.
+
+The risk was mine and I knew it. If it had failed, there would have been no confusion
 about whose idea it was. That is the ownership I keep talking about: putting your name
 on an outcome before you know how it ends.
 
@@ -248,6 +274,11 @@ that means anything here. And something subtler happened: the team's default ass
 shifted to cloud first, and moving our data storage fully to the cloud is now one of the
 team's biggest running initiatives. Nobody argued about strategy after that. Results
 ended the argument, which is the only way arguments like that ever end.
+
+But the destination was never that I got it working. It was that the team could work on
+it. So the early patterns were documented, taught and handed round until they stopped
+being mine, because a platform only one person understands is just a more expensive
+version of the problem we started with.
 
 ## Teach the team you have
 
@@ -433,9 +464,10 @@ exists, this is what I would say to you before anything else.
    capability requires. Understand clearly: that can end as vision or as insubordination,
    and which one it becomes depends on what you deliver. Take that ownership with open
    eyes.
-5. **Write the costed proposal before the crisis.** The crisis is coming. When it
-   arrives, bring a plan with a number on it, not a complaint, and put your name on the
-   outcome.
+5. **Know what you would do before the crisis, and look before you build.** When it
+   arrives, bring a plan rather than a complaint. And check what your organisation
+   already has, because the capability you are about to build from nothing may exist two
+   floors away, waiting for somebody to do the unglamorous work of bringing it in.
 6. **Teach the team you have.** A weekly show and tell is a training programme with a
    budget of zero, and a small team where everyone can do a bit of everything is more
    resilient than a large team of silos.
