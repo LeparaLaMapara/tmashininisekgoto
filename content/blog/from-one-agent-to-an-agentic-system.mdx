@@ -89,17 +89,7 @@ Every subagent is a separate conversation with a separate model call and a
 separate context to fill. Five subagents is not one task split five ways. It is
 five tasks, five sets of instructions, five bills.
 
-```text
-   one agent
-     1 conversation
-
-   five subagents
-     5 conversations
-     5 x instructions
-     5 x context
-     5 x cost
-     5 x failure points
-```
+![One agent with a single conversation and a green tick above a divider asking what the extra complexity bought, and below it five agents each with their own cluttered conversations, costing five bills, five contexts, five failures and harder debugging](/posts/agent_one_vs_many.png)
 
 They can run at the same time, which helps wall clock time. They cannot share
 what they learn unless you build that, and coordinating them is real engineering
@@ -181,16 +171,7 @@ care what the model decided. The tests from Part 5 do not care how the code was
 written. The rate limit does not negotiate. In each case, something that cannot
 be argued with surrounds something that can.
 
-```text
-  ┌──────────────────────┐
-  │ deterministic        │
-  │ permissions, tests   │
-  │  ┌────────────────┐  │
-  │  │ probabilistic  │  │
-  │  │ the model      │  │
-  │  └────────────────┘  │
-  └──────────────────────┘
-```
+![A small dashed box holding the Gemini model, labelled probabilistic, sitting inside a much larger solid green box labelled deterministic and surrounded by permissions, tests, schema and deployments](/posts/agent_deterministic_box.png)
 
 Two smaller patterns from this site worth copying, both boring on purpose. The
 reindexing endpoint is **idempotent**, so running it twice is harmless, which

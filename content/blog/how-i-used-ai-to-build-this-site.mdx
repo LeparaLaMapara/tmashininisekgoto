@@ -54,24 +54,7 @@ That is genuinely most of it. A chat window takes your text and returns text. An
 agent has a loop: it can take an action, look at the result, and decide what to
 do next.
 
-```text
-CHAT
-   you ask
-   it answers
-   you copy, paste
-   it breaks
-   you retype
-
-AGENT
-   you give an objective
-     ↓
-   it acts
-     ↓
-   it sees the result
-     ↓
-   it adjusts
-     ↺  until done
-```
+![A chat sequence that ends in a dead end after you ask, it answers, you paste and it breaks, beside an agent loop that cycles through objective, act, observe and adjust](/posts/agent_chat_vs_agent.png)
 
 The loop is the whole thing. It is why an agent can run your build, read the
 error, fix the file, and run the build again, while a chat window can only tell
@@ -88,6 +71,8 @@ space, not memory. When the desk is full, something falls off the edge.
 **Tokens** are how that space is measured. Roughly, a token is a chunk of a word.
 You pay per token, and you run out of desk per token, which is why "just paste
 the whole codebase in" is not a strategy.
+
+![A context window holding instructions, your code, the question, a tool result and history, with one more card fallen off the right hand edge marked dropped](/posts/agent_context_window.png)
 
 ## Step 1: I told it what I wanted, not how to build it
 

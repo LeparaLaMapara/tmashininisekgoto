@@ -26,18 +26,7 @@ real failures from this repository, including one from this week.
 
 ## The loop, and why every layer exists
 
-```text
-   change
-     ↓
-   does it compile?  build
-     ↓
-   does it behave?   tests
-     ↓
-   does it hold up?  CI
-     ↓
-   what happened?    logs
-     ↺
-```
+![A verification loop cycling from a change to the Next.js build asking does it compile, to tests asking does it behave, to GitHub Actions and Lighthouse checks asking does it hold up, to Vercel logs asking what really happened, and back to the next change](/posts/agent_verification_loop.png)
 
 Each layer catches something the one above cannot. A build catches broken syntax
 and missing imports. Tests catch wrong behaviour in code that compiles fine.
@@ -194,17 +183,7 @@ This is the part I care most about, and it is the same idea as the documentation
 argument in the data science piece: knowledge that lives only in somebody's head
 is a single point of failure.
 
-```text
-   bug
-    ↓
-   understand it properly
-    ↓
-   encode it: a test, rule,
-   check or comment
-    ↓
-   the system remembers,
-   not you
-```
+![A bug flowing through understanding it and then encoding it as a test, a rule or a comment, all three feeding into a green box marked system remembers, not a person](/posts/agent_bug_to_memory.png)
 
 The invisible-content bug became a test that fails if it recurs. The performance
 budget carries a long comment explaining that the numbers are calibrated on the

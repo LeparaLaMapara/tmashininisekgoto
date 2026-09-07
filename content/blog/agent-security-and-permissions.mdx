@@ -40,16 +40,7 @@ tells it not to", you have no answer.
 Real security lives one level down, where a bad decision cannot become a bad
 outcome because the capability is not there.
 
-```text
-   prompt says "don't"
-      a request
-   ──────────────────
-   code checks first
-      a control
-   ──────────────────
-   credential cannot
-      a boundary
-```
+![Three tiers of protection: a dashed amber bar for a prompt instruction which is only a request, a solid blue bar for a code check which is a control, and a heavy filled green bar with a padlock for a credential that cannot do it at all, which is a boundary](/posts/agent_request_vs_boundary.png)
 
 Aim for the bottom line wherever you can.
 
@@ -185,17 +176,7 @@ what the agent did and why.
 The idea underneath all of this: do not rely on any single control, because
 every one of them will eventually fail.
 
-```text
-   narrow permissions
-     ↓ most need approval
-   least privilege
-     ↓ the key cannot write
-   database rules
-     ↓ the query cannot ask
-   rate limits
-     ↓ abuse costs little
-   human approval
-```
+![Five concentric rings of defence from narrow permissions on the outside through least privilege, database rules, rate limits and human approval at the centre, with a red attack arrow stopping at the database rules ring](/posts/agent_defence_layers.png)
 
 Any layer can fail. The bet is that they will not all fail at once, and that the
 cheap boring layers catch the ordinary problems so the expensive ones only face

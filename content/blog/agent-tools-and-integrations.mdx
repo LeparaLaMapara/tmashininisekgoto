@@ -33,18 +33,7 @@ That is it. Not magic. You describe what the function does and what it needs.
 When the model decides it needs that thing, it asks for it, your code runs it,
 and the answer comes back into the conversation.
 
-```text
-   agent needs something
-     ↓
-   calls the tool
-     ↓
-   your code runs it
-     ↓
-   result comes back
-     ↓
-   agent reads it
-     ↺
-```
+![An agent calling a tool, the tool acting on real systems including Supabase, Vercel and GitHub, and the result returning to the agent along a highlighted green path](/posts/agent_tool_loop.png)
 
 The important part is the last arrow. Without the result coming back, you have a
 very confident suggestion. With it, you have that loop from Part 1 closing
@@ -136,6 +125,8 @@ Worst case is quite different.
 The other axis is **local versus production**. A mistake against a local database
 costs you a rerun. The same mistake against production costs you customer data.
 
+![A two by two grid of tool permissions, with reading locally and in production marked safe in green, writing locally marked as a warning in amber, and writing to production filled solid red with a padlock](/posts/agent_permission_grid.png)
+
 Those two axes give you four boxes, and they deserve four different levels of
 paranoia. I did not think about this carefully at the start, which brings me to
 the part I am not especially proud of.
@@ -190,6 +181,14 @@ cost or latency, **no automatic fallback** to a second provider when the first
 fails, and no traffic splitting. Those are real things that real systems have.
 This one does not have them, and Part 6 is where I will say what I would build if
 I needed them.
+
+Here is the whole thing, which is worth seeing once before the next four parts
+take it apart layer by layer. Me and the agent on the left, committing to GitHub.
+GitHub deploying to Vercel. The site serving blog posts and a chat API. The chat
+API reaching a model and a knowledge base. The automated checks underneath,
+blocking bad changes before they ever reach a visitor.
+
+![The full architecture: me and a coding agent committing to GitHub, GitHub deploying to Vercel which runs the Next.js website, the chat API reaching Gemini and a Supabase knowledge base, and automated checks blocking bad changes](/posts/agent_architecture.png)
 
 ## The uncomfortable part
 

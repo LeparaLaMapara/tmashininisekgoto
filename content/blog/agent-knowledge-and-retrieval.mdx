@@ -42,17 +42,7 @@ noise.
 So the actual job is narrower and more sensible: **find the few relevant pieces,
 and show it only those.**
 
-```text
-   question
-     ↓
-   search my writing
-     ↓
-   the relevant bits
-     ↓
-   model
-     ↓
-   answer, with sources
-```
+![A retrieval pipeline running from a question through search into a Supabase and PostgreSQL vector database, returning the relevant bits to the Gemini model, which produces a grounded answer, with your blog posts feeding the database](/posts/agent_rag_pipeline.png)
 
 That pattern has a name, **RAG**, for retrieval augmented generation. It sounds
 grand. It means "look it up first, then answer".
