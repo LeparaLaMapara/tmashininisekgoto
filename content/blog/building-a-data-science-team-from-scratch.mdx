@@ -186,6 +186,12 @@ the ability to safely reprocess history.
 None of that was academic. Clients complained, the business pushed hard and reasonably
 so, and people were under real stress for weeks.
 
+It also changed what I thought scale meant. In a regulated environment, moving more data
+is only half of it. You also have to answer who can reach this data, where a number came
+from, whether the checks passed, and whether you can run the whole thing again tomorrow
+and get the same answer. Scaling is not only processing more data. It is processing more
+data without losing control of it.
+
 This is also where the biggest lesson of the two years finally landed for me. I could
 have spent that period improving how we built models and it would not have helped,
 because the models were not the weak part. Data scientists cannot spend their time on
@@ -331,11 +337,33 @@ I was running the process and leading the engineering at the same time, and doin
 badly on alternate days. Worse, every structure I personally held together was a
 structure that would fail the week I went on leave, which would have betrayed the entire
 philosophy of this build. So I went to management and made the case for help. We grew
-the team. We brought in a project manager and scrum masters to run the process. And we
-began handing engineering capabilities we had built over to the platform teams, whose
-job that properly is, so they support us instead of us carrying everything. If you want
-the theory underneath that move, [Team Topologies](https://teamtopologies.com/book) is
-the book: platform teams exist so that stream teams can flow.
+the team. We brought in a project manager and scrum masters to run the process.
+
+The budget was never going to stretch to a specialist for every gap, so a lot of what we
+needed came from people who did not report to me: engineers, data engineers, platform
+people, technical leads elsewhere who had already solved something like our problem. It
+worked because the problems overlapped and because I had spent time on the relationships
+before I needed them. You do not need everyone to report to you to build something
+together.
+
+There is a version of this where the data science team quietly becomes data science plus
+data engineering plus platform enablement plus everything else nobody has picked up. That
+was necessary for a while. It is a terrible permanent arrangement. So as the patterns
+matured we began handing them over to the data engineering, technology and platform teams
+whose job they properly are, which gives data scientists their capacity back for actual
+data science. Sometimes you build what is missing, prove it, teach it, and then give it
+to the team that should own it. If you want the theory underneath that move,
+[Team Topologies](https://teamtopologies.com/book) is the book: platform teams exist so
+that stream teams can flow.
+
+None of this would have worked one level up. My manager was not a micromanager, and the
+room I was given is the room I was able to give the team. It is difficult to build an
+autonomous team if autonomy disappears above it.
+
+What I mean by a team that manages itself is nothing mystical. Priorities are clear. The
+work is visible. People know what they own, pace themselves, ask for help when they are
+stuck, and help each other without being asked. Knowledge is shared rather than hoarded.
+Nobody needs chasing.
 
 I used to think the point of leading was being the person who could always fix it. I now
 think it is the opposite: the measure of the job is whether the team can say they did it
@@ -351,7 +379,7 @@ A new model used to take an unbounded amount of time to reach production. Nobody
 tell you how long, because nobody could see the path. Now it ships in days. When work
 piles up, we have the capacity to work through it rather than watching it grow. New
 people onboard from a documented path instead of an oral tradition.
-Every production model is understood, documented, and governed, and other teams use that
+The production models we inherited are documented and governed, and other teams use that
 documentation for their own work. The research in
 [Accelerate](https://itrevolution.com/product/accelerate/) found that delivery speed and
 stability rise together or not at all, and that matched our experience exactly: we got
@@ -361,6 +389,13 @@ And the change that matters more than every number: the team stopped being react
 were once a team that chased whatever was on fire that day. We are now proactive for
 most of what we do, which means we choose our work instead of our work choosing us.
 
+I should be honest about where this actually sits. The capability is not finished. Some
+foundational ownership is still moving toward the teams that should hold it, and there is
+plenty left to improve. But the data scientists now work on the platform, the patterns
+are increasingly normal rather than mine, and the knowledge is spread across people
+instead of trapped in one or two. The capability is not finished. The way we work has
+changed.
+
 The systems run whether I am in the room or not. That was the goal the whole time.
 
 ## The key takeaways
@@ -368,9 +403,9 @@ The systems run whether I am in the room or not. That was the goal the whole tim
 If you are about to build a data science capability, whether or not the team already
 exists, this is what I would say to you before anything else.
 
-1. **Decide what you believe, because everything else follows from it.** Mine was:
-   build systems that outlive the people who build them. Every move on this page is that
-   belief wearing different clothes.
+1. **Decide what you believe, because everything else follows from it.** Every move on
+   this page is one belief wearing different clothes, and you will not hold a line for
+   two years without one.
 2. **Make the work visible before you touch technology.** You cannot fix a team you
    cannot see, and no platform purchase repairs invisible work.
 3. **Documentation is leadership, not admin.** Write the guide you wish you had
@@ -381,9 +416,9 @@ exists, this is what I would say to you before anything else.
    capability requires. Understand clearly: that can end as vision or as insubordination,
    and which one it becomes depends on what you deliver. Take that ownership with open
    eyes.
-5. **You get budget for pain, not for infrastructure.** Prepare the proposal before the
-   crisis, because the crisis is coming. When it arrives, bring a costed plan, not a
-   complaint, and put your name on the outcome.
+5. **Write the costed proposal before the crisis.** The crisis is coming. When it
+   arrives, bring a plan with a number on it, not a complaint, and put your name on the
+   outcome.
 6. **Teach the team you have.** A weekly show and tell is a training programme with a
    budget of zero, and a small team where everyone can do a bit of everything is more
    resilient than a large team of silos.
@@ -396,6 +431,21 @@ exists, this is what I would say to you before anything else.
    patience, political capital, and ego. Ownership means some of what you own may fail
    with your name on it. I would pay all of it again, because the alternative is a team
    that dies a little every time someone resigns.
+
+One last thing, and it is the part I did not expect. The most useful skill I took from
+these two years had very little to do with any tool. I learned how to build a capability
+in a place where the structure I needed did not already exist. That meant working out
+what was actually broken rather than what was loudest, finding the right people and
+building relationships with them, asking for resources and sometimes not getting them,
+managing expectations honestly, balancing a production fire against work that would only
+pay off next year, and creating enough structure for the team to move without burying
+them in it. I did not expect that to be the lasting lesson. It was.
+
+Remember where this started: live systems, no handover, no useful documentation, and
+everything important sitting inside somebody's head. Almost everything we built
+afterwards was aimed at making sure the next person does not inherit that same darkness.
+Which is the whole belief in one line. Build systems that outlive the people who built
+them, including you.
 
 None of this required genius. It required knowing why I was doing each thing, doing the
 unglamorous ones in the right order, and refusing to skip the boring ones. That is what
