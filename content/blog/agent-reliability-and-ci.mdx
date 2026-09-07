@@ -1,0 +1,258 @@
+---
+title: "The Practical Roadmap to Building With AI Agents, Part 5: Making Agents Reliable Enough to Ship"
+seoTitle: "Building With AI Agents Part 5: Tests, CI and Feedback Loops"
+date: 2026-09-07
+published: true
+tags: [ai agents, software engineering]
+summary: "Generation gives you code. Feedback loops turn it into engineering. Part five of six: the failures on this site where a green build was exactly the wrong goal, and how a bug becomes a permanent check nobody has to remember."
+---
+
+# The Practical Roadmap to Building With AI Agents, Part 5: Making Agents Reliable Enough to Ship
+
+*Part 5 of 6. Previous: [Part 4: Making Agents Safe Enough to Act](/blog/agent-security-and-permissions).*
+
+---
+
+Part 4 was about making sure the agent cannot cause harm. This one is about the
+much more common problem: it does not cause harm, it just ships something wrong.
+
+The sentence I keep coming back to:
+
+**Generation gives you code. Feedback loops turn it into engineering.**
+
+An agent that writes code and never learns whether it worked is a very fast
+guesser. Everything below is about closing that gap, and the examples are all
+real failures from this repository, including one from this week.
+
+## The loop, and why every layer exists
+
+```text
+   change
+     ↓
+   does it compile?  build
+     ↓
+   does it behave?   tests
+     ↓
+   does it hold up?  CI
+     ↓
+   what happened?    logs
+     ↺
+```
+
+Each layer catches something the one above cannot. A build catches broken syntax
+and missing imports. Tests catch wrong behaviour in code that compiles fine.
+Checks in CI catch things that only appear on a real page in a real browser. Logs
+catch what only happens with real traffic.
+
+And **git** underneath all of it, which I said in Part 1 is an undo button with a
+diary. When an agent is moving fast, being able to see exactly what changed
+between working and broken is most of debugging.
+
+## The failure that should change how you think about CI
+
+This is my favourite bug on this site, because it is the one that proves the
+whole point.
+
+For a long time, every automated check passed. The performance and SEO audit
+scored a perfect **100 on SEO**, on every page, run after run.
+
+Meanwhile every single page on the site was telling search engines it was a
+duplicate of the homepage, on a domain that was not even production.
+
+The cause was a small inheritance rule. The root layout declared a canonical URL,
+which is the tag that tells a crawler "this is the real address of this page".
+The framework merges parent settings into children, so all ten routes inherited
+the homepage's canonical. On a preview domain.
+
+The audit tool checked that a canonical existed and parsed. It did not check that
+it pointed anywhere sensible. So the score was 100 and the site was, as far as
+search engines were concerned, one page repeated ten times on the wrong host.
+
+The same commit that fixed it found something worse. Whole pages were being sent
+from the server **invisible**, at zero opacity, waiting for JavaScript to reveal
+them. Thirty six elements across the site. A crawler that does not run JavaScript
+saw a blank page. Again, every check was green.
+
+**What you can copy:** a green pipeline tells you the checks you thought to write
+are passing. It says nothing about the checks you did not think to write. When
+your objective becomes "make CI green" rather than "make the thing correct", you
+have quietly swapped the goal for its shadow.
+
+That fix is now guarded by an actual test. It fetches ten routes and asserts the
+server HTML contains no content hidden at zero opacity. It also asserts the
+scroll animations still work, because the obvious fix for the first thing breaks
+the second, and a test that only guards half of a trade-off invites you to
+destroy the other half.
+
+## The failure I caused this week
+
+Fifteen consecutive red builds. The email said "all jobs have failed". I assumed
+a performance regression.
+
+It was not. The audit runs against a list of real URLs, and two of them had
+stopped existing because of content changes I made. One post had been
+unpublished, so its URL now returned 404. One tag page had been emptied by a
+change limiting posts to two tags each, so it redirected.
+
+The audit tool treats a 404 as a hard error and aborts the entire run before
+checking a single budget. Which is why the failure message said nothing
+whatsoever about performance, and why I spent the first few minutes looking in
+completely the wrong place.
+
+The investigation is the interesting bit, and it is a shape worth stealing:
+
+```text
+   symptom
+     "all jobs failed"
+   read logs
+     a 404, hard error
+   which URL?
+     the unpublished post
+   when?
+     last green run was the
+     commit before I
+     unpublished it
+   root cause
+     the URL list points at
+     content that can retire
+```
+
+Note the "when". Comparing the last good run against the first bad one narrowed a
+vague failure to an exact commit in about a minute. That is git as a debugging
+tool, not just a backup.
+
+The fix swapped in URLs that are published and expected to stay that way. But
+before choosing, I measured. The obvious replacement was my longest article, and
+it would have been a bad choice: it scores well but its blocking time sits at
+240ms against a 300ms ceiling, and the CI machine measures noticeably slower than
+my laptop. I would have swapped one red build for another. The URLs I picked
+measure 144ms and 50ms, with real headroom.
+
+**What you can copy:** when you fix a broken check, verify the fix under the
+conditions the check actually runs in. Not the conditions that are convenient.
+
+## Calibrating against reality, not against your laptop
+
+That lesson had already been learned on this site once, expensively.
+
+One page is a genuine outlier for performance. When the budget was first written,
+it was set from a local measurement: the page blocked for 433ms on my machine.
+
+On the CI runner, the same commit produced **2151ms, then 649ms, then 676ms**.
+
+The first number is a cold machine, which is exactly what taking the median of
+three runs exists to absorb. But even the median landed around 650ms, far above
+the local figure. A budget of 433 would have failed constantly for no real
+reason, and a check that cries wolf gets ignored, at which point you have all the
+cost and none of the protection.
+
+The ceiling is now 800ms: above the runner's real median with room for a bad day,
+and still far enough below the broken-page figure that a genuine regression
+fails.
+
+## Two failures that were completely silent
+
+The worst failures do not go red. They report success.
+
+**The syndication script did nothing for weeks.** It copies posts to another
+platform. It read its credentials straight from the process environment, but a
+plain script does not automatically load the local environment file the way the
+web framework does. So every platform reported "key is not set", the run
+completed, and the output was indistinguishable from a successful dry run. The
+credentials had been sitting there the whole time.
+
+**Then a worse version of the same thing.** One platform threw an error because
+the account lacked a paid plan. That exception aborted the program before it
+saved its state file. Which mattered, because by then it had already published to
+a different platform, irreversibly. The publish happened and nothing recorded it,
+which is precisely how you end up with duplicates later.
+
+The fix makes each platform fail independently, writes state regardless, and
+exits non-zero with a summary of what failed.
+
+**What you can copy:** ask of every automated job, "what does failure look like
+here?" If the answer is "the same as success", that is the bug, and it is more
+dangerous than a crash.
+
+## When the ground moves underneath you
+
+Two more, quickly, because they are the same lesson.
+
+A commit fixes a wrong model identifier, one incorrect string that made the whole
+chat feature fail silently. Another moves off a model the provider had retired
+onto its replacement.
+
+Neither was a coding mistake in the ordinary sense. The first was a typo in a
+value nothing validates. The second was the outside world changing while the code
+stood still.
+
+**Models are a dependency that expires.** Treat them like one.
+
+## How a bug becomes something you never repeat
+
+This is the part I care most about, and it is the same idea as the documentation
+argument in the data science piece: knowledge that lives only in somebody's head
+is a single point of failure.
+
+```text
+   bug
+    ↓
+   understand it properly
+    ↓
+   encode it: a test, rule,
+   check or comment
+    ↓
+   the system remembers,
+   not you
+```
+
+The invisible-content bug became a test that fails if it recurs. The performance
+budget carries a long comment explaining that the numbers are calibrated on the
+CI machine, with the three measured figures written down, so the next person does
+not "helpfully" tighten it back to laptop speed. After this week's failure I
+added a comment on the URL list saying that retiring content breaks the build
+here, because that failure is silent in a file nobody thinks to open.
+
+A comment is a weak control compared to a test. But the alternative was nothing,
+and the reasoning behind a number is exactly what gets lost first.
+
+**What you can copy:** after you fix something, ask what would have caught it.
+Then add that. Half the time it is a test. Sometimes it is a permission. Often it
+is three sentences of explanation next to a number.
+
+## What an agent does with all this
+
+Here is why the loop matters more when an agent is doing the typing.
+
+An agent can generate a plausible fix in seconds. Without feedback it will
+confidently generate the next plausible fix, and the next, and you will not find
+out which one was right until production does.
+
+With feedback, the agent runs the build and reads the error. Runs the tests and
+sees which failed. Reads the CI log and finds `ERRORED_DOCUMENT_REQUEST`. It is
+the same loop from Part 1, just with more layers of truth attached.
+
+The role that leaves for me is not typing. It is deciding what "correct" means,
+which is precisely what none of these checks can tell you. Every failure above
+was caught by a check somebody chose to write, or missed because nobody had.
+
+## Where this goes next
+
+At this point the agent can act, knows my content, is contained, and can find out
+when it is wrong. That is a complete working setup, and for most projects it is
+genuinely where you should stop.
+
+But there is a next step, and it is oversold everywhere. Multiple agents. Loops
+that run without you. Orchestration. Routing between models.
+
+Some of that is real and useful. Some of it is expensive theatre that turns one
+clean feedback loop into five noisy ones.
+
+That is Part 6: what these ideas actually mean, what this project does and
+deliberately does not do, the economics nobody mentions, and where the human
+still belongs.
+
+---
+
+*Next: [Part 6: From One Agent to an Agentic System](/blog/from-one-agent-to-an-agentic-system).*
+*Previous: [Part 4: Making Agents Safe Enough to Act](/blog/agent-security-and-permissions).*

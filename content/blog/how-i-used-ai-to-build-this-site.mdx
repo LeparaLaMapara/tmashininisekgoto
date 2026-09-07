@@ -1,15 +1,17 @@
 ---
-title: "How I Actually Used AI to Build This Site (It's Not What You Think)"
-seoTitle: "How I Used AI to Build This Site"
+title: "The Practical Roadmap to Building With AI Agents, Part 1: From Chat to Agent"
+seoTitle: "Building With AI Agents Part 1: From Chat to Agent"
 date: 2026-03-24
+updated: 2026-09-07
 published: true
 tags: [ai agents, software engineering]
-summary: Most people use AI like a search engine. I used it like a senior engineer sitting next to me. Here's how I built a full production website without knowing Next.js, and what "vibe coding" actually looks like when you do it right.
+summary: "Most people use AI like a vending machine. I used it like a senior engineer sitting next to me, and built this whole site that way without knowing Next.js. Part one of six: what actually separates a chat window from an agent, and how to start."
 ---
 
-# How I Actually Used AI to Build This Site (It's Not What You Think)
+# The Practical Roadmap to Building With AI Agents, Part 1: From Chat to Agent
 
-*No hype. Just what actually happened.*
+*Part 1 of 6. The whole series uses one running example: this website, and the
+real git history behind it.*
 
 ---
 
@@ -17,31 +19,81 @@ summary: Most people use AI like a search engine. I used it like a senior engine
 >
 > I thought about it. Then I realised the best answer wasn't a paragraph. It was this entire website. So here's the story.
 
+This is the first of six posts. By the end of the series you should be able to
+go from chatting with an AI to running an agent that can touch a real codebase,
+use real tools, read your real content, and be stopped from doing anything
+stupid. Every example comes from this site's repository, including the parts
+that broke.
+
 ---
 
-## Let's Start With What Most People Do
+## Let's start with what most people do
 
 I'm not judging. I've done it too. But let's be honest about the pattern.
 
-You open ChatGPT. You type something like *"Build me a portfolio website."* You get a wall of code. You copy it. You paste it. Something breaks. You go back and say *"Fix this error."* You repeat that about fifteen times. You end up with something that kind of works but you have no idea how. You can't change it. You can't fix it. You're stuck.
+You open a chat window. You type *"Build me a portfolio website."* You get a wall
+of code. You copy it. You paste it. Something breaks. You go back and say *"Fix
+this error."* You repeat that about fifteen times. You end up with something that
+kind of works but you have no idea how. You can't change it. You can't fix it.
+You're stuck.
 
-I call this **"vending machine" mode.** You put in a request, you get something out, and you have no idea what happened inside the machine. The moment it gives you the wrong thing, you're lost.
+I call this **vending machine mode.** You put in a request, you get something
+out, and you have no idea what happened inside the machine. The moment it gives
+you the wrong thing, you are lost.
 
-That works for small stuff. Need a quick script? A one-liner? Fine. But building a real product? That requires something completely different.
+That works for small stuff. Need a quick script? Fine. Building a real product?
+That needs something else.
 
----
+## So what actually is an agent?
 
-## Here's What I Did Instead
+Here is the difference, in one line.
 
-I built this site, the one you're reading right now, using AI. But I didn't start by asking for code. I started by telling the AI what I wanted to *experience*.
+A chat window can only talk. An agent can **do things and see what happened.**
 
-And that's the difference most people miss.
+That is genuinely most of it. A chat window takes your text and returns text. An
+agent has a loop: it can take an action, look at the result, and decide what to
+do next.
 
----
+```text
+CHAT
+   you ask
+   it answers
+   you copy, paste
+   it breaks
+   you retype
 
-## Step 1: I Told the AI What I Wanted, Not How to Build It
+AGENT
+   you give an objective
+     ↓
+   it acts
+     ↓
+   it sees the result
+     ↓
+   it adjusts
+     ↺  until done
+```
 
-I didn't know I was going to use Next.js. I didn't pick React. I didn't choose Tailwind. The AI recommended all of that. But here's the important part. I knew exactly what I wanted the *result* to look like.
+The loop is the whole thing. It is why an agent can run your build, read the
+error, fix the file, and run the build again, while a chat window can only tell
+you what the error probably means.
+
+Three words you will keep meeting, in normal English:
+
+**Context** is everything the model can see when it answers. Your question, your
+files, the error message, the instructions you gave it earlier.
+
+**Context window** is how much of that it can hold at once. Think of it as desk
+space, not memory. When the desk is full, something falls off the edge.
+
+**Tokens** are how that space is measured. Roughly, a token is a chunk of a word.
+You pay per token, and you run out of desk per token, which is why "just paste
+the whole codebase in" is not a strategy.
+
+## Step 1: I told it what I wanted, not how to build it
+
+I didn't know I was going to use Next.js. I didn't pick React. I didn't choose
+Tailwind. The agent recommended all of that. But I knew exactly what I wanted the
+*result* to be.
 
 I said things like:
 
@@ -49,257 +101,162 @@ I said things like:
 
 > "I need a blog where I can write technical posts with code examples and math equations. I want the posts to just be files I write in a folder. No database for the blog."
 
-> "I want an AI chatbot on the site that sounds like me. It should know about my career, my projects, my philosophy. It should answer questions the way I would answer them."
+> "I want an AI chatbot on the site that sounds like me. It should know about my career, my projects, my philosophy."
 
-Notice what I didn't say. I didn't say "use Next.js." I didn't say "use MDX." I didn't say "use the Vercel AI SDK." I described what I wanted the thing to *do* and what it should *feel like*.
+Notice what I did not say. I did not say "use Next.js". I did not say "use MDX".
+I described what I wanted the thing to do and how it should feel.
 
-The AI came back and said something like: "For what you're describing, I'd recommend Next.js 15 with the App Router. It handles both static pages and dynamic API routes, which you need for the blog and the chatbot. For the blog, MDX would let you write posts as files with code blocks and math. For the chatbot, the Vercel AI SDK with Claude would give you streaming responses."
+It came back with: Next.js with the App Router, because I needed both static
+pages and dynamic API routes. MDX for the blog, so posts stay as files with code
+blocks and maths. The Vercel AI SDK for streaming chat responses.
 
-I said yes. And we started building.
+I said yes, and we started building.
 
-**The lesson here is simple.** You don't need to know the tools. You need to know what you want to build. The AI has all the technical knowledge. What it doesn't have is your vision.
+**You don't need to know the tools. You need to know what you want.** The model
+has the technical knowledge. What it does not have is your intent.
 
----
+## Step 2: I asked questions instead of giving orders
 
-## Step 2: I Asked Questions Instead of Giving Orders
+This is the part nobody teaches. The secret is not better prompts. It is better
+*questions*.
 
-This is the part nobody teaches about using AI. The secret isn't better prompts. It's better *questions*.
+"Build me X" is an order, and an order without context produces something
+generic. So I asked:
 
-Most people say: "Build me X." That's an order. And like any order given without context, the result is generic.
+> "What's the best way to structure this so I can add new pages without rewriting the layout?"
 
-I asked questions:
+> "If I want the chatbot limited to 10 messages per person per day, where should that logic live? Client or server?"
 
-> "What's the best way to structure this so I can add new pages easily without rewriting the layout?"
+> "What happens when the blog gets to 50 posts? Will the build slow down?"
 
-> "If I want the chatbot to have a limit of 10 messages per person per day, where should that logic live? Client or server?"
+Each question taught me something, and each answer shaped the architecture. I was
+not blindly accepting code. I was having a conversation about design. The agent
+explained the trade-offs, I made the decisions, it wrote the code.
 
-> "What happens when the blog gets to 50 posts? Will the build slow down? How do we handle that?"
+It is like working with a builder. You do not need to know how to pour concrete.
+You do need to say "three bedrooms, open kitchen, living room facing the garden".
 
-Each question taught me something. And each answer shaped the architecture. I wasn't blindly accepting code. I was having a conversation about *design*. The AI explained the trade-offs, I made the decisions, and then the AI wrote the code.
+## Step 3: I built one room at a time
 
-Think of it like working with a contractor to build a house. You don't need to know how to pour concrete. But you do need to say "I want three bedrooms, an open kitchen, and the living room should face the garden." The contractor knows *how* to build it. You know *what* to build.
+Another common mistake: trying to get the whole thing in one prompt. "Build me a
+complete portfolio with a blog, contact form, animations and an AI chatbot."
+That is asking someone to build your house in an afternoon.
 
-That's exactly how this works.
+I built the layout first. Navigation, footer, background animation. Tested it.
+Committed it to git. Then the homepage. Then about, work, blog.
 
----
+Each piece I reviewed. "Why this approach and not that one?" "What happens on a
+phone?" And each working piece got committed, which matters more than it sounds.
+Git is an unlimited undo button that also keeps a diary. When an agent is writing
+code fast, the ability to say "go back to the last version that worked" is the
+difference between a bad hour and a lost day.
 
-## Step 3: I Built Piece by Piece, Not All at Once
+## Why one giant prompt is never enough
 
-Here's another mistake most people make. They try to build the whole thing in one prompt. "Build me a complete portfolio with a blog, contact form, animations, and AI chatbot." That's like asking someone to build your entire house in one afternoon. The result will be messy.
+Here is the thing that took me longest to internalise.
 
-I built one room at a time.
+The model does not know your project. It knows programming. Those are very
+different, and the gap between them is context.
 
-First, the layout. The navigation bar, the footer, the background animation. I tested it. Made sure it worked. Committed the code to git (that's how developers save their progress, like checkpoints in a game).
+When I started, I would explain the same things every session: this is a Next.js
+site, posts are MDX files in `content/blog`, do not use a database for the blog.
+Every time. That is your desk space going on repetition instead of work.
 
-Then the homepage. The hero section with the typewriter effect and the glowing particles.
+Two things fix it. **Project instructions**, a file the agent reads every time,
+so the standing rules live somewhere permanent instead of in your typing. And
+**repository context**, letting the agent read the actual code rather than
+guessing from your description.
 
-Then the about page. Then the work page. Then the blog.
+This is why an agent that runs in your terminal, in your project, beats a chat
+window in a browser. Not because the model is better. It is the same model. It
+can just see more of the truth.
 
-Each piece, I reviewed. Each piece, I asked questions. "Why did you use this approach instead of that one?" "What happens if someone opens this on a phone?" "Can we make this animation smoother?"
+## Feedback is the whole trick
 
-The AI would explain, adjust, and improve. Like a real collaboration.
+The single biggest difference between someone who gets good results and someone
+who gets frustrated is whether the agent can find out that it was wrong.
 
----
+If it writes code and nobody runs it, you have a very confident guess. If it
+writes code and runs the build, the build fails, and it reads the failure, you
+have engineering.
 
-## The AI Chat Agent (My Favourite Part)
-
-This is where it gets interesting. The site has a chatbot where you can ask questions about my work and an AI version of me responds. Not a generic bot. It knows my career history, my projects, my opinions.
-
-Here's how we built it, explained simply:
-
-**The brain.** I wrote a document describing who I am, what I've done, how I speak, and what I care about. This becomes the "system prompt," which is just instructions the AI follows when responding. Think of it like giving a new employee a detailed briefing on day one.
-
-**The pipeline.** When you type a question on the site, it goes to a server (not your browser, for security). The server sends your question plus that briefing document to Claude (the AI), and Claude streams back a response word by word.
-
-**The protection.** I didn't want someone (or some bot) to send thousands of messages and rack up a huge bill. So we built a rate limiter. It tracks how many messages each visitor sends per day using a database. Ten messages per day, per person. After that, you're done until tomorrow.
-
-The AI built all of this. But I made the design decisions. How many messages per day? What personality should the bot have? What should it refuse to answer? Those are human decisions.
-
----
-
-## MCP: The Part Nobody Talks About
-
-Now let me explain something that most "vibe coding" tutorials completely ignore. It's called MCP, which stands for **Model Context Protocol**. I'll explain it simply because it's actually a game-changer once you understand it.
-
-Think about how you normally use AI. You chat with it in a browser window. You can type text to it and it types text back. That's it. It can't see your files. It can't check your website. It can't look at your database. It's like talking to a very smart person who is locked in a room with no windows.
-
-MCP is the window.
-
-MCP lets the AI connect to real tools and services. When I set up the **Vercel MCP**, it gave the AI direct access to my deployment platform. The AI could check if my site was live, read build logs, see which deployments failed, and even trigger new deployments. Without MCP, I would have had to copy and paste error messages between the Vercel website and my AI conversation. With MCP, the AI just checks directly.
-
-I also use a **Supabase MCP**. That connects the AI to my database. So when we needed to create a new table for rate limiting, the AI could do it directly instead of me having to open the Supabase dashboard, find the SQL editor, and run the query manually.
-
-Think of it this way. Without MCP, using AI is like having a phone call with an expert who can only hear your voice. With MCP, it's like having that expert sitting at your desk, looking at your screen, and using your tools.
-
-Here's what my MCP setup looks like. It's just a small configuration file:
-
-```json
-{
-  "mcpServers": {
-    "vercel": {
-      "command": "npx",
-      "args": ["vercel-mcp@latest"],
-      "env": { "VERCEL_API_TOKEN": "your-token-here" }
-    }
-  }
-}
+```text
+   change
+     ↓
+   run it
+     ↓
+   read the result
+     ↓
+   fix
+     ↺
 ```
 
-That's it. That one file gives the AI the ability to manage my entire deployment pipeline. Most people don't know this exists. It's the difference between AI that talks about your project and AI that works on your project.
+That loop is the spine of this whole series. Everything in the next five parts
+is either giving the agent something to act on, or giving it a way to find out
+whether the action worked.
+
+## The framework I use for knowing what to ask
+
+I call it the Mom Test. If you can explain what you want to your mother, you can
+explain it to an agent.
+
+**Don't say:** "Implement a rate-limited streaming API route with Supabase-backed
+IP tracking."
+
+**Say:** "I want the chatbot to only allow 10 messages per person per day so
+nobody runs up my bill."
+
+The agent translates plain language into technical decisions. That is its job.
+You bring the what and the why.
+
+Four kinds of question that consistently work:
+
+**Vision:** "I want it to feel like X."
+
+**Behaviour:** "What happens when someone does X?"
+
+**Protection:** "What if someone abuses this? How do I avoid a huge bill?"
+
+**Quality:** "Will this work on phones? What if I have 1000 posts?"
+
+You do not need to ask about React hooks or server components. You need to know
+what you are building and care about getting it right.
+
+## What I actually contributed
+
+Could I have built this without AI? Technically yes, in months rather than days.
+
+Could it have built this without me? No. It would have produced a generic
+template that looks like every other portfolio on the internet.
+
+My side: the vision, the decisions, the quality bar, and the debugging context.
+Its side: every line of code, every technical recommendation, and knowledge of
+hundreds of tools I have never used.
+
+The combination is the point. Not AI alone. Not me alone.
+
+## Where this breaks down
+
+Everything above got me a working site. Then I hit a wall, and it is the wall
+everyone hits.
+
+The product does not live only in source files.
+
+The database is somewhere else. The hosting platform is somewhere else. The
+deployment logs are somewhere else. So the loop kept breaking at the same place:
+the agent would make a change, and then I would become the courier, copying
+error messages from a browser tab back into the terminal by hand.
+
+An agent that cannot see the result of its own actions is back to being a chat
+window with extra steps.
+
+That is Part 2. How you give an agent hands, what it can safely touch, and why
+the moment it becomes genuinely useful is also the moment it becomes genuinely
+dangerous.
 
 ---
 
-## The Hidden Technicalities of "Vibe Coding"
+*Next: [Part 2: Giving an Agent Hands](/blog/agent-tools-and-integrations).*
 
-People throw around the term "vibe coding" like it's just chatting with AI and hoping for the best. But there's a lot happening under the hood that most people never see. Let me break it down.
-
-### Git: Your Safety Net
-
-Every change I make gets saved in something called git. Think of it like an unlimited undo button that also keeps a diary. If the AI writes something that breaks the site, I can go back to the last version that worked. Without git, one bad AI response could destroy hours of work. Most vibe coders don't use git. That's like building a sandcastle with no photos. One wave and everything is gone.
-
-### Environment Variables: Keeping Secrets Safe
-
-The site uses multiple services: Claude for the chatbot, Supabase for the database, GitHub for the code, Vercel for hosting. Each one requires a secret key, like a password. These keys live in a special file called `.env.local` that never gets uploaded to the internet. If you put your API keys directly in your code (which many beginners do), anyone who sees your code can use your accounts and run up your bill. The AI knows this and handles it correctly, but only if you're using a proper development setup, not just copying code into a browser.
-
-### The Build Process: Why Your Code Doesn't Just "Run"
-
-When I write code, it doesn't go directly to the website. It goes through a build process. Think of it like cooking. The raw ingredients (my code) get transformed into a finished meal (the website). During this process, things can go wrong. A typo in one file can break the entire build. A dependency might have a security vulnerability. The AI helps me debug these issues, but they only show up during the build, not while writing the code. This is why "it works on my computer" is the most famous joke in software engineering.
-
-### Streaming: Why the Chatbot Responds Word by Word
-
-When you chat with the AI on my site, you see the response appear word by word, not all at once. This is called streaming. Without it, you'd stare at a blank screen for several seconds and then get a wall of text. With streaming, it feels like a real conversation. Setting this up requires the server to keep a connection open to the AI service and forward each word as it arrives. It's a small detail, but it completely changes how the chatbot feels to use.
-
----
-
-## The Debugging (Where Most People Give Up)
-
-Let me tell you about the moments that would have stopped most people.
-
-### The Site Wouldn't Go Live
-
-After building everything, I deployed to Vercel. The build succeeded. Everything compiled. And then at the very last step, Vercel said no:
-
-```
-Error: Vulnerable version of next-mdx-remote detected (5.0.0).
-Please update to version 6.0.0 or later.
-```
-
-The blog rendering library had a security issue. I'd already fixed it on my development branch, but the main branch (the one Vercel deploys from) still had the old version. The AI helped me trace the problem: check the version in the lockfile, check what's actually installed, check which branch Vercel is building. Then we merged the fix and redeployed.
-
-### The Chatbot Was Silent
-
-After deployment, the chatbot didn't respond at all. Nothing. I checked the server logs:
-
-```
-Could not find the table 'public.chat_rate_limits' in the schema cache
-```
-
-The rate limiting table didn't exist in the production database. It worked locally because my local environment was different. The AI used the Supabase MCP to create the table directly. Problem solved in about thirty seconds.
-
-### The Wrong Model Name
-
-The chatbot was calling a model called `claude-haiku-4-5-20241022`. That model doesn't exist. The correct name is `claude-haiku-4-5-20251001`. A tiny difference in a string that makes the whole feature silently fail. The AI caught it and fixed it.
-
-These three bugs happened in the space of one session. Each one would have stopped a typical "vibe coder" dead in their tracks. But because I was working with AI in a real development environment (terminal, git, MCP, proper error logs), each one was diagnosed and fixed in minutes.
-
----
-
-## "But How Do You Know What Questions to Ask?"
-
-This is the question behind the question. And the honest answer is: you don't need technical knowledge. You need *clarity about what you want*.
-
-Here's my framework. I call it the "Mom Test." If you can explain what you want to your mom, you can explain it to AI.
-
-**Don't say:** "Implement a rate-limited streaming API route with Supabase-backed IP tracking."
-
-**Say:** "I want the chatbot to only allow 10 messages per person per day so nobody runs up my bill."
-
-The AI translates your plain language into technical decisions. That's literally its job. You bring the "what" and the "why." The AI brings the "how."
-
-Here are the types of questions that work:
-
-**Vision questions:** "I want it to feel like X" or "When someone visits, they should see Y."
-
-**Behaviour questions:** "What happens when someone does X?" or "How should it handle Y?"
-
-**Protection questions:** "What if someone tries to abuse this?" or "How do I make sure I don't get a huge bill?"
-
-**Quality questions:** "Will this work on phones?" or "Is this fast enough?" or "What if I have 1000 blog posts?"
-
-You don't need to ask about React hooks, server components, or API routes. The AI handles all of that. You just need to know what you're building and care about getting it right.
-
----
-
-## What We Actually Built
-
-Let me show you the scope of what came out of this process:
-
-**11 pages:** Home, About, Work, Blog, Blog Post, Publications, Talks, Courses, AI Chat, Resume, Tags
-
-**6 API routes:** AI Chat (streaming), GitHub activity feed, Newsletter subscription, Course registration, Waitlist tracking, Dynamic social images
-
-**25+ custom components:** Neural network animation, bento grid layout, tech stack display, GitHub calendar, chat interface, blog renderer, course cards, magnetic buttons, scroll animations, keyboard command palette
-
-**Infrastructure:** Next.js 15, Tailwind CSS, Supabase database, Vercel hosting, Claude API for the chatbot, MDX for blog content, MCP for deployment management
-
-**157 files** created or modified. The site builds in 24 seconds and deploys in about a minute.
-
----
-
-## The Real Difference
-
-Could I have built this without AI? Technically, yes. It would have taken weeks, probably months.
-
-Could AI have built this without me? No. It would have built a generic template that looks like every other portfolio on the internet.
-
-Here's what I actually contributed:
-
-- The vision. "I want a Neural Observatory, not a portfolio template."
-- The decisions. "10 messages per day. Dark theme. These specific colors. This personality for the chatbot."
-- The quality bar. "That animation is too fast. The font feels wrong. The chatbot is too formal."
-- The debugging context. "It's not working. Here's the error. Here's what I see in the logs."
-
-And here's what the AI contributed:
-
-- Every line of code.
-- Every technical recommendation.
-- Every bug fix.
-- Knowledge of hundreds of tools, frameworks, and patterns I've never used.
-
-The combination is what makes this work. Not AI alone. Not me alone. A conversation between someone who knows what they want and something that knows how to build it.
-
----
-
-## How to Start Doing This Yourself
-
-If you've read this far and you're thinking "I want to try this," here's the simplest path:
-
-1. **Get Claude Code** (or a similar AI coding tool that runs in your terminal, not just a chat window). The terminal access is what lets AI actually work on your project.
-
-2. **Start with what you want, not what you know.** Describe the experience. "I want a blog where I just drop in files and they become posts." The AI will figure out the stack.
-
-3. **Ask questions, don't give orders.** "What's the best way to do this?" is always better than "Do this."
-
-4. **Build one piece at a time.** Homepage first. Then about page. Then blog. Test each piece before moving on.
-
-5. **Set up MCP early.** Connect the AI to your hosting platform and database. This turns it from an advisor into a collaborator.
-
-6. **Use git.** Save your progress after each working piece. This is your safety net.
-
-7. **When things break, read the error message and share it with the AI.** Don't panic. Don't start over. Debug together.
-
-That's it. You don't need to know JavaScript. You don't need to know React. You don't need a computer science degree. You need clarity about what you're building and patience to build it piece by piece.
-
----
-
-## The Meta Part
-
-This blog post itself was written in collaboration with AI. It's an `.mdx` file sitting in a folder on my computer. When I push it to GitHub, Vercel automatically builds the site and publishes it. You're reading it on the same platform whose creation story it tells.
-
-The best way to answer "how do you use AI differently?" is not to explain it. It's to show it.
-
-Here it is. You're looking at it.
-
----
-
-*Built with Claude Code. Deployed on Vercel. Written by a human who knows what he wants to build.*
+*If you want the argument for why this changes the job itself rather than just
+the tooling, that is in [The Modern Data Scientist](/blog/modern-data-scientist-roadmap).*

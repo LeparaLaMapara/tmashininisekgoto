@@ -1,0 +1,274 @@
+---
+title: "The Practical Roadmap to Building With AI Agents, Part 6: From One Agent to an Agentic System"
+seoTitle: "Building With AI Agents Part 6: Loops, Subagents and Bounded Autonomy"
+date: 2026-09-07
+published: true
+tags: [ai agents, software engineering]
+summary: "Loops, subagents, orchestration and routing, explained without the hype, plus the economics nobody mentions. Part six of six: what this site actually runs, what it deliberately does not, and why more agents is often the wrong answer."
+---
+
+# The Practical Roadmap to Building With AI Agents, Part 6: From One Agent to an Agentic System
+
+*Part 6 of 6. Previous: [Part 5: Making Agents Reliable Enough to Ship](/blog/agent-reliability-and-ci).*
+
+---
+
+Five parts in, this site has an agent that can act on real systems, answer from
+my real writing, is contained by real boundaries, and can find out when it is
+wrong.
+
+This is the part where people start adding more agents.
+
+I want to be useful rather than fashionable here, so I will do two things. Explain
+what these ideas actually mean in normal English. And be specific about which of
+them this project uses, which it does not, and why. Most of this section is
+honestly in the second category, and I would rather say so than imply an
+architecture I do not have.
+
+## Loops versus workflows
+
+The most important distinction, and the least discussed.
+
+A **workflow** is a fixed sequence you decided in advance. Step one, then two,
+then three. Same path every time.
+
+A **loop** is an agent deciding what to do next based on what just happened. It
+keeps going until the goal is met or it hits a limit.
+
+```text
+WORKFLOW
+   step 1
+     ↓
+   step 2
+     ↓
+   step 3
+     ↓
+   done
+
+LOOP
+   look at the situation
+     ↓
+   decide what is next
+     ↓
+   do it, observe
+     ↓
+   done? if not, ↺
+```
+
+The trap is assuming the loop is the more advanced option and therefore the
+better one. It is more flexible and less predictable. Those are the same
+property.
+
+**Use a workflow when you know the steps.** Publishing a post is a workflow: build
+it, check it, deploy it. There is no judgement required, and a fixed sequence is
+cheaper, faster and easier to debug.
+
+**Use a loop when the path depends on what you find.** Debugging is a loop,
+because you cannot write the steps in advance without already knowing the answer.
+
+This site runs both, and neither is exotic. A weekly scheduled job syncs my
+publications. Another job runs on every push, checking performance and
+accessibility budgets. Those are workflows, and they are workflows because the
+steps genuinely are fixed. The loop is me and the agent, debugging together, as
+in Part 5.
+
+## Subagents, and the cost people skip
+
+A **subagent** is an agent an agent can call, usually with a narrower job and its
+own fresh context.
+
+The real reason to use one is not division of labour. It is **context economy.**
+Remember the desk from Part 1. If the main agent has to read forty files to
+answer one question, its desk fills with forty files it no longer needs. Hand
+that to a subagent and only the answer comes back. The search happens somewhere
+else and you keep your space.
+
+That is a genuinely good reason. Here is the part that gets skipped.
+
+Every subagent is a separate conversation with a separate model call and a
+separate context to fill. Five subagents is not one task split five ways. It is
+five tasks, five sets of instructions, five bills.
+
+```text
+   one agent
+     1 conversation
+
+   five subagents
+     5 conversations
+     5 x instructions
+     5 x context
+     5 x cost
+     5 x failure points
+```
+
+They can run at the same time, which helps wall clock time. They cannot share
+what they learn unless you build that, and coordinating them is real engineering
+that you now own.
+
+**This project does not use subagents.** Not because they are bad, but because I
+have one repository and one person, and the coordination cost would exceed the
+benefit. I use them elsewhere, on jobs that genuinely fan out across many files
+where only the conclusion matters.
+
+## Routing, portability and what I actually have
+
+**Model routing** means choosing between models per request. Cheap fast model for
+simple things, expensive capable model for hard things.
+
+A **gateway** sits between your code and the providers, handling routing,
+fallback when one is down, retries, and usually spend tracking.
+
+Both are real, both are useful at scale, and **this site has neither.** There is
+one model, named in one place. No router. No automatic fallback. If the provider
+has an outage, the chat feature is down until it is not.
+
+What it does have is a thin **provider interface**, which is a much smaller
+thing. I use an SDK that presents one shape across providers, and the practical
+payoff was already described in Part 2: this feature has run on more than one
+model family, and switching meant changing which provider function was called
+rather than rewriting the feature.
+
+That is portability, not a gateway. Portability means you *can* move. A gateway
+means the system moves *for you*, automatically, when something breaks. Worth
+keeping the two words apart, because vendors are highly motivated to blur them.
+
+## The economics nobody puts on the slide
+
+Multi-agent architectures are presented as more capable. They are also, always,
+more expensive along several axes at once.
+
+**More calls.** Every agent, every step, every retry is a request you pay for.
+
+**More tokens.** Each agent needs instructions and context. Overlap is duplicated
+spend.
+
+**More latency.** Agents that wait on each other add up, and sequential steps are
+sequential.
+
+**More failure surfaces.** Five agents and an orchestrator is six things that can
+fail, plus the coordination between them.
+
+**More to debug.** In one loop, you read one transcript. In an orchestrated
+system, you are reconstructing a distributed system from logs, which is a genuine
+step up in difficulty.
+
+None of that means do not do it. It means **a single well designed agent is often
+the better architecture**, and "we added more agents" is not a result. The
+question is always what the extra complexity bought, measured against what it
+costs to run and to understand.
+
+I will be honest about a gap here too. **This project does not track token spend
+or cost per feature.** There is no dashboard, no per-request accounting. What
+there is instead is a hard cap: ten messages per visitor per day, twenty per
+conversation. That bounds the bill without measuring it. It is the right control
+for a personal site and it would be nowhere near enough for a product.
+
+## Deterministic and probabilistic, and where to put the line
+
+This is the idea I would keep if I could keep only one.
+
+A model is **probabilistic.** Same input, possibly different output. Usually
+sensible, occasionally not.
+
+Most of your system should be **deterministic.** Same input, same output, every
+time. Databases, permissions, tests, deployments.
+
+Good agentic engineering is mostly about **putting the probabilistic part inside
+a deterministic box.**
+
+Everything in this series is an example. The database rules from Part 4 do not
+care what the model decided. The tests from Part 5 do not care how the code was
+written. The rate limit does not negotiate. In each case, something that cannot
+be argued with surrounds something that can.
+
+```text
+  ┌──────────────────────┐
+  │ deterministic        │
+  │ permissions, tests   │
+  │  ┌────────────────┐  │
+  │  │ probabilistic  │  │
+  │  │ the model      │  │
+  │  └────────────────┘  │
+  └──────────────────────┘
+```
+
+Two smaller patterns from this site worth copying, both boring on purpose. The
+reindexing endpoint is **idempotent**, so running it twice is harmless, which
+matters when something might retry. And retrieval **fails into a static
+fallback** rather than an error, so the assistant degrades to less specific
+instead of falling over.
+
+## Bounded autonomy
+
+Autonomy is not a switch. It is a dial, and it moves per task.
+
+The useful question is not "can the agent do this by itself" but **"what does it
+cost me if it is wrong, and how quickly will I find out?"**
+
+Cheap to reverse and fast to detect, like a formatting change caught by a test?
+Let it run. Expensive and slow to detect, like a schema migration on production
+data? A human looks first. Not because the agent is untrustworthy, but because
+that is where the cost of being wrong is concentrated.
+
+That is why the permissions file from Part 2 matters more than any prompt. It is
+where the dial actually lives.
+
+## The progression, and where the human sits
+
+```text
+   chat
+     ↓ it can act
+   agent
+     ↓ it knows your work
+   + context
+     ↓ it reaches systems
+   + tools
+     ↓ it cannot do damage
+   + boundaries
+     ↓ it learns it is wrong
+   + feedback
+     ↓ only if needed
+   specialised agents
+     ↓ with a clear reason
+   orchestrated system
+     ↓
+   bounded autonomy
+```
+
+Most people jump from the top straight to the bottom. Every step in between is
+what makes the bottom survivable, and honestly, a lot of good work never needs to
+leave the middle.
+
+The goal was never to remove the engineer. It is to stop the engineer being the
+manual execution engine for every step.
+
+What I still own, and own more deliberately than before: the intent, the
+architecture, the constraints, the permissions, the risk, the evaluation, the
+trade-offs, and the judgement about what "correct" means. What the agent
+increasingly owns is the execution.
+
+That is a genuinely better division of labour, and it is uncomfortable at first,
+because a lot of us built our identity on being the fastest executor in the room.
+
+## Where to start
+
+If you have read all six parts and want to actually do this:
+
+Get a coding agent that runs in your terminal rather than a browser tab. Describe
+what you want, not how to build it. Ask questions instead of giving orders. Build
+one piece at a time and commit each working piece. Connect one tool, a read-only
+one, and see what changes. Keep your permissions narrow and boring. Add a test
+the first time something breaks. And only reach for more agents when you can say
+out loud what the extra complexity is buying.
+
+You do not need to know the framework. You need to know what you are building,
+and you need a way to find out when it is wrong.
+
+If you want the argument for why this reshapes the job rather than just the
+tooling, that is [The Modern Data Scientist](/blog/modern-data-scientist-roadmap).
+This series was the how. That one is the why.
+
+---
+
+*This is the final part. Start at [Part 1: From Chat to Agent](/blog/how-i-used-ai-to-build-this-site).*
+*Previous: [Part 5: Making Agents Reliable Enough to Ship](/blog/agent-reliability-and-ci).*
