@@ -76,10 +76,21 @@ So I introduced [Confluence](https://www.atlassian.com/software/confluence) and 
 it myself, starting with the onboarding guide I wished I had received: every tool we
 use, where to find it, how to get access, which entitlements to request, which
 regulations you must complete before you can do this work in a regulated environment.
+
+That was not a filing exercise. It was aimed at the small daily friction that quietly
+eats a team. Where does this thing actually run? How is it deployed? How do I get
+access? Which database does it depend on? Who owns it? None of that should require
+finding the one person who happens to remember. And I knew people would eventually join
+us. I did not want anyone else to arrive to what I had arrived to: no handover, no map,
+and a week of asking around before you can do anything useful.
+
 Then the harder job: we went into the backyard and reverse engineered our own production
-models. Every product the business relies on got documented. What it does. How it works.
-What feeds it. Who uses it. Nobody handed us that knowledge, so we dug it out ourselves,
-because the alternative was operating systems we did not understand.
+models. These were not systems we had built. They were systems we had inherited, where
+the original reasoning was thin or simply gone. So we read the repositories and the code,
+worked out what logic each model actually applied, what data went into it, what came out,
+how often it ran, who consumed the output, and what business decision sat on the other
+end of it. Nobody handed us that knowledge, so we dug it out ourselves, because the
+alternative was operating systems we did not understand.
 
 Richard Feynman, when a historian described his notebooks as a record of his thinking,
 corrected him: the notes were not a record of the thinking, they were the thinking. That
@@ -102,6 +113,12 @@ estate under pressure.
 
 Months earlier, documentation had felt like extra work. During audit, it became
 evidence.
+
+Somewhere along the way it stopped being my project and became how the team works, which
+was the real point. The principle is easy to say and hard to hold: important knowledge
+belongs out of people's heads and somewhere the team can reach it. If something only
+works because one particular person is available that day, you do not have a system. You
+have a favour.
 
 The cost of this phase was my own evenings, and I will not pretend otherwise. Nobody
 asks for documentation. You do it because you are building something that must not
