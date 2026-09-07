@@ -102,14 +102,20 @@ module.exports = {
       startServerCommand: 'npm run start',
       startServerReadyPattern: 'Ready in',
       startServerReadyTimeout: 120000,
+      // These are real URLs, so retiring content breaks this build with a 404
+      // rather than a budget failure. That is exactly what happened: the Ubunye
+      // series was unpublished while this list still pointed at part one, and
+      // the two tag limit left /tags/mlops with no posts behind it. If you
+      // unpublish a post or empty a tag, check here. The sample post and tag
+      // should be ones that are published and expected to stay that way.
       url: [
         'http://localhost:3000/',
         'http://localhost:3000/about',
         'http://localhost:3000/work',
         'http://localhost:3000/publications',
         'http://localhost:3000/blog',
-        'http://localhost:3000/blog/ubunye-series-part1-why-convention',
-        'http://localhost:3000/tags/mlops',
+        'http://localhost:3000/blog/how-to-build-python-packages',
+        'http://localhost:3000/tags/data-science',
       ],
       // Three runs, median reported. A single run on a shared CI runner swings
       // by 10 points on performance for no reason at all.
