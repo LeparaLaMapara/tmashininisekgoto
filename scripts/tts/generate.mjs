@@ -10,7 +10,7 @@ import { readFileSync, readdirSync, existsSync, writeFileSync, mkdirSync, rmSync
 import { execFileSync } from 'child_process'
 import path from 'path'
 import matter from 'gray-matter'
-import { KokoroTTS, TextSplitterStream } from 'kokoro-js'
+import { KokoroTTS } from 'kokoro-js'
 
 const BLOG_DIR = path.join(process.cwd(), 'content/blog')
 const OUT_DIR = path.join(process.cwd(), 'public/audio')
@@ -73,15 +73,54 @@ function floatTo16BitWav(samples, sampleRate) {
   return buffer
 }
 
+/**
+ * Split text into pieces small enough for one synthesis call.
+ *
+ * Kokoro renders one utterance at a time and silently drops whatever exceeds
+ * its internal limit. No error, no warning, and the chunk still reports its
+ * full text back, so an over-long piece looks like a success and returns audio
+ * missing most of its words.
+ *
+ * Part 4 of the agent series hit this. TextSplitterStream handed the model a
+ * single 3,731 character chunk, which produced 26 seconds of audio: 142
+ * characters per second against a median of 14. The article narrated in 5.3
+ * minutes instead of roughly 9.5, with whole paragraphs absent.
+ *
+ * Pushing to the splitter in smaller pieces does not help, because it buffers
+ * and re-splits by its own rules. The only reliable fix is to bypass it and
+ * call generate() per segment, which is what narrate() now does.
+ */
+const MAX_SEGMENT = 600
+
+function segmentForTts(text) {
+  const out = []
+  for (const para of text.split(/\n{2,}/)) {
+    const block = para.trim()
+    if (!block) continue
+    if (block.length <= MAX_SEGMENT) {
+      out.push(block)
+      continue
+    }
+    let buf = ''
+    for (const sentence of block.split(/(?<=[.!?])\s+/)) {
+      if (buf && buf.length + sentence.length + 1 > MAX_SEGMENT) {
+        out.push(buf.trim())
+        buf = ''
+      }
+      buf += (buf ? ' ' : '') + sentence
+    }
+    if (buf.trim()) out.push(buf.trim())
+  }
+  return out
+}
+
 async function narrate(tts, slug, text) {
-  const splitter = new TextSplitterStream()
-  const stream = tts.stream(splitter, { voice: VOICE })
-  splitter.push(text)
-  splitter.close()
+  const segments = segmentForTts(text)
 
   const chunks = []
   let sampleRate = 24000
-  for await (const { audio } of stream) {
+  for (const segment of segments) {
+    const audio = await tts.generate(segment, { voice: VOICE })
     chunks.push(audio.audio)
     sampleRate = audio.sampling_rate
   }
@@ -101,8 +140,16 @@ async function narrate(tts, slug, text) {
     stdio: 'ignore',
   })
   rmSync(wavPath)
-  return total / sampleRate
+
+  // Guard: text rendering far too fast means the limit was hit again.
+  const seconds = total / sampleRate
+  const cps = text.length / seconds
+  if (cps > 25) {
+    console.warn(`  WARNING ${slug}: ${cps.toFixed(0)} chars/sec, expected about 14. Audio is probably incomplete.`)
+  }
+  return seconds
 }
+
 
 const onlySlug = process.argv[2]
 mkdirSync(OUT_DIR, { recursive: true })
