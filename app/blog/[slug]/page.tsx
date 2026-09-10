@@ -18,7 +18,7 @@ import { Comments } from '@/components/blog/comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
 import { ShareButtons } from '@/components/blog/share-buttons'
-import { RelatedPosts } from '@/components/blog/related-posts'
+import { RelatedContent } from '@/components/blog/related-content'
 import { AudioPlayer } from '@/components/blog/audio-player'
 import { ReadingProgress } from '@/components/blog/reading-progress'
 import { PostSummary } from '@/components/blog/post-summary'
@@ -264,8 +264,8 @@ export default async function BlogPostPage({ params }: PageProps) {
         </nav>
       )}
 
-      {/* Related posts */}
-      <RelatedPosts slug={slug} tags={post.tags} />
+      {/* Related content across writing, work, research and talks */}
+      <RelatedContent type="Post" contentKey={slug} heading="Related" />
 
       {/* Subscribe CTA */}
       <div className="mt-16">
