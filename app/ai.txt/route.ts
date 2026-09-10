@@ -108,7 +108,7 @@ export function GET() {
     '## Engineering',
     '',
     'Apache Spark, Databricks, distributed data processing, MLOps, model registries,',
-    'feature stores, config-driven pipeline frameworks, Kubernetes, Python packaging,',
+    'config-driven pipeline frameworks, Kubernetes, Python packaging,',
     'Bayesian filtering, agentic AI systems, retrieval-augmented generation.',
     '',
     '## Open source',

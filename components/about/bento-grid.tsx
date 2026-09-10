@@ -39,7 +39,7 @@ export function BentoGrid() {
           <div className="space-y-4 mb-4">
             {[
               { label: 'Impact', color: 'text-synapse', text: 'Built AI systems that cut processing times by up to 90%, contributed to R1B+ in savings, and improved forecast accuracy for climate risk intelligence.' },
-              { label: 'Open Source', color: 'text-signal', text: 'Creator of the Ubunye Engine, an open-source ML framework with declarative ETL, feature stores, and YAML-driven pipelines. I build tools so others can build faster.' },
+              { label: 'Open Source', color: 'text-signal', text: 'Creator of Ubunye Engine, an open-source framework with config-driven pipelines, a model registry and lineage tracking, so a pipeline runs the same on a laptop, Kubernetes or Databricks. I build tools so others can build faster.' },
               { label: 'Teaching', color: 'text-accent-ink', text: 'Training the next generation in practical AI through hands-on courses, from zero-code AI agents for everyday professionals to advanced agentic engineering for developers.' },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

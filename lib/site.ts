@@ -91,6 +91,6 @@ export function profileOpenGraph(path: string) {
     url: absoluteUrl(path),
     siteName: 'Thabang Mashinini-Sekgoto',
     locale: 'en_ZA',
-    images: ogImages('Thabang Mashinini-Sekgoto, Data Scientist and AI Engineer'),
+    images: ogImages('Thabang Mashinini-Sekgoto, applied AI, data science and AI engineering'),
   }
 }
