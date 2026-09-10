@@ -436,7 +436,11 @@ export const PROJECTS: Project[] = [
     outcome:
       'Django-based decision-support systems serving 17 municipalities, including the City of Cape Town and 16 across Gauteng, with real-time access to analytics for public-sector stakeholders.',
     topics: ['Applied Research', 'Analytics', 'Decision Systems', 'Public Sector'],
-    artifacts: [],
+    artifacts: [
+      { kind: 'publication', href: 'https://mg.co.za/article/2018-02-09-00-students-in-dside-programme-come-up-with-innovative-solutions', label: 'Mail & Guardian' },
+      { kind: 'publication', href: 'https://web.archive.org/web/20250628211217/https://www.dsti.gov.za/images/dst_newsletter_march_2018_web.pdf', label: 'Department of Science and Technology' },
+      { kind: 'site', href: 'https://www.csir.co.za/', label: 'CSIR' },
+    ],
     caseStudy: {
       problem:
         'Municipalities hold data relevant to performance, operational bottlenecks and service delivery, but it was not in a form that supported planning or day-to-day decisions.',
@@ -478,6 +482,7 @@ export const PROJECTS: Project[] = [
       'Co-hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, reaching an audience of 300,000+ across platforms, alongside technical writing read by 12,000+ monthly visitors.',
     topics: ['AI Education', 'Applied AI', 'Community', 'Technical Leadership'],
     artifacts: [
+      { kind: 'site', href: 'https://www.youtube.com/@Fabacademic', label: 'FabAcademic Unfiltered' },
       { kind: 'site', href: 'https://www.youtube.com/@tmashininisekgoto', label: 'YouTube' },
       { kind: 'site', href: 'https://www.tmashininisekgoto.com/ai', label: 'Thabang AI' },
     ],
@@ -1199,6 +1204,8 @@ export interface CareerMilestone {
   highlight: string
   /** Skill tags shown as chips */
   skills: string[]
+  /** Verified public links for this milestone, shown on the CV. */
+  links?: { label: string; href: string }[]
 }
 
 export const CAREER_TIMELINE: CareerMilestone[] = [
@@ -1272,6 +1279,10 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     accent: 'signal',
     era: 'Mastering the Craft',
     highlight: 'Distinction · Echo State Networks for image segmentation',
+    links: [
+      { label: 'Thesis (WIReDSpace)', href: 'https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643' },
+      { label: 'Code', href: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation' },
+    ],
     skills: ['Recurrent Neural Nets', 'Image Segmentation', 'Research'],
   },
   {
@@ -1284,6 +1295,11 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     accent: 'accent',
     era: 'Setting Sail',
     highlight: 'Recognised by Mail & Guardian, CSIR & DST for innovation',
+    links: [
+      { label: 'Mail & Guardian', href: 'https://mg.co.za/article/2018-02-09-00-students-in-dside-programme-come-up-with-innovative-solutions' },
+      { label: 'DST newsletter', href: 'https://web.archive.org/web/20250628211217/https://www.dsti.gov.za/images/dst_newsletter_march_2018_web.pdf' },
+      { label: 'CSIR', href: 'https://www.csir.co.za/' },
+    ],
     skills: ['Predictive Analytics', 'Decision Support', 'Software Engineering', 'Django'],
   },
   {

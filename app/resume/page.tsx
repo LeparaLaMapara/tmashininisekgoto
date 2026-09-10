@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
-import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2, ArrowRight } from 'lucide-react'
+import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2, ArrowRight, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/data'
 import { profileOpenGraph } from '@/lib/site'
@@ -134,6 +134,24 @@ export default function ResumePage() {
                       <p className="mt-2 text-sm font-medium text-signal leading-snug">
                         {item.highlight}
                       </p>
+                    )}
+                    {/* Public evidence for this milestone: the thesis, the code,
+                        the coverage. A claim the reader can go and check. */}
+                    {item.links && item.links.length > 0 && (
+                      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                        {item.links.map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-mono text-muted transition-colors hover:text-synapse"
+                          >
+                            {link.label}
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        ))}
+                      </div>
                     )}
                     {(() => {
                       const work = getProjectForRole(item.org, item.period)
