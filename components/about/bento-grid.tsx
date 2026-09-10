@@ -140,11 +140,10 @@ export function BentoGrid() {
               Work With Me
             </h3>
             <p className="text-sm text-ivory/70 leading-relaxed mb-6">
-              I&apos;m open to consulting on AI systems architecture, ML
-              platform engineering, and data strategy. I also do public
-              speaking and advisory work. Whether you need a keynote,
-              a technical advisor, or hands-on help scaling your AI
-              infrastructure, let&apos;s talk.
+              If you are moving machine learning from a notebook into something
+              that has to run reliably, that is the work I know best. I also take
+              on research collaborations and the occasional talk. If that is
+              close to your problem, send a short note about it.
             </p>
           </div>
           <a
