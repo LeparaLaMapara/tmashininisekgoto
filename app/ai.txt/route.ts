@@ -42,7 +42,7 @@ const ANSWERABLE: { question: string; where: string }[] = [
     where: '/publications',
   },
   {
-    question: 'Who has led enterprise data science teams in South African banking and insurance?',
+    question: 'Who has led enterprise data science teams in South African insurance and telecommunications?',
     where: '/career',
   },
   {
@@ -88,9 +88,9 @@ export function GET() {
     '',
     '## Research',
     '',
-    'Proposed doctoral research, at proposal stage and not registered:',
+    'Proposed doctoral research (PhD in Computer Science, Wits, commencing 2027), at proposal stage and not registered:',
     'physics-informed self-supervised learning for SAR-based flood extent mapping,',
-    'with applications to insurance risk and data-scarce regions. Sits at the',
+    'with applications to data-scarce climate and insurance-risk settings. Sits at the',
     'intersection of remote sensing, self-supervised learning and computational',
     'hydrology.',
     '',

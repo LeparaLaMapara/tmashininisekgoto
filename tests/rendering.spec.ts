@@ -28,9 +28,12 @@ test.describe('server-rendered HTML', () => {
     const text = html.replace(/<[^>]+>/g, '')
 
     // The real figures from IMPACT_NUMBERS in lib/data.ts.
-    expect(text).toContain('R1B+')
-    expect(text).toContain('80-90%')
+    expect(text).toContain('R1B')
+    expect(text).toContain('230K+')
     expect(text).toContain('R2M+')
+    // Figures the CV does not state must not come back.
+    expect(text).not.toContain('80-90%')
+    expect(text).not.toContain('R1B+')
 
     // The old bug: counters initialised to zero, so the HTML said "R0+".
     expect(text).not.toContain('R0+')

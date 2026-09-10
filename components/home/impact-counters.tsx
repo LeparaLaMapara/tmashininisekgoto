@@ -4,7 +4,7 @@ import { IMPACT_NUMBERS } from '@/lib/data'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
-// Parse values like "R1B", "80-90", "15", "R2M" into displayable formats
+// Parse values like "R1B", "230K", "R2M" or a range like "80-90" into displayable formats
 function parseImpactValue(value: string) {
   // Handle range like "80-90"
   if (value.includes('-')) {
@@ -34,7 +34,7 @@ export function ImpactCounters() {
             <div className="text-center p-6 rounded-2xl bg-surface/50 border border-border hover:border-synapse/20 transition-colors">
               <div className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-synapse mb-2">
                 {parsed.isRange ? (
-                  <span>80-90{item.suffix}</span>
+                  <span>{parsed.display}{item.suffix}</span>
                 ) : (
                   <>
                     {parsed.prefix}

@@ -18,13 +18,13 @@ positioning; B is shorter.
 > Applied AI, Data Science & AI Engineering | Lead Data Scientist at ABSA | Building Ubunye Engine
 
 Remove any "PhD candidate" wording from the LinkedIn headline and About section
-until registration. The site now says "doctoral research proposal, in
-preparation"; the two should match.
+until registration. The site now says "PhD in Computer Science, commencing 2027", in line with the CV; the
+two should match.
 
 LinkedIn "About" opening line, to mirror the site:
 > I build production AI and data systems, the infrastructure underneath them,
-> and applied research grounded in real problems. Nine years across banking and
-> insurance, telecommunications and research.
+> and applied research grounded in real problems. Nine years across insurance,
+> telecommunications, applied research and higher education.
 
 ---
 

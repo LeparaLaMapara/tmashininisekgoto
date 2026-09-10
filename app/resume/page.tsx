@@ -78,8 +78,8 @@ export default function ResumePage() {
         <ScrollReveal delay={0.1}>
           <p className="text-lg text-ivory/80 leading-relaxed mb-8 max-w-2xl">
             Applied AI, data science, AI engineering and research. Nine years building and operating
-            production machine learning and data systems across banking and insurance, telecommunications
-            and research, and increasingly turning those lessons into reusable open source infrastructure.
+            production machine learning and data systems across insurance, telecommunications, applied research
+            and higher education, and increasingly turning those lessons into reusable open source infrastructure.
           </p>
         </ScrollReveal>
 

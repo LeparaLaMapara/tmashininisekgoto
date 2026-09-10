@@ -158,10 +158,12 @@ export const TYPEWRITER_ROLES = [
 // --- Impact Numbers ---
 
 export const IMPACT_NUMBERS: ImpactNumber[] = [
-  { label: 'Annual OPEX Savings', value: 'R1B', suffix: '+', context: 'Vodacom Smart Generators' },
-  { label: 'Latency Reduction', value: '80-90', suffix: '%', context: 'ABSA ML Platform' },
-  { label: 'Forecast Accuracy Gain', value: '15', suffix: '%', context: 'IBM Climate Intelligence' },
-  { label: 'Subsidy Generated', value: 'R2M', suffix: '+', context: 'Wits Enrollment System' },
+  // Every figure here is stated in the public CV (public/resume.pdf). Nothing
+  // goes on this list that the CV does not also say.
+  { label: 'Approx. Annual Savings', value: 'R1B', suffix: '', context: 'Vodacom Smart Generator Optimisation' },
+  { label: 'Insured Properties Risk Modelled', value: '230K', suffix: '+', context: 'ABSA flood and natural catastrophe risk' },
+  { label: 'Annual Subsidy Impact', value: 'R2M', suffix: '+', context: 'Wits recommendation system' },
+  { label: 'Audience Reached', value: '300K', suffix: '+', context: 'FabAcademic Unfiltered' },
 ]
 
 // --- Projects ---
@@ -247,7 +249,7 @@ export const PROJECTS: Project[] = [
       changed:
         'Filtering stopped being a re-derivation exercise and became fitting a familiar estimator. Beyond the forward pass there is RTS smoothing, forecasting a number of steps ahead, and a filter_step call for online use against a live stream. Particle degeneracy is visible rather than silent through effective sample size monitoring, and a memory mode drops covariance storage for roughly an 80 percent saving on very long series, so a million-step run is practical.',
       benefited:
-        'Engineers and scientists working with noisy time series who are not filtering specialists, and the production telematics state-estimation work it has been used in.',
+        'Engineers and scientists working with noisy time series who are not filtering specialists, starting with the telemetry problems across telecommunications and insurance that it was built from.',
       remained:
         'A published, documented library on PyPI: five filters behind one API, worked examples for GPS vehicle tracking, radar tracking and robot localisation, notebooks covering EEG, image denoising and benchmarks across all five, and a test suite that includes a ten thousand step dataset.',
       technicalContext:
@@ -258,7 +260,7 @@ export const PROJECTS: Project[] = [
     solution:
       'An open-source Python library of five Bayesian filters, Kalman, Extended, Unscented, Ensemble and Particle, behind one scikit-learn compatible API, with smoothing, forecasting, streaming updates and optional Dask parallelism.',
     impact:
-      'Published on PyPI with documentation and worked examples across GPS, radar and robotics, and used in production telematics state-estimation work.',
+      'Published on PyPI with documentation and worked examples across GPS, radar and robotics, built for the noisy telemetry problems met across telecommunications and insurance.',
     skills: ['Python', 'NumPy', 'SciPy', 'Dask', 'PyPI', 'CI/CD'],
     image: '/projects/tfilterspy.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/tfilterspy',
@@ -275,7 +277,7 @@ export const PROJECTS: Project[] = [
     why:
       'Moving an insurance analytics function from a mostly BI and analysis way of working toward a cloud-first, engineering-oriented capability is what lets analytical products be built, deployed, governed and improved repeatedly rather than once.',
     outcome:
-      'A telematics data pipeline that took about two months now runs in under 24 hours, and analytical products move to production through governed, repeatable engineering.',
+      'Long-running telematics processing cycles cut from months to under a day, and a capability moving toward a reproducible, governed path from experiment to production.',
     topics: ['Production ML', 'MLOps', 'Technical Leadership', 'AI Governance', 'Geospatial AI', 'Telematics'],
     artifacts: [],
     caseStudy: {
@@ -286,23 +288,23 @@ export const PROJECTS: Project[] = [
       context:
         'A large, regulated enterprise, mid-migration from on-premise data and workflows toward cloud. Databricks is the enabling platform rather than the point. Confidentiality limits what can be said about specific systems, so what follows is scope and consequence, not internals.',
       contribution:
-        'I lead the Insurance Data Science capability across four connected layers.\n\nStrategy and modernisation: I help define the technical and analytical direction, moving toward cloud-first ways of working, scalable data and ML systems, and governed analytical products.\n\nData and ML engineering: I have been helping introduce hands-on practice across the whole lifecycle, from data engineering and experimentation through deployment, monitoring, governance and maintenance, including CI/CD, model lifecycle management, testing and reproducibility.\n\nPeople and ways of working: I lead a multidisciplinary team of senior data scientists and data engineers, and much of the job is structure rather than technology, clearer ways of working, Agile delivery, engineering standards, documentation, Show and Tell sessions, peer learning and reducing knowledge silos.\n\nApplied systems: alongside that I still build. Telematics and behavioural risk supporting products such as Activate; high-resolution geospatial flood and natural-catastrophe risk models, built with XGBoost against JBA ground-truth data, so physical exposure can be understood at property and portfolio level before losses occur; and customer intelligence work that gives the business a richer view of behaviour, value, needs and risk rather than a single recommendation model.',
+        'I lead the Insurance Data Science capability across four connected layers.\n\nStrategy and modernisation: I help define the technical and analytical direction, moving toward cloud-first ways of working, scalable data and ML systems, and governed analytical products.\n\nData and ML engineering: I have been helping introduce hands-on practice across the whole lifecycle, from data engineering and experimentation through deployment, monitoring, governance and maintenance, including CI/CD, model lifecycle management, testing and reproducibility.\n\nPeople and ways of working: team development is much of the job, and most of it is structure rather than technology: Agile ways of working, technical standards, documentation, mentoring, Show and Tell sessions and knowledge transfer across data science and data engineering, so capability is built beyond individual models.\n\nApplied systems: alongside that I remain hands-on. Telematics and behavioural analytics supporting products such as Activate; geospatial flood and natural-catastrophe risk models across more than 230,000 insured properties, so physical exposure can be understood at property and portfolio level and support underwriting and portfolio risk decisions; and customer intelligence and hyper-personalisation work that gives the business a richer view of behaviour, value, needs and risk rather than a single recommendation model.',
       changed:
-        'The core telematics platform was modernised using Ubunye Engine, cutting data pipeline processing latency from about two months to under 24 hours at scale. Enterprise AI governance and CI/CD were institutionalised across the production portfolio using Databricks Asset Bundles, MLflow and Unity Catalog. The effect is less manual intervention, faster data availability, more consistent processing and clearer ownership, which is what lets several analytical products run at once.',
+        'Telematics processing and analytical workflows handling millions of daily signals were modernised, reducing long-running processing cycles from months to under a day while improving data availability, operational visibility and reproducibility. Reusable data and ML engineering patterns, built on Spark, MLflow, Unity Catalog, Databricks Asset Bundles, automated orchestration, testing and deployment controls, improved reliability and shortened the path from experimentation to production. The effect is less manual intervention, more consistent processing and clearer ownership, which is what lets several analytical products run at once.',
       benefited:
         'Insurance operations and underwriting, through earlier visibility of physical risk and better behavioural understanding; the data scientists on the team, who can ship more reliably and depend less on any one person; and ultimately customers, through more relevant decisions and interactions.',
       remained:
-        'Reusable engineering practice, governance and CI/CD across a production portfolio, a modernised telematics platform, geospatial risk models across 230,000+ insured properties, hyperpersonalisation processing 2M+ daily telematics signals for retention, next-best-action and customer lifetime value, and a more self-sufficient team.',
+        'Reusable data and ML engineering patterns with testing and deployment controls, modernised telematics processing, geospatial flood and natural-catastrophe risk models across 230,000+ insured properties, and a team that depends less on any one person.',
       technicalContext:
-        'Databricks, Spark and PySpark, Databricks Asset Bundles, MLflow, Unity Catalog, CI/CD, XGBoost, JBA flood ground-truth data, geospatial modelling, MLOps and model lifecycle management, AI governance, cloud migration from on-premise. Ubunye Engine underpins part of the telematics modernisation.',
+        'Databricks, Spark and PySpark, Databricks Asset Bundles, MLflow, Unity Catalog, automated orchestration, CI/CD, testing and deployment controls, monitoring, geospatial modelling, MLOps and model lifecycle management, AI governance, cloud migration from on-premise.',
     },
     problem:
       'Getting analytical products into production reliably depended on individual knowledge and one-off effort, in a function historically oriented more toward BI and analysis than production data-science engineering.',
     solution:
       'Leading the Insurance Data Science capability across strategy and modernisation, data and ML engineering, people and ways of working, and applied systems in telematics, natural-catastrophe risk and customer intelligence.',
     impact:
-      'Telematics pipeline latency reduced from about two months to under 24 hours, with enterprise AI governance and CI/CD institutionalised across the production model portfolio.',
-    skills: ['Databricks', 'PySpark', 'MLflow', 'Unity Catalog', 'XGBoost', 'Geospatial ML', 'MLOps', 'AI Governance'],
+      'Telematics processing cycles reduced from months to under a day, reusable data and ML engineering patterns on Databricks, and flood and natural-catastrophe risk models across 230,000+ insured properties.',
+    skills: ['Databricks', 'PySpark', 'MLflow', 'Unity Catalog', 'Geospatial ML', 'MLOps', 'AI Governance'],
     image: '/projects/absa-activate.jpg',
     resume: { org: 'ABSA Insurance', period: 'Mar 2024 - Present' },
   },
@@ -317,7 +319,7 @@ export const PROJECTS: Project[] = [
     why:
       'Fuel, crews, capital and equipment are finite. The question was never how to collect telemetry, it was which of 15,000+ sites deserved attention next, and where that attention would create the most value.',
     outcome:
-      'Real-time platforms processing 25M+ telemetry events a day across 15,000+ sites, with the Smart Generator Optimisation platform contributing approximately R1 billion in annual operational savings.',
+      'Real-time systems processing tens of millions of telemetry and alarm events a day across 15,000+ sites, with the Smart Generator Optimisation work contributing approximately R1 billion in annual operational savings.',
     topics: ['Optimization', 'Real-Time Streaming', 'Telemetry', 'Production ML', 'Decision Systems', 'Technical Leadership'],
     artifacts: [
       { kind: 'product', href: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring', label: 'Vodacom Smart Generator (product page)' },
@@ -330,22 +332,22 @@ export const PROJECTS: Project[] = [
       context:
         '15,000+ national infrastructure sites and mobile generators, interdependent network effects, operational alarms, and telemetry arriving continuously. This was operational real-time scale rather than a static dataset: the systems had to keep making sense of live events across national infrastructure.',
       contribution:
-        'I led a high-performing team of 10, nine data scientists and a senior ML engineer, building real-time analytics and optimisation platforms.\n\nI architected the Smart Generator Optimisation platform across the national estate, applying constrained optimisation over live telemetry to decide which generators to run, where and when.\n\nThe team built high-throughput streaming pipelines processing 25M+ daily telemetry events from 15,000+ sites and mobile generators using Kafka, PySpark and Kubernetes, and I designed a custom PyFlink stream-processing framework that enriches real-time Kafka topics with IoT telemetry, operational alarms and static reference data in flight.\n\nI also institutionalised enterprise AI and analytics engineering standards across the team, which shortened model development cycles and improved system reliability.',
+        'I led a team of 10 data scientists and ML engineers building real-time analytics, optimisation and decision-intelligence systems, combining machine learning, mathematical optimisation, streaming data and software engineering on generator optimisation, traffic forecasting, infrastructure planning, anomaly detection, resource allocation and site prioritisation.\n\nI led the Smart Generator Optimisation work across more than 15,000 sites, applying constrained optimisation over live telemetry to decide which generators to run, where and when.\n\nWe built and designed streaming systems processing tens of millions of daily telemetry and alarm events using Kafka, PyFlink, PySpark and Kubernetes, enriching live operational data with telemetry and reference information for faster decisions.\n\nI established reusable engineering practices and technical standards across the team, and mentored practitioners while working closely with network, engineering, operations and business stakeholders.',
       changed:
-        'Dispatch moved from reactive to informed, weighing cost, network impact and constraints across the whole estate in real time. The Smart Generator platform contributed approximately R1 billion in annual operational savings through better generator and resource allocation, alongside improved availability. The engineering standards and streaming architecture made delivery across the team more repeatable.',
+        'Dispatch moved from reactive to informed, weighing cost, network impact and constraints across the whole estate in real time. The Smart Generator Optimisation work contributed approximately R1 billion in annual operational savings through better allocation and use of mobile power infrastructure. The engineering practices and streaming architecture made moving analytical work into reliable operational systems more repeatable.',
       benefited:
         'Network operations teams, who gained continuously updated intelligence for infrastructure and resource decisions; the business, through lower operating cost and better capital allocation; and customers who stayed connected through power cuts.',
       remained:
-        'Production optimisation and streaming platforms, a custom stream-processing framework, and engineering standards adopted across the team. Recognised with the Vodacom Star Award in 2022 for innovation and engineering excellence.',
+        'Production optimisation and streaming systems, and reusable engineering practices and technical standards adopted across the team. Recognised with the Vodacom Star Award in 2022 for engineering contribution and impact.',
       technicalContext:
-        'Kafka, PySpark, a custom PyFlink stream-processing framework, Kubernetes, Docker, GitLab CI, constrained optimisation (CVXPY), distributed processing, real-time IoT telemetry.',
+        'Kafka, PyFlink, PySpark, Kubernetes, Docker, GitLab CI, constrained optimisation (CVXPY), distributed processing, real-time IoT telemetry.',
     },
     problem:
       'Enormous volumes of noisy, weakly labelled operational data from a national network had to become decisions about where finite resources and intervention were needed most.',
     solution:
       'Real-time analytics and optimisation platforms, including constrained-optimisation generator dispatch and high-throughput streaming pipelines, built by a team of ten.',
     impact:
-      '25M+ daily telemetry events across 15,000+ sites, with Smart Generator Optimisation contributing approximately R1 billion in annual operational savings.',
+      'Tens of millions of daily telemetry and alarm events across 15,000+ sites, with Smart Generator Optimisation contributing approximately R1 billion in annual operational savings.',
     skills: ['PyFlink', 'Kafka', 'CVXPY', 'PySpark', 'Kubernetes', 'Docker', 'GitLab CI'],
     image: '/projects/smart-generators.png',
     productLink: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring',
@@ -376,15 +378,15 @@ export const PROJECTS: Project[] = [
       why:
         'The point was never to build models in isolation. It was to turn enormous environmental datasets into reliable information that researchers, businesses and decision makers could actually use.',
       context:
-        'IBM Research, working with distributed compute and IBM PAIRS Geoscope, an enterprise geospatial-temporal platform, described in plain terms, a system for analysing huge volumes of geospatial and time-dependent data, handling petabyte-scale data for clients globally.',
+        'IBM Research, working with distributed compute and IBM PAIRS Geoscope, an enterprise geospatial-temporal platform, described in plain terms, a system for analysing huge volumes of geospatial and time-dependent data, handling petabyte-scale data and used for environmental and enterprise analytics.',
       contribution:
-        'I developed machine learning and geospatial analytics for environmental intelligence and climate-risk applications, and built predictive systems with TensorFlow on distributed data platforms. I deployed climate-forecasting models into the PAIRS Geoscope platform. I co-authored peer-reviewed research and worked with international research and engineering teams on large-scale AI initiatives.\n\nSeparately, and during an emerging public-health crisis, I contributed to the Gauteng COVID-19 risk-index and prediction dashboard, a collaboration between IBM Research Africa, Wits University and the GCRO. It was used by the Gauteng Provincial Department of Health to identify infection hotspots and forecast hospital bed and ventilator demand for a province of more than 15 million residents, and was deployed publicly via IBM Cloud. It was a team effort, not mine alone.',
+        'I conducted applied machine-learning research in climate, environmental intelligence, remote sensing and geospatial analytics, combining scientific experimentation with production-oriented engineering. I worked with large geospatial, satellite and environmental datasets in distributed environments using TensorFlow and related tooling, developing forecasting and predictive models that could operate beyond single-machine research workflows, and deployed climate-forecasting models into the PAIRS Geoscope platform. I co-authored research with international scientists and engineers, contributing across experimentation, model development, evaluation, data pipelines and operationalisation.\n\nSeparately, and during an emerging public-health crisis, I contributed to the Gauteng COVID-19 risk-index and prediction dashboard, a collaboration between IBM Research Africa, Wits University and the GCRO, supporting hotspot identification and healthcare-resource planning for the Gauteng Provincial Department of Health. It was a team effort, not mine alone.',
       changed:
-        'Research became usable: forecasting models moved from experiment into an enterprise platform serving clients, and during the pandemic rapidly changing data was turned into information that could support provincial health planning rather than sitting in an analysis.',
+        'Research became usable: forecasting models moved from experiment into an enterprise platform, and during the pandemic rapidly changing data was turned into information that could support provincial health planning rather than sitting in an analysis.',
       benefited:
         'Enterprises needing environmental, climate and supply-chain risk intelligence through IBM’s platforms, the research community through published work, and provincial health planners making resourcing decisions under time pressure.',
       remained:
-        'Models running inside an enterprise geospatial platform, a publicly deployed public-health dashboard, and peer-reviewed research, including "Long-Range Seasonal Forecasting of 2m-Temperature with Machine Learning", presented at the Tackling Climate Change with ML workshop at NeurIPS 2020 with colleagues from IBM Research.',
+        'Models running inside an enterprise geospatial platform, a contribution to a provincial public-health planning dashboard, and co-authored research, including "Long-Range Seasonal Forecasting of 2m-Temperature with Machine Learning", presented at the Tackling Climate Change with ML workshop at NeurIPS 2020 with colleagues from IBM Research.',
       technicalContext:
         'TensorFlow, distributed compute and distributed data platforms, IBM PAIRS Geoscope, IBM Cloud, geospatial raster and vector processing, large-scale experimentation, Python.',
     },
@@ -393,7 +395,7 @@ export const PROJECTS: Project[] = [
     solution:
       'Machine learning and geospatial analytics for environmental and climate risk, built on distributed platforms and deployed into IBM PAIRS Geoscope, plus a contribution to the Gauteng COVID-19 risk-index dashboard.',
     impact:
-      'Climate-forecasting models running in an enterprise geospatial platform handling petabyte-scale data, a publicly deployed provincial health dashboard, and co-authored peer-reviewed research.',
+      'Climate-forecasting models running in an enterprise geospatial platform handling petabyte-scale data, a contribution to a provincial health planning dashboard, and co-authored research.',
     skills: ['IBM PAIRS', 'IBM Cloud', 'TensorFlow', 'Python', 'GeoPandas', 'Airflow', 'Hadoop'],
     image: '/projects/ibm-geospatial.png',
     ghLink: 'https://github.com/IBM/ibmpairs',
@@ -412,7 +414,7 @@ export const PROJECTS: Project[] = [
     why:
       'Institutional data that is only reported is not much use. The value is in earlier visibility, so support reaches a student before a problem becomes terminal, and in leaving the skills behind.',
     outcome:
-      'A clustering-based recommendation engine serving the Faculty of Humanities and its 10,000+ students, generating over R2 million a year in government subsidy impact; 76+ staff and students trained across 7 workshops.',
+      'A clustering-based recommendation system for the Faculty of Humanities, with more than R2 million a year in government subsidy impact attributed to the initiative, and analytics and ML workshops for staff and students.',
     topics: ['Recommendation Systems', 'Applied Research', 'Analytics', 'AI Education'],
     artifacts: [],
     caseStudy: {
@@ -423,11 +425,11 @@ export const PROJECTS: Project[] = [
       context:
         'A central analytics function serving faculties, schools, planning and student-support staff, many of whom came from traditional institutional-research backgrounds rather than machine learning. Anything built had to be usable and maintainable by them.',
       contribution:
-        'I developed recommendation and analytics systems supporting institutional planning and student success, and built the reporting and analytics workflows around them in Python, SQL and Power BI. I built a clustering-based recommendation engine serving the Faculty of Humanities. I also facilitated 7 analytics and machine learning workshops, training 76+ technical and non-technical staff and students, so the capability did not sit with one central team.',
+        'I built analytics, reporting and machine-learning systems for university-wide institutional planning, student success and decision support, using Python, SQL, Power BI and statistical modelling. I developed student recommendation and progression analytics to help faculties and institutional teams see where students needed support, and built a clustering-based recommendation system for the Faculty of Humanities that linked analytical work to student progression and government subsidy outcomes. I also facilitated analytics and machine learning workshops for staff and students, so institutional researchers and analysts could adopt practical modelling in their own work and the capability did not sit with one central team.',
       changed:
-        'Faculties, schools and planning gained useful information rather than raw institutional data, supporting earlier and better-targeted academic and support decisions. The recommendation engine is associated with over R2 million a year in government subsidy impact.',
+        'Faculties, schools and planning gained useful information rather than raw institutional data, supporting earlier and better-targeted academic and support decisions. More than R2 million a year in government subsidy impact is attributed to the recommendation initiative.',
       benefited:
-        'Students, through better academic decisions and earlier support; faculty and planning staff, through visibility they could act on; and the 76+ people trained, who kept the skills.',
+        'Students, through better academic decisions and earlier support; faculty and planning staff, through visibility they could act on; and the staff and students trained in the workshops, who kept the skills.',
       remained:
         'Analytics and recommendation systems in institutional use, and trained people. This is where a pattern starts that runs through everything since: transfer the capability, do not just deliver the artefact.',
       technicalContext:
@@ -438,7 +440,7 @@ export const PROJECTS: Project[] = [
     solution:
       'Recommendation and student-success analytics supporting institutional planning, plus workshops that moved analytics and ML capability beyond the central team.',
     impact:
-      'A recommendation engine serving the Faculty of Humanities (10,000+ students), associated with over R2 million a year in government subsidy impact, and 76+ staff and students trained across 7 workshops.',
+      'A recommendation system for the Faculty of Humanities with more than R2 million a year in government subsidy impact attributed to it, and analytics and ML workshops for staff and students.',
     skills: ['Recommendation Systems', 'Clustering', 'Python', 'SQL', 'Power BI'],
     image: '/projects/wits-recommender.png',
     resume: { org: 'Business Intelligence Services - University of the Witwatersrand', period: 'Jun 2018 - Apr 2020' },
@@ -500,7 +502,7 @@ export const PROJECTS: Project[] = [
     why:
       'Practical AI literacy is unevenly distributed, and the gap is widest where the opportunity is largest. Explaining the real engineering, plainly, is the cheapest way to move it.',
     outcome:
-      'Co-hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, reaching an audience of 300,000+ across platforms, alongside technical writing read by 12,000+ monthly visitors.',
+      'Co-hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, with sessions reaching audiences of over 300,000 people, alongside public technical writing.',
     topics: ['AI Education', 'Applied AI', 'Community', 'Technical Leadership'],
     artifacts: [
       { kind: 'site', href: 'https://www.youtube.com/@Fabacademic', label: 'FabAcademic Unfiltered' },
@@ -515,7 +517,7 @@ export const PROJECTS: Project[] = [
       context:
         'A public AI leadership and technical education effort, run alongside the day job rather than instead of it, aimed at practical adoption, mentorship and industry-wide literacy.',
       contribution:
-        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also architected and deployed Thabang AI, a retrieval-grounded assistant built on a multi-model architecture with a custom AI gateway, so the material can be interrogated rather than only read.',
+        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also built Thabang AI, a retrieval-grounded assistant that answers only from this site’s own content and cites its sources, so the material can be interrogated rather than only read.',
       changed:
         'A large audience gets an accurate account of what building with AI involves, from someone doing it in production rather than describing it from outside.',
       benefited:
@@ -523,17 +525,17 @@ export const PROJECTS: Project[] = [
       remained:
         'A body of public technical writing, a recorded conversation series, and a grounded assistant that cites its sources.',
       technicalContext:
-        'RAG architecture, multi-model orchestration (Claude, Gemini, OpenAI), a custom AI gateway, serverless deployment.',
+        'Retrieval-augmented generation over Supabase pgvector, Gemini embeddings and chat models, source citations, serverless deployment.',
     },
     problem:
       'Public AI conversation is split between hype and inaccessible research, with little plain explanation of what building with these systems actually involves.',
     solution:
       'A public AI education effort: co-hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, publishing technical leadership writing, and building a retrieval-grounded assistant over the material.',
     impact:
-      'An audience of 300,000+ across platforms and 12,000+ monthly readers of the technical writing.',
+      'FabAcademic Unfiltered sessions reaching audiences of over 300,000 people, a body of public technical writing, and a grounded assistant over it.',
     skills: ['RAG', 'LLM Application Development', 'Technical Writing', 'AI Governance'],
     image: '/projects/ai-education.png',
-    resume: { org: 'AI Educator', period: '2024 - Present' },
+    resume: { org: 'AI Educator', period: '2026 - Present' },
   },
   {
     slug: 'kasilam-digital',
@@ -1244,7 +1246,7 @@ export const BIO = {
    * apart from each other.
    */
   disciplines: 'Applied AI · Data Science · AI Engineering · Research',
-  shortBio: `I have spent nine years building and deploying data and AI systems inside real organisations, across banking and insurance, telecommunications and research. That work kept surfacing the same problem: moving data science out of experimentation and into systems that run reliably. My work now spans data science, AI engineering, applied research and reusable open source infrastructure.`,
+  shortBio: `I have spent nine years building and deploying data and AI systems inside real organisations, across insurance, telecommunications, applied research and higher education. That work kept surfacing the same problem: moving data science out of experimentation and into systems that run reliably. My work now spans data science, AI engineering, applied research and reusable open source infrastructure.`,
   philosophy: 'Strive to build things that make a difference.',
   hobbies: [
     { emoji: '📷', label: 'Photography' },
@@ -1328,11 +1330,11 @@ export interface CareerMilestone {
 
 export const CAREER_TIMELINE: CareerMilestone[] = [
   {
-    period: 'In preparation',
-    role: 'Doctoral research proposal',
+    period: 'Commencing 2027',
+    role: 'PhD in Computer Science',
     org: 'University of the Witwatersrand',
     shortOrg: 'Research',
-    description: 'Proposal stage, not yet registered. The direction is physics-informed self-supervised learning for SAR-based flood extent mapping, with applications to insurance risk and data-scarce regions. It follows on from the MSc work on echo state networks for level set segmentation, and from the geospatial and climate risk systems built at IBM Research and in insurance.',
+    description: 'Commencing in 2027; the proposal is in preparation and not yet registered. The proposed research explores physics-informed self-supervised learning for SAR-based flood extent mapping, with applications to data-scarce climate and insurance-risk settings. It follows on from the MSc work on echo state networks for level set segmentation, and from the geospatial and climate risk systems built at IBM Research and in insurance.',
     kind: 'research',
     accent: 'signal',
     era: 'The Next Question',
@@ -1344,23 +1346,23 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     role: 'Lead Data Scientist',
     org: 'ABSA Insurance',
     shortOrg: 'ABSA',
-    description: 'Provide functional leadership for the Insurance Data Science capability, defining analytical priorities, technical direction and MLOps standards across underwriting, retention, fraud, telematics and climate risk, and leading a multidisciplinary team of senior data scientists and data engineers. Formulated and executed the enterprise data engineering and MLOps strategy on Databricks, building governed, automated paths from ingestion through to production so analytical products can be deployed and improved repeatably rather than rebuilt each time. Modernised the core telematics platform using Ubunye Engine, cutting pipeline processing latency from about two months to under 24 hours at scale. Built high-resolution geospatial flood and natural-catastrophe risk models with XGBoost and JBA ground-truth data across 230,000+ insured properties to sharpen underwriting, and architected hyperpersonalisation processing 2M+ daily telematics signals supporting retention, next-best-action and customer lifetime value.',
+    description: 'Lead the Insurance Data Science capability across analytical strategy, technical direction, delivery standards and team development, working across business, technology, risk, architecture and governance stakeholders. Modernising the capability from fragmented analytical workflows toward a cloud-first operating model on Databricks, bringing data engineering, data science, MLOps, CI/CD, monitoring, documentation and governance into a more reproducible production lifecycle. Designed reusable data and ML engineering patterns using Spark, MLflow, Unity Catalog, Databricks Asset Bundles, automated orchestration, testing and deployment controls. Modernised telematics processing and analytical workflows handling millions of daily signals, reducing long-running processing cycles from months to under a day. Remain hands-on across telematics and behavioural analytics, customer intelligence and hyper-personalisation, fraud, underwriting, and geospatial flood and natural-catastrophe risk models across more than 230,000 insured properties.',
     kind: 'work',
     accent: 'synapse',
     era: 'Leading the Fleet',
-    highlight: 'Telematics pipeline from ~2 months to under 24 hours · enterprise AI governance and CI/CD across the production portfolio',
-    skills: ['Enterprise AI', 'Databricks', 'Geospatial ML', 'AI Governance', 'MLOps', 'Ubunye Engine'],
+    highlight: 'Telematics processing cycles from months to under a day · flood and natural-catastrophe risk across 230,000+ insured properties',
+    skills: ['Databricks', 'MLOps', 'Geospatial ML', 'AI Governance', 'Telematics', 'Technical Leadership'],
   },
   {
     period: 'Nov 2021 - Mar 2024',
     role: 'Senior Data Scientist',
     org: 'Vodacom',
     shortOrg: 'Vodacom',
-    description: 'Led a team of ten, nine data scientists and a senior ML engineer, building real-time analytics and optimisation platforms for national telecommunications infrastructure. Architected the Smart Generator Optimisation platform across 15,000+ national sites, applying constrained optimisation over live telemetry so finite fuel, crews and equipment went where they mattered most, contributing approximately R1 billion in annual operational savings alongside improved network availability. Built high-throughput streaming pipelines processing 25M+ daily telemetry events, and designed a custom PyFlink stream-processing framework that enriches real-time Kafka topics with IoT telemetry, operational alarms and reference data in flight. Institutionalised enterprise AI and analytics engineering standards across the team, shortening model development cycles and improving system reliability.',
+    description: 'Led a team of 10 data scientists and ML engineers building real-time analytics, optimisation and decision-intelligence systems for national telecommunications infrastructure, combining machine learning, mathematical optimisation, streaming data and software engineering on problems including generator optimisation, traffic forecasting, infrastructure planning, anomaly detection, resource allocation and site prioritisation. Led the Smart Generator Optimisation work across more than 15,000 sites, contributing approximately R1 billion in annual operational savings through better allocation and use of mobile power infrastructure. Built and designed streaming systems processing tens of millions of daily telemetry and alarm events using Kafka, PyFlink, PySpark and Kubernetes. Established reusable engineering practices and technical standards across the team, and mentored practitioners while working closely with network, engineering, operations and business stakeholders. Received the Vodacom Star Award in 2022 for engineering contribution and impact.',
     kind: 'work',
     accent: 'synapse',
     era: 'Scaling the Network',
-    highlight: '≈R1B annual operational savings · 25M+ events a day across 15,000+ sites · Vodacom Star Award',
+    highlight: '≈R1B annual operational savings · tens of millions of events a day across 15,000+ sites · Vodacom Star Award 2022',
     skills: ['Real-time Analytics', 'PyFlink', 'Kafka', 'PySpark', 'Kubernetes', 'Optimisation'],
   },
   {
@@ -1368,7 +1370,7 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     role: 'Machine Learning Research Scientist',
     org: 'IBM Research',
     shortOrg: 'IBM',
-    description: 'Developed machine learning and geospatial analytics for environmental intelligence and climate-risk applications, building predictive systems with TensorFlow on distributed data platforms where the datasets were far too large to treat as single-machine problems. Deployed climate-forecasting models into IBM PAIRS Geoscope, an enterprise geospatial-temporal platform handling petabyte-scale data for clients globally, carrying research through to something customers could use. Contributed to the Gauteng COVID-19 risk-index and prediction dashboard with IBM Research Africa, Wits University and the GCRO, used by the Gauteng Provincial Department of Health to identify infection hotspots and forecast hospital-bed and ventilator demand for a province of 15M+ residents. Co-authored peer-reviewed research and collaborated with international research and engineering teams.',
+    description: 'Conducted applied machine-learning research in climate, environmental intelligence, remote sensing and geospatial analytics, combining scientific experimentation with production-oriented engineering. Worked with large geospatial, satellite and environmental datasets in distributed environments using TensorFlow and related tooling, developing forecasting and predictive models that could operate beyond single-machine research workflows. Deployed climate-forecasting models into IBM PAIRS Geoscope, connecting research outputs to a petabyte-scale geospatial-temporal platform used for environmental and enterprise analytics. Contributed to the Gauteng COVID-19 risk-index and prediction dashboard with IBM Research Africa, Wits University and the GCRO, supporting hotspot identification and healthcare-resource planning for the Gauteng Provincial Department of Health. Co-authored research with international scientists and engineers, contributing across experimentation, model development, evaluation, data pipelines and operationalisation.',
     kind: 'work',
     accent: 'synapse',
     era: 'The Climate Quest',
@@ -1380,11 +1382,11 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     role: 'Data Scientist',
     org: 'Business Intelligence Services - University of the Witwatersrand',
     shortOrg: 'Wits BIS',
-    description: 'Developed recommendation and student-success analytics that turned institutional data into information faculties, schools and support staff could act on, rather than reports they could only read. Built a clustering-based recommendation engine serving the Faculty of Humanities and its 10,000+ students, associated with over R2 million a year in government subsidy impact, along with the reporting and analytics workflows around it in Python, SQL and Power BI. Facilitated 7 analytics and machine learning workshops, training 76+ technical and non-technical staff and students so the capability did not stay inside one central team.',
+    description: 'Built analytics, reporting and machine-learning systems for university-wide institutional planning, student success and decision support using Python, SQL, Power BI and statistical modelling. Developed student recommendation and progression analytics to help faculties and institutional teams see where students needed support and make better academic planning decisions. Built a clustering-based recommendation system for the Faculty of Humanities, linking analytical work to student progression and government subsidy outcomes, with more than R2 million in annual subsidy impact attributed to the initiative. Facilitated analytics and machine-learning workshops for staff and students, helping institutional researchers and analysts adopt practical modelling in their own work.',
     kind: 'work',
     accent: 'synapse',
     era: 'The First Expedition',
-    highlight: 'R2M+ annual subsidy impact · 10,000+ students served · 76+ people trained across 7 workshops',
+    highlight: 'R2M+ annual subsidy impact attributed to the initiative · analytics and ML workshops for staff and students',
     skills: ['Recommendation Systems', 'Clustering', 'Analytics', 'Power BI'],
   },
   {

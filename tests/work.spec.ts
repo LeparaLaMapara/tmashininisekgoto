@@ -43,13 +43,18 @@ test.describe('work data integrity', () => {
   })
 
   test('ABSA figures match the CV and nothing unverified creeps in', () => {
-    // These two are published in the owner's own public CV, so they are fair to
-    // state. "26,000+ telematics customers" is not: it appears in a brief but
-    // not in the CV, so it must never appear here.
+    // The public CV (September 2026) states 230,000+ properties and "months to
+    // under a day". It deliberately dropped the earlier "2M+ daily signals",
+    // "two months to under 24 hours" and the Ubunye Engine attribution, so none
+    // of those may appear here either. "26,000+ telematics customers" was only
+    // ever in a brief, never in the CV.
     const absa = PROJECTS.find((p) => p.slug === 'insurance-data-science-capability')!
     const blob = JSON.stringify(absa)
     expect(blob).toContain('230,000+')
-    expect(blob).toContain('2M+ daily telematics signals')
+    expect(blob).toContain('months to under a day')
+    expect(blob).not.toContain('2M+')
+    expect(blob).not.toContain('24 hours')
+    expect(blob).not.toContain('Ubunye Engine')
     expect(blob).not.toContain('26,000')
     expect(blob).not.toContain('daily trips')
   })

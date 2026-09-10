@@ -71,7 +71,7 @@ export function BentoGrid() {
                 <div key={item.label}>
                   <div className="font-display text-3xl font-bold text-synapse mb-1">
                     {parsed.isRange ? (
-                      <span>80-90{item.suffix}</span>
+                      <span>{parsed.display}{item.suffix}</span>
                     ) : (
                       <>
                         {parsed.prefix}

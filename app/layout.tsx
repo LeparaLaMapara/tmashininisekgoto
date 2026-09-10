@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     template: '%s | Thabang M-S',
   },
   description:
-    'I build production AI and data systems, reusable open source infrastructure, and applied research grounded in real problems. Nine years across banking and insurance, telecommunications and research. Author of Ubunye Engine.',
+    'I build production AI and data systems, reusable open source infrastructure, and applied research grounded in real problems. Nine years across insurance, telecommunications, applied research and higher education. Author of Ubunye Engine.',
   openGraph: {
     images: ogImages('Thabang Mashinini-Sekgoto, applied AI, data science and AI engineering'),
     type: 'website',
