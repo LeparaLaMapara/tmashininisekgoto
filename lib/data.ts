@@ -1154,14 +1154,27 @@ export const BIO = {
   shortBio: `I have spent nine years building and deploying data and AI systems inside real organisations, across banking and insurance, telecommunications and research. That work kept surfacing the same problem: moving data science out of experimentation and into systems that run reliably. My work now spans data science, AI engineering, applied research and reusable open source infrastructure.`,
   philosophy: 'Strive to build things that make a difference.',
   hobbies: [
-    { emoji: '🎥', label: 'Photography & Filmmaking' },
-    { emoji: '🎶', label: 'Music Production' },
-    { emoji: '🌍', label: 'Calisthenics & Exploring' },
-    { emoji: '🪂', label: 'Skydiving' },
-    { emoji: '🏁', label: 'Drag Racing' },
+    { emoji: '📷', label: 'Photography' },
+    { emoji: '🏁', label: 'Drifting & drag racing' },
+    { emoji: '🥊', label: 'Muay Thai' },
+    { emoji: '🏃', label: 'Sprinting, running & cycling' },
+    { emoji: '🪂', label: 'Skydiving & paragliding' },
+    { emoji: '🧗', label: 'Rock climbing (learning)' },
+    { emoji: '📺', label: 'Anime' },
   ],
   github: 'LeparaLaMapara',
 }
+
+/**
+ * Photographs Thabang has actually taken.
+ *
+ * Deliberately empty. The /about page renders the gallery only when this has
+ * entries, so the section simply does not exist until there are real photos to
+ * put in it. Adding them is dropping files into public/photos and listing them
+ * here; no layout work. Stock imagery is not an option: the page says he is a
+ * photographer, so borrowed pictures would undercut the one claim it makes.
+ */
+export const PERSONAL_PHOTOS: { src: string; alt: string }[] = []
 
 // --- Testimonials ---
 

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
+import { Testimonials } from '@/components/about/testimonials'
 import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2, ArrowRight, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/data'
@@ -172,6 +173,21 @@ export default function ResumePage() {
             })}
           </div>
         </div>
+
+        {/* Colleague references. These moved off /about, which is about the
+            person rather than the professional record; endorsements from people
+            he worked with belong with the career evidence. */}
+        <ScrollReveal>
+          <div className="mt-20 border-t border-border pt-10">
+            <p className="font-mono text-sm text-synapse tracking-widest uppercase mb-3">
+              What people say
+            </p>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight mb-8">
+              From colleagues
+            </h2>
+            <Testimonials />
+          </div>
+        </ScrollReveal>
 
         {/* Bottom CTA */}
         <ScrollReveal delay={0.2}>
