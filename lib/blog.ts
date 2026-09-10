@@ -120,6 +120,36 @@ function parsePost(fileName: string): BlogPost {
   }
 }
 
+/**
+ * The line under the title on the share card.
+ *
+ * The card fits roughly a hundred characters, and a hard slice at that number
+ * ends mid-phrase: "I used it like a senior engineer sitting next to me, and".
+ * Cut on a word and mark the cut, so the line reads as trimmed rather than as
+ * a sentence that fell off a cliff.
+ */
+export function cardSubtitle(summary: string, limit = 100): string {
+  const text = summary.trim()
+  if (text.length <= limit) return text
+
+  const cut = text.slice(0, limit)
+  const lastSpace = cut.lastIndexOf(' ')
+  let trimmed = cut.slice(0, lastSpace > 0 ? lastSpace : limit)
+
+  // Cutting on a word is not enough on its own. "…sitting next to me, and"
+  // ends on a conjunction that promises a clause the card will never show,
+  // which reads as a bug rather than as a trim. Drop trailing words that
+  // cannot end a thought, then any punctuation they leave behind.
+  const DANGLING = /\s+(and|but|or|nor|so|yet|the|a|an|to|of|for|in|on|at|by|with|from|as|that|which|is|was|are|were)$/i
+  let previous = ''
+  while (previous !== trimmed) {
+    previous = trimmed
+    trimmed = trimmed.replace(DANGLING, '').replace(/[\s,;:]+$/, '')
+  }
+
+  return `${trimmed.replace(/[\s,;:.]+$/, '')}…`
+}
+
 export function getAllPosts(): BlogPost[] {
   if (!fs.existsSync(CONTENT_DIR)) return []
 

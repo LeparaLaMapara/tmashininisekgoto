@@ -7,7 +7,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { getAllPosts, getPostBySlug, metaDescription } from '@/lib/blog'
+import { cardSubtitle, getAllPosts, getPostBySlug, metaDescription } from '@/lib/blog'
 import { JsonLd } from '@/components/seo/json-ld'
 import { blogPostingSchema, breadcrumbSchema } from '@/lib/schema'
 import { slugifyTag } from '@/lib/topics'
@@ -85,7 +85,7 @@ export async function generateMetadata({
       images: ogImages(
         `${post.title}, an article by Thabang Mashinini-Sekgoto`,
         post.title,
-        post.summary.slice(0, 100)
+        cardSubtitle(post.summary)
       ),
     },
   }
