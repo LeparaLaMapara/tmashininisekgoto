@@ -72,6 +72,17 @@ export interface BlogPost {
    * are never listed or linked.
    */
   seriesTotal?: number
+  /**
+   * The day this post goes live, YYYY-MM-DD, from `publishOn`.
+   *
+   * A scheduled post stays `published: false` until the publish-scheduled
+   * workflow flips it on this date. When set, it is also the post's public
+   * `date`, so the listing, feed and schema show the day readers first saw it
+   * rather than the day it was drafted. `date` itself is left as written:
+   * editing it on main would collide with nonprod's `published` line, which
+   * sits directly beneath it.
+   */
+  publishOn?: string
 }
 
 export interface Series {
@@ -123,18 +134,19 @@ function parsePost(fileName: string): BlogPost {
   const { data, content } = matter(raw)
   const stats = readingTime(content)
 
-  const publishedAt = data.date?.toString() ?? ''
   const toIso = (value: unknown): string | null => {
     if (!value) return null
     const parsed = new Date(value.toString())
     return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString()
   }
+  const publishOn = toIso(data.publishOn)?.slice(0, 10)
+  const publishedAt = (data.publishOn ?? data.date)?.toString() ?? ''
   const lastModified = toIso(data.updated) ?? toIso(publishedAt) ?? publishedAt
 
   return {
     slug,
     title: data.title ?? slug,
-    date: data.date?.toString() ?? '',
+    date: publishedAt,
     tags: (data.tags as string[]) ?? [],
     summary: data.summary ?? '',
     readingTime: stats.text,
@@ -147,6 +159,7 @@ function parsePost(fileName: string): BlogPost {
     series: data.series,
     seriesPart: data.seriesPart,
     seriesTotal: data.seriesTotal,
+    publishOn,
   }
 }
 
@@ -219,6 +232,27 @@ export function getSeries(): Series[] {
         Math.max(...s.posts.map((p) => new Date(p.date).getTime()))
       return latest(b) - latest(a)
     })
+}
+
+/**
+ * Posts that exist but are not live, mapped to their `publishOn` date when
+ * they are scheduled.
+ *
+ * Used to render a link to such a post as plain text (with its date, when it
+ * has one), so a series part can point at the next one before it exists
+ * without handing readers or crawlers a 404.
+ */
+export function getUnpublishedPosts(): Map<string, string | undefined> {
+  if (!fs.existsSync(CONTENT_DIR)) return new Map()
+
+  return new Map(
+    fs
+      .readdirSync(CONTENT_DIR)
+      .filter((f) => f.endsWith('.mdx'))
+      .map(parsePost)
+      .filter((post) => !post.published)
+      .map((post) => [post.slug, post.publishOn]),
+  )
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {

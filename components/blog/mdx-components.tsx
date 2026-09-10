@@ -125,6 +125,45 @@ function MdxLink({
   )
 }
 
+/**
+ * Posts that exist but are not live, keyed by slug, with their `publishOn`
+ * date when one is set.
+ */
+export type UnpublishedPosts = Map<string, string | undefined>
+
+const POST_LINK = /^(?:https?:\/\/(?:www\.)?tmashininisekgoto\.com)?\/blog\/([a-z0-9-]+)\/?(?:[?#].*)?$/
+
+function formatGoLive(day: string): string {
+  return new Date(`${day}T00:00:00Z`).toLocaleDateString('en-ZA', {
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  })
+}
+
+/**
+ * The same components, except that a link to a post which is not live yet is
+ * rendered as its text rather than as a link to a 404. Series parts can then
+ * point at the next part in the prose before it is published, and the link
+ * switches on by itself in the build that publishes it.
+ */
+export function createMdxComponents(unpublished: UnpublishedPosts): MDXComponents {
+  function GatedLink(props: AnchorHTMLAttributes<HTMLAnchorElement>) {
+    const slug = props.href?.match(POST_LINK)?.[1]
+    if (!slug || !unpublished.has(slug)) return <MdxLink {...props} />
+
+    const goLive = unpublished.get(slug)
+    return (
+      <span>
+        {props.children}
+        {goLive && <span className="text-muted"> (out {formatGoLive(goLive)})</span>}
+      </span>
+    )
+  }
+
+  return { ...mdxComponents, a: GatedLink as MDXComponents['a'] }
+}
+
 function Blockquote({
   children,
   ...props

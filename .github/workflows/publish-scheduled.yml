@@ -1,0 +1,66 @@
+name: Publish scheduled posts
+
+# A scheduled post is `published: false` with a `publishOn: YYYY-MM-DD` line in
+# its frontmatter. Every morning this flips any post whose day has come and
+# pushes the change to main, which is what makes Vercel build and serve it.
+# `npm run blog:schedule` prints the queue.
+#
+# It runs daily rather than only on the publishing days. The dates decide which
+# days get a post; running daily means a run GitHub skips or delays is caught
+# up the next morning instead of at the next slot.
+#
+# The commit is authored as the site owner and committed by the Actions bot.
+# Vercel's Hobby plan only builds commits from the account's own author, so a
+# bot-authored commit could land on main and never deploy.
+#
+# A push made with GITHUB_TOKEN does not trigger other workflows, so IndexNow
+# is dispatched explicitly. Cross-posting to dev.to and Hashnode stays a manual
+# decision in the Syndicate workflow.
+
+on:
+  schedule:
+    # 04:37 UTC is 06:37 in Johannesburg. Off the hour because GitHub queues
+    # scheduled runs and the top of the hour is when they back up most.
+    - cron: '37 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-scheduled
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Flip posts that are due
+        id: due
+        run: node scripts/blog/publish-due.mjs
+
+      - name: Commit and push
+        if: steps.due.outputs.count != '0'
+        env:
+          SLUGS: ${{ steps.due.outputs.slugs }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/blog
+          git commit --author="Thabang <thabangline@gmail.com>" \
+            -m "content(blog): publish ${SLUGS}" \
+            -m "Scheduled by publishOn and published by the publish-scheduled workflow."
+          git push
+
+      - name: Announce to IndexNow
+        if: steps.due.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run indexnow.yml --ref main
