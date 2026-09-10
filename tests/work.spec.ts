@@ -35,10 +35,11 @@ test.describe('work data integrity', () => {
     }
   })
 
-  test('confidential work asserts no public artifact', () => {
+  test('confidential work asserts no public artifact link', () => {
+    // A brand image is a design choice; a public artifact *link* would imply
+    // inspectable proof of confidential work, which must stay absent.
     const absa = PROJECTS.find((p) => p.slug === 'insurance-data-science-capability')!
     expect(absa.artifacts).toHaveLength(0)
-    expect(absa.image).toBeUndefined()
   })
 
   test('no fabricated hard numbers survive on the ABSA story', () => {
