@@ -1126,7 +1126,7 @@ export const PROJECT_CATEGORIES: Partial<Record<Project['category'], string>> = 
 export const BIO = {
   name: 'Thabang Mashinini-Sekgoto',
   location: 'Johannesburg, South Africa',
-  title: 'Lead Data Scientist (Acting Head of Data Science), ABSA Insurance',
+  title: 'Lead Data Scientist, ABSA Insurance',
   /**
    * The one line that says what the work is, used wherever the site has to
    * introduce the discipline rather than the employer. Kept as one string so
@@ -1216,7 +1216,7 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
   },
   {
     period: 'Mar 2024 - Present',
-    role: 'Lead Data Scientist (Acting Head of Data Science)',
+    role: 'Lead Data Scientist',
     org: 'ABSA Insurance',
     shortOrg: 'ABSA',
     description: 'Provide functional leadership for the Insurance Data Science capability, defining analytical priorities, technical direction and MLOps standards across underwriting, retention, fraud, telematics and climate risk, and leading a multidisciplinary team of senior data scientists and data engineers. Formulated and executed the enterprise data engineering and MLOps strategy on Databricks, building governed, automated paths from ingestion through to production so analytical products can be deployed and improved repeatably rather than rebuilt each time. Modernised the core telematics platform using Ubunye Engine, cutting pipeline processing latency from about two months to under 24 hours at scale. Built high-resolution geospatial flood and natural-catastrophe risk models with XGBoost and JBA ground-truth data across 230,000+ insured properties to sharpen underwriting, and architected hyperpersonalisation processing 2M+ daily telematics signals supporting retention, next-best-action and customer lifetime value.',
