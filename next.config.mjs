@@ -11,6 +11,53 @@ const nextConfig = {
     config.resolve.alias['@'] = process.cwd()
     return config
   },
+  /**
+   * Security response headers.
+   *
+   * The site had none. These are the four that cost nothing and close real
+   * gaps, plus a Content Security Policy in REPORT ONLY mode.
+   *
+   * The CSP is deliberately not enforced yet. This site loads a 3D career
+   * scene, a GitHub contribution calendar that fetches its own data, Vercel
+   * analytics, and Google Fonts. Enforcing a policy written blind would break
+   * one of them in production and the failure would be silent. Report only
+   * collects violations first; promote it to `Content-Security-Policy` once the
+   * reports are clean.
+   */
+  async headers() {
+    const csp = [
+      "default-src 'self'",
+      // Next injects inline bootstrap scripts, and the analytics scripts are
+      // served from Vercel.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https:",
+      "connect-src 'self' https://*.supabase.co https://api.github.com https://va.vercel-scripts.com",
+      "frame-src https://www.youtube.com https://youtube.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'self'",
+    ].join('; ')
+
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          { key: 'Content-Security-Policy-Report-Only', value: csp },
+        ],
+      },
+    ]
+  },
+
   async rewrites() {
     return [
       // `/blog/<slug>.md` serves the plain-markdown copy of a post. The handler

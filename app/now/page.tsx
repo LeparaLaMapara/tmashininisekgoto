@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/json-ld'
+import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { BIO, COURSES, PROJECTS } from '@/lib/data'
@@ -35,6 +37,24 @@ export default function NowPage() {
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-24">
+
+    <JsonLd
+
+      data={[
+
+        webPageSchema({ path: '/now', name: 'Now', description: 'What Thabang Mashinini-Sekgoto is working on right now.' }),
+
+        breadcrumbSchema([
+
+          { name: 'Home', path: '/' },
+
+          { name: 'Now', path: '/now' },
+
+        ]),
+
+      ]}
+
+    />
       <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-ivory">
         Now
       </h1>

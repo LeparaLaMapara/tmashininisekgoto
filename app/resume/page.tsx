@@ -4,6 +4,8 @@ import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCirc
 import Link from 'next/link'
 import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
 import { profileOpenGraph } from '@/lib/site'
+import { JsonLd } from '@/components/seo/json-ld'
+import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
 
 export const metadata: Metadata = {
   title: 'Resume: Data Science, AI Engineering & Research',
@@ -34,6 +36,20 @@ const DOT_STYLES: Record<string, string> = {
 export default function ResumePage() {
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
+      <JsonLd
+        data={[
+          profilePageSchema({
+            path: '/resume',
+            name: 'Curriculum Vitae of Thabang Mashinini-Sekgoto',
+            description:
+              'Career history: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research, Wits and the CSIR. MSc from the University of the Witwatersrand.',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'CV', path: '/resume' },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <ScrollReveal>

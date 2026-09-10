@@ -3,6 +3,8 @@ import { BentoGrid } from '@/components/about/bento-grid'
 import { Testimonials } from '@/components/about/testimonials'
 import { TechStack } from '@/components/about/tech-stack'
 import { profileOpenGraph } from '@/lib/site'
+import { JsonLd } from '@/components/seo/json-ld'
+import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
 
 export const metadata: Metadata = {
   title: 'About: AI Researcher & Data Science Leader',
@@ -15,6 +17,20 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <section className="relative min-h-screen py-24 md:py-32">
+      <JsonLd
+        data={[
+          profilePageSchema({
+            path: '/about',
+            name: 'About Thabang Mashinini-Sekgoto',
+            description:
+              'Applied AI, data science, AI engineering and research. Production systems in banking and insurance, telecommunications and research, and open source infrastructure.',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'About', path: '/about' },
+          ]),
+        ]}
+      />
       {/* Header */}
       <div className="mx-auto max-w-6xl px-6 mb-16">
         <p className="font-mono text-base text-synapse tracking-widest uppercase mb-3">

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/json-ld'
+import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import { ChatInterface } from '@/components/ai/chat-interface'
 import { WorkWithMe } from '@/components/ai/work-with-me'
@@ -14,6 +16,15 @@ export const metadata: Metadata = {
 export default function AIPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          webPageSchema({ path: '/ai', name: 'Thabang AI Assist', description: 'An AI assistant grounded on the real work, writing and projects of Thabang Mashinini-Sekgoto.' }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Thabang AI Assist', path: '/ai' },
+          ]),
+        ]}
+      />
       {/* Hero + assistant */}
       <section className="mx-auto max-w-4xl px-6 pt-24 pb-8">
         <div className="mb-8 text-center">

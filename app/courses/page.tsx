@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/json-ld'
+import { coursesSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import { createClient } from '@supabase/supabase-js'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
@@ -52,6 +54,15 @@ export default async function CoursesPage() {
 
   return (
     <section className="py-24 px-6">
+      <JsonLd
+        data={[
+          coursesSchema(COURSES.map((c) => ({ title: c.title, description: c.description, slug: c.slug }))),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Courses', path: '/courses' },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-6xl">
         <ScrollReveal>
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">

@@ -252,6 +252,187 @@ export function publicationsSchema() {
 }
 
 /** Breadcrumbs for nested routes. `path` is site-relative. */
+/**
+ * A page that is primarily about the person, e.g. /about and /resume.
+ *
+ * `ProfilePage` with `mainEntity` pointing at the Person is what tells a
+ * knowledge graph "this page is the profile of that entity" rather than "this
+ * page happens to mention them". Without it the About page carried no
+ * structured data at all and the strongest biography on the site was invisible
+ * to machines.
+ */
+export function profilePageSchema(input: {
+  path: string
+  name: string
+  description: string
+  dateModified?: string
+}) {
+  const url = absoluteUrl(input.path)
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': `${url}#profile`,
+    url,
+    name: input.name,
+    description: input.description,
+    inLanguage: 'en',
+    isPartOf: webSiteRef(),
+    mainEntity: personRef(),
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+  }
+}
+
+/** An ordinary page, so every route resolves to the site and the person. */
+export function webPageSchema(input: {
+  path: string
+  name: string
+  description: string
+}) {
+  const url = absoluteUrl(input.path)
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${url}#page`,
+    url,
+    name: input.name,
+    description: input.description,
+    inLanguage: 'en',
+    isPartOf: webSiteRef(),
+    about: personRef(),
+  }
+}
+
+/**
+ * An open source project, as code rather than as a page about code.
+ *
+ * This is the node that was missing entirely. Ubunye Engine has a repository, a
+ * documentation site and a published package, and without a
+ * `SoftwareSourceCode` entity naming the same Person as author it does not
+ * exist as a thing a knowledge graph can attach to him.
+ *
+ * `programmingLanguage` and `codeRepository` come from the project record. No
+ * adoption figure, star count or user number is asserted anywhere, because none
+ * can be verified from this repository.
+ */
+export function softwareSourceCodeSchema(input: {
+  name: string
+  description: string
+  codeRepository: string
+  url?: string
+  programmingLanguage: string[]
+  slug: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    '@id': `${SITE_URL}/work#${input.slug}`,
+    name: input.name,
+    description: input.description,
+    codeRepository: input.codeRepository,
+    ...(input.url ? { url: input.url } : {}),
+    programmingLanguage: input.programmingLanguage,
+    author: personRef(),
+    maintainer: personRef(),
+    isPartOf: webSiteRef(),
+    license: 'https://opensource.org/licenses/MIT',
+  }
+}
+
+/**
+ * A recorded talk.
+ *
+ * `uploadDate` is required by consumers for VideoObject; the talk records carry
+ * a date, so nothing is guessed. `embedUrl` is deliberately not asserted: the
+ * records hold a watch URL, and claiming an embed URL that may not exist would
+ * be a fabricated field.
+ */
+export function videoObjectSchema(input: {
+  title: string
+  description: string
+  date: string
+  videoUrl: string
+  event: string
+}) {
+  return {
+    '@type': 'VideoObject',
+    name: input.title,
+    description: input.description,
+    uploadDate: new Date(input.date).toISOString(),
+    contentUrl: input.videoUrl,
+    url: input.videoUrl,
+    author: personRef(),
+    creator: personRef(),
+    ...(input.event ? { recordedAt: { '@type': 'Event', name: input.event } } : {}),
+  }
+}
+
+/** The talks page: a list of the recorded talks above. */
+export function talksSchema(talks: {
+  title: string
+  description: string
+  date: string
+  videoUrl: string
+  event: string
+}[]) {
+  const url = absoluteUrl('/talks')
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${url}#collection`,
+    url,
+    name: 'Talks and press',
+    inLanguage: 'en',
+    isPartOf: webSiteRef(),
+    about: personRef(),
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: talks.length,
+      itemListElement: talks.map((talk, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: videoObjectSchema(talk),
+      })),
+    },
+  }
+}
+
+/**
+ * A course.
+ *
+ * Only `name`, `description` and provider are asserted. No `CourseInstance`,
+ * no start date, no price and no enrolment figure: the courses are in
+ * preparation and every one of those fields would be a claim the repository
+ * cannot support.
+ */
+export function coursesSchema(courses: { title: string; description: string; slug: string }[]) {
+  const url = absoluteUrl('/courses')
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${url}#collection`,
+    url,
+    name: 'Courses',
+    inLanguage: 'en',
+    isPartOf: webSiteRef(),
+    about: personRef(),
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: courses.length,
+      itemListElement: courses.map((course, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Course',
+          name: course.title,
+          description: course.description,
+          url: `${url}#${course.slug}`,
+          provider: personRef(),
+        },
+      })),
+    },
+  }
+}
+
 export function breadcrumbSchema(trail: { name: string; path: string }[]) {
   return {
     '@context': 'https://schema.org',

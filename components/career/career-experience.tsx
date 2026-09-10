@@ -370,7 +370,7 @@ export function CareerExperience() {
           >
             <Gamepad2 className="h-10 w-10 text-synapse" />
             <div>
-              <h1 className="font-display text-3xl font-bold sm:text-4xl">Walk through my journey</h1>
+              <h2 className="font-display text-3xl font-bold sm:text-4xl">Walk through my journey</h2>
               <p className="mx-auto mt-3 max-w-md text-muted">
                 Sail through my career from 2014 to today. Walk up to each signpost to open its chapter,
                 and grab the golden berries along the way.

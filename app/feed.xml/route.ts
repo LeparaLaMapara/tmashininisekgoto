@@ -22,6 +22,10 @@ export function GET() {
     <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml"/>
+    <!-- WebSub. Subscribers that understand it get pushed a new item instead
+         of polling. Google's public hub is used rather than self hosting one,
+         because running a hub for a handful of subscribers is not worth it. -->
+    <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
 ${items}
   </channel>
 </rss>`

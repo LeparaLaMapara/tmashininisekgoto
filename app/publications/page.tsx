@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
-import { publicationsSchema } from '@/lib/schema'
+import { publicationsSchema, breadcrumbSchema } from '@/lib/schema'
 import { citations } from '@/lib/citations'
 import { citationTotal, citationsFetchedAt, getPublications } from '@/lib/publications'
 import { CiteBox } from '@/components/publications/cite-box'
@@ -24,7 +24,15 @@ export default function PublicationsPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
-      <JsonLd data={publicationsSchema()} />
+      <JsonLd
+        data={[
+          ...publicationsSchema(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Publications', path: '/publications' },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <ScrollReveal>

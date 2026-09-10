@@ -3,6 +3,8 @@ import { pageOpenGraph } from '@/lib/site'
 import { TALKS, WRITINGS } from '@/lib/data'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ExternalLink, BookOpen } from 'lucide-react'
+import { JsonLd } from '@/components/seo/json-ld'
+import { talksSchema, breadcrumbSchema } from '@/lib/schema'
 
 export const metadata: Metadata = {
   title: 'Talks & Press on AI and Data Science',
@@ -20,6 +22,15 @@ export default function TalksPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
+      <JsonLd
+        data={[
+          talksSchema(sortedTalks),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Talks', path: '/talks' },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <ScrollReveal>

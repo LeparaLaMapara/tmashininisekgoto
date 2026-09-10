@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/seo/json-ld'
+import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { getAllTags } from '@/lib/blog'
@@ -16,6 +18,15 @@ export default function TagsPage() {
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-24">
+      <JsonLd
+        data={[
+          webPageSchema({ path: '/tags', name: 'Topics', description: 'Writing by Thabang Mashinini-Sekgoto, browsable by topic.' }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Topics', path: '/tags' },
+          ]),
+        ]}
+      />
       <h1 className="font-display text-4xl font-bold tracking-tight text-ivory">
         Topics
       </h1>
