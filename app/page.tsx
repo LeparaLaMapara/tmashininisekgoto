@@ -28,7 +28,7 @@ const SELECTED = ['ABSA Insurance', 'Vodacom', 'IBM Research']
   .map((org) => CAREER_TIMELINE.find((m) => m.org === org && m.kind === 'work'))
   .filter((m): m is NonNullable<typeof m> => Boolean(m))
 
-const UBUNYE = PROJECTS.find((p) => p.slug === 'ubunye-ai-ecosystems')!
+const UBUNYE = PROJECTS.find((p) => p.slug === 'ubunye-engine')!
 const MSC = CAREER_TIMELINE.find((m) => m.shortOrg === 'MSc')!
 const PROPOSAL = CAREER_TIMELINE.find((m) => m.shortOrg === 'Research')!
 

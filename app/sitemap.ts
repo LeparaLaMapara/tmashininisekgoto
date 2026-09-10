@@ -3,6 +3,7 @@ import { execFileSync } from 'child_process'
 import path from 'path'
 import type { MetadataRoute } from 'next'
 import { getAllPosts, getAllTags, getPostsByTag } from '@/lib/blog'
+import { getProjectsOrdered } from '@/lib/data'
 import { SITE_URL } from '@/lib/site'
 
 /**
@@ -106,5 +107,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }))
 
-  return [...staticPages, blogIndex, ...postPages, ...tagPages]
+  // Work case studies were reachable but never listed. Each is a stable
+  // page; the /work index above already carries its own lastmod.
+  const workPages = getProjectsOrdered().map((project) => ({
+    url: `${SITE_URL}/work/${project.slug}`,
+    lastModified: sourceModified('lib/data.ts'),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, blogIndex, ...postPages, ...tagPages, ...workPages]
 }

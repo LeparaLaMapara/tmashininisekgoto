@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
-import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2 } from 'lucide-react'
+import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
+import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/data'
 import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
@@ -127,6 +127,18 @@ export default function ResumePage() {
                     </h3>
                     <p className="text-sm text-synapse mb-2">{item.org}</p>
                     <p className="text-sm text-muted leading-relaxed">{item.description}</p>
+                    {(() => {
+                      const work = getProjectForRole(item.org, item.period)
+                      return work ? (
+                        <Link
+                          href={`/work/${work.slug}`}
+                          className="mt-2 inline-flex items-center gap-1.5 text-xs font-mono text-synapse hover:gap-2.5 transition-all"
+                        >
+                          Read the story
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      ) : null
+                    })()}
                   </div>
                 </div>
               </ScrollReveal>

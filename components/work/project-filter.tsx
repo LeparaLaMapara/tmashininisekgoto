@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PROJECTS, PROJECT_CATEGORIES, type Project } from '@/lib/data'
+import { getProjectsOrdered, PROJECT_CATEGORIES, type Project } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { ProjectCard } from './project-card'
 
@@ -11,9 +11,10 @@ type Category = Project['category'] | null
 export function ProjectFilter() {
   const [active, setActive] = useState<Category>(null)
 
+  const ordered = getProjectsOrdered()
   const filtered = active
-    ? PROJECTS.filter((p) => p.category === active)
-    : PROJECTS
+    ? ordered.filter((p) => p.category === active)
+    : ordered
 
   const categories = Object.entries(PROJECT_CATEGORIES) as [
     Project['category'],

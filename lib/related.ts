@@ -89,7 +89,7 @@ function projectNode(project: Project): Node {
   addTerms(terms, titleTokens(project.title), W_TITLE)
   return {
     type: 'Project', key: project.slug, title: project.title,
-    href: '/work', blurb: project.problem, terms,
+    href: `/work/${project.slug}`, blurb: project.problem, terms,
   }
 }
 

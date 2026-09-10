@@ -5,15 +5,61 @@
 
 // --- Types ---
 
+/** A public link a visitor can inspect. Every one is verified before it ships. */
+export interface Artifact {
+  kind: 'github' | 'pypi' | 'docs' | 'examples' | 'paper' | 'publication' | 'site' | 'product'
+  href: string
+  /** Overrides the default label for the kind. */
+  label?: string
+}
+
+/**
+ * The deep case study, following one honest template. A section is only filled
+ * where it can be supported; contribution stays verb-precise and never converts
+ * team work into solo work.
+ */
+export interface CaseStudy {
+  problem: string
+  why: string
+  context: string
+  contribution: string
+  changed: string
+  benefited: string
+  remained: string
+  /** The stack, shown in a collapsed block for readers who want it. */
+  technicalContext?: string
+}
+
 export interface Project {
   slug: string
   title: string
-  category: 'open-source' | 'telecoms' | 'banking' | 'research' | 'education' | 'social-impact' | 'building-now'
+  category: 'open-source' | 'telecoms' | 'banking' | 'insurance' | 'research' | 'education' | 'social-impact' | 'building-now'
+  /** Explicit page order, low first. */
+  order: number
+  /** Problem-oriented card title, plain English, not a product name. */
+  cardTitle: string
+  /** One sentence naming the problem and what came of it. */
+  oneLiner: string
+  /** Why it was worth solving. */
+  why: string
+  /** One verified outcome for the card. Omitted rather than softened. */
+  outcome?: string
+  /** 3-6 topics, used on the card and by search/related/hubs. Not skill badges. */
+  topics: string[]
+  /** Verified public links. */
+  artifacts: Artifact[]
+  /** The Level-3 deep story. */
+  caseStudy: CaseStudy
+  /** Cross-link to the matching /resume role, where one exists. */
+  resume?: { org: string; period: string }
+
+  // --- Legacy fields, still read by search, related, RAG and schema. ---
   problem: string
   solution: string
   impact: string
   skills: string[]
-  image: string
+  /** Optional: some stories (confidential employer work) have no fitting image. */
+  image?: string
   ghLink?: string
   productLink?: string
   paperLink?: string
@@ -99,72 +145,344 @@ export const IMPACT_NUMBERS: ImpactNumber[] = [
 // --- Projects ---
 
 export const PROJECTS: Project[] = [
-  // Open Source
   {
-    slug: 'ubunye-ai-ecosystems',
-    title: 'Ubunye AI Ecosystems (UAIE)',
+    slug: 'ubunye-engine',
+    title: 'Ubunye Engine',
     category: 'open-source',
-    problem: 'Every data team rebuilds the same pipelines, and the work dies whenever the platform changes. And too much of the tooling Africa runs on is built elsewhere. Ubunye, isiZulu for unity, exists to produce serious open source from here.',
-    solution: 'An open source organisation whose flagship, Ubunye Engine, lets you describe a data or ML pipeline once, as a small folder of config and Python, and run that exact folder on a laptop, Docker, Kubernetes, cloud clusters, or Databricks. For data and ML teams who want pipelines that outlive their platform, and for learners who want production habits from day one.',
-    impact: 'Released on PyPI with the same pipeline proven to produce identical output on seven different environments, eleven worked examples, and a full documentation site.',
+    order: 1,
+    cardTitle: 'What happens after the notebook works?',
+    oneLiner:
+      'A pipeline that runs on your laptop rarely survives the move to a cluster. Ubunye Engine lets you describe it once and run that same folder anywhere.',
+    why:
+      'Small teams can build the model. What stops them is everything around it, config, environments, reproducibility, deployment, so I packaged that gap into something reusable.',
+    outcome:
+      'The same pipeline produces identical output across seven environments; released on PyPI with a documentation site and eleven worked examples.',
+    topics: ['AI Engineering', 'MLOps', 'Data Pipelines', 'Reproducible Research', 'Open Source'],
+    artifacts: [
+      { kind: 'github', href: 'https://github.com/ubunye-ai-ecosystems/ubunye_engine' },
+      { kind: 'pypi', href: 'https://pypi.org/project/ubunye-engine/' },
+      { kind: 'docs', href: 'https://ubunye-ai-ecosystems.github.io/ubunye_engine/' },
+      { kind: 'github', href: 'https://github.com/ubunye-ai-ecosystems', label: 'Ubunye AI Ecosystems' },
+    ],
+    caseStudy: {
+      problem:
+        'The same work dies on every platform change. A pipeline written for one environment, a laptop, a cluster, a managed cloud, has to be rewritten to run on the next, and a data team ends up rebuilding the same ingestion, configuration and deployment plumbing again and again.',
+      why:
+        'The distance between "the model works in a notebook" and "the system runs reliably in production" is mostly engineering, and it is the same engineering every time. Packaging it once frees a small team to spend its effort on the actual problem.',
+      context:
+        'Ubunye Engine is one artifact within Ubunye AI Ecosystems, a broader open-source effort built on a simple idea: we should not only consume AI and data tooling, we should also build useful tools from the recurring problems we hit in industry, engineering and research, and give them away.',
+      contribution:
+        'I built the Engine: a config-first design where a pipeline is a small folder of configuration and Python, a plugin system for readers, writers and transforms, a model registry with promotion gates, lineage tracking, and a CLI. It is documented, tested, and published.',
+      changed:
+        'The same folder now runs unchanged on a laptop, Docker, Kubernetes, a cloud cluster or Databricks. Portability stops being a rewrite and becomes a run target.',
+      benefited:
+        'Data and ML teams who want pipelines that outlive their platform, and learners who want production habits from the first day rather than after their first outage.',
+      remained:
+        'A published, documented open-source framework on PyPI, with worked examples anyone can run and extend, and a plugin contract that lets others add storage and connectors without touching the engine.',
+      technicalContext:
+        'Python, config via YAML + Jinja2 + Pydantic, Apache Spark, Delta Lake, entry-point plugins, a CLI (init / validate / plan / run / lineage / models), MkDocs documentation, CI, PyPI.',
+    },
+    // Legacy fields for search/related/RAG/schema.
+    problem:
+      'Every data team rebuilds the same pipelines, and the work dies whenever the platform changes.',
+    solution:
+      'An open-source framework: describe a data or ML pipeline once as a small folder of config and Python, then run that exact folder on a laptop, Docker, Kubernetes, cloud clusters or Databricks.',
+    impact:
+      'Released on PyPI with the same pipeline proven to produce identical output on seven environments, eleven worked examples, and a documentation site.',
     skills: ['Python', 'Apache Spark', 'Databricks', 'Kubernetes', 'Docker', 'CI/CD'],
     image: '/projects/ubunye-ai.png',
-    ghLink: 'https://github.com/ubunye-ai-ecosystems',
+    ghLink: 'https://github.com/ubunye-ai-ecosystems/ubunye_engine',
     productLink: 'https://ubunye-ai-ecosystems.github.io/ubunye_engine/',
   },
   {
     slug: 'tfilterspy',
-    title: 'Tfilterspy: Bayesian Filtering Library',
+    title: 'Tfilterspy',
     category: 'open-source',
-    problem: 'Real sensors lie. Vehicle trackers, IoT devices and industrial equipment all produce noisy readings, and you need an honest estimate of what is actually happening underneath the noise.',
-    solution: 'An open source Python library of Bayesian filters, including Kalman, Particle and Ensemble filters, with a familiar scikit-learn style API that scales out with Dask. For engineers and scientists working with noisy time series who want proven mathematics without writing it themselves.',
-    impact: 'Published on PyPI and used for telematics scoring, IoT forecasting, and real time state estimation at scale.',
+    order: 2,
+    cardTitle: 'Making noisy sensor data easier to work with',
+    oneLiner:
+      'Working with telemetry across telecoms and insurance, the same problem kept coming back, real sensors lie, so I built the filtering tools I kept re-implementing into one library.',
+    why:
+      'State-estimation methods work, but the available implementations were mathematical or fragmented. The goal was to make them usable without first becoming a specialist.',
+    outcome:
+      'Published on PyPI with documentation, a scikit-learn-style API over Kalman, Particle and Ensemble filters, and used in production telematics state-estimation work.',
+    topics: ['Sensor Data', 'State Estimation', 'Kalman Filtering', 'Time Series', 'Open Source'],
+    artifacts: [
+      { kind: 'github', href: 'https://github.com/ubunye-ai-ecosystems/tfilterspy' },
+      { kind: 'pypi', href: 'https://pypi.org/project/tfilterspy/' },
+      { kind: 'docs', href: 'https://ubunye-ai-ecosystems.github.io/tfilterspy' },
+    ],
+    caseStudy: {
+      problem:
+        'Real-world sensors are noisy. Vehicle trackers, IoT devices and industrial equipment all produce readings you cannot trust directly, and you need an honest estimate of what is actually happening underneath the noise.',
+      why:
+        'Filtering and state-estimation techniques solve this, but re-implementing Kalman, Particle or Ensemble filters from papers on every new project is slow and error-prone, and it puts a specialist in the path of every ordinary data-science task.',
+      context:
+        'The recurring context was telemetry: the same class of noisy time-series problem appearing across telecommunications and insurance, in telematics and IoT, where the maths was known but the reusable tooling was not to hand.',
+      contribution:
+        'I built Tfilterspy as an open-source Python library, with a deliberate design decision: the API should feel natural to anyone who already knows scikit-learn, so sophisticated filtering is available without a state-estimation background. It was also built to scale beyond a single machine.',
+      changed:
+        'Filtering that used to mean re-deriving methods now means fitting a familiar estimator. The techniques became reachable for practitioners who are not filtering specialists.',
+      benefited:
+        'Engineers and scientists working with noisy time series, and specifically the production telematics state-estimation work it has been used in.',
+      remained:
+        'A published, documented library on PyPI that anyone can install and build on.',
+      technicalContext:
+        'Python, NumPy, SciPy, a scikit-learn-style estimator API, Dask for scaling out, CI, PyPI.',
+    },
+    problem:
+      'Real sensors lie. Vehicle trackers, IoT devices and industrial equipment all produce noisy readings, and you need an honest estimate of what is actually happening underneath the noise.',
+    solution:
+      'An open-source Python library of Bayesian filters, including Kalman, Particle and Ensemble filters, with a familiar scikit-learn style API that scales out with Dask.',
+    impact:
+      'Published on PyPI with documentation, and used in production telematics state-estimation work.',
     skills: ['Python', 'NumPy', 'Dask', 'PyPI', 'CI/CD'],
     image: '/projects/tfilterspy.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/tfilterspy',
     productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy',
   },
   {
-    slug: 'kasilam-digital',
-    title: 'Kasilam Digital Platforms',
-    category: 'social-impact',
-    problem: 'Two problems with one root. Township businesses stay invisible online because agencies cost more than they can spend. And township youth cannot turn their potential into income, because the skills that now pay, building with AI, are taught everywhere except here.',
-    solution: 'An initiative that teaches young people to build with AI by doing real work: they use AI to ship real websites and tools for township SMEs, described in plain English, with no formal coding background needed. The businesses get a digital storefront and new customers; the young builders get in-demand AI skills, a public portfolio, and a path to earning from it. Built to create employment and grow the local economy, not to hand out charity.',
-    impact: 'Seven live sites already shipped for real businesses at no cost to them, including restaurants, a school, a cleaning service, a photographer and a financial advisory, each one built as hands-on training for a young person learning to earn with AI.',
-    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'AI', 'GitHub Pages'],
-    image: '/projects/kasilam.png',
-    ghLink: 'https://github.com/orgs/Kasilam-Projects/repositories',
-    productLink: 'https://kasilamdigitialplatforms.vercel.app/',
-    siteLinks: [
-      { label: 'Kasilam Projects', href: 'https://kasilamdigitialplatforms.vercel.app/' },
-    ],
+    slug: 'insurance-data-science-capability',
+    title: 'Building the capability around the models',
+    category: 'insurance',
+    order: 3,
+    cardTitle: 'Building the capability around the models',
+    oneLiner:
+      'Leading insurance data science, the work was less about any single model and more about the people, engineering and governance that let models reach production reliably.',
+    why:
+      'A data-science capability is more than a collection of models. It needs repeatable engineering, governance, and knowledge that does not live in one person’s head.',
+    outcome:
+      'A scoring cycle that used to take about two months now runs in under a day, and models move to production through repeatable engineering rather than one-off effort.',
+    topics: ['Production ML', 'MLOps', 'Geospatial AI', 'Telematics', 'Technical Leadership', 'AI Governance'],
+    artifacts: [],
+    caseStudy: {
+      problem:
+        'Insurance data science had capable people building models, but getting those models into production reliably depended on individual knowledge and one-off effort. The bottleneck was the engineering and governance around the models, not the models themselves.',
+      why:
+        'When a capability depends on who happens to know how a thing works, it does not scale and it does not survive people leaving. Underwriting, retention, fraud, telematics and climate-risk work all need models that reach production dependably.',
+      context:
+        'A large, regulated enterprise environment, where governance, cloud architecture and repeatable practice matter as much as model quality, and where confidentiality limits what can be said about specific systems.',
+      contribution:
+        'I lead the insurance data science capability. The emphasis has been on the things that let a team ship reliably: modernising the telematics platform, building reusable engineering practice and lifecycle discipline, geospatial flood-risk modelling, and governance, so the team’s work depends less on any one person.',
+      changed:
+        'Efficiency and reliability, stated as change rather than counts: a telematics scoring cycle that took about two months now runs in under a day, and models move to production through repeatable practice instead of heroics.',
+      benefited:
+        'Insurance operations, the data scientists on the team who can now ship more reliably, and ultimately customers on the other end of underwriting, retention and risk decisions.',
+      remained:
+        'Reusable engineering practice, governance, and a more self-sufficient team, capability that outlasts any single project. Some of the modernisation runs on Ubunye Engine.',
+      technicalContext:
+        'Cloud-first architecture, Databricks, geospatial ML, MLOps and model-lifecycle practice, AI governance. Specifics are limited by employer confidentiality.',
+    },
+    problem:
+      'A data-science capability is more than a collection of models. Getting models into production reliably depended on individual knowledge and one-off effort.',
+    solution:
+      'Leading the insurance data science capability, with the emphasis on the engineering, governance and repeatable practice that let models reach production, plus telematics modernisation and geospatial flood-risk work.',
+    impact:
+      'A telematics scoring cycle that took about two months now runs in under a day, and the team ships to production through repeatable engineering rather than one-off effort.',
+    skills: ['Databricks', 'Geospatial ML', 'MLOps', 'AI Governance', 'Enterprise AI'],
+    resume: { org: 'ABSA Insurance', period: 'Mar 2024 - Present' },
   },
-  // Professional & Research
   {
     slug: 'vodacom-smart-generators',
-    title: 'Vodacom Smart Generators Optimization',
+    title: 'Keeping a network running when the power doesn’t',
     category: 'telecoms',
-    problem: 'Load shedding forced thousands of network sites onto diesel generators, and every bad dispatch decision burned fuel and dropped the network for real customers.',
-    solution: 'A constrained optimisation engine with real time streaming analytics that decides which generators to run, where, and when. Built for the network operations teams who keep South Africa connected through power cuts.',
-    impact: 'Reduced downtime by 5%, lowered operational costs by 30%, and supported R1B in annual savings.',
+    order: 4,
+    cardTitle: 'Keeping a network running when the power doesn’t',
+    oneLiner:
+      'Load-shedding forced thousands of mobile sites onto generators, and every bad dispatch call burned fuel or dropped the network for real customers.',
+    why:
+      'With constrained fuel and crews, someone had to decide where intervention actually mattered, in real time, across the whole estate.',
+    outcome:
+      'A real-time optimisation and decision system across the network that processes on the order of a million events a day and supported roughly R1B in annual savings.',
+    topics: ['Optimization', 'Real-Time Streaming', 'Telemetry', 'Production ML', 'Decision Systems'],
+    artifacts: [
+      { kind: 'product', href: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring', label: 'Vodacom product page' },
+    ],
+    caseStudy: {
+      problem:
+        'Load-shedding pushed thousands of network sites onto diesel generators and batteries. Fuel was limited, crews were limited, and telemetry and alarms were noisy, so every decision about which site to attend to, and when, had consequences for cost and for whether the network stayed up.',
+      why:
+        'A dropped site is dropped service for real people, and wasted diesel is real money at national scale. The hard part was deciding where intervention mattered most under genuine resource constraints.',
+      context:
+        'Thousands of mobile sites with interdependent network effects, unreliable power, and a constant stream of telemetry and alarms that had to be turned into operational decisions in real time.',
+      contribution:
+        'I led a team of data scientists and engineers. We built a constrained-optimisation engine over real-time streaming telemetry that decides which generators to run, where and when, and I architected the platform behind it.',
+      changed:
+        'Dispatch moved from reactive to informed: the system weighs cost, network impact and constraints across the estate and directs effort where it matters, in real time.',
+      benefited:
+        'The network-operations teams who keep South Africa connected through power cuts, and the customers who stayed connected because of better decisions.',
+      remained:
+        'A production decision system, and the streaming engineering underneath it, including a custom stream-processing framework built to handle the telemetry volume.',
+      technicalContext:
+        'Real-time streaming on the order of a million events a day, constrained optimisation (CVXPY), PyFlink / PySpark / Kafka, Kubernetes, Docker, GitLab CI.',
+    },
+    problem:
+      'Load-shedding forced thousands of network sites onto diesel generators, and every bad dispatch decision burned fuel and dropped the network for real customers.',
+    solution:
+      'A constrained-optimisation engine with real-time streaming analytics that decides which generators to run, where, and when, built for the network-operations teams who keep South Africa connected through power cuts.',
+    impact:
+      'A real-time decision system across the network that processes on the order of a million events a day and supported roughly R1B in annual savings.',
     skills: ['PyFlink', 'Kafka', 'CVXPY', 'PySpark', 'Kubernetes', 'Docker', 'GitLab CI'],
     image: '/projects/smart-generators.png',
     productLink: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring',
+    resume: { org: 'Vodacom', period: 'Nov 2021 - Mar 2024' },
   },
   {
     slug: 'ibm-geospatial',
-    title: 'IBM GeoSpatial Analytics Suites',
+    title: 'Turning environmental data into something people can use',
     category: 'research',
-    problem: 'Climate and environmental risk questions need planet scale satellite data, and almost no organisation can process it on its own.',
-    solution: 'Analytics workflows on IBM PAIRS that process multi terabyte satellite raster and vector datasets. For enterprises that need environmental, climate and supply chain risk intelligence they can act on.',
-    impact: "Integrated into IBM's Environmental Intelligence Suite for global environmental monitoring.",
+    order: 5,
+    cardTitle: 'Turning environmental data into something people can use',
+    oneLiner:
+      'Satellite and climate data is huge and awkward, many formats, raster and vector, heavy to process, and few organisations can handle it alone.',
+    why:
+      'Environmental and climate-risk questions need planet-scale data turned into something an organisation can actually act on.',
+    outcome:
+      'Analytics workflows on IBM PAIRS processing multi-terabyte datasets, feeding IBM’s Environmental Intelligence Suite.',
+    topics: ['Geospatial AI', 'Remote Sensing', 'Applied Research', 'Climate Risk', 'Distributed Computing'],
+    artifacts: [
+      { kind: 'github', href: 'https://github.com/IBM/ibmpairs', label: 'IBM PAIRS' },
+      { kind: 'product', href: 'https://www.ibm.com/products/environmental-intelligence-suite', label: 'IBM Environmental Intelligence Suite' },
+      { kind: 'publication', href: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC' },
+    ],
+    caseStudy: {
+      problem:
+        'Climate and environmental-risk questions need planet-scale satellite data, and almost no organisation can process it on its own: the data is enormous, comes in many raster and vector formats, and varies in spatial and temporal resolution.',
+      why:
+        'Environmental, climate and supply-chain risk intelligence is only useful if the underlying data can be processed and turned into something an organisation can act on.',
+      context:
+        'Research at IBM Research, working on the PAIRS geospatial platform, where the challenge was as much data engineering at scale as it was modelling.',
+      contribution:
+        'I researched and built machine-learning and geospatial analytics for environmental and climate applications, deployed climate-forecasting models onto the IBM PAIRS platform, and contributed to a COVID-19 risk-index dashboard for Gauteng.',
+      changed:
+        'Multi-terabyte satellite datasets became analytics workflows that could feed a product, rather than a processing problem each organisation faced alone.',
+      benefited:
+        'Enterprises needing environmental, climate and supply-chain risk intelligence, through IBM’s Environmental Intelligence Suite.',
+      remained:
+        'Research contributions, a publication, and work that fed a production environmental-intelligence product.',
+      technicalContext:
+        'IBM PAIRS, IBM Cloud, Python, TensorFlow, GeoPandas, Hadoop, Airflow, large-scale raster and vector processing.',
+    },
+    problem:
+      'Climate and environmental-risk questions need planet-scale satellite data, and almost no organisation can process it on its own.',
+    solution:
+      'Analytics workflows on IBM PAIRS that process multi-terabyte satellite raster and vector datasets, for enterprises that need environmental, climate and supply-chain risk intelligence.',
+    impact:
+      "Work that fed IBM's Environmental Intelligence Suite for global environmental monitoring.",
     skills: ['IBM PAIRS', 'IBM Cloud', 'Airflow', 'Python', 'Hadoop', 'GeoPandas', 'TensorFlow'],
     image: '/projects/ibm-geospatial.png',
     ghLink: 'https://github.com/IBM/ibmpairs',
     productLink: 'https://www.ibm.com/products/environmental-intelligence-suite',
     paperLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC',
+    resume: { org: 'IBM Research', period: 'Apr 2020 - Nov 2021' },
+  },
+  {
+    slug: 'wits-student-success',
+    title: 'A recommendation system for student success',
+    category: 'research',
+    order: 6,
+    cardTitle: 'A recommendation system for student success',
+    oneLiner:
+      'Institutional planning needed to find the students and interventions that mattered in a lot of noisy administrative data.',
+    why:
+      'The outputs fed real decisions about planning and student support, and the knowledge had to outlast me, so part of the work was teaching it.',
+    outcome:
+      'A clustering-based recommendation engine associated with over R2M a year in government subsidy; 76+ staff and students trained.',
+    topics: ['Recommendation Systems', 'Applied Research', 'Analytics', 'AI Education'],
+    artifacts: [],
+    caseStudy: {
+      problem:
+        'A university’s institutional planning and student-success work sat on a lot of noisy administrative data, and the useful signals, which students and which interventions mattered, were hard to surface.',
+      why:
+        'The outputs were not a demo: they fed real decisions about planning and student support, where getting it right changes outcomes for students.',
+      context:
+        'Business Intelligence Services at the University of the Witwatersrand, where the work also had to be usable and maintainable by staff after I moved on.',
+      contribution:
+        'I built a clustering-based recommendation engine and the reporting and analytics around it, and I trained 76+ staff and students so the capability did not leave with me.',
+      changed:
+        'Planning gained a data-driven way to target support, and the institution kept both the system and the people who understood it.',
+      benefited:
+        'Institutional planning, the staff and students trained, and the students the interventions were designed to support.',
+      remained:
+        'A recommendation and analytics system in use for planning, and trained people, an early instance of a pattern that runs through the later work: leave capability behind, not just software.',
+      technicalContext:
+        'Python, SQL, clustering and recommendation methods, Power BI reporting.',
+    },
+    problem:
+      'Institutional planning needed to find the students and interventions that mattered in a lot of noisy administrative data.',
+    solution:
+      'A clustering-based recommendation engine and the reporting and analytics around it, built to be maintainable by staff, with 76+ staff and students trained to use it.',
+    impact:
+      'A recommendation engine associated with over R2M a year in government subsidy, and 76+ staff and students trained.',
+    skills: ['Recommendation Systems', 'Clustering', 'Analytics', 'Power BI'],
+    image: '/projects/wits-recommender.png',
+    resume: { org: 'Business Intelligence Services - University of the Witwatersrand', period: 'Jun 2018 - Apr 2020' },
+  },
+  {
+    slug: 'kasilam-digital',
+    title: 'Teaching people to build for themselves',
+    category: 'social-impact',
+    order: 7,
+    cardTitle: 'Teaching people to build for themselves',
+    oneLiner:
+      'Township businesses can’t afford agencies and township youth aren’t taught the skills that now pay, so Kasilam teaches people to build with AI by doing real work.',
+    why:
+      'Building everything for people creates dependency. Transferring the capability changes what they can do next: a website helps once; knowing how to build the next one is the thing that lasts.',
+    outcome:
+      'A growing set of real sites shipped for local businesses at no cost, built by participants learning to earn with AI, not built by me.',
+    topics: ['AI Education', 'Community', 'Capability Building', 'Applied AI'],
+    artifacts: [
+      { kind: 'site', href: 'https://kasilamdigitialplatforms.vercel.app/', label: 'Community builds' },
+      { kind: 'github', href: 'https://github.com/orgs/Kasilam-Projects/repositories', label: 'Kasilam Projects' },
+    ],
+    caseStudy: {
+      problem:
+        'Two problems with one root. Township businesses stay invisible online because agencies cost more than they can spend, and township youth cannot turn their potential into income because the skills that now pay, building with AI, are taught almost everywhere except where they are.',
+      why:
+        'Handing a business a website solves one thing once. Handing a young person the ability to build the next one, and the one after, changes what they can do afterwards, and can turn into income.',
+      context:
+        'A free community initiative, not an agency. The deliberate constraint is that participants do the building; the point is capability transfer, not a portfolio of sites with my name on them.',
+      contribution:
+        'I teach: learners, schools, small businesses and local entrepreneurs, showing them how to use AI and digital tools to build for themselves. I do not build the participants’ projects for them.',
+      changed:
+        'Businesses that could not afford a presence got one, and young people gained an in-demand skill, a public portfolio and a path to earning, rather than a one-off favour.',
+      benefited:
+        'Township small businesses, and the young people who did the building and kept the skill.',
+      remained:
+        'The capability that stays with the participants, and a growing set of real community builds that they made.',
+      technicalContext:
+        'Participants build with AI assistance and web tooling (HTML, CSS, JavaScript, React, GitHub Pages), described in plain English, with no formal coding background required.',
+    },
+    problem:
+      'Township businesses stay invisible online because agencies cost too much, and township youth are not taught the skills that now pay: building with AI.',
+    solution:
+      'A free initiative that teaches young people to build with AI by doing real work: participants ship real websites and tools for township SMEs, described in plain English, with no formal coding background needed.',
+    impact:
+      'A growing set of live sites shipped for real businesses at no cost, each one built by a participant learning to earn with AI.',
+    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'AI', 'GitHub Pages'],
+    image: '/projects/kasilam.png',
+    ghLink: 'https://github.com/orgs/Kasilam-Projects/repositories',
+    productLink: 'https://kasilamdigitialplatforms.vercel.app/',
+    siteLinks: [
+      { label: 'Community builds', href: 'https://kasilamdigitialplatforms.vercel.app/' },
+    ],
   },
 ]
+
+/** A single project by slug. */
+export function getProjectBySlug(slug: string): Project | undefined {
+  return PROJECTS.find((p) => p.slug === slug)
+}
+
+/** Projects in explicit display order. */
+export function getProjectsOrdered(): Project[] {
+  return [...PROJECTS].sort((a, b) => a.order - b.order)
+}
+
+/** The /work case study for a CV role, matched on org + period. */
+export function getProjectForRole(org: string, period: string): Project | undefined {
+  return PROJECTS.find((p) => p.resume?.org === org && p.resume?.period === period)
+}
 
 // --- Talks ---
 
@@ -706,11 +1024,11 @@ export const COURSES: Course[] = [
 
 export const PROJECT_CATEGORIES: Partial<Record<Project['category'], string>> = {
   'open-source': 'Open Source',
+  'insurance': 'Insurance',
   'telecoms': 'Telecoms',
-  'banking': 'Banking',
   'research': 'Research',
   'education': 'Education',
-  'social-impact': 'Social Impact',
+  'social-impact': 'Community',
 }
 
 // --- Bio content ---

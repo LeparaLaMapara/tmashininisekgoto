@@ -117,7 +117,7 @@ function buildIndex(): Indexed[] {
     kind: 'Project',
     title: project.title,
     description: project.problem,
-    href: '/work',
+    href: `/work/${project.slug}`,
     keywords: `${project.solution} ${project.impact} ${project.skills.join(' ')} ${project.category}`,
   }))
 

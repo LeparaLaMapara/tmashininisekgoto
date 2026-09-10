@@ -436,6 +436,38 @@ export function coursesSchema(courses: { title: string; description: string; slu
   }
 }
 
+/**
+ * A work case study, as a CreativeWork tied to the one Person entity.
+ *
+ * Used for the non-software /work stories (systems, research, community) that
+ * are not SoftwareSourceCode. `keywords` carries the topics so a knowledge graph
+ * can connect the story to the same subjects the articles use. No metric is
+ * asserted here that the page does not state.
+ */
+export function creativeWorkSchema(input: {
+  slug: string
+  name: string
+  description: string
+  topics: string[]
+  artifactUrls: string[]
+}) {
+  const url = `${SITE_URL}/work/${input.slug}`
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    '@id': `${url}#work`,
+    url,
+    name: input.name,
+    description: input.description,
+    keywords: input.topics.join(', '),
+    inLanguage: 'en',
+    isPartOf: webSiteRef(),
+    author: personRef(),
+    creator: personRef(),
+    ...(input.artifactUrls.length ? { sameAs: input.artifactUrls } : {}),
+  }
+}
+
 export function breadcrumbSchema(trail: { name: string; path: string }[]) {
   return {
     '@context': 'https://schema.org',
