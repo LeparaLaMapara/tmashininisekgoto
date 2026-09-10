@@ -1,20 +1,30 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Github, ExternalLink, FileText } from 'lucide-react'
-import type { Project } from '@/lib/data'
-import { SKILL_ICON_MAP } from '@/lib/data'
+import { Github, ExternalLink, FileText, BookOpen, Package, Boxes, ArrowRight } from 'lucide-react'
+import type { Project, Artifact } from '@/lib/data'
+import { PROJECT_CATEGORIES } from '@/lib/data'
 import { useEnterAnimation } from '@/lib/use-enter-animation'
 
-interface ProjectCardProps {
-  project: Project
+/** Icon and default label per artifact kind. */
+const ARTIFACT_META: Record<Artifact['kind'], { icon: typeof Github; label: string }> = {
+  github: { icon: Github, label: 'GitHub' },
+  pypi: { icon: Package, label: 'PyPI' },
+  docs: { icon: BookOpen, label: 'Documentation' },
+  examples: { icon: Boxes, label: 'Examples' },
+  paper: { icon: FileText, label: 'Paper' },
+  publication: { icon: FileText, label: 'Publication' },
+  site: { icon: ExternalLink, label: 'Live site' },
+  product: { icon: ExternalLink, label: 'Product' },
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project }: { project: Project }) {
   // Cards present at page load render visible; cards that appear from a filter
   // change still fade in.
   const animateIn = useEnterAnimation()
+  const href = `/work/${project.slug}`
 
   return (
     <motion.div
@@ -24,154 +34,101 @@ export function ProjectCard({ project }: ProjectCardProps) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="group bg-surface rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(32,25,17,0.18)]"
+      className="group flex flex-col bg-surface rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_-10px_rgba(32,25,17,0.18)]"
     >
-      {/* Image */}
-      <div className="relative aspect-video overflow-hidden">
-        <Image
-          src={project.image}
-          alt={project.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
-        {project.building && (
-          <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent-ink text-void text-xs font-semibold uppercase tracking-wider">
-            Building now
-          </span>
-        )}
-      </div>
+      {/* Image, when the story has a fitting one. Confidential work does not, and
+          gets a text-led card rather than an unrelated stock image. */}
+      {project.image && (
+        <Link
+          href={href}
+          className={`relative block aspect-video overflow-hidden ${project.imageFit === 'contain' ? 'bg-white' : ''}`}
+        >
+          <Image
+            src={project.image}
+            alt={`${project.cardTitle} — ${project.title}`}
+            fill
+            className={`transition-transform duration-500 group-hover:scale-105 ${project.imageFit === 'contain' ? 'object-contain p-6' : 'object-cover'}`}
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+          {project.building && (
+            <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent-ink text-void text-xs font-semibold uppercase tracking-wider">
+              Building now
+            </span>
+          )}
+        </Link>
+      )}
 
-      {/* Content */}
-      <div className="p-6 space-y-5">
-        <h2 className="font-display text-xl font-bold text-ivory leading-snug">
-          {project.title}
+      <div className="flex flex-1 flex-col p-6">
+        {/* Category */}
+        <span className="text-[11px] font-mono uppercase tracking-wider text-synapse-ink">
+          {PROJECT_CATEGORIES[project.category] ?? project.category}
+        </span>
+
+        {/* Problem-oriented title */}
+        <h2 className="mt-1.5 font-display text-xl font-bold text-ivory leading-snug">
+          <Link href={href} className="transition-colors hover:text-synapse">
+            {project.cardTitle}
+          </Link>
         </h2>
 
-        <div className="space-y-4">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
-              Why it was built
-            </span>
-            <p className="text-[0.9375rem] text-muted mt-1 leading-relaxed">{project.problem}</p>
-          </div>
+        {/* One plain sentence */}
+        <p className="mt-3 text-[0.9375rem] text-ivory/80 leading-relaxed">{project.oneLiner}</p>
 
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
-              What it is
-            </span>
-            <p className="text-[0.9375rem] text-ivory/80 mt-1 leading-relaxed">{project.solution}</p>
-          </div>
-
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
-              Impact
-            </span>
-            <p className="text-[0.9375rem] text-synapse font-medium mt-1 leading-relaxed">
-              {project.impact}
-            </p>
-          </div>
+        {/* Why it mattered */}
+        <div className="mt-4">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-muted">Why it mattered</span>
+          <p className="mt-1 text-[0.9375rem] text-muted leading-relaxed">{project.why}</p>
         </div>
 
-        {/* Live sites shipped under this project */}
-        {project.siteLinks && project.siteLinks.length > 0 && (
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
-              Live sites built
-            </span>
-            <ul className="mt-2 space-y-1.5">
-              {project.siteLinks.map((site) => (
-                <li key={site.href}>
-                  <a
-                    href={site.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[0.9375rem] text-ivory/80 hover:text-synapse transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 shrink-0 text-synapse/60" />
-                    {site.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+        {/* One verified outcome, only where one exists */}
+        {project.outcome && (
+          <div className="mt-4">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">What changed</span>
+            <p className="mt-1 text-[0.9375rem] text-synapse font-medium leading-relaxed">{project.outcome}</p>
           </div>
         )}
 
-        {/* Tech Stack Logos */}
-        <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-synapse-ink">
-            Built with
-          </span>
-          <div className="flex flex-wrap gap-2.5 mt-2">
-            {project.skills.map((skill) => {
-              const iconName = SKILL_ICON_MAP[skill]
+        {/* Topics, not skill badges */}
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {project.topics.map((topic) => (
+            <span
+              key={topic}
+              className="rounded-full border border-border px-2.5 py-0.5 text-xs font-mono text-muted"
+            >
+              {topic}
+            </span>
+          ))}
+        </div>
+
+        {/* Public artifacts */}
+        {project.artifacts.length > 0 && (
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4">
+            {project.artifacts.map((art) => {
+              const meta = ARTIFACT_META[art.kind]
               return (
-                <div
-                  key={skill}
-                  className="group/skill relative flex items-center justify-center w-9 h-9 rounded-lg bg-white/5 border border-border hover:border-synapse/30 hover:bg-synapse/10 transition-all"
-                  title={skill}
+                <a
+                  key={art.href}
+                  href={art.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-synapse transition-colors"
                 >
-                  {iconName ? (
-                    <Image
-                      src={`/icons/${iconName}.svg`}
-                      alt={skill}
-                      width={22}
-                      height={22}
-                      className="opacity-70 group-hover/skill:opacity-100 transition-opacity"
-                    />
-                  ) : (
-                    <span className="text-xs text-muted font-medium">
-                      {skill.slice(0, 2)}
-                    </span>
-                  )}
-                  {/* Tooltip */}
-                  <span className="absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md bg-void text-ivory text-xs whitespace-nowrap opacity-0 group-hover/skill:opacity-100 transition-opacity pointer-events-none border border-border shadow-lg">
-                    {skill}
-                  </span>
-                </div>
+                  <meta.icon className="h-4 w-4" />
+                  {art.label ?? meta.label}
+                </a>
               )
             })}
           </div>
-        </div>
-
-        {/* Links */}
-        {(project.ghLink || project.productLink || project.paperLink) && (
-          <div className="flex items-center gap-4 pt-3 border-t border-border">
-            {project.ghLink && (
-              <a
-                href={project.ghLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted hover:text-ivory transition-colors"
-              >
-                <Github className="w-4 h-4" />
-                GitHub
-              </a>
-            )}
-            {project.productLink && (
-              <a
-                href={project.productLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted hover:text-synapse transition-colors"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Product
-              </a>
-            )}
-            {project.paperLink && (
-              <a
-                href={project.paperLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted hover:text-synapse transition-colors"
-              >
-                <FileText className="w-4 h-4" />
-                Paper
-              </a>
-            )}
-          </div>
         )}
+
+        {/* Explore the deeper story */}
+        <Link
+          href={href}
+          className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-synapse hover:gap-2.5 transition-all"
+        >
+          Explore the work
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     </motion.div>
   )

@@ -7,19 +7,20 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { getAllPosts, getPostBySlug, metaDescription } from '@/lib/blog'
+import { cardSubtitle, getAllPosts, getPostBySlug, getSeries, metaDescription } from '@/lib/blog'
 import { JsonLd } from '@/components/seo/json-ld'
 import { blogPostingSchema, breadcrumbSchema } from '@/lib/schema'
 import { slugifyTag } from '@/lib/topics'
-import { SITE_URL } from '@/lib/site'
+import { SITE_URL, ogImages } from '@/lib/site'
 import { formatDate } from '@/lib/utils'
 import { mdxComponents } from '@/components/blog/mdx-components'
 import { Comments } from '@/components/blog/comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
 import { ShareButtons } from '@/components/blog/share-buttons'
-import { RelatedPosts } from '@/components/blog/related-posts'
+import { RelatedContent } from '@/components/blog/related-content'
 import { AudioPlayer } from '@/components/blog/audio-player'
+import { ReadingProgress } from '@/components/blog/reading-progress'
 import { PostSummary } from '@/components/blog/post-summary'
 import { postSummaryText } from '@/lib/post-markdown.mjs'
 
@@ -68,10 +69,25 @@ export async function generateMetadata({
       description,
       url,
       type: 'article',
-      publishedTime: post.date,
+      // ISO 8601, not the JS Date `toString`. `post.date` renders as
+      // "Fri Mar 06 2026 00:00:00 GMT+0000 (Coordinated Universal Time)",
+      // which is not a format the Open Graph spec allows, so consumers that
+      // parse it strictly dropped the publication date off the card.
+      publishedTime: new Date(post.date).toISOString(),
+      modifiedTime: post.lastModified,
       authors: ['Thabang Mashinini-Sekgoto'],
       tags: post.tags,
-      images: [`${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}&subtitle=${encodeURIComponent(post.summary.slice(0, 100))}`],
+      // Repeated from the root layout because a child's `openGraph` replaces
+      // the parent's rather than merging into it. Without these two lines the
+      // most shared URLs on the site were the only ones with no site name
+      // under the card.
+      siteName: 'Thabang Mashinini-Sekgoto',
+      locale: 'en_ZA',
+      images: ogImages(
+        `${post.title}, an article by Thabang Mashinini-Sekgoto`,
+        post.title,
+        cardSubtitle(post.summary)
+      ),
     },
   }
 }
@@ -91,14 +107,43 @@ export default async function BlogPostPage({ params }: PageProps) {
   // Posts open with their own H1; the page header already shows the title.
   const content = post.content.trimStart().replace(/^# .*\r?\n/, '')
 
-  // Newest-first, so the "previous" post is the next one down the list.
+  // Neighbour navigation. If this post is part of a series, "previous" and
+  // "next" mean the adjacent parts of that series, in reading order, which is
+  // what a reader working through it expects. Otherwise they fall back to the
+  // date-sequential neighbours, so every post is still reachable from its
+  // siblings. Only published parts appear, since getSeries reads the published
+  // corpus.
   const posts = getAllPosts()
-  const index = posts.findIndex((p) => p.slug === slug)
-  const newer = index > 0 ? posts[index - 1] : null
-  const older = index >= 0 && index < posts.length - 1 ? posts[index + 1] : null
+  const series = post.series
+    ? getSeries().find((s) => s.name === post.series) ?? null
+    : null
+
+  let previous: (typeof posts)[number] | null = null
+  let next: (typeof posts)[number] | null = null
+  let seriesLabel: string | null = null
+
+  if (series) {
+    const pos = series.posts.findIndex((p) => p.slug === slug)
+    previous = pos > 0 ? series.posts[pos - 1] : null
+    next = pos >= 0 && pos < series.posts.length - 1 ? series.posts[pos + 1] : null
+    // Only claim a series relationship in the UI when there is actually another
+    // published part to move to. A series whose other parts are still
+    // unpublished should read as an ordinary post, not a one-item series.
+    if (previous || next) {
+      seriesLabel = `${series.name} · part ${post.seriesPart ?? pos + 1} of ${series.total}`
+    }
+  }
+
+  if (!previous && !next) {
+    const index = posts.findIndex((p) => p.slug === slug)
+    // Newest-first, so the older post is the next one down the list.
+    next = index > 0 ? posts[index - 1] : null
+    previous = index >= 0 && index < posts.length - 1 ? posts[index + 1] : null
+  }
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-24">
+      <ReadingProgress />
       <JsonLd
         data={[
           blogPostingSchema({
@@ -179,40 +224,48 @@ export default async function BlogPostPage({ params }: PageProps) {
       {/* Share */}
       <ShareButtons title={post.title} url={`${SITE_URL}/blog/${slug}`} />
 
-      {/* Previous / next: sequential internal links, so every post is reachable
-          from its neighbours rather than only from the index. */}
-      {(older || newer) && (
+      {/* Previous / next. In a series these are the adjacent parts; otherwise
+          the date-sequential neighbours, so every post is reachable from its
+          siblings rather than only from the index. */}
+      {(previous || next) && (
         <nav
-          aria-label="More posts"
-          className="mt-16 grid gap-4 border-t border-border pt-8 sm:grid-cols-2"
+          aria-label={seriesLabel ? 'More in this series' : 'More posts'}
+          className="mt-16 border-t border-border pt-8"
         >
-          {older ? (
-            <Link href={`/blog/${older.slug}`} className="group block">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
-                Previous
-              </span>
-              <span className="mt-1 block font-display text-lg font-semibold text-ivory transition-colors group-hover:text-synapse">
-                {older.title}
-              </span>
-            </Link>
-          ) : (
-            <span />
+          {seriesLabel && (
+            <p className="mb-4 text-[11px] font-mono uppercase tracking-wider text-signal">
+              {seriesLabel}
+            </p>
           )}
-          {newer && (
-            <Link href={`/blog/${newer.slug}`} className="group block sm:text-right">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
-                Next
-              </span>
-              <span className="mt-1 block font-display text-lg font-semibold text-ivory transition-colors group-hover:text-synapse">
-                {newer.title}
-              </span>
-            </Link>
-          )}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {previous ? (
+              <Link href={`/blog/${previous.slug}`} className="group block">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
+                  {seriesLabel ? 'Previous part' : 'Previous'}
+                </span>
+                <span className="mt-1 block font-display text-lg font-semibold text-ivory transition-colors group-hover:text-synapse">
+                  {previous.title}
+                </span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <Link href={`/blog/${next.slug}`} className="group block sm:text-right">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
+                  {seriesLabel ? 'Next part' : 'Next'}
+                </span>
+                <span className="mt-1 block font-display text-lg font-semibold text-ivory transition-colors group-hover:text-synapse">
+                  {next.title}
+                </span>
+              </Link>
+            )}
+          </div>
         </nav>
       )}
 
-      {/* Related posts */}
-      <RelatedPosts slug={slug} tags={post.tags} />
+      {/* Related content across writing, work, research and talks */}
+      <RelatedContent type="Post" contentKey={slug} heading="Related" />
 
       {/* Subscribe CTA */}
       <div className="mt-16">

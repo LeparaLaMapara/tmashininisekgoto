@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
-import { publicationsSchema } from '@/lib/schema'
+import { publicationsSchema, breadcrumbSchema } from '@/lib/schema'
 import { citations } from '@/lib/citations'
 import { citationTotal, citationsFetchedAt, getPublications } from '@/lib/publications'
 import { CiteBox } from '@/components/publications/cite-box'
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   title: 'Publications: ML & Deep Learning Research',
   description:
     'Peer-reviewed publications, conference papers, and thesis work by Thabang Mashinini-Sekgoto in AI, ML, and computational science.',
-  alternates: { canonical: '/publications' },
+  alternates: { canonical: '/publications' },
+  openGraph: pageOpenGraph('/publications', 'Publications by Thabang Mashinini-Sekgoto'),
 }
 
 export default function PublicationsPage() {
@@ -22,7 +24,15 @@ export default function PublicationsPage() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
-      <JsonLd data={publicationsSchema()} />
+      <JsonLd
+        data={[
+          ...publicationsSchema(),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Publications', path: '/publications' },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <ScrollReveal>
@@ -148,7 +158,11 @@ export default function PublicationsPage() {
                     className="inline-flex items-center gap-2 text-sm font-medium text-synapse-ink hover:text-synapse transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    {isThesis ? 'View on WIReDSpace' : 'View on Google Scholar'}
+                    {pub.scholarUrl.includes('scholar.google')
+                      ? 'View on Google Scholar'
+                      : pub.scholarUrl.includes('wiredspace')
+                        ? 'View on WIReDSpace'
+                        : 'View the abstract'}
                   </a>
 
                   {/* Generated on the server so the strings are deterministic;

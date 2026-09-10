@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getAllTags, getPostsBySlug, getTagNameBySlug } from '@/lib/blog'
 import { getTopic, slugifyTag } from '@/lib/topics'
+import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { breadcrumbSchema, collectionPageSchema } from '@/lib/schema'
 import { formatDate } from '@/lib/utils'
@@ -27,6 +28,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: topic ? heading : `Posts tagged “${name}”`,
     description: topic?.description ?? `Writing by Thabang Mashinini-Sekgoto about ${name}.`,
     alternates: { canonical: `/tags/${slug}` },
+    openGraph: pageOpenGraph(
+      `/tags/${slug}`,
+      `Writing by Thabang Mashinini-Sekgoto about ${name}`
+    ),
   }
 }
 
@@ -63,6 +68,11 @@ export default async function TagPage({ params }: PageProps) {
       architecture: 'software-engineering',
       'data-engineering': 'data-science',
       mlops: 'data-science',
+      // The agents roadmap was cut back to part one so the rest can be
+      // refined and released one part at a time, which took the data science
+      // team post down with it and emptied `leadership`. It was indexed, so
+      // it points at the nearest survivor until that post comes back.
+      leadership: 'software-engineering',
     }
     // Follow the chain, because a successor can itself have been retired
     // later. `systems` pointed at `architecture`, which stopped having posts

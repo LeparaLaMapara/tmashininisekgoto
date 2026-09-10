@@ -1,14 +1,17 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
-import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2 } from 'lucide-react'
+import { Testimonials } from '@/components/about/testimonials'
+import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2, ArrowRight, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
-import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
+import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/data'
 import { profileOpenGraph } from '@/lib/site'
+import { JsonLd } from '@/components/seo/json-ld'
+import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
 
 export const metadata: Metadata = {
-  title: 'Resume: Lead Data Scientist',
+  title: 'Resume: Data Science, AI Engineering & Research',
   description:
-    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA, previously Vodacom and IBM Research, MSc and PhD candidate at Wits.',
+    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research and Wits, with an MSc from the University of the Witwatersrand.',
   alternates: { canonical: '/resume' },
   openGraph: profileOpenGraph('/resume'),
 }
@@ -34,6 +37,20 @@ const DOT_STYLES: Record<string, string> = {
 export default function ResumePage() {
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
+      <JsonLd
+        data={[
+          profilePageSchema({
+            path: '/resume',
+            name: 'Curriculum Vitae of Thabang Mashinini-Sekgoto',
+            description:
+              'Career history: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research, Wits and the CSIR. MSc from the University of the Witwatersrand.',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'CV', path: '/resume' },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <ScrollReveal>
@@ -60,8 +77,9 @@ export default function ResumePage() {
 
         <ScrollReveal delay={0.1}>
           <p className="text-lg text-ivory/80 leading-relaxed mb-8 max-w-2xl">
-            Data Science and AI leader with 10+ years of experience delivering enterprise-scale analytics,
-            machine learning, and AI solutions across banking, telecommunications, research, and higher education.
+            Applied AI, data science, AI engineering and research. Nine years building and operating
+            production machine learning and data systems across insurance, telecommunications, applied research
+            and higher education, and increasingly turning those lessons into reusable open source infrastructure.
           </p>
         </ScrollReveal>
 
@@ -110,6 +128,44 @@ export default function ResumePage() {
                     </h3>
                     <p className="text-sm text-synapse mb-2">{item.org}</p>
                     <p className="text-sm text-muted leading-relaxed">{item.description}</p>
+                    {/* The evidence line. It already existed in the data and fed
+                        the 3D journey, but the CV never showed it, so the page
+                        carried the narrative without the proof beside it. */}
+                    {item.highlight && (
+                      <p className="mt-2 text-sm font-medium text-signal leading-snug">
+                        {item.highlight}
+                      </p>
+                    )}
+                    {/* Public evidence for this milestone: the thesis, the code,
+                        the coverage. A claim the reader can go and check. */}
+                    {item.links && item.links.length > 0 && (
+                      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                        {item.links.map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-mono text-muted transition-colors hover:text-synapse"
+                          >
+                            {link.label}
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    {(() => {
+                      const work = getProjectForRole(item.org, item.period)
+                      return work ? (
+                        <Link
+                          href={`/work/${work.slug}`}
+                          className="mt-2 inline-flex items-center gap-1.5 text-xs font-mono text-synapse hover:gap-2.5 transition-all"
+                        >
+                          Read the story
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      ) : null
+                    })()}
                   </div>
                 </div>
               </ScrollReveal>
@@ -117,6 +173,21 @@ export default function ResumePage() {
             })}
           </div>
         </div>
+
+        {/* Colleague references. These moved off /about, which is about the
+            person rather than the professional record; endorsements from people
+            he worked with belong with the career evidence. */}
+        <ScrollReveal>
+          <div className="mt-20 border-t border-border pt-10">
+            <p className="font-mono text-sm text-synapse tracking-widest uppercase mb-3">
+              What people say
+            </p>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight mb-8">
+              From colleagues
+            </h2>
+            <Testimonials />
+          </div>
+        </ScrollReveal>
 
         {/* Bottom CTA */}
         <ScrollReveal delay={0.2}>

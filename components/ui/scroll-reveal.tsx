@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, type Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -19,22 +19,38 @@ const directionOffsets = {
   right: { x: -40, y: 0 },
 }
 
+/** How far inside the viewport an element must come before it counts as seen. */
+const VIEWPORT_MARGIN = 80
+
+/**
+ * `pending` is the server render and the first client frame, where content is
+ * always visible. After that the observer decides, once, and only ever moves
+ * an element in one direction: to `shown`, which is final.
+ */
+type RevealState = 'pending' | 'hidden' | 'shown'
+
 /**
  * Fades content in when it scrolls into view.
  *
- * Important: this renders VISIBLE on the server and hides itself only after
- * hydration. It used to server-render `opacity: 0` and wait for a scroll, which
- * meant any renderer that never scrolls saw blank space where the content
- * should be. On the homepage that hid the entire "Real impact, real numbers"
- * section and the Wits/Ubunye intro, so the markup carried the text but nothing
- * that rendered the page without scrolling could see it.
+ * Two things this has to get right, both learned the hard way.
  *
- * The sequence is now:
- *   server / no JS  -> visible (content is always readable)
- *   after hydration -> anything off-screen snaps to hidden (no transition)
- *   on scroll in    -> fades up into view as before
+ * 1. It renders VISIBLE on the server, so crawlers and readers without
+ *    JavaScript see the content rather than blank space where a scroll was
+ *    expected.
  *
- * Users see the same animation; crawlers and no-JS readers see the content.
+ * 2. Exactly one mechanism decides visibility. An earlier version ran two:
+ *    an `animate` prop flipped by an effect, and `whileInView` flipped by an
+ *    IntersectionObserver with `once: true`. Which one landed first depended on
+ *    how the page was reached. On a hard load the effect went first and the
+ *    observer revealed the content afterwards. On a client-side navigation the
+ *    order reversed: the observer fired while the element was still visible and
+ *    unobserved it immediately, so when the effect then flipped `animate` to
+ *    hidden, nothing was left watching to undo it. Every heading on the page sat
+ *    at opacity 0 until the visitor reloaded.
+ *
+ * Now the observer is the only authority. Its first callback runs after layout,
+ * so it also judges position more accurately than a measurement taken at mount,
+ * before images and fonts have settled.
  */
 export function ScrollReveal({
   children,
@@ -46,9 +62,29 @@ export function ScrollReveal({
   const offset = directionOffsets[direction]
   const reducedMotion = useReducedMotion()
 
-  // False during SSR and the first client render, so the initial HTML is visible.
-  const [hydrated, setHydrated] = useState(false)
-  useEffect(() => setHydrated(true), [])
+  const ref = useRef<HTMLDivElement>(null)
+  const [state, setState] = useState<RevealState>('pending')
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Seen. This is terminal: nothing hides it again.
+          setState('shown')
+          observer.disconnect()
+        } else {
+          setState('hidden')
+        }
+      },
+      { rootMargin: `-${VIEWPORT_MARGIN}px` }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   if (reducedMotion) {
     return <div className={cn(className)}>{children}</div>
@@ -56,8 +92,8 @@ export function ScrollReveal({
 
   const variants: Variants = {
     // Snap, do not animate, into the hidden state. This only ever runs for
-    // off-screen content just after hydration, and animating it would show a
-    // pointless fade-out on anything sitting near the fold.
+    // off-screen content, and animating it would mean a pointless fade-out on
+    // anything sitting just past the fold.
     hidden: { opacity: 0, ...offset, transition: { duration: 0 } },
     visible: {
       opacity: 1,
@@ -73,13 +109,11 @@ export function ScrollReveal({
 
   return (
     <motion.div
+      ref={ref}
       // `initial={false}` keeps framer-motion from painting a hidden first
       // frame; the element starts wherever `animate` points, which is visible.
       initial={false}
-      animate={hydrated ? 'hidden' : 'visible'}
-      // whileInView outranks animate, so on-screen content stays/becomes visible.
-      whileInView="visible"
-      viewport={{ once: true, margin: '-80px' }}
+      animate={state === 'hidden' ? 'hidden' : 'visible'}
       variants={variants}
       className={cn(className)}
     >

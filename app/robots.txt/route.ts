@@ -31,6 +31,30 @@ const AI_CRAWLERS = [
   'Applebot-Extended',
   'cohere-ai',
   'CCBot',
+  // Documented crawlers from major providers. The wildcard already allows
+  // them, so naming them changes nothing today; it states the policy
+  // explicitly so it survives any future tightening of the wildcard.
+  'Amazonbot',
+  'meta-externalagent',
+  'DuckAssistBot',
+  'YouBot',
+]
+
+/**
+ * Paths with no reason to be crawled.
+ *
+ * Not a security control: these routes are POST only and the admin route fails
+ * closed without a token. This keeps crawl budget on pages that are meant to be
+ * read. `/api/md` and `/api/og` are deliberately absent, because the markdown
+ * copies and the card images are both things we want fetched.
+ */
+const PRIVATE_PATHS = [
+  '/api/admin/',
+  '/api/chat',
+  '/api/contact',
+  '/api/subscribe',
+  '/api/courses/',
+  '/api/github',
 ]
 
 export function GET() {
@@ -43,6 +67,7 @@ export function GET() {
     '',
     'User-agent: *',
     'Allow: /',
+    ...PRIVATE_PATHS.map((path) => `Disallow: ${path}`),
     '',
     ...AI_CRAWLERS.flatMap((agent) => [`User-agent: ${agent}`, 'Allow: /', '']),
     `Sitemap: ${SITE_URL}/sitemap.xml`,

@@ -39,7 +39,7 @@ export function Footer() {
               {[
                 { href: '/about', label: 'About' },
                 { href: '/work', label: 'Work' },
-                { href: '/blog', label: 'Blog' },
+                { href: '/blog', label: 'Writing' },
                 { href: '/publications', label: 'Publications' },
                 { href: '/talks', label: 'Talks' },
                 { href: '/courses', label: 'Teaching' },

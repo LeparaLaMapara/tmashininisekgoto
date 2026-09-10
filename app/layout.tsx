@@ -8,7 +8,7 @@ import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeProvider } from '@/components/layout/theme-provider'
 import { JsonLd } from '@/components/seo/json-ld'
 import { webSiteSchema } from '@/lib/schema'
-import { SITE_URL } from '@/lib/site'
+import { SITE_URL, ogImages } from '@/lib/site'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -38,13 +38,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Thabang Mashinini-Sekgoto | Data Scientist & AI Engineer',
+    default: 'Thabang Mashinini-Sekgoto | Applied AI, Data Science & AI Engineering',
     template: '%s | Thabang M-S',
   },
   description:
-    'Data Science and AI leader with 10+ years building enterprise-scale ML across banking, telecoms, research, and education. Founder of Ubunye AI Ecosystems.',
+    'I build production AI and data systems, reusable open source infrastructure, and applied research grounded in real problems. Nine years across insurance, telecommunications, applied research and higher education. Author of Ubunye Engine.',
   openGraph: {
-    images: ['/api/og'],
+    images: ogImages('Thabang Mashinini-Sekgoto, applied AI, data science and AI engineering'),
     type: 'website',
     siteName: 'Thabang Mashinini-Sekgoto',
     locale: 'en_ZA',
@@ -54,6 +54,19 @@ export const metadata: Metadata = {
     creator: '@thabangline',
   },
   robots: { index: true, follow: true },
+  // Search-engine ownership verification. Both read from env vars so that when
+  // the codes arrive from Google Search Console and Bing Webmaster Tools, they
+  // are set in Vercel and the site redeploys, with no code change. Absent env
+  // vars emit nothing, which is correct: an empty verification tag is worse
+  // than none.
+  verification: {
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { other: { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+      : {}),
+  },
   // Without an explicit icon the browser falls back to requesting /favicon.ico,
   // which does not exist here, so every page load logged a 404. Google also
   // shows the favicon next to mobile search results, so it is worth declaring.

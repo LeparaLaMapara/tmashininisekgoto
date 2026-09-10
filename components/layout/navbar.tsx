@@ -10,7 +10,7 @@ import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 const NAV_LINKS = [
   { href: '/work', label: 'Work' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/blog', label: 'Writing' },
   { href: '/publications', label: 'Publications' },
   { href: '/talks', label: 'Talks' },
   { href: '/about', label: 'About' },

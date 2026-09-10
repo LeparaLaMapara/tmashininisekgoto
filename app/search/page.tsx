@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { Search as SearchIcon } from 'lucide-react'
 import { search } from '@/lib/search'
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Search across the writing, projects, publications, talks, and courses of Thabang Mashinini-Sekgoto.',
   alternates: { canonical: '/search' },
+  openGraph: pageOpenGraph('/search', 'Search the work of Thabang Mashinini-Sekgoto'),
   // Internal search results should not be indexed: they are thin and endlessly
   // variable. `follow` still lets crawlers walk through to the real pages, and
   // the route exists so the WebSite SearchAction in lib/schema.ts is truthful.

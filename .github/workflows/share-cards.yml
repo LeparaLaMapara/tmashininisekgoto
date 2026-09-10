@@ -1,0 +1,49 @@
+name: Share cards
+
+# Every shareable URL must produce a complete preview card.
+#
+# This runs because the failure mode is invisible locally. A post with broken
+# Open Graph tags renders perfectly in a browser and only shows itself when
+# someone pastes the link into LinkedIn and gets a bare blue underline. By then
+# the link is public and the scraper has cached the miss for days.
+#
+# The blog list comes from the sitemap rather than a hard coded array, so a new
+# post is covered the day it ships without anyone remembering to add it.
+#
+# Assertions and the reasoning behind them: tests/share-cards.spec.ts.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  share-cards:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Same as the Lighthouse job: the build reads these for the RAG and
+          # comment features, and empty values are fine because those routes
+          # are dynamic and are not scraped here.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Share card assertions
+        # Against `npm start`, not `npm run dev`, so the HTML under test is the
+        # HTML a scraper would actually be served.
+        run: npm run test:cards
+        env:
+          PLAYWRIGHT_WEB_SERVER: npm start

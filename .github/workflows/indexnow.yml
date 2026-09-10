@@ -1,0 +1,46 @@
+name: IndexNow
+
+# Tell the search engines that participate in IndexNow when the site changes.
+#
+# Runs after a push to main, on a delay, because the point is to submit URLs
+# that are already live. Vercel builds from the same push; pinging before that
+# build finishes would submit the previous version of the site.
+#
+# Google does not participate in IndexNow. Its discovery still comes from the
+# sitemap and Search Console. This covers Bing, Yandex, Seznam and Naver.
+#
+# The key is public by design: ownership is proved by serving the same value at
+# /<key>.txt, which is committed in public/. Nothing here is a secret.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Only content and routing changes are worth announcing. A CI or docs
+      # change does not alter what a crawler would see.
+      - 'content/**'
+      - 'app/**'
+      - 'lib/**'
+      - 'components/**'
+  workflow_dispatch:
+
+# A burst of pushes should not produce a burst of submissions.
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Wait for the deployment to go live
+        run: sleep 180
+
+      - name: Submit changed URLs
+        run: node scripts/indexnow.mjs

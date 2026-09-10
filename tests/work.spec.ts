@@ -1,0 +1,99 @@
+import { test, expect } from '@playwright/test'
+import { PROJECTS, getProjectsOrdered } from '../lib/data'
+
+/**
+ * The /work restructure: every project has a case study, verified artifacts,
+ * topics not skill badges, and honest attribution. These run in-process for the
+ * data guarantees, plus a couple of live checks.
+ */
+
+test.describe('work data integrity', () => {
+  test('every project has the full case-study shape', () => {
+    for (const p of PROJECTS) {
+      expect(p.cardTitle.length).toBeGreaterThan(0)
+      expect(p.oneLiner.length).toBeGreaterThan(0)
+      expect(p.why.length).toBeGreaterThan(0)
+      expect(p.topics.length).toBeGreaterThanOrEqual(3)
+      expect(p.topics.length).toBeLessThanOrEqual(6)
+      for (const key of ['problem', 'why', 'context', 'contribution', 'changed', 'benefited', 'remained'] as const) {
+        expect(p.caseStudy[key].length, `${p.slug}.${key}`).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  test('explicit ordering is unique and contiguous', () => {
+    const orders = getProjectsOrdered().map((p) => p.order)
+    expect(new Set(orders).size).toBe(orders.length)
+    expect(orders).toEqual([...orders].sort((a, b) => a - b))
+  })
+
+  test('every artifact link is absolute http(s)', () => {
+    for (const p of PROJECTS) {
+      for (const a of p.artifacts) {
+        expect(a.href, `${p.slug}`).toMatch(/^https?:\/\//)
+      }
+    }
+  })
+
+  test('confidential work asserts no public artifact link', () => {
+    // A brand image is a design choice; a public artifact *link* would imply
+    // inspectable proof of confidential work, which must stay absent.
+    const absa = PROJECTS.find((p) => p.slug === 'insurance-data-science-capability')!
+    expect(absa.artifacts).toHaveLength(0)
+  })
+
+  test('ABSA figures match the CV and nothing unverified creeps in', () => {
+    // The public CV (September 2026) states 230,000+ properties and "months to
+    // under a day". It deliberately dropped the earlier "2M+ daily signals",
+    // "two months to under 24 hours" and the Ubunye Engine attribution, so none
+    // of those may appear here either. "26,000+ telematics customers" was only
+    // ever in a brief, never in the CV.
+    const absa = PROJECTS.find((p) => p.slug === 'insurance-data-science-capability')!
+    const blob = JSON.stringify(absa)
+    expect(blob).toContain('230,000+')
+    expect(blob).toContain('months to under a day')
+    expect(blob).not.toContain('2M+')
+    expect(blob).not.toContain('24 hours')
+    expect(blob).not.toContain('Ubunye Engine')
+    expect(blob).not.toContain('26,000')
+    expect(blob).not.toContain('daily trips')
+  })
+
+  test('the NeurIPS paper is described as the workshop it actually was', () => {
+    // Verified against Climate Change AI and IBM Research: it is the Tackling
+    // Climate Change with ML workshop at NeurIPS 2020, not the main conference.
+    const ibm = PROJECTS.find((p) => p.slug === 'ibm-geospatial')!
+    const blob = JSON.stringify(ibm)
+    expect(blob).toContain('workshop')
+    expect(blob).not.toMatch(/NeurIPS\s+2020\s+main/i)
+  })
+
+  test('no PhD-candidate claim anywhere in work data', () => {
+    const blob = JSON.stringify(PROJECTS).toLowerCase()
+    expect(blob).not.toContain('phd candidate')
+    expect(blob).not.toContain('phd student')
+  })
+})
+
+test.describe('work pages render', () => {
+  test('every case study is reachable and typed', async ({ request }) => {
+    for (const p of getProjectsOrdered()) {
+      const res = await request.get(`/work/${p.slug}`)
+      expect(res.status(), `/work/${p.slug}`).toBe(200)
+    }
+  })
+
+  test('the index shows problem-titles and topics, not a skill logo wall', async ({ request }) => {
+    const html = await (await request.get('/work')).text()
+    expect(html).toContain('Everything you build sits on engineering')
+    expect(html).toContain('Why it mattered')
+    // The old "Built with" logo-wall label is gone.
+    expect(html).not.toContain('Built with')
+  })
+
+  test('work pages are listed in the sitemap', async ({ request }) => {
+    const xml = await (await request.get('/sitemap.xml')).text()
+    expect(xml).toContain('/work/ubunye-engine')
+    expect(xml).toContain('/work/insurance-data-science-capability')
+  })
+})

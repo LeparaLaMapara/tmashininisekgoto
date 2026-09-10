@@ -53,6 +53,33 @@ export interface BlogPost {
    * show. Set this when you want the snippet to differ from the excerpt.
    */
   seoDescription?: string
+  /**
+   * The collection this post belongs to, e.g. "The Practical Roadmap to
+   * Building With AI Agents". Set in frontmatter as `series`.
+   *
+   * Posts that are really one argument split across several pieces read as
+   * disconnected fragments in a reverse chronological list. This is what lets
+   * the index present them as one body of work.
+   */
+  series?: string
+  /** Position within `series`, 1 based. Set in frontmatter as `seriesPart`. */
+  seriesPart?: number
+  /**
+   * How many parts the finished series will have, from `seriesTotal`.
+   *
+   * Deliberately the planned total rather than the published count, so a
+   * reader landing on part one knows what they are starting. Unpublished parts
+   * are never listed or linked.
+   */
+  seriesTotal?: number
+}
+
+export interface Series {
+  name: string
+  /** Published parts only, in reading order. */
+  posts: BlogPost[]
+  /** Planned length, which can exceed `posts.length` while a series is in progress. */
+  total: number
 }
 
 /**
@@ -117,7 +144,40 @@ function parsePost(fileName: string): BlogPost {
     canonical: data.canonical,
     seoTitle: data.seoTitle,
     seoDescription: data.seoDescription,
+    series: data.series,
+    seriesPart: data.seriesPart,
+    seriesTotal: data.seriesTotal,
   }
+}
+
+/**
+ * The line under the title on the share card.
+ *
+ * The card fits roughly a hundred characters, and a hard slice at that number
+ * ends mid-phrase: "I used it like a senior engineer sitting next to me, and".
+ * Cut on a word and mark the cut, so the line reads as trimmed rather than as
+ * a sentence that fell off a cliff.
+ */
+export function cardSubtitle(summary: string, limit = 100): string {
+  const text = summary.trim()
+  if (text.length <= limit) return text
+
+  const cut = text.slice(0, limit)
+  const lastSpace = cut.lastIndexOf(' ')
+  let trimmed = cut.slice(0, lastSpace > 0 ? lastSpace : limit)
+
+  // Cutting on a word is not enough on its own. "…sitting next to me, and"
+  // ends on a conjunction that promises a clause the card will never show,
+  // which reads as a bug rather than as a trim. Drop trailing words that
+  // cannot end a thought, then any punctuation they leave behind.
+  const DANGLING = /\s+(and|but|or|nor|so|yet|the|a|an|to|of|for|in|on|at|by|with|from|as|that|which|is|was|are|were)$/i
+  let previous = ''
+  while (previous !== trimmed) {
+    previous = trimmed
+    trimmed = trimmed.replace(DANGLING, '').replace(/[\s,;:]+$/, '')
+  }
+
+  return `${trimmed.replace(/[\s,;:.]+$/, '')}…`
 }
 
 export function getAllPosts(): BlogPost[] {
@@ -129,6 +189,36 @@ export function getAllPosts(): BlogPost[] {
     .map(parsePost)
     .filter((post) => post.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
+/**
+ * Published posts grouped into their series, in reading order.
+ *
+ * Ordered by the most recent part in each series, so an active series sits
+ * above one finished two years ago. A series with nothing published yet does
+ * not appear at all.
+ */
+export function getSeries(): Series[] {
+  const grouped = new Map<string, BlogPost[]>()
+
+  for (const post of getAllPosts()) {
+    if (!post.series) continue
+    const existing = grouped.get(post.series) ?? []
+    existing.push(post)
+    grouped.set(post.series, existing)
+  }
+
+  return Array.from(grouped.entries())
+    .map(([name, posts]) => ({
+      name,
+      posts: posts.sort((a, b) => (a.seriesPart ?? 0) - (b.seriesPart ?? 0)),
+      total: Math.max(...posts.map((p) => p.seriesTotal ?? p.seriesPart ?? 1)),
+    }))
+    .sort((a, b) => {
+      const latest = (s: Series) =>
+        Math.max(...s.posts.map((p) => new Date(p.date).getTime()))
+      return latest(b) - latest(a)
+    })
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {

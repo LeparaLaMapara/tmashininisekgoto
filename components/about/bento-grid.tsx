@@ -39,7 +39,7 @@ export function BentoGrid() {
           <div className="space-y-4 mb-4">
             {[
               { label: 'Impact', color: 'text-synapse', text: 'Built AI systems that cut processing times by up to 90%, contributed to R1B+ in savings, and improved forecast accuracy for climate risk intelligence.' },
-              { label: 'Open Source', color: 'text-signal', text: 'Creator of the Ubunye Engine, an open-source ML framework with declarative ETL, feature stores, and YAML-driven pipelines. I build tools so others can build faster.' },
+              { label: 'Open Source', color: 'text-signal', text: 'Creator of Ubunye Engine, an open-source framework with config-driven pipelines, a model registry and lineage tracking, so a pipeline runs the same on a laptop, Kubernetes or Databricks. I build tools so others can build faster.' },
               { label: 'Teaching', color: 'text-accent-ink', text: 'Training the next generation in practical AI through hands-on courses, from zero-code AI agents for everyday professionals to advanced agentic engineering for developers.' },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
@@ -71,7 +71,7 @@ export function BentoGrid() {
                 <div key={item.label}>
                   <div className="font-display text-3xl font-bold text-synapse mb-1">
                     {parsed.isRange ? (
-                      <span>80-90{item.suffix}</span>
+                      <span>{parsed.display}{item.suffix}</span>
                     ) : (
                       <>
                         {parsed.prefix}
@@ -140,11 +140,10 @@ export function BentoGrid() {
               Work With Me
             </h3>
             <p className="text-sm text-ivory/70 leading-relaxed mb-6">
-              I&apos;m open to consulting on AI systems architecture, ML
-              platform engineering, and data strategy. I also do public
-              speaking and advisory work. Whether you need a keynote,
-              a technical advisor, or hands-on help scaling your AI
-              infrastructure, let&apos;s talk.
+              If you are moving machine learning from a notebook into something
+              that has to run reliably, that is the work I know best. I also take
+              on research collaborations and the occasional talk. If that is
+              close to your problem, send a short note about it.
             </p>
           </div>
           <a

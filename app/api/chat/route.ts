@@ -6,9 +6,15 @@ import { createClient } from '@supabase/supabase-js'
 import { isRagEnabled } from '@/lib/rag/config'
 import { searchKb, formatRetrievalContext, toSources, type SourceRef } from '@/lib/rag/retrieval'
 import { kbReadClient } from '@/lib/rag/db'
+import { clientIp } from '@/lib/request-ip'
 
 const DAILY_LIMIT = 10
 const MAX_CONVERSATION_MESSAGES = 20 // 10 user + 10 assistant
+// A single request must not be able to run up an unbounded model bill. The
+// conversation is capped by count above; these cap its size. A real question
+// fits easily inside both.
+const MAX_MESSAGE_CHARS = 4000
+const MAX_TOTAL_CHARS = 24000
 
 interface ChatMessage { role: string; content?: unknown }
 
@@ -87,17 +93,53 @@ async function getRateLimitInfo(ip: string): Promise<{ allowed: boolean; remaini
 
 export async function POST(req: Request) {
   const headersList = await headers()
-  const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim()
-    ?? headersList.get('x-real-ip')
-    ?? '127.0.0.1'
+  const ip = clientIp(headersList)
 
-  const { messages } = await req.json()
+  let parsed: unknown
+  try {
+    parsed = await req.json()
+  } catch {
+    return new Response(JSON.stringify({ error: 'Invalid request.' }), {
+      status: 400, headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  const messages = (parsed as { messages?: unknown })?.messages
+  if (!Array.isArray(messages)) {
+    return new Response(JSON.stringify({ error: 'Invalid request.' }), {
+      status: 400, headers: { 'Content-Type': 'application/json' },
+    })
+  }
 
   // Cap conversation length
   if (messages.length > MAX_CONVERSATION_MESSAGES) {
     return new Response(
       JSON.stringify({ error: 'Conversation limit reached. Please start a new chat to continue.' }),
       { status: 429, headers: { 'Content-Type': 'application/json' } }
+    )
+  }
+
+  // Cap conversation size, so one request cannot run up an unbounded bill.
+  let totalChars = 0
+  for (const m of messages) {
+    const content = (m as ChatMessage)?.content
+    const text = typeof content === 'string'
+      ? content
+      : Array.isArray(content)
+        ? content.map((p) => (typeof p === 'string' ? p : (p as { text?: string })?.text ?? '')).join(' ')
+        : ''
+    if (text.length > MAX_MESSAGE_CHARS) {
+      return new Response(
+        JSON.stringify({ error: 'That message is too long. Please shorten it.' }),
+        { status: 413, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+    totalChars += text.length
+  }
+  if (totalChars > MAX_TOTAL_CHARS) {
+    return new Response(
+      JSON.stringify({ error: 'This conversation is too long. Please start a new chat.' }),
+      { status: 413, headers: { 'Content-Type': 'application/json' } }
     )
   }
 
@@ -155,8 +197,10 @@ export async function POST(req: Request) {
     data,
     headers: { 'X-RateLimit-Remaining': String(remaining) },
     getErrorMessage: (error) => {
+      // Log the real error server-side; never return it to the client, where it
+      // can leak internals (model names, stack frames, provider messages).
       console.error('AI SDK Error:', error)
-      return String(error)
+      return 'The assistant hit an error. Please try again.'
     }
   })
 }

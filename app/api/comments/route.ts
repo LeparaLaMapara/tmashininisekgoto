@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
+import { clientIp } from '@/lib/request-ip'
 
 const APP = process.env.RAG_APP_SLUG || 'tmashininisekgoto'
 const SLUG_RE = /^[a-z0-9-]{1,120}$/
@@ -17,8 +18,7 @@ function db() {
 }
 
 function ipHash(request: Request): string {
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  const ip = clientIp(request.headers)
   return createHash('sha256').update(`${APP}:${ip}`).digest('hex').slice(0, 32)
 }
 

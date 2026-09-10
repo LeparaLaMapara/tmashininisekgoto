@@ -1,7 +1,9 @@
 import fs from 'fs'
+import { execFileSync } from 'child_process'
 import path from 'path'
 import type { MetadataRoute } from 'next'
 import { getAllPosts, getAllTags, getPostsByTag } from '@/lib/blog'
+import { getProjectsOrdered } from '@/lib/data'
 import { SITE_URL } from '@/lib/site'
 
 /**
@@ -18,6 +20,7 @@ const STATIC_ROUTES: { route: string; source: string }[] = [
   { route: '/resume', source: 'app/resume/page.tsx' },
   { route: '/career', source: 'app/career/page.tsx' },
   { route: '/talks', source: 'app/talks/page.tsx' },
+  { route: '/talks/fabacademic-unfiltered', source: 'app/talks/fabacademic-unfiltered/page.tsx' },
   { route: '/ai', source: 'app/ai/page.tsx' },
   { route: '/courses', source: 'app/courses/page.tsx' },
   { route: '/tags', source: 'app/tags/page.tsx' },
@@ -26,8 +29,34 @@ const STATIC_ROUTES: { route: string; source: string }[] = [
   // crawlers to index a page that tells them not to.
 ]
 
-/** File mtime, falling back to now if the file has moved. */
+/**
+ * Last commit date for a file, from git.
+ *
+ * The previous implementation used the file's mtime, which looks right locally
+ * and is wrong everywhere it matters: git does not record mtimes, so a fresh CI
+ * checkout stamps every file with the moment it was cloned. The live sitemap
+ * showed all eleven static routes within three milliseconds of each other,
+ * which tells crawlers the whole site changes on every deploy and teaches them
+ * to ignore the field. Exactly the failure this function's own comment claimed
+ * to have fixed.
+ *
+ * `git log -1` gives the date the page's source actually last changed. On a
+ * shallow clone the history may not reach the file's last commit, so a missing
+ * answer falls back to the mtime rather than to `new Date()`.
+ */
 function sourceModified(relativePath: string): Date {
+  try {
+    const iso = execFileSync('git', ['log', '-1', '--format=%cI', '--', relativePath], {
+      cwd: process.cwd(),
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim()
+    const committed = new Date(iso)
+    if (iso && !Number.isNaN(committed.getTime())) return committed
+  } catch {
+    // git missing, or not a repository. Fall through to the mtime.
+  }
+
   try {
     return fs.statSync(path.join(process.cwd(), relativePath)).mtime
   } catch {
@@ -79,5 +108,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }))
 
-  return [...staticPages, blogIndex, ...postPages, ...tagPages]
+  // Work case studies were reachable but never listed. Each is a stable
+  // page; the /work index above already carries its own lastmod.
+  const workPages = getProjectsOrdered().map((project) => ({
+    url: `${SITE_URL}/work/${project.slug}`,
+    lastModified: sourceModified('lib/data.ts'),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, blogIndex, ...postPages, ...tagPages, ...workPages]
 }

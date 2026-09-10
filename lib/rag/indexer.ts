@@ -13,6 +13,8 @@ export interface ReindexResult {
   indexed: number
   skipped: number
   chunks: number
+  /** Documents removed because they left the corpus (unpublished or deleted). */
+  pruned: number
   errors: number
 }
 
@@ -97,6 +99,7 @@ export async function reindexAll(client: SupabaseClient): Promise<ReindexResult>
     indexed: 0,
     skipped: 0,
     chunks: 0,
+    pruned: 0,
     errors: 0,
   }
 
@@ -112,5 +115,58 @@ export async function reindexAll(client: SupabaseClient): Promise<ReindexResult>
     }
   }
 
+  // Prune documents that have left the corpus.
+  //
+  // Upserting the current corpus is not enough on its own: a post that is
+  // unpublished, or a project removed from the data file, keeps its old rows and
+  // stays retrievable. That is how the assistant ended up able to cite a 404
+  // post, a retired PhD claim and two subjects that were removed on purpose.
+  // Reindexing must therefore also delete what is no longer meant to exist.
+  try {
+    result.pruned = await pruneRemoved(client, sources)
+  } catch (err) {
+    console.error('Prune error:', err)
+    result.errors++
+  }
+
   return result
+}
+
+/**
+ * Delete indexed documents (and their chunks) whose source is no longer in the
+ * corpus, scoped to this app.
+ *
+ * The keep-set is keyed on `source_type:source_key`, the same pair the upsert
+ * uses as its conflict target, so it identifies rows exactly. Deletion is
+ * skipped entirely if the corpus is empty, which only happens when something is
+ * misconfigured; wiping the whole index on an empty read would be a far worse
+ * outcome than leaving it stale.
+ */
+async function pruneRemoved(client: SupabaseClient, sources: KbSource[]): Promise<number> {
+  if (sources.length === 0) return 0
+
+  const keep = new Set(sources.map((s) => `${s.sourceType}:${s.sourceKey}`))
+
+  const { data: existing, error } = await client
+    .from('kb_documents')
+    .select('id, source_type, source_key')
+    .eq('app', APP)
+  if (error) throw error
+
+  const stale = (existing ?? []).filter(
+    (row) => !keep.has(`${row.source_type}:${row.source_key}`)
+  )
+  if (stale.length === 0) return 0
+
+  const ids = stale.map((row) => row.id)
+  // Chunks first: no ON DELETE CASCADE is assumed, so orphaned chunks would
+  // otherwise survive their document and stay retrievable.
+  const { error: chunkErr } = await client.from('kb_chunks').delete().in('document_id', ids)
+  if (chunkErr) throw chunkErr
+  const { error: docErr } = await client.from('kb_documents').delete().in('id', ids)
+  if (docErr) throw docErr
+
+  console.log(`Pruned ${stale.length} document(s) no longer in the corpus:`,
+    stale.map((r) => `${r.source_type}/${r.source_key}`).join(', '))
+  return stale.length
 }
