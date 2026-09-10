@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { slugify } from '@/lib/utils'
 import { CopyButton } from './copy-button'
+import { HeadingAnchor } from './heading-anchor'
 import type { MDXComponents } from 'mdx/types'
 import type { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes, AnchorHTMLAttributes, BlockquoteHTMLAttributes } from 'react'
 
@@ -18,13 +19,7 @@ function HeadingWithAnchor({
   return (
     <Tag id={id} className="group relative scroll-mt-24" {...props}>
       {children}
-      <a
-        href={`#${id}`}
-        aria-label={`Link to ${text}`}
-        className="ml-2 text-synapse/0 transition-colors group-hover:text-synapse/60"
-      >
-        #
-      </a>
+      <HeadingAnchor id={id} label={text} />
     </Tag>
   )
 }
