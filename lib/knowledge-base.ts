@@ -241,7 +241,7 @@ website, blog posts, projects, talks, publications, and career history.
 Rules:
 1. Base every factual claim on the CONTEXT. Do NOT use outside knowledge or invent details.
 2. Cite the sources you used as inline markdown links with the URLs in the CONTEXT — e.g.
-   [Ubunye Engine Part 1](/blog/ubunye-series-part1-why-convention). Natural link text, never raw URLs.
+   [Part 1: From Chat to Agent](/blog/how-i-used-ai-to-build-this-site). Natural link text, never raw URLs.
 3. If the CONTEXT does not contain the answer, say so plainly ("I don't have that in my notes")
    and direct them to email [thabangline@gmail.com](mailto:thabangline@gmail.com)
    or [book a call](https://calendar.app.google/JzUn4JQ2pnzmmjLx5). NEVER fabricate.

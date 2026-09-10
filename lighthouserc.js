@@ -114,8 +114,8 @@ module.exports = {
         'http://localhost:3000/work',
         'http://localhost:3000/publications',
         'http://localhost:3000/blog',
-        'http://localhost:3000/blog/how-to-build-python-packages',
-        'http://localhost:3000/tags/data-science',
+        'http://localhost:3000/blog/how-i-used-ai-to-build-this-site',
+        'http://localhost:3000/tags/ai-agents',
       ],
       // Three runs, median reported. A single run on a shared CI runner swings
       // by 10 points on performance for no reason at all.
