@@ -17,7 +17,9 @@
     "lighthouse": "npm run build && npx --yes @lhci/cli@0.14.x autorun",
     "test": "playwright test",
     "test:cards": "playwright test tests/share-cards.spec.ts",
-    "indexnow": "node scripts/indexnow.mjs"
+    "indexnow": "node scripts/indexnow.mjs",
+    "blog:schedule": "node scripts/blog/publish-due.mjs --list",
+    "blog:publish-due": "node scripts/blog/publish-due.mjs"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.0",

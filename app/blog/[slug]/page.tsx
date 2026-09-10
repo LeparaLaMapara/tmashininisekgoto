@@ -7,13 +7,13 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { cardSubtitle, getAllPosts, getPostBySlug, getSeries, metaDescription } from '@/lib/blog'
+import { cardSubtitle, getAllPosts, getPostBySlug, getSeries, getUnpublishedPosts, metaDescription } from '@/lib/blog'
 import { JsonLd } from '@/components/seo/json-ld'
 import { blogPostingSchema, breadcrumbSchema } from '@/lib/schema'
 import { slugifyTag } from '@/lib/topics'
 import { SITE_URL, ogImages } from '@/lib/site'
 import { formatDate } from '@/lib/utils'
-import { mdxComponents } from '@/components/blog/mdx-components'
+import { createMdxComponents } from '@/components/blog/mdx-components'
 import { Comments } from '@/components/blog/comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
@@ -211,7 +211,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <article className="prose prose-lg max-w-3xl mx-auto">
         <MDXRemote
           source={content}
-          components={mdxComponents}
+          components={createMdxComponents(getUnpublishedPosts())}
           options={{
             mdxOptions: {
               remarkPlugins: [remarkGfm, remarkMath],
