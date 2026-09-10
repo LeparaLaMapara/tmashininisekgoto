@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { Clock } from 'lucide-react'
 import { getAllPosts, getAllTags } from '@/lib/blog'
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
   title: 'Blog: MLOps, Data Science & AI Engineering',
   description:
     'Writing on AI systems, MLOps, open source engineering, and the craft of building real-world machine learning infrastructure.',
-  alternates: { canonical: '/blog' },
+  alternates: { canonical: '/blog' },
+  openGraph: pageOpenGraph('/blog', 'Writing by Thabang Mashinini-Sekgoto'),
 }
 
 export default function BlogPage() {

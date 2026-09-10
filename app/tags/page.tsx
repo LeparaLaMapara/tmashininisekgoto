@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { getAllTags } from '@/lib/blog'
 
@@ -6,7 +7,8 @@ export const metadata: Metadata = {
   title: 'Topics: MLOps, Agentic AI, Python',
   description:
     'Browse the writing by topic: MLOps, agentic AI, Python packaging, data science leadership, and production machine learning engineering.',
-  alternates: { canonical: '/tags' },
+  alternates: { canonical: '/tags' },
+  openGraph: pageOpenGraph('/tags', 'Topics written about by Thabang Mashinini-Sekgoto'),
 }
 
 export default function TagsPage() {

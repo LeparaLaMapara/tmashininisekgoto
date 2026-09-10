@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { ImpactCounters } from '@/components/home/impact-counters'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { JsonLd } from '@/components/seo/json-ld'
@@ -10,6 +11,7 @@ import { Sparkles, ArrowRight } from 'lucide-react'
 // canonical so the homepage points at itself rather than inheriting anything.
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
+  openGraph: pageOpenGraph('/', 'Thabang Mashinini-Sekgoto, Data Scientist and AI Engineer'),
 }
 
 const AUDIENCES = [

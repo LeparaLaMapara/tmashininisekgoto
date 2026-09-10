@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { BIO, COURSES, PROJECTS } from '@/lib/data'
 import { getAllPosts } from '@/lib/blog'
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
   description:
     'What Thabang Mashinini-Sekgoto is working on right now: current role, PhD research, projects being built, and what is being taught.',
   alternates: { canonical: '/now' },
+  openGraph: pageOpenGraph('/now', 'What Thabang Mashinini-Sekgoto is working on now'),
 }
 
 export default function NowPage() {

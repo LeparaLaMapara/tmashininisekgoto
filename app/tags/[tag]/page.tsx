@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getAllTags, getPostsBySlug, getTagNameBySlug } from '@/lib/blog'
 import { getTopic, slugifyTag } from '@/lib/topics'
+import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { breadcrumbSchema, collectionPageSchema } from '@/lib/schema'
 import { formatDate } from '@/lib/utils'
@@ -27,6 +28,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: topic ? heading : `Posts tagged “${name}”`,
     description: topic?.description ?? `Writing by Thabang Mashinini-Sekgoto about ${name}.`,
     alternates: { canonical: `/tags/${slug}` },
+    openGraph: pageOpenGraph(
+      `/tags/${slug}`,
+      `Writing by Thabang Mashinini-Sekgoto about ${name}`
+    ),
   }
 }
 

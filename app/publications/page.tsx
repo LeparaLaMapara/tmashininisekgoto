@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { publicationsSchema } from '@/lib/schema'
 import { citations } from '@/lib/citations'
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   title: 'Publications: ML & Deep Learning Research',
   description:
     'Peer-reviewed publications, conference papers, and thesis work by Thabang Mashinini-Sekgoto in AI, ML, and computational science.',
-  alternates: { canonical: '/publications' },
+  alternates: { canonical: '/publications' },
+  openGraph: pageOpenGraph('/publications', 'Publications by Thabang Mashinini-Sekgoto'),
 }
 
 export default function PublicationsPage() {

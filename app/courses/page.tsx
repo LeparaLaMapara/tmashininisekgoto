@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { createClient } from '@supabase/supabase-js'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { COURSES } from '@/lib/data'
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
   title: 'Courses: Practical AI & Data Science',
   description:
     'Practitioner-first AI and data science courses: from zero-code AI agents to agentic engineering with Claude Code, MCP, and Codex.',
-  alternates: { canonical: '/courses' },
+  alternates: { canonical: '/courses' },
+  openGraph: pageOpenGraph('/courses', 'Courses by Thabang Mashinini-Sekgoto'),
 }
 
 // Re-fetch waitlist counts from Supabase every 60 seconds (ISR)

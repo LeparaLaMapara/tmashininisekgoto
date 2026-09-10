@@ -11,7 +11,7 @@ import { getAllPosts, getPostBySlug, metaDescription } from '@/lib/blog'
 import { JsonLd } from '@/components/seo/json-ld'
 import { blogPostingSchema, breadcrumbSchema } from '@/lib/schema'
 import { slugifyTag } from '@/lib/topics'
-import { SITE_URL } from '@/lib/site'
+import { SITE_URL, ogImages } from '@/lib/site'
 import { formatDate } from '@/lib/utils'
 import { mdxComponents } from '@/components/blog/mdx-components'
 import { Comments } from '@/components/blog/comments'
@@ -68,10 +68,25 @@ export async function generateMetadata({
       description,
       url,
       type: 'article',
-      publishedTime: post.date,
+      // ISO 8601, not the JS Date `toString`. `post.date` renders as
+      // "Fri Mar 06 2026 00:00:00 GMT+0000 (Coordinated Universal Time)",
+      // which is not a format the Open Graph spec allows, so consumers that
+      // parse it strictly dropped the publication date off the card.
+      publishedTime: new Date(post.date).toISOString(),
+      modifiedTime: post.lastModified,
       authors: ['Thabang Mashinini-Sekgoto'],
       tags: post.tags,
-      images: [`${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}&subtitle=${encodeURIComponent(post.summary.slice(0, 100))}`],
+      // Repeated from the root layout because a child's `openGraph` replaces
+      // the parent's rather than merging into it. Without these two lines the
+      // most shared URLs on the site were the only ones with no site name
+      // under the card.
+      siteName: 'Thabang Mashinini-Sekgoto',
+      locale: 'en_ZA',
+      images: ogImages(
+        `${post.title}, an article by Thabang Mashinini-Sekgoto`,
+        post.title,
+        post.summary.slice(0, 100)
+      ),
     },
   }
 }

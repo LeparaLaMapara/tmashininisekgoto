@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ProjectFilter } from '@/components/work/project-filter'
 
@@ -6,7 +7,8 @@ export const metadata: Metadata = {
   title: 'AI & Machine Learning Projects',
   description:
     'Projects spanning open-source frameworks, telecoms optimization, banking ML platforms, geospatial research, and education technology.',
-  alternates: { canonical: '/work' },
+  alternates: { canonical: '/work' },
+  openGraph: pageOpenGraph('/work', 'Projects by Thabang Mashinini-Sekgoto'),
 }
 
 export default function WorkPage() {

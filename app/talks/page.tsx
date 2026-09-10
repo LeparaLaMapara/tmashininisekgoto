@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { TALKS, WRITINGS } from '@/lib/data'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ExternalLink, BookOpen } from 'lucide-react'
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
   title: 'Talks & Press on AI and Data Science',
   description:
     'Conference talks, sessions, interviews, and press coverage on AI, machine learning, and data science in South Africa, featuring Thabang Mashinini-Sekgoto.',
-  alternates: { canonical: '/talks' },
+  alternates: { canonical: '/talks' },
+  openGraph: pageOpenGraph('/talks', 'Talks and press featuring Thabang Mashinini-Sekgoto'),
 }
 
 export default function TalksPage() {

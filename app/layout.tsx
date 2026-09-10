@@ -8,7 +8,7 @@ import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeProvider } from '@/components/layout/theme-provider'
 import { JsonLd } from '@/components/seo/json-ld'
 import { webSiteSchema } from '@/lib/schema'
-import { SITE_URL } from '@/lib/site'
+import { SITE_URL, ogImages } from '@/lib/site'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   description:
     'Data Science and AI leader with 10+ years building enterprise-scale ML across banking, telecoms, research, and education. Founder of Ubunye AI Ecosystems.',
   openGraph: {
-    images: ['/api/og'],
+    images: ogImages('Thabang Mashinini-Sekgoto, Data Scientist and AI Engineer'),
     type: 'website',
     siteName: 'Thabang Mashinini-Sekgoto',
     locale: 'en_ZA',

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageOpenGraph } from '@/lib/site'
 import { ChatInterface } from '@/components/ai/chat-interface'
 import { WorkWithMe } from '@/components/ai/work-with-me'
 
@@ -6,7 +7,8 @@ export const metadata: Metadata = {
   title: 'Thabang AI Assist: Ask About My Work',
   description:
     'Ask an AI assistant grounded on the real work, writing, talks, and projects of Thabang Mashinini-Sekgoto. Every answer cites its sources.',
-  alternates: { canonical: '/ai' },
+  alternates: { canonical: '/ai' },
+  openGraph: pageOpenGraph('/ai', 'Ask the AI assistant about the work of Thabang Mashinini-Sekgoto'),
 }
 
 export default function AIPage() {
