@@ -7,7 +7,7 @@ import { profileOpenGraph } from '@/lib/site'
 export const metadata: Metadata = {
   title: 'About: AI Researcher & Data Science Leader',
   description:
-    'Learn more about Thabang Mashinini-Sekgoto. AI Systems Architect, researcher at Wits University, and founder of Ubunye AI Ecosystems.',
+    'Learn more about Thabang Mashinini-Sekgoto. AI systems architect, Lead Data Scientist at ABSA Insurance, founder of Ubunye AI Ecosystems, and an MSc graduate of the University of the Witwatersrand.',
   alternates: { canonical: '/about' },
   openGraph: profileOpenGraph('/about'),
 }
