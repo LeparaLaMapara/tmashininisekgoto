@@ -127,6 +127,14 @@ export default function ResumePage() {
                     </h3>
                     <p className="text-sm text-synapse mb-2">{item.org}</p>
                     <p className="text-sm text-muted leading-relaxed">{item.description}</p>
+                    {/* The evidence line. It already existed in the data and fed
+                        the 3D journey, but the CV never showed it, so the page
+                        carried the narrative without the proof beside it. */}
+                    {item.highlight && (
+                      <p className="mt-2 text-sm font-medium text-signal leading-snug">
+                        {item.highlight}
+                      </p>
+                    )}
                     {(() => {
                       const work = getProjectForRole(item.org, item.period)
                       return work ? (
