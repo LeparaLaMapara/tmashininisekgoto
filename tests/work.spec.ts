@@ -42,12 +42,25 @@ test.describe('work data integrity', () => {
     expect(absa.artifacts).toHaveLength(0)
   })
 
-  test('no fabricated hard numbers survive on the ABSA story', () => {
+  test('ABSA figures match the CV and nothing unverified creeps in', () => {
+    // These two are published in the owner's own public CV, so they are fair to
+    // state. "26,000+ telematics customers" is not: it appears in a brief but
+    // not in the CV, so it must never appear here.
     const absa = PROJECTS.find((p) => p.slug === 'insurance-data-science-capability')!
     const blob = JSON.stringify(absa)
-    expect(blob).not.toContain('230,000')
-    expect(blob).not.toContain('2M')
-    expect(blob).not.toContain('2,000,000')
+    expect(blob).toContain('230,000+')
+    expect(blob).toContain('2M+ daily telematics signals')
+    expect(blob).not.toContain('26,000')
+    expect(blob).not.toContain('daily trips')
+  })
+
+  test('the NeurIPS paper is described as the workshop it actually was', () => {
+    // Verified against Climate Change AI and IBM Research: it is the Tackling
+    // Climate Change with ML workshop at NeurIPS 2020, not the main conference.
+    const ibm = PROJECTS.find((p) => p.slug === 'ibm-geospatial')!
+    const blob = JSON.stringify(ibm)
+    expect(blob).toContain('workshop')
+    expect(blob).not.toMatch(/NeurIPS\s+2020\s+main/i)
   })
 
   test('no PhD-candidate claim anywhere in work data', () => {

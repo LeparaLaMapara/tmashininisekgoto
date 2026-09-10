@@ -246,86 +246,86 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'insurance-data-science-capability',
-    title: 'Building the capability around the models',
+    title: 'Building the capability around insurance data science',
     category: 'insurance',
     order: 3,
-    cardTitle: 'Building the capability around the models',
+    cardTitle: 'Building the capability around insurance data science',
     oneLiner:
-      'Leading insurance data science, the work was less about any single model and more about the people, engineering and governance that let models reach production reliably.',
+      'Good models are only one part of a working data-science function. The data, engineering, governance, tooling and team around them decide whether anything survives in production.',
     why:
-      'A data-science capability is more than a collection of models. It needs repeatable engineering, governance, and knowledge that does not live in one person’s head.',
+      'Moving an insurance analytics function from a mostly BI and analysis way of working toward a cloud-first, engineering-oriented capability is what lets analytical products be built, deployed, governed and improved repeatedly rather than once.',
     outcome:
-      'A scoring cycle that used to take about two months now runs in under a day, and models move to production through repeatable engineering rather than one-off effort.',
-    topics: ['Production ML', 'MLOps', 'Geospatial AI', 'Telematics', 'Technical Leadership', 'AI Governance'],
+      'A telematics data pipeline that took about two months now runs in under 24 hours, and analytical products move to production through governed, repeatable engineering.',
+    topics: ['Production ML', 'MLOps', 'Technical Leadership', 'AI Governance', 'Geospatial AI', 'Telematics'],
     artifacts: [],
     caseStudy: {
       problem:
-        'Insurance data science had capable people building models, but getting those models into production reliably depended on individual knowledge and one-off effort. The bottleneck was the engineering and governance around the models, not the models themselves.',
+        'The function had capable people building good models, but the path from an idea to a governed production system depended on individual knowledge and one-off effort. Historically it leaned more toward BI and analysis than a production data-science engineering operating model, which is a common and reasonable place for an insurance analytics team to start. The question was how to move it toward something that could reliably build, deploy, govern and improve analytical products.',
       why:
-        'When a capability depends on who happens to know how a thing works, it does not scale and it does not survive people leaving. Underwriting, retention, fraud, telematics and climate-risk work all need models that reach production dependably.',
+        'A data-science capability is more than a collection of models. Underwriting, retention, fraud, telematics and climate risk all need work that can be reproduced, operated and improved by someone other than its author. Without the surrounding engineering and governance, a good model is a one-off.',
       context:
-        'A large, regulated enterprise environment, where governance, cloud architecture and repeatable practice matter as much as model quality, and where confidentiality limits what can be said about specific systems.',
+        'A large, regulated enterprise, mid-migration from on-premise data and workflows toward cloud. Databricks is the enabling platform rather than the point. Confidentiality limits what can be said about specific systems, so what follows is scope and consequence, not internals.',
       contribution:
-        'I lead the insurance data science capability. The emphasis has been on the things that let a team ship reliably: modernising the telematics platform, building reusable engineering practice and lifecycle discipline, geospatial flood-risk modelling, and governance, so the team’s work depends less on any one person.',
+        'I lead the Insurance Data Science capability across four connected layers.\n\nStrategy and modernisation: I help define the technical and analytical direction, moving toward cloud-first ways of working, scalable data and ML systems, and governed analytical products.\n\nData and ML engineering: I have been helping introduce hands-on practice across the whole lifecycle, from data engineering and experimentation through deployment, monitoring, governance and maintenance, including CI/CD, model lifecycle management, testing and reproducibility.\n\nPeople and ways of working: I lead a multidisciplinary team of senior data scientists and data engineers, and much of the job is structure rather than technology, clearer ways of working, Agile delivery, engineering standards, documentation, Show and Tell sessions, peer learning and reducing knowledge silos.\n\nApplied systems: alongside that I still build. Telematics and behavioural risk supporting products such as Activate; high-resolution geospatial flood and natural-catastrophe risk models, built with XGBoost against JBA ground-truth data, so physical exposure can be understood at property and portfolio level before losses occur; and customer intelligence work that gives the business a richer view of behaviour, value, needs and risk rather than a single recommendation model.',
       changed:
-        'Efficiency and reliability, stated as change rather than counts: a telematics scoring cycle that took about two months now runs in under a day, and models move to production through repeatable practice instead of heroics.',
+        'The core telematics platform was modernised using Ubunye Engine, cutting data pipeline processing latency from about two months to under 24 hours at scale. Enterprise AI governance and CI/CD were institutionalised across the production portfolio using Databricks Asset Bundles, MLflow and Unity Catalog. The effect is less manual intervention, faster data availability, more consistent processing and clearer ownership, which is what lets several analytical products run at once.',
       benefited:
-        'Insurance operations, the data scientists on the team who can now ship more reliably, and ultimately customers on the other end of underwriting, retention and risk decisions.',
+        'Insurance operations and underwriting, through earlier visibility of physical risk and better behavioural understanding; the data scientists on the team, who can ship more reliably and depend less on any one person; and ultimately customers, through more relevant decisions and interactions.',
       remained:
-        'Reusable engineering practice, governance, and a more self-sufficient team, capability that outlasts any single project. Some of the modernisation runs on Ubunye Engine.',
+        'Reusable engineering practice, governance and CI/CD across a production portfolio, a modernised telematics platform, geospatial risk models across 230,000+ insured properties, hyperpersonalisation processing 2M+ daily telematics signals for retention, next-best-action and customer lifetime value, and a more self-sufficient team.',
       technicalContext:
-        'Cloud-first architecture, Databricks, geospatial ML, MLOps and model-lifecycle practice, AI governance. Specifics are limited by employer confidentiality.',
+        'Databricks, Spark and PySpark, Databricks Asset Bundles, MLflow, Unity Catalog, CI/CD, XGBoost, JBA flood ground-truth data, geospatial modelling, MLOps and model lifecycle management, AI governance, cloud migration from on-premise. Ubunye Engine underpins part of the telematics modernisation.',
     },
     problem:
-      'A data-science capability is more than a collection of models. Getting models into production reliably depended on individual knowledge and one-off effort.',
+      'Getting analytical products into production reliably depended on individual knowledge and one-off effort, in a function historically oriented more toward BI and analysis than production data-science engineering.',
     solution:
-      'Leading the insurance data science capability, with the emphasis on the engineering, governance and repeatable practice that let models reach production, plus telematics modernisation and geospatial flood-risk work.',
+      'Leading the Insurance Data Science capability across strategy and modernisation, data and ML engineering, people and ways of working, and applied systems in telematics, natural-catastrophe risk and customer intelligence.',
     impact:
-      'A telematics scoring cycle that took about two months now runs in under a day, and the team ships to production through repeatable engineering rather than one-off effort.',
-    skills: ['Databricks', 'Geospatial ML', 'MLOps', 'AI Governance', 'Enterprise AI'],
+      'Telematics pipeline latency reduced from about two months to under 24 hours, with enterprise AI governance and CI/CD institutionalised across the production model portfolio.',
+    skills: ['Databricks', 'PySpark', 'MLflow', 'Unity Catalog', 'XGBoost', 'Geospatial ML', 'MLOps', 'AI Governance'],
     image: '/projects/absa-activate.jpg',
     resume: { org: 'ABSA Insurance', period: 'Mar 2024 - Present' },
   },
   {
-    slug: 'vodacom-smart-generators',
-    title: 'Keeping a network running when the power doesn’t',
+    slug: 'vodacom-network-intelligence',
+    title: 'Network intelligence and optimisation',
     category: 'telecoms',
     order: 4,
-    cardTitle: 'Keeping a network running when the power doesn’t',
+    cardTitle: 'Deciding where a national network needs attention first',
     oneLiner:
-      'Load-shedding forced thousands of mobile sites onto generators, and every bad dispatch call burned fuel or dropped the network for real customers.',
+      'Enormous volumes of imperfect operational data had to become decisions about where resources, infrastructure and intervention were needed most across a national telecommunications network.',
     why:
-      'With constrained fuel and crews, someone had to decide where intervention actually mattered, in real time, across the whole estate.',
+      'Fuel, crews, capital and equipment are finite. The question was never how to collect telemetry, it was which of 15,000+ sites deserved attention next, and where that attention would create the most value.',
     outcome:
-      'A nationwide real-time decision system across Vodacom’s estate of 15,000+ sites, processing on the order of a million events a day and supporting roughly R1B in annual savings.',
-    topics: ['Optimization', 'Real-Time Streaming', 'Telemetry', 'Production ML', 'Decision Systems'],
+      'Real-time platforms processing 25M+ telemetry events a day across 15,000+ sites, with the Smart Generator Optimisation platform contributing approximately R1 billion in annual operational savings.',
+    topics: ['Optimization', 'Real-Time Streaming', 'Telemetry', 'Production ML', 'Decision Systems', 'Technical Leadership'],
     artifacts: [
-      { kind: 'product', href: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring', label: 'Vodacom product page' },
+      { kind: 'product', href: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring', label: 'Vodacom Smart Generator (product page)' },
     ],
     caseStudy: {
       problem:
-        'Load-shedding pushed thousands of network sites, across a nationwide estate of more than 15,000, onto diesel generators and batteries. Fuel was limited, crews were limited, and telemetry and alarms were noisy, so every decision about which site to attend to, and when, had consequences for cost and for whether the network stayed up.',
+        'A national mobile network generates continuous operational data from tens of thousands of sites, and much of it is noisy, weakly labelled and spread across separate operational systems. The recurring question was where to send finite resources next. During load-shedding that sharpened: sites fall back to generators and batteries, and fuel, logistics and field teams all run out before the problem does.',
       why:
-        'A dropped site is dropped service for real people, and wasted diesel is real money at national scale. The hard part was deciding where intervention mattered most under genuine resource constraints.',
+        'A site that goes down is lost service for real people, and misdirected diesel and crews are real money at national scale. Answering it well needed the data turned into a decision quickly enough to act on, not a report produced after the fact.',
       context:
-        'More than 15,000 mobile sites nationwide, with interdependent network effects, unreliable power, and a constant stream of telemetry and alarms that had to be turned into operational decisions in real time.',
+        '15,000+ national infrastructure sites and mobile generators, interdependent network effects, operational alarms, and telemetry arriving continuously. This was operational real-time scale rather than a static dataset: the systems had to keep making sense of live events across national infrastructure.',
       contribution:
-        'I led a team of data scientists and engineers. We built a constrained-optimisation engine over real-time streaming telemetry that decides which generators to run, where and when, and I architected the platform behind it.',
+        'I led a high-performing team of 10, nine data scientists and a senior ML engineer, building real-time analytics and optimisation platforms.\n\nI architected the Smart Generator Optimisation platform across the national estate, applying constrained optimisation over live telemetry to decide which generators to run, where and when.\n\nThe team built high-throughput streaming pipelines processing 25M+ daily telemetry events from 15,000+ sites and mobile generators using Kafka, PySpark and Kubernetes, and I designed a custom PyFlink stream-processing framework that enriches real-time Kafka topics with IoT telemetry, operational alarms and static reference data in flight.\n\nI also institutionalised enterprise AI and analytics engineering standards across the team, which shortened model development cycles and improved system reliability.',
       changed:
-        'Dispatch moved from reactive to informed: across the national estate of 15,000+ sites, the system weighs cost, network impact and constraints and directs effort where it matters, in real time.',
+        'Dispatch moved from reactive to informed, weighing cost, network impact and constraints across the whole estate in real time. The Smart Generator platform contributed approximately R1 billion in annual operational savings through better generator and resource allocation, alongside improved availability. The engineering standards and streaming architecture made delivery across the team more repeatable.',
       benefited:
-        'The network-operations teams who keep South Africa connected through power cuts, and the customers who stayed connected because of better decisions.',
+        'Network operations teams, who gained continuously updated intelligence for infrastructure and resource decisions; the business, through lower operating cost and better capital allocation; and customers who stayed connected through power cuts.',
       remained:
-        'A production decision system, and the streaming engineering underneath it, including a custom stream-processing framework built to handle the telemetry volume.',
+        'Production optimisation and streaming platforms, a custom stream-processing framework, and engineering standards adopted across the team. Recognised with the Vodacom Star Award in 2022 for innovation and engineering excellence.',
       technicalContext:
-        'Real-time streaming on the order of a million events a day, constrained optimisation (CVXPY), PyFlink / PySpark / Kafka, Kubernetes, Docker, GitLab CI.',
+        'Kafka, PySpark, a custom PyFlink stream-processing framework, Kubernetes, Docker, GitLab CI, constrained optimisation (CVXPY), distributed processing, real-time IoT telemetry.',
     },
     problem:
-      'Load-shedding forced thousands of network sites onto diesel generators, and every bad dispatch decision burned fuel and dropped the network for real customers.',
+      'Enormous volumes of noisy, weakly labelled operational data from a national network had to become decisions about where finite resources and intervention were needed most.',
     solution:
-      'A constrained-optimisation engine with real-time streaming analytics that decides which generators to run, where, and when, built for the network-operations teams who keep South Africa connected through power cuts.',
+      'Real-time analytics and optimisation platforms, including constrained-optimisation generator dispatch and high-throughput streaming pipelines, built by a team of ten.',
     impact:
-      'A nationwide real-time decision system across 15,000+ sites that processes on the order of a million events a day and supported roughly R1B in annual savings.',
+      '25M+ daily telemetry events across 15,000+ sites, with Smart Generator Optimisation contributing approximately R1 billion in annual operational savings.',
     skills: ['PyFlink', 'Kafka', 'CVXPY', 'PySpark', 'Kubernetes', 'Docker', 'GitLab CI'],
     image: '/projects/smart-generators.png',
     productLink: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring',
@@ -338,95 +338,181 @@ export const PROJECTS: Project[] = [
     order: 5,
     cardTitle: 'Turning environmental data into something people can use',
     oneLiner:
-      'Satellite and climate data is huge and awkward, many formats, raster and vector, heavy to process, and few organisations can handle it alone.',
+      'Satellite, climate and environmental data is too large to treat as an ordinary dataset. The work was making it into information researchers, businesses and decision makers could act on.',
     why:
-      'Environmental and climate-risk questions need planet-scale data turned into something an organisation can actually act on.',
+      'Research only matters here if it reaches a system someone can use. That meant designing models and workflows for data far beyond a single machine, then getting them into a platform.',
     outcome:
-      'Analytics workflows on IBM PAIRS processing multi-terabyte datasets, feeding IBM’s Environmental Intelligence Suite.',
+      'Climate-forecasting models deployed into IBM PAIRS Geoscope, an enterprise geospatial-temporal platform handling petabyte-scale data, plus a co-authored NeurIPS 2020 workshop paper.',
     topics: ['Geospatial AI', 'Remote Sensing', 'Applied Research', 'Climate Risk', 'Distributed Computing'],
     artifacts: [
+      { kind: 'publication', href: 'https://www.climatechange.ai/papers/neurips2020/74', label: 'NeurIPS 2020 CCAI workshop paper' },
+      { kind: 'paper', href: 'https://arxiv.org/abs/2102.00085', label: 'arXiv' },
       { kind: 'github', href: 'https://github.com/IBM/ibmpairs', label: 'IBM PAIRS' },
       { kind: 'product', href: 'https://www.ibm.com/products/environmental-intelligence-suite', label: 'IBM Environmental Intelligence Suite' },
-      { kind: 'publication', href: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC' },
     ],
     caseStudy: {
       problem:
-        'Climate and environmental-risk questions need planet-scale satellite data, and almost no organisation can process it on its own: the data is enormous, comes in many raster and vector formats, and varies in spatial and temporal resolution.',
+        'Climate and environmental questions need satellite, geospatial and temporal data at a scale almost no organisation can process alone: large image collections, raster and vector formats, and varying spatial and temporal resolution. The analytical challenge was inseparable from the engineering one, because the data is too large to treat as an ordinary single-machine dataset.',
       why:
-        'Environmental, climate and supply-chain risk intelligence is only useful if the underlying data can be processed and turned into something an organisation can act on.',
+        'The point was never to build models in isolation. It was to turn enormous environmental datasets into reliable information that researchers, businesses and decision makers could actually use.',
       context:
-        'Research at IBM Research, working on the PAIRS geospatial platform, where the challenge was as much data engineering at scale as it was modelling.',
+        'IBM Research, working with distributed compute and IBM PAIRS Geoscope, an enterprise geospatial-temporal platform, described in plain terms, a system for analysing huge volumes of geospatial and time-dependent data, handling petabyte-scale data for clients globally.',
       contribution:
-        'I researched and built machine-learning and geospatial analytics for environmental and climate applications, deployed climate-forecasting models onto the IBM PAIRS platform, and contributed to a COVID-19 risk-index dashboard for Gauteng.',
+        'I developed machine learning and geospatial analytics for environmental intelligence and climate-risk applications, and built predictive systems with TensorFlow on distributed data platforms. I deployed climate-forecasting models into the PAIRS Geoscope platform. I co-authored peer-reviewed research and worked with international research and engineering teams on large-scale AI initiatives.\n\nSeparately, and during an emerging public-health crisis, I contributed to the Gauteng COVID-19 risk-index and prediction dashboard, a collaboration between IBM Research Africa, Wits University and the GCRO. It was used by the Gauteng Provincial Department of Health to identify infection hotspots and forecast hospital bed and ventilator demand for a province of more than 15 million residents, and was deployed publicly via IBM Cloud. It was a team effort, not mine alone.',
       changed:
-        'Multi-terabyte satellite datasets became analytics workflows that could feed a product, rather than a processing problem each organisation faced alone.',
+        'Research became usable: forecasting models moved from experiment into an enterprise platform serving clients, and during the pandemic rapidly changing data was turned into information that could support provincial health planning rather than sitting in an analysis.',
       benefited:
-        'Enterprises needing environmental, climate and supply-chain risk intelligence, through IBM’s Environmental Intelligence Suite.',
+        'Enterprises needing environmental, climate and supply-chain risk intelligence through IBM’s platforms, the research community through published work, and provincial health planners making resourcing decisions under time pressure.',
       remained:
-        'Research contributions, a publication, and work that fed a production environmental-intelligence product.',
+        'Models running inside an enterprise geospatial platform, a publicly deployed public-health dashboard, and peer-reviewed research, including "Long-Range Seasonal Forecasting of 2m-Temperature with Machine Learning", presented at the Tackling Climate Change with ML workshop at NeurIPS 2020 with colleagues from IBM Research.',
       technicalContext:
-        'IBM PAIRS, IBM Cloud, Python, TensorFlow, GeoPandas, Hadoop, Airflow, large-scale raster and vector processing.',
+        'TensorFlow, distributed compute and distributed data platforms, IBM PAIRS Geoscope, IBM Cloud, geospatial raster and vector processing, large-scale experimentation, Python.',
     },
     problem:
-      'Climate and environmental-risk questions need planet-scale satellite data, and almost no organisation can process it on its own.',
+      'Climate and environmental questions need satellite and geospatial data at petabyte scale, too large to treat as an ordinary dataset, and almost no organisation can process it alone.',
     solution:
-      'Analytics workflows on IBM PAIRS that process multi-terabyte satellite raster and vector datasets, for enterprises that need environmental, climate and supply-chain risk intelligence.',
+      'Machine learning and geospatial analytics for environmental and climate risk, built on distributed platforms and deployed into IBM PAIRS Geoscope, plus a contribution to the Gauteng COVID-19 risk-index dashboard.',
     impact:
-      "Work that fed IBM's Environmental Intelligence Suite for global environmental monitoring.",
-    skills: ['IBM PAIRS', 'IBM Cloud', 'Airflow', 'Python', 'Hadoop', 'GeoPandas', 'TensorFlow'],
+      'Climate-forecasting models running in an enterprise geospatial platform handling petabyte-scale data, a publicly deployed provincial health dashboard, and co-authored peer-reviewed research.',
+    skills: ['IBM PAIRS', 'IBM Cloud', 'TensorFlow', 'Python', 'GeoPandas', 'Airflow', 'Hadoop'],
     image: '/projects/ibm-geospatial.png',
     ghLink: 'https://github.com/IBM/ibmpairs',
     productLink: 'https://www.ibm.com/products/environmental-intelligence-suite',
-    paperLink: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC',
+    paperLink: 'https://www.climatechange.ai/papers/neurips2020/74',
     resume: { org: 'IBM Research', period: 'Apr 2020 - Nov 2021' },
   },
   {
     slug: 'wits-student-success',
-    title: 'A recommendation system for student success',
-    category: 'research',
+    title: 'Using data to help students and a university decide',
+    category: 'education',
     order: 6,
-    cardTitle: 'A recommendation system for student success',
+    cardTitle: 'Using data to help students and a university decide',
     oneLiner:
-      'Institutional planning needed to find the students and interventions that mattered in a lot of noisy administrative data.',
+      'A university holds a great deal of data about how students are doing. The work was turning it into something faculties and support staff could act on, early enough to matter.',
     why:
-      'The outputs fed real decisions about planning and student support, and the knowledge had to outlast me, so part of the work was teaching it.',
+      'Institutional data that is only reported is not much use. The value is in earlier visibility, so support reaches a student before a problem becomes terminal, and in leaving the skills behind.',
     outcome:
-      'A clustering-based recommendation engine associated with over R2M a year in government subsidy; 76+ staff and students trained.',
+      'A clustering-based recommendation engine serving the Faculty of Humanities and its 10,000+ students, generating over R2 million a year in government subsidy impact; 76+ staff and students trained across 7 workshops.',
     topics: ['Recommendation Systems', 'Applied Research', 'Analytics', 'AI Education'],
     artifacts: [],
     caseStudy: {
       problem:
-        'A university’s institutional planning and student-success work sat on a lot of noisy administrative data, and the useful signals, which students and which interventions mattered, were hard to surface.',
+        'Business Intelligence Services was the university’s central analytics and reporting capability. It held a lot of institutional data, but the questions that mattered, which students may need support, which interventions help, what academic choices make sense, were hard to answer from reporting alone.',
       why:
-        'The outputs were not a demo: they fed real decisions about planning and student support, where getting it right changes outcomes for students.',
+        'South African university funding is tied to student progression and completion, so better decisions have both a human and an institutional consequence. Earlier visibility means support can be proactive rather than a response to a failure that has already happened.',
       context:
-        'Business Intelligence Services at the University of the Witwatersrand, where the work also had to be usable and maintainable by staff after I moved on.',
+        'A central analytics function serving faculties, schools, planning and student-support staff, many of whom came from traditional institutional-research backgrounds rather than machine learning. Anything built had to be usable and maintainable by them.',
       contribution:
-        'I built a clustering-based recommendation engine and the reporting and analytics around it, and I trained 76+ staff and students so the capability did not leave with me.',
+        'I developed recommendation and analytics systems supporting institutional planning and student success, and built the reporting and analytics workflows around them in Python, SQL and Power BI. I built a clustering-based recommendation engine serving the Faculty of Humanities. I also facilitated 7 analytics and machine learning workshops, training 76+ technical and non-technical staff and students, so the capability did not sit with one central team.',
       changed:
-        'Planning gained a data-driven way to target support, and the institution kept both the system and the people who understood it.',
+        'Faculties, schools and planning gained useful information rather than raw institutional data, supporting earlier and better-targeted academic and support decisions. The recommendation engine is associated with over R2 million a year in government subsidy impact.',
       benefited:
-        'Institutional planning, the staff and students trained, and the students the interventions were designed to support.',
+        'Students, through better academic decisions and earlier support; faculty and planning staff, through visibility they could act on; and the 76+ people trained, who kept the skills.',
       remained:
-        'A recommendation and analytics system in use for planning, and trained people, an early instance of a pattern that runs through the later work: leave capability behind, not just software.',
+        'Analytics and recommendation systems in institutional use, and trained people. This is where a pattern starts that runs through everything since: transfer the capability, do not just deliver the artefact.',
       technicalContext:
-        'Python, SQL, clustering and recommendation methods, Power BI reporting.',
+        'Python, SQL, clustering and recommendation methods, Power BI reporting and analytics workflows.',
     },
     problem:
-      'Institutional planning needed to find the students and interventions that mattered in a lot of noisy administrative data.',
+      'A university held a great deal of institutional data, but the questions that mattered for student success and planning were hard to answer from reporting alone.',
     solution:
-      'A clustering-based recommendation engine and the reporting and analytics around it, built to be maintainable by staff, with 76+ staff and students trained to use it.',
+      'Recommendation and student-success analytics supporting institutional planning, plus workshops that moved analytics and ML capability beyond the central team.',
     impact:
-      'A recommendation engine associated with over R2M a year in government subsidy, and 76+ staff and students trained.',
-    skills: ['Recommendation Systems', 'Clustering', 'Analytics', 'Power BI'],
+      'A recommendation engine serving the Faculty of Humanities (10,000+ students), associated with over R2 million a year in government subsidy impact, and 76+ staff and students trained across 7 workshops.',
+    skills: ['Recommendation Systems', 'Clustering', 'Python', 'SQL', 'Power BI'],
     image: '/projects/wits-recommender.png',
     resume: { org: 'Business Intelligence Services - University of the Witwatersrand', period: 'Jun 2018 - Apr 2020' },
+  },
+  {
+    slug: 'csir-municipal-decision-support',
+    title: 'Decision support for municipalities',
+    category: 'research',
+    order: 7,
+    cardTitle: 'Helping municipalities see where service delivery breaks',
+    oneLiner:
+      'Public-sector data existed but was hard to act on. The work was building decision-support systems that gave municipal stakeholders operational visibility they could plan against.',
+    why:
+      'Municipal decisions affect service delivery for residents. Value here is not revenue, it is planning that is better informed than it was.',
+    outcome:
+      'Django-based decision-support systems serving 17 municipalities, including the City of Cape Town and 16 across Gauteng, with real-time access to analytics for public-sector stakeholders.',
+    topics: ['Applied Research', 'Analytics', 'Decision Systems', 'Public Sector'],
+    artifacts: [],
+    caseStudy: {
+      problem:
+        'Municipalities hold data relevant to performance, operational bottlenecks and service delivery, but it was not in a form that supported planning or day-to-day decisions.',
+      why:
+        'The customer was the public sector, so the value was public: better visibility of where service delivery was failing, and better-informed planning and resource allocation. That is legitimate impact even without a revenue figure attached.',
+      context:
+        'The Council for Scientific and Industrial Research, working in multidisciplinary teams combining software engineering, analytics and public-sector innovation.',
+      contribution:
+        'I developed predictive analytics and operational intelligence systems supporting municipalities and public-sector decision making, and built Django-based decision-support systems serving 17 municipalities, including the City of Cape Town and 16 across Gauteng, enabling operational visibility and real-time access to analytics. I applied machine learning and data engineering to identify operational bottlenecks and improve service-delivery planning.',
+      changed:
+        'Municipal stakeholders could see operational issues and bottlenecks rather than infer them, which is the precondition for planning against them.',
+      benefited:
+        'Municipal managers, planners and public-sector stakeholders across 17 municipalities, and indirectly the residents those services reach.',
+      remained:
+        'Decision-support systems in municipal use, and recognition for innovation in predictive modelling and enterprise solutions from the Mail & Guardian, the CSIR and the Department of Science and Technology.',
+      technicalContext:
+        'Python, Django, predictive analytics, machine learning, data engineering, operational intelligence dashboards.',
+    },
+    problem:
+      'Municipalities held data relevant to performance and service delivery, but not in a form that supported planning or operational decisions.',
+    solution:
+      'Django-based predictive analytics and decision-support systems giving municipal stakeholders operational visibility and real-time access to analytics.',
+    impact:
+      'Systems serving 17 municipalities including the City of Cape Town, with recognition from the Mail & Guardian, the CSIR and the Department of Science and Technology.',
+    skills: ['Python', 'Django', 'Predictive Analytics', 'Data Engineering'],
+    resume: { org: 'Council for Scientific and Industrial Research (CSIR)', period: 'Nov 2017 - Jan 2018' },
+  },
+  {
+    slug: 'ai-education-platform',
+    title: 'Making practical AI knowledge easier to reach',
+    category: 'social-impact',
+    order: 9,
+    cardTitle: 'Making practical AI knowledge easier to reach',
+    oneLiner:
+      'Most people meeting AI for the first time get either hype or a research paper. This is the work of explaining what is actually true about building with it, in public.',
+    why:
+      'Practical AI literacy is unevenly distributed, and the gap is widest where the opportunity is largest. Explaining the real engineering, plainly, is the cheapest way to move it.',
+    outcome:
+      'Co-hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, reaching an audience of 300,000+ across platforms, alongside technical writing read by 12,000+ monthly visitors.',
+    topics: ['AI Education', 'Applied AI', 'Community', 'Technical Leadership'],
+    artifacts: [
+      { kind: 'site', href: 'https://www.youtube.com/@tmashininisekgoto', label: 'YouTube' },
+      { kind: 'site', href: 'https://www.tmashininisekgoto.com/ai', label: 'Thabang AI' },
+    ],
+    caseStudy: {
+      problem:
+        'Public conversation about AI splits into hype and inaccessible research, and very little of it explains what building with these systems actually involves, what it costs, and where it fails.',
+      why:
+        'Practical AI adoption is limited less by access to models than by access to plain explanation and technical mentorship, and that gap is widest for people furthest from the industry.',
+      context:
+        'A public AI leadership and technical education effort, run alongside the day job rather than instead of it, aimed at practical adoption, mentorship and industry-wide literacy.',
+      contribution:
+        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also architected and deployed Thabang AI, a retrieval-grounded assistant built on a multi-model architecture with a custom AI gateway, so the material can be interrogated rather than only read.',
+      changed:
+        'A large audience gets an accurate account of what building with AI involves, from someone doing it in production rather than describing it from outside.',
+      benefited:
+        'Practitioners, students and people considering the field, and the technical audience reading the writing each month.',
+      remained:
+        'A body of public technical writing, a recorded conversation series, and a grounded assistant that cites its sources.',
+      technicalContext:
+        'RAG architecture, multi-model orchestration (Claude, Gemini, OpenAI), a custom AI gateway, serverless deployment.',
+    },
+    problem:
+      'Public AI conversation is split between hype and inaccessible research, with little plain explanation of what building with these systems actually involves.',
+    solution:
+      'A public AI education effort: co-hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, publishing technical leadership writing, and building a retrieval-grounded assistant over the material.',
+    impact:
+      'An audience of 300,000+ across platforms and 12,000+ monthly readers of the technical writing.',
+    skills: ['RAG', 'LLM Application Development', 'Technical Writing', 'AI Governance'],
+    resume: { org: 'AI Educator', period: '2024 - Present' },
   },
   {
     slug: 'kasilam-digital',
     title: 'Teaching people to build for themselves',
     category: 'social-impact',
-    order: 7,
+    order: 8,
     cardTitle: 'Teaching people to build for themselves',
     oneLiner:
       'Township businesses can’t afford agencies and township youth aren’t taught the skills that now pay, so Kasilam teaches people to build with AI by doing real work.',
@@ -697,8 +783,8 @@ export const PUBLICATIONS: Publication[] = [
   {
     title: 'Long-range seasonal forecasting of 2m-temperature with machine learning',
     authors: 'EE Vos, A Gritzman, S Makhanya, T Mashinini, CD Watson',
-    venue: 'arXiv preprint arXiv:2102.00085',
-    year: 2021,
+    venue: 'NeurIPS 2020, Tackling Climate Change with ML workshop',
+    year: 2020,
     citations: 8,
     scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC',
     semanticScholarId: '7655474fe5524b7e1aa5ebeb9de6a7464f3eb8bc',
