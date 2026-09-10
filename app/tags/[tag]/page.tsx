@@ -63,16 +63,11 @@ export default async function TagPage({ params }: PageProps) {
       architecture: 'software-engineering',
       'data-engineering': 'data-science',
       mlops: 'data-science',
-      // Everything except part one of the agents roadmap was unpublished so
-      // the series can be refined and released one part at a time. Only
-      // `ai agents` and `software engineering` still have a post behind them,
-      // which empties four more indexed tags. They point at the nearest
-      // survivor until their posts come back, at which point the tag resolves
-      // normally again and none of this runs.
-      'data-science': 'ai-agents',
+      // The agents roadmap was cut back to part one so the rest can be
+      // refined and released one part at a time, which took the data science
+      // team post down with it and emptied `leadership`. It was indexed, so
+      // it points at the nearest survivor until that post comes back.
       leadership: 'software-engineering',
-      python: 'software-engineering',
-      'open-source': 'software-engineering',
     }
     // Follow the chain, because a successor can itself have been retired
     // later. `systems` pointed at `architecture`, which stopped having posts
