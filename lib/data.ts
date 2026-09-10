@@ -296,22 +296,22 @@ export const PROJECTS: Project[] = [
     why:
       'With constrained fuel and crews, someone had to decide where intervention actually mattered, in real time, across the whole estate.',
     outcome:
-      'A real-time optimisation and decision system across the network that processes on the order of a million events a day and supported roughly R1B in annual savings.',
+      'A nationwide real-time decision system across Vodacom’s estate of 15,000+ sites, processing on the order of a million events a day and supporting roughly R1B in annual savings.',
     topics: ['Optimization', 'Real-Time Streaming', 'Telemetry', 'Production ML', 'Decision Systems'],
     artifacts: [
       { kind: 'product', href: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring', label: 'Vodacom product page' },
     ],
     caseStudy: {
       problem:
-        'Load-shedding pushed thousands of network sites onto diesel generators and batteries. Fuel was limited, crews were limited, and telemetry and alarms were noisy, so every decision about which site to attend to, and when, had consequences for cost and for whether the network stayed up.',
+        'Load-shedding pushed thousands of network sites, across a nationwide estate of more than 15,000, onto diesel generators and batteries. Fuel was limited, crews were limited, and telemetry and alarms were noisy, so every decision about which site to attend to, and when, had consequences for cost and for whether the network stayed up.',
       why:
         'A dropped site is dropped service for real people, and wasted diesel is real money at national scale. The hard part was deciding where intervention mattered most under genuine resource constraints.',
       context:
-        'Thousands of mobile sites with interdependent network effects, unreliable power, and a constant stream of telemetry and alarms that had to be turned into operational decisions in real time.',
+        'More than 15,000 mobile sites nationwide, with interdependent network effects, unreliable power, and a constant stream of telemetry and alarms that had to be turned into operational decisions in real time.',
       contribution:
         'I led a team of data scientists and engineers. We built a constrained-optimisation engine over real-time streaming telemetry that decides which generators to run, where and when, and I architected the platform behind it.',
       changed:
-        'Dispatch moved from reactive to informed: the system weighs cost, network impact and constraints across the estate and directs effort where it matters, in real time.',
+        'Dispatch moved from reactive to informed: across the national estate of 15,000+ sites, the system weighs cost, network impact and constraints and directs effort where it matters, in real time.',
       benefited:
         'The network-operations teams who keep South Africa connected through power cuts, and the customers who stayed connected because of better decisions.',
       remained:
@@ -324,7 +324,7 @@ export const PROJECTS: Project[] = [
     solution:
       'A constrained-optimisation engine with real-time streaming analytics that decides which generators to run, where, and when, built for the network-operations teams who keep South Africa connected through power cuts.',
     impact:
-      'A real-time decision system across the network that processes on the order of a million events a day and supported roughly R1B in annual savings.',
+      'A nationwide real-time decision system across 15,000+ sites that processes on the order of a million events a day and supported roughly R1B in annual savings.',
     skills: ['PyFlink', 'Kafka', 'CVXPY', 'PySpark', 'Kubernetes', 'Docker', 'GitLab CI'],
     image: '/projects/smart-generators.png',
     productLink: 'https://www.vodacombusiness.co.za/business/solutions/internet-of-things/smart-generator-monitoring',
