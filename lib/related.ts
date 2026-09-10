@@ -105,11 +105,13 @@ function publicationNode(pub: Publication): Node {
 
 function talkNode(talk: Talk): Node {
   const terms = new Map<string, number>()
+  for (const topic of talk.topics) addTerms(terms, expandPhrase(topic), W_STRONG)
   addTerms(terms, expandPhrase(talk.event), W_STRONG)
   addTerms(terms, titleTokens(talk.title), W_TITLE)
   return {
     type: 'Talk', key: String(talk.id), title: talk.title,
-    href: '/talks', blurb: talk.description, terms,
+    href: talk.series === 'FabAcademic Unfiltered' ? '/talks/fabacademic-unfiltered' : '/talks',
+    blurb: talk.description, terms,
   }
 }
 

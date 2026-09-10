@@ -71,6 +71,9 @@ export interface Project {
   building?: boolean
 }
 
+/** What kind of public appearance this was. Drives the label and the section. */
+export type TalkKind = 'episode' | 'talk' | 'interview' | 'archive'
+
 export interface Talk {
   id: number
   title: string
@@ -80,6 +83,16 @@ export interface Talk {
   videoUrl: string
   slidesUrl?: string
   slidesLabel?: string
+  /** Content type, so a TV interview does not look like a workshop. */
+  kind: TalkKind
+  /** What he actually did: Co-host, Guest, Presenter. Never inflated. */
+  role: string
+  /** Controlled taxonomy, 2-3 each. Used for browsing and for search. */
+  topics: string[]
+  /** Set when the item belongs to a recurring series. */
+  series?: string
+  /** Hand-picked for the Featured strip, chosen to show range, not ranking. */
+  featured?: boolean
 }
 
 export interface Writing {
@@ -89,6 +102,13 @@ export interface Writing {
   link: string
   date: string
   image?: string | null
+  /** The publication that carried it. */
+  outlet: string
+  /**
+   * Who wrote it. Coverage written *about* work he contributed to must never
+   * read as though he authored it, so the card labels this explicitly.
+   */
+  authorship: 'about' | 'by'
 }
 
 export interface TechItem {
@@ -591,6 +611,10 @@ export const TALKS: Talk[] = [
     date: "2026-06-14",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/ovSJuLqfgf4",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['AI & Learning', 'Research'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 16,
@@ -599,6 +623,10 @@ export const TALKS: Talk[] = [
     date: "2026-06-01",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/QOarIoj9AA0",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'Entrepreneurship'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 15,
@@ -607,6 +635,10 @@ export const TALKS: Talk[] = [
     date: "2026-05-18",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/5SL_KRfMBAQ",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'Entrepreneurship'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 14,
@@ -615,6 +647,10 @@ export const TALKS: Talk[] = [
     date: "2026-05-04",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/1QrY6ViPnlU",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'Entrepreneurship', 'Technology & Access'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 13,
@@ -623,6 +659,11 @@ export const TALKS: Talk[] = [
     date: "2026-04-27",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/o8E8JX-uzos",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'AI & Learning'],
+    series: 'FabAcademic Unfiltered',
+    featured: true,
   },
   {
     id: 12,
@@ -631,6 +672,10 @@ export const TALKS: Talk[] = [
     date: "2026-04-20",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/kYmRkidbimo",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'AI & Learning'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 11,
@@ -639,6 +684,10 @@ export const TALKS: Talk[] = [
     date: "2026-04-13",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/c1pWhJKn0jg",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'AI & Learning'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 10,
@@ -647,6 +696,11 @@ export const TALKS: Talk[] = [
     date: "2026-03-30",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/uls_eef97ds",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['AI & Learning', 'Technology & Access'],
+    series: 'FabAcademic Unfiltered',
+    featured: true,
   },
   {
     id: 9,
@@ -655,6 +709,10 @@ export const TALKS: Talk[] = [
     date: "2026-03-22",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/U9ZtGwCjlDU",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['AI & Learning'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 8,
@@ -663,6 +721,10 @@ export const TALKS: Talk[] = [
     date: "2026-03-08",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/njv5ZVhvSUM",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['AI & Learning', 'Data & Decision Making'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 7,
@@ -671,6 +733,10 @@ export const TALKS: Talk[] = [
     date: "2026-03-01",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/k2iKehY8Zq0",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'AI & Learning'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 6,
@@ -679,6 +745,10 @@ export const TALKS: Talk[] = [
     date: "2026-02-22",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/pGqiz1vp6i4",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'Technology & Access'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 5,
@@ -687,6 +757,11 @@ export const TALKS: Talk[] = [
     date: "2026-02-15",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/jnklbzfZjNw",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI', 'Technology & Access', 'Entrepreneurship'],
+    series: 'FabAcademic Unfiltered',
+    featured: true,
   },
   {
     id: 1,
@@ -697,6 +772,10 @@ export const TALKS: Talk[] = [
     videoUrl: "https://www.youtube.com/embed/SsvfCIOL16Q",
     slidesUrl: "https://notebooklm.google.com/notebook/7aeffeae-ba0f-4cf5-a227-3e4c73352f94?artifactId=c9dbfab2-c0d8-460d-81d9-411b0593249b",
     slidesLabel: "View Notes",
+    kind: 'episode',
+    role: 'Co-host',
+    topics: ['Building with AI'],
+    series: 'FabAcademic Unfiltered',
   },
   {
     id: 2,
@@ -705,6 +784,10 @@ export const TALKS: Talk[] = [
     date: "2019-03-10",
     event: "SABC News Interview",
     videoUrl: "https://www.youtube.com/embed/ghs_9Qqb_wA",
+    kind: 'interview',
+    role: 'Guest',
+    topics: ['Science', 'Research'],
+    featured: true,
   },
   {
     id: 3,
@@ -713,6 +796,9 @@ export const TALKS: Talk[] = [
     date: "2019-02-02",
     event: "Crazy TV Interview",
     videoUrl: "https://www.youtube.com/embed/961zYJHuklg",
+    kind: 'interview',
+    role: 'Guest',
+    topics: ['Science'],
   },
   {
     id: 4,
@@ -721,6 +807,9 @@ export const TALKS: Talk[] = [
     date: "2017-12-16",
     event: "Wits University Honours Project",
     videoUrl: "https://www.youtube.com/embed/yjbHcEru0u8",
+    kind: 'archive',
+    role: 'Presenter',
+    topics: ['Computer Vision', 'Robotics', 'Research'],
   },
 ]
 
@@ -733,6 +822,8 @@ export const WRITINGS: Writing[] = [
     description: 'The DSIDE programme at the University of the Witwatersrand has been instrumental in developing innovative solutions to address challenges in South Africa.',
     link: 'https://mg.co.za/article/2018-02-09-00-students-in-dside-programme-come-up-with-innovative-solutions',
     date: '2018-01',
+    outlet: 'Mail & Guardian',
+    authorship: 'about',
     image: '/posts/dside-mg-2018.jpeg',
   },
   {
@@ -741,6 +832,8 @@ export const WRITINGS: Writing[] = [
     description: 'Youth Explorer uses data collected in Census 2011 on challenges facing the youth, enabling researchers and policy-makers to focus on areas of concern.',
     link: 'https://web.archive.org/web/20250628211217/https://www.dsti.gov.za/images/dst_newsletter_march_2018_web.pdf',
     date: '2018-01',
+    outlet: 'Department of Science and Technology',
+    authorship: 'about',
     image: null,
   },
 ]

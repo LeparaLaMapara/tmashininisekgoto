@@ -1,143 +1,294 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { ExternalLink, ArrowRight } from 'lucide-react'
+import { TALKS, WRITINGS, SOCIAL_LINKS } from '@/lib/data'
 import { pageOpenGraph } from '@/lib/site'
-import { TALKS, WRITINGS } from '@/lib/data'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
-import { ExternalLink, BookOpen } from 'lucide-react'
 import { JsonLd } from '@/components/seo/json-ld'
 import { talksSchema, breadcrumbSchema } from '@/lib/schema'
+import { TalkCard, formatTalkDate } from '@/components/talks/talk-card'
 
 export const metadata: Metadata = {
-  title: 'Talks & Press on AI and Data Science',
+  title: 'Talks, Teaching & Media',
   description:
-    'Conference talks, sessions, interviews, and press coverage on AI, machine learning, and data science in South Africa, featuring Thabang Mashinini-Sekgoto.',
-  alternates: { canonical: '/talks' },
-  openGraph: pageOpenGraph('/talks', 'Talks and press featuring Thabang Mashinini-Sekgoto'),
+    'Talks, conversations, demonstrations and interviews about AI, research, technology and learning, including the FabAcademic Unfiltered series with Prof. Mamokgethi Phakeng.',
+  alternates: { canonical: '/talks' },
+  openGraph: pageOpenGraph('/talks', 'Talks, teaching and media by Thabang Mashinini-Sekgoto'),
+}
+
+const byNewest = (a: { date: string }, b: { date: string }) =>
+  new Date(b.date).getTime() - new Date(a.date).getTime()
+
+/** Every distinct topic across the archive, for the browse strip. */
+function allTopics() {
+  return Array.from(new Set(TALKS.flatMap((t) => t.topics))).sort()
+}
+
+function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <>
+      <h2 className="font-display text-2xl sm:text-3xl font-bold text-ivory">{title}</h2>
+      {subtitle && <p className="mt-2 max-w-2xl text-muted leading-relaxed">{subtitle}</p>}
+    </>
+  )
 }
 
 export default function TalksPage() {
-  // Sort talks by date, newest first
-  const sortedTalks = [...TALKS].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
+  const sorted = [...TALKS].sort(byNewest)
+  const featured = sorted.filter((t) => t.featured)
+  const series = sorted.filter((t) => t.series === 'FabAcademic Unfiltered')
+  const interviews = sorted.filter((t) => t.kind === 'interview')
+  const archive = sorted.filter((t) => t.kind === 'archive')
+  // Standalone talks that are not part of a series. Empty today; the section
+  // hides itself rather than sitting there as a promise.
+  const standalone = sorted.filter((t) => t.kind === 'talk')
+
+  const seriesLatest = series[0]
+  const seriesPicks = series.filter((t) => t.featured).slice(0, 3)
+  const seriesTopics = Array.from(new Set(series.flatMap((t) => t.topics))).slice(0, 6)
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-6">
+    <div className="min-h-screen px-6 pt-28 pb-20">
       <JsonLd
         data={[
-          talksSchema(sortedTalks),
+          talksSchema(sorted),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'Talks', path: '/talks' },
           ]),
         ]}
       />
+
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
+        {/* Introduction */}
         <ScrollReveal>
           <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4">
-            Talks &{' '}<span className="text-synapse">Press</span>
+            Talks, Teaching &amp; <span className="text-synapse">Media</span>
           </h1>
-          <p className="text-muted text-lg max-w-2xl mb-16">
-            Conversations about AI, distributed systems, and making technology accessible.
-            From SABC News to FabAcademic with Prof Mamokgethi Phakeng.
+          <p className="mb-16 max-w-2xl text-lg text-muted leading-relaxed">
+            Conversations, demonstrations and interviews about AI, research and
+            learning. I like explaining things, so most of what I have understood
+            properly ends up here in one form or another.
           </p>
         </ScrollReveal>
 
-        {/* Talks Grid */}
+        {/* Featured: chosen to show range, not ranking. */}
+        {featured.length > 0 && (
+          <section className="mb-24">
+            <ScrollReveal>
+              <SectionHeading
+                title="Featured"
+                subtitle="A few that show the range, from teaching people to build with AI to talking about galaxies on the news."
+              />
+            </ScrollReveal>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {featured.map((talk, i) => (
+                <ScrollReveal key={talk.id} delay={i * 0.06}>
+                  <TalkCard talk={talk} />
+                </ScrollReveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* The series, as one body of work rather than fourteen loose cards. */}
+        {series.length > 0 && (
+          <section className="mb-24">
+            <ScrollReveal>
+              <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
+                <span className="font-mono text-[11px] uppercase tracking-wider text-synapse-ink">
+                  Series · {series.length} episodes
+                </span>
+                <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold text-ivory">
+                  FabAcademic Unfiltered
+                </h2>
+                <p className="mt-1 text-muted">With Prof. Mamokgethi Phakeng</p>
+                <p className="mt-4 max-w-2xl text-lg text-ivory/85 leading-relaxed">
+                  A continuing series of practical conversations about AI, learning,
+                  research and building things. Less about what the technology might
+                  do one day, more about what someone can actually do with it this
+                  week.
+                </p>
+
+                {seriesTopics.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {seriesTopics.map((topic) => (
+                      <span
+                        key={topic}
+                        className="rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-muted"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {seriesLatest && (
+                  <p className="mt-5 text-sm text-muted">
+                    Latest:{' '}
+                    <span className="text-ivory">{seriesLatest.title}</span>{' '}
+                    <span className="text-muted">· {formatTalkDate(seriesLatest.date)}</span>
+                  </p>
+                )}
+
+                <Link
+                  href="/talks/fabacademic-unfiltered"
+                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-synapse transition-all hover:gap-2.5"
+                >
+                  Explore the series
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </ScrollReveal>
+
+            {seriesPicks.length > 0 && (
+              <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {seriesPicks.map((talk, i) => (
+                  <ScrollReveal key={talk.id} delay={i * 0.06}>
+                    <TalkCard talk={talk} compact />
+                  </ScrollReveal>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Standalone talks and teaching, when there are any. */}
+        {standalone.length > 0 && (
+          <section className="mb-24">
+            <ScrollReveal>
+              <SectionHeading title="Talks & teaching" />
+            </ScrollReveal>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {standalone.map((talk, i) => (
+                <ScrollReveal key={talk.id} delay={i * 0.06}>
+                  <TalkCard talk={talk} />
+                </ScrollReveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Interviews and media */}
+        {interviews.length > 0 && (
+          <section className="mb-24">
+            <ScrollReveal>
+              <SectionHeading
+                title="Interviews & media"
+                subtitle="Appearances where somebody else was asking the questions."
+              />
+            </ScrollReveal>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {interviews.map((talk, i) => (
+                <ScrollReveal key={talk.id} delay={i * 0.06}>
+                  <TalkCard talk={talk} />
+                </ScrollReveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Third-party coverage. Explicitly about, not by. */}
+        {WRITINGS.length > 0 && (
+          <section className="mb-24">
+            <ScrollReveal>
+              <SectionHeading
+                title="Press & coverage"
+                subtitle="Written by other people, about work I was part of."
+              />
+            </ScrollReveal>
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {WRITINGS.map((writing, i) => (
+                <ScrollReveal key={writing.id} delay={i * 0.06}>
+                  <a
+                    href={writing.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block h-full rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-synapse/30"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <span className="font-mono text-[11px] uppercase tracking-wider text-synapse-ink">
+                          {writing.outlet} ·{' '}
+                          {writing.authorship === 'about' ? 'About the work' : 'Written by me'}
+                        </span>
+                        <h3 className="mt-1.5 font-display text-lg font-bold leading-snug text-ivory transition-colors group-hover:text-synapse">
+                          {writing.title}
+                        </h3>
+                        <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">
+                          {writing.description}
+                        </p>
+                        <span className="mt-3 block text-sm text-muted">{writing.date}</span>
+                      </div>
+                      <ExternalLink className="mt-1 h-4 w-4 flex-shrink-0 text-muted transition-colors group-hover:text-synapse" />
+                    </div>
+                  </a>
+                </ScrollReveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Older material keeps its place, without equal billing. */}
+        {archive.length > 0 && (
+          <section className="mb-24">
+            <ScrollReveal>
+              <SectionHeading
+                title="From the archive"
+                subtitle="Earlier talks and student projects. Kept because they are part of the record."
+              />
+            </ScrollReveal>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {archive.map((talk, i) => (
+                <ScrollReveal key={talk.id} delay={i * 0.06}>
+                  <TalkCard talk={talk} compact />
+                </ScrollReveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Topics, wired to the site-wide search so they lead somewhere real. */}
         <section className="mb-24">
           <ScrollReveal>
-            <h2 className="font-display text-2xl font-bold mb-8">
-              Talks & Interviews
-            </h2>
-          </ScrollReveal>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {sortedTalks.map((talk, i) => (
-              <ScrollReveal key={talk.id} delay={i * 0.1}>
-                <div className="bg-surface rounded-2xl border border-border overflow-hidden hover:border-synapse/20 transition-colors">
-                  {/* Video embed */}
-                  <div className="aspect-video">
-                    <iframe
-                      src={talk.videoUrl}
-                      title={talk.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      loading="lazy"
-                      className="w-full h-full"
-                    />
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-6">
-                    <h3 className="font-display font-bold text-xl mb-2 text-ivory">
-                      {talk.title}
-                    </h3>
-                    <p className="text-[0.9375rem] text-muted mb-4 leading-relaxed">{talk.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-muted">
-                        <span className="text-synapse">{talk.event}</span>
-                        <span className="mx-2">&middot;</span>
-                        <span>
-                          {new Date(talk.date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                      {talk.slidesUrl && (
-                        <a
-                          href={talk.slidesUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-synapse hover:text-synapse/80 flex items-center gap-1.5"
-                        >
-                          <BookOpen className="w-4 h-4" />
-                          {talk.slidesLabel || 'Slides'}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </section>
-
-        {/* Publications */}
-        <section>
-          <ScrollReveal>
-            <h2 className="font-display text-2xl font-bold mb-8">
-              Press & Publications
-            </h2>
-          </ScrollReveal>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {WRITINGS.map((writing, i) => (
-              <ScrollReveal key={writing.id} delay={i * 0.1}>
-                <a
-                  href={writing.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block bg-surface rounded-2xl border border-border p-6 hover:border-synapse/20 transition-all"
+            <SectionHeading
+              title="Explore by topic"
+              subtitle="Each one searches everything on the site, not only this page."
+            />
+            <div className="mt-6 flex flex-wrap gap-2">
+              {allTopics().map((topic) => (
+                <Link
+                  key={topic}
+                  href={`/search?q=${encodeURIComponent(topic)}`}
+                  className="rounded-full border border-border bg-surface px-3.5 py-1.5 font-mono text-sm text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="font-display font-bold text-xl mb-2 text-ivory group-hover:text-synapse transition-colors">
-                        {writing.title}
-                      </h3>
-                      <p className="text-[0.9375rem] text-muted mb-3 leading-relaxed">
-                        {writing.description}
-                      </p>
-                      <span className="text-sm text-muted">{writing.date}</span>
-                    </div>
-                    <ExternalLink className="w-4 h-4 text-muted group-hover:text-synapse transition-colors flex-shrink-0 mt-1" />
-                  </div>
-                </a>
-              </ScrollReveal>
-            ))}
-          </div>
+                  {topic}
+                </Link>
+              ))}
+            </div>
+          </ScrollReveal>
         </section>
+
+        {/* Closing invitation, reusing the existing booking link. */}
+        <ScrollReveal>
+          <section className="border-t border-border pt-10">
+            <h2 className="font-display text-2xl font-bold text-ivory">Invite me to speak</h2>
+            <p className="mt-3 max-w-2xl text-muted leading-relaxed">
+              I enjoy conversations about AI, research, building things and making
+              complicated ideas easier to understand. If that is useful to your
+              event, class or team, get in touch.
+            </p>
+            <a
+              href={SOCIAL_LINKS.booking}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-synapse transition-all hover:gap-2.5"
+            >
+              Get in touch
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </section>
+        </ScrollReveal>
       </div>
     </div>
   )

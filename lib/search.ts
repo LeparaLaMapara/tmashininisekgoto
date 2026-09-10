@@ -133,8 +133,9 @@ function buildIndex(): Indexed[] {
     kind: 'Talk',
     title: talk.title,
     description: talk.description,
-    href: '/talks',
-    keywords: `${talk.event} ${talk.date}`,
+    // Series episodes land on the series page, where the rest of them are.
+    href: talk.series === 'FabAcademic Unfiltered' ? '/talks/fabacademic-unfiltered' : '/talks',
+    keywords: `${talk.event} ${talk.date} ${talk.topics.join(' ')} ${talk.kind} ${talk.role} ${talk.series ?? ''}`,
   }))
 
   const courses: Indexed[] = COURSES.map((course) => ({

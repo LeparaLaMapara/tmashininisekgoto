@@ -20,6 +20,7 @@ const STATIC_ROUTES: { route: string; source: string }[] = [
   { route: '/resume', source: 'app/resume/page.tsx' },
   { route: '/career', source: 'app/career/page.tsx' },
   { route: '/talks', source: 'app/talks/page.tsx' },
+  { route: '/talks/fabacademic-unfiltered', source: 'app/talks/fabacademic-unfiltered/page.tsx' },
   { route: '/ai', source: 'app/ai/page.tsx' },
   { route: '/courses', source: 'app/courses/page.tsx' },
   { route: '/tags', source: 'app/tags/page.tsx' },

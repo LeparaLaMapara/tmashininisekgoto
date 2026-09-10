@@ -4,6 +4,7 @@ const nextConfig = {
     remotePatterns: [
       { hostname: 'mg.co.za' },
       { hostname: '*.youtube.com' },
+      { hostname: 'img.youtube.com' },
       { hostname: 'raw.githubusercontent.com' },
     ],
   },
