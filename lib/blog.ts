@@ -53,6 +53,33 @@ export interface BlogPost {
    * show. Set this when you want the snippet to differ from the excerpt.
    */
   seoDescription?: string
+  /**
+   * The collection this post belongs to, e.g. "The Practical Roadmap to
+   * Building With AI Agents". Set in frontmatter as `series`.
+   *
+   * Posts that are really one argument split across several pieces read as
+   * disconnected fragments in a reverse chronological list. This is what lets
+   * the index present them as one body of work.
+   */
+  series?: string
+  /** Position within `series`, 1 based. Set in frontmatter as `seriesPart`. */
+  seriesPart?: number
+  /**
+   * How many parts the finished series will have, from `seriesTotal`.
+   *
+   * Deliberately the planned total rather than the published count, so a
+   * reader landing on part one knows what they are starting. Unpublished parts
+   * are never listed or linked.
+   */
+  seriesTotal?: number
+}
+
+export interface Series {
+  name: string
+  /** Published parts only, in reading order. */
+  posts: BlogPost[]
+  /** Planned length, which can exceed `posts.length` while a series is in progress. */
+  total: number
 }
 
 /**
@@ -117,6 +144,9 @@ function parsePost(fileName: string): BlogPost {
     canonical: data.canonical,
     seoTitle: data.seoTitle,
     seoDescription: data.seoDescription,
+    series: data.series,
+    seriesPart: data.seriesPart,
+    seriesTotal: data.seriesTotal,
   }
 }
 
@@ -159,6 +189,36 @@ export function getAllPosts(): BlogPost[] {
     .map(parsePost)
     .filter((post) => post.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
+/**
+ * Published posts grouped into their series, in reading order.
+ *
+ * Ordered by the most recent part in each series, so an active series sits
+ * above one finished two years ago. A series with nothing published yet does
+ * not appear at all.
+ */
+export function getSeries(): Series[] {
+  const grouped = new Map<string, BlogPost[]>()
+
+  for (const post of getAllPosts()) {
+    if (!post.series) continue
+    const existing = grouped.get(post.series) ?? []
+    existing.push(post)
+    grouped.set(post.series, existing)
+  }
+
+  return Array.from(grouped.entries())
+    .map(([name, posts]) => ({
+      name,
+      posts: posts.sort((a, b) => (a.seriesPart ?? 0) - (b.seriesPart ?? 0)),
+      total: Math.max(...posts.map((p) => p.seriesTotal ?? p.seriesPart ?? 1)),
+    }))
+    .sort((a, b) => {
+      const latest = (s: Series) =>
+        Math.max(...s.posts.map((p) => new Date(p.date).getTime()))
+      return latest(b) - latest(a)
+    })
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {

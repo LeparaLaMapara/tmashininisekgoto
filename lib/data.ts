@@ -79,7 +79,6 @@ export const TYPEWRITER_ROLES = [
   'AI Systems Architect',
   'Founder, Ubunye AI Ecosystems',
   'Distributed Systems Engineer',
-  'ML Researcher, Wits University',
   'Open Source Framework Developer',
 ]
 
@@ -714,8 +713,15 @@ export const PROJECT_CATEGORIES: Partial<Record<Project['category'], string>> = 
 export const BIO = {
   name: 'Thabang Mashinini-Sekgoto',
   location: 'Johannesburg, South Africa',
-  title: 'Lead Data Scientist (Acting Head of Data Science) · AI & Analytics Leader',
-  shortBio: `AI and Data Science Leader with 10+ years of experience operationalising enterprise machine learning across banking, insurance, and telecommunications. Currently Acting Head of Data Science at ABSA Insurance.`,
+  title: 'Lead Data Scientist (Acting Head of Data Science), ABSA Insurance',
+  /**
+   * The one line that says what the work is, used wherever the site has to
+   * introduce the discipline rather than the employer. Kept as one string so
+   * the homepage, the metadata and the machine readable files cannot drift
+   * apart from each other.
+   */
+  disciplines: 'Applied AI · Data Science · AI Engineering · Research',
+  shortBio: `I have spent nine years building and deploying data and AI systems inside real organisations, across banking and insurance, telecommunications and research. That work kept surfacing the same problem: moving data science out of experimentation and into systems that run reliably. My work now spans data science, AI engineering, applied research and reusable open source infrastructure.`,
   philosophy: 'Strive to build things that make a difference.',
   hobbies: [
     { emoji: '🎥', label: 'Photography & Filmmaking' },
@@ -784,15 +790,15 @@ export interface CareerMilestone {
 
 export const CAREER_TIMELINE: CareerMilestone[] = [
   {
-    period: '2024 - Present',
-    role: 'PhD in Computer Science (In Progress)',
+    period: 'In preparation',
+    role: 'Doctoral research proposal',
     org: 'University of the Witwatersrand',
-    shortOrg: 'PhD',
-    description: 'Research: Physics-informed self-supervised learning for SAR-based flood extent mapping, with applications to insurance risk and data-scarce regions. Focuses on the intersection of remote sensing, self-supervised learning, and computational hydrology.',
-    kind: 'education',
+    shortOrg: 'Research',
+    description: 'Proposal stage, not yet registered. The direction is physics-informed self-supervised learning for SAR-based flood extent mapping, with applications to insurance risk and data-scarce regions. It follows on from the MSc work on echo state networks for level set segmentation, and from the geospatial and climate risk systems built at IBM Research and in insurance.',
+    kind: 'research',
     accent: 'signal',
-    era: 'The Doctorate Voyage',
-    highlight: 'Researching physics-informed self-supervised learning for SAR-based flood mapping',
+    era: 'The Next Question',
+    highlight: 'Proposed research: physics-informed self-supervised learning for SAR flood mapping',
     skills: ['Physics-Informed ML', 'Self-Supervised Learning', 'Remote Sensing', 'Hydrology'],
   },
   {

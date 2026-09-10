@@ -81,7 +81,6 @@ function ThemeProp({ kind }: { kind: string }) {
         </group>
       )
     case 'MSc': // graduation cap
-    case 'PhD':
       return (
         <group position={[0, 0.7, 0]}>
           <mesh castShadow>

@@ -85,9 +85,9 @@ export function personSchema() {
     familyName: 'Mashinini-Sekgoto',
     url: SITE_URL,
     image: absoluteUrl('/avatar.svg'),
-    jobTitle: 'Lead Data Scientist',
+    jobTitle: 'Lead Data Scientist, AI Engineer and Applied Researcher',
     description:
-      'Data Science and AI leader building enterprise-scale machine learning across banking, telecoms, research, and education. PhD candidate at the University of the Witwatersrand and founder of Ubunye AI Ecosystems.',
+      'Builds production AI and data systems, reusable open source infrastructure and applied research. Nine years across banking and insurance, telecommunications and research. Author of Ubunye Engine and founder of Ubunye AI Ecosystems.',
     worksFor: { '@type': 'Organization', name: 'ABSA Insurance' },
     affiliation: [
       WITS,

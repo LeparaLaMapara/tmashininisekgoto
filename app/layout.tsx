@@ -38,11 +38,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Thabang Mashinini-Sekgoto | Data Scientist & AI Engineer',
+    default: 'Thabang Mashinini-Sekgoto | Applied AI, Data Science & AI Engineering',
     template: '%s | Thabang M-S',
   },
   description:
-    'Data Science and AI leader with 10+ years building enterprise-scale ML across banking, telecoms, research, and education. Founder of Ubunye AI Ecosystems.',
+    'I build production AI and data systems, reusable open source infrastructure, and applied research grounded in real problems. Nine years across banking and insurance, telecommunications and research. Author of Ubunye Engine.',
   openGraph: {
     images: ogImages('Thabang Mashinini-Sekgoto, Data Scientist and AI Engineer'),
     type: 'website',

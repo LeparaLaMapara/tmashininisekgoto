@@ -14,17 +14,14 @@ import { formatDate } from '@/lib/utils'
  *
  * TODO(thabang): two things here cannot be derived from this repo, so they are
  * stated only as far as the repo supports them:
- *   1. The PhD research area is not recorded in lib/data.ts. Tell me the public
- *      one-line description and I will name it here, since "PhD candidate" alone
- *      leaves the most searchable part of your research invisible.
- *   2. There is no "last reviewed" date. If you would rather show one, add a
+ *   1. There is no "last reviewed" date. If you would rather show one, add a
  *      constant and I will render it.
  */
 
 export const metadata: Metadata = {
   title: 'Now: What I’m Working On',
   description:
-    'What Thabang Mashinini-Sekgoto is working on right now: current role, PhD research, projects being built, and what is being taught.',
+    'What Thabang Mashinini-Sekgoto is working on right now: current role, research, projects being built, and what is being taught.',
   alternates: { canonical: '/now' },
   openGraph: pageOpenGraph('/now', 'What Thabang Mashinini-Sekgoto is working on now'),
 }
@@ -57,7 +54,7 @@ export default function NowPage() {
       <div className="mt-14">
         <h2 className="font-display text-2xl font-semibold text-ivory">The day job</h2>
         <p className="mt-3 text-muted leading-relaxed">
-          {BIO.shortBio} Based in {BIO.location}.
+          {BIO.title}. Based in {BIO.location}.
         </p>
       </div>
 
@@ -65,9 +62,10 @@ export default function NowPage() {
       <div className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-ivory">Research</h2>
         <p className="mt-3 text-muted leading-relaxed">
-          PhD candidate at the University of the Witwatersrand, building on the MSc
-          work on learning the level set method with echo state networks for image
-          segmentation. The published papers are on the{' '}
+          A doctoral research proposal is in preparation at the University of the
+          Witwatersrand, building on the MSc work on learning the level set method
+          with echo state networks for image segmentation. It is at proposal stage
+          and not yet registered. The published papers are on the{' '}
           <Link href="/publications" className="text-synapse hover:underline">
             publications
           </Link>{' '}

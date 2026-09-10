@@ -6,9 +6,9 @@ import { CAREER_TIMELINE, type MilestoneKind } from '@/lib/data'
 import { profileOpenGraph } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'Resume: Lead Data Scientist',
+  title: 'Resume: Data Science, AI Engineering & Research',
   description:
-    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA, previously Vodacom and IBM Research, MSc and PhD candidate at Wits.',
+    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research and Wits, with an MSc from the University of the Witwatersrand.',
   alternates: { canonical: '/resume' },
   openGraph: profileOpenGraph('/resume'),
 }
