@@ -60,6 +60,8 @@ export interface Project {
   skills: string[]
   /** Optional: some stories (confidential employer work) have no fitting image. */
   image?: string
+  /** How the image sits in its 16:9 frame. 'contain' suits a logo; default 'cover'. */
+  imageFit?: 'cover' | 'contain'
   ghLink?: string
   productLink?: string
   paperLink?: string
@@ -280,6 +282,7 @@ export const PROJECTS: Project[] = [
     impact:
       'A telematics scoring cycle that took about two months now runs in under a day, and the team ships to production through repeatable engineering rather than one-off effort.',
     skills: ['Databricks', 'Geospatial ML', 'MLOps', 'AI Governance', 'Enterprise AI'],
+    image: '/projects/absa-activate.jpg',
     resume: { org: 'ABSA Insurance', period: 'Mar 2024 - Present' },
   },
   {

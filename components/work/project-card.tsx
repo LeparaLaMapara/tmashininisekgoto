@@ -39,12 +39,15 @@ export function ProjectCard({ project }: { project: Project }) {
       {/* Image, when the story has a fitting one. Confidential work does not, and
           gets a text-led card rather than an unrelated stock image. */}
       {project.image && (
-        <Link href={href} className="relative block aspect-video overflow-hidden">
+        <Link
+          href={href}
+          className={`relative block aspect-video overflow-hidden ${project.imageFit === 'contain' ? 'bg-white' : ''}`}
+        >
           <Image
             src={project.image}
             alt={`${project.cardTitle} — ${project.title}`}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`transition-transform duration-500 group-hover:scale-105 ${project.imageFit === 'contain' ? 'object-contain p-6' : 'object-cover'}`}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           {project.building && (

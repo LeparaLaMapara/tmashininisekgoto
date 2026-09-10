@@ -140,12 +140,12 @@ export default async function WorkCaseStudy({ params }: PageProps) {
       </header>
 
       {project.image && (
-        <div className="relative mb-12 aspect-video overflow-hidden rounded-2xl border border-border">
+        <div className={`relative mb-12 aspect-video overflow-hidden rounded-2xl border border-border ${project.imageFit === 'contain' ? 'bg-white' : ''}`}>
           <Image
             src={project.image}
             alt={`${project.cardTitle} — ${project.title}`}
             fill
-            className="object-cover"
+            className={project.imageFit === 'contain' ? 'object-contain p-10' : 'object-cover'}
             sizes="(max-width: 768px) 100vw, 768px"
           />
         </div>
