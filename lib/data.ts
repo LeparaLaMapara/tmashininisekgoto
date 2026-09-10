@@ -71,6 +71,11 @@ export const SOCIAL_LINKS = {
   devto: 'https://dev.to/thabanglukheth0',
   medium: 'https://medium.com/@thabangline',
   booking: 'https://calendar.app.google/JzUn4JQ2pnzmmjLx5',
+  // ORCID. Fill this the moment the iD is registered (the full URL, e.g.
+  // https://orcid.org/0000-0002-1825-0097). Empty means no ORCID yet; it
+  // flows automatically into sameAs and the Person schema when set, so no
+  // other file needs touching.
+  orcid: '',
 } as const
 
 // --- Typewriter Roles ---

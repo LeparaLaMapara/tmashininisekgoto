@@ -54,6 +54,19 @@ export const metadata: Metadata = {
     creator: '@thabangline',
   },
   robots: { index: true, follow: true },
+  // Search-engine ownership verification. Both read from env vars so that when
+  // the codes arrive from Google Search Console and Bing Webmaster Tools, they
+  // are set in Vercel and the site redeploys, with no code change. Absent env
+  // vars emit nothing, which is correct: an empty verification tag is worse
+  // than none.
+  verification: {
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { other: { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+      : {}),
+  },
   // Without an explicit icon the browser falls back to requesting /favicon.ico,
   // which does not exist here, so every page load logged a 404. Google also
   // shows the favicon next to mobile search results, so it is worth declaring.

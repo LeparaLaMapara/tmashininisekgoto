@@ -71,7 +71,10 @@ function sameAsProfiles(): string[] {
     SOCIAL_LINKS.devto,
     SOCIAL_LINKS.medium,
     `https://www.semanticscholar.org/author/${SEMANTIC_SCHOLAR_AUTHOR_ID}`,
-  ]
+    // Emitted only once SOCIAL_LINKS.orcid is filled, so an empty ORCID
+    // never becomes a broken profile link.
+    ...(SOCIAL_LINKS.orcid ? [SOCIAL_LINKS.orcid] : []),
+  ].filter(Boolean)
 }
 
 /** The Person entity. Emitted once, on the homepage, and referenced by @id elsewhere. */
