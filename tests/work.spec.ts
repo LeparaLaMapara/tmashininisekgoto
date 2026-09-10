@@ -67,7 +67,7 @@ test.describe('work pages render', () => {
 
   test('the index shows problem-titles and topics, not a skill logo wall', async ({ request }) => {
     const html = await (await request.get('/work')).text()
-    expect(html).toContain('What happens after the notebook works')
+    expect(html).toContain('Everything you build sits on engineering')
     expect(html).toContain('Why it mattered')
     // The old "Built with" logo-wall label is gone.
     expect(html).not.toContain('Built with')
