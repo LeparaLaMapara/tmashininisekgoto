@@ -439,7 +439,7 @@ export const PROJECTS: Project[] = [
     artifacts: [
       { kind: 'publication', href: 'https://mg.co.za/article/2018-02-09-00-students-in-dside-programme-come-up-with-innovative-solutions', label: 'Mail & Guardian' },
       { kind: 'publication', href: 'https://web.archive.org/web/20250628211217/https://www.dsti.gov.za/images/dst_newsletter_march_2018_web.pdf', label: 'Department of Science and Technology' },
-      { kind: 'site', href: 'https://www.csir.co.za/', label: 'CSIR' },
+      { kind: 'site', href: 'https://www.csir.co.za/early-warning-system-could-be-answer-fatalities-sa-mines', label: 'CSIR' },
     ],
     caseStudy: {
       problem:
@@ -466,6 +466,7 @@ export const PROJECTS: Project[] = [
     impact:
       'Systems serving 17 municipalities including the City of Cape Town, with recognition from the Mail & Guardian, the CSIR and the Department of Science and Technology.',
     skills: ['Python', 'Django', 'Predictive Analytics', 'Data Engineering'],
+    image: '/projects/csir-municipal.png',
     resume: { org: 'Council for Scientific and Industrial Research (CSIR)', period: 'Nov 2017 - Jan 2018' },
   },
   {
@@ -511,6 +512,7 @@ export const PROJECTS: Project[] = [
     impact:
       'An audience of 300,000+ across platforms and 12,000+ monthly readers of the technical writing.',
     skills: ['RAG', 'LLM Application Development', 'Technical Writing', 'AI Governance'],
+    image: '/projects/ai-education.png',
     resume: { org: 'AI Educator', period: '2024 - Present' },
   },
   {
@@ -1298,7 +1300,7 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     links: [
       { label: 'Mail & Guardian', href: 'https://mg.co.za/article/2018-02-09-00-students-in-dside-programme-come-up-with-innovative-solutions' },
       { label: 'DST newsletter', href: 'https://web.archive.org/web/20250628211217/https://www.dsti.gov.za/images/dst_newsletter_march_2018_web.pdf' },
-      { label: 'CSIR', href: 'https://www.csir.co.za/' },
+      { label: 'CSIR', href: 'https://www.csir.co.za/early-warning-system-could-be-answer-fatalities-sa-mines' },
     ],
     skills: ['Predictive Analytics', 'Decision Support', 'Software Engineering', 'Django'],
   },
