@@ -158,7 +158,11 @@ export default function PublicationsPage() {
                     className="inline-flex items-center gap-2 text-sm font-medium text-synapse-ink hover:text-synapse transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    {isThesis ? 'View on WIReDSpace' : 'View on Google Scholar'}
+                    {pub.scholarUrl.includes('scholar.google')
+                      ? 'View on Google Scholar'
+                      : pub.scholarUrl.includes('wiredspace')
+                        ? 'View on WIReDSpace'
+                        : 'View the abstract'}
                   </a>
 
                   {/* Generated on the server so the strings are deterministic;

@@ -799,6 +799,16 @@ export const PUBLICATIONS: Publication[] = [
     applications: ['Climate risk assessment', 'Agricultural planning', 'Energy demand forecasting', 'Insurance & reinsurance modeling'],
   },
   {
+    title: 'ML-based Probabilistic Prediction of 2m Temperature and Total Precipitation',
+    authors: 'MA Zaytar, B Zadrozny, C Watson, DS Civitarese, EE Vos, TM Mathonsi, TL Mashinini',
+    venue: 'EGU General Assembly 2022',
+    year: 2022,
+    scholarUrl: 'https://meetingorganizer.copernicus.org/EGU22/EGU22-11063.html',
+    doi: '10.5194/egusphere-egu22-11063',
+    aiSummary: 'A daily probabilistic forecast model predicting 2m temperature and total precipitation globally, closing the skill gap between numerical weather prediction and seasonal forecasting. Combines physics-based ensembles, climate modes and recent climatology into features for Extreme Gradient Boosting, U-Net and Natural Gradient Boosting, and consistently outperforms ECMWF 46-day forecasts and climatology. Co-authored across IBM Research South Africa, Kenya, Brazil and the US.',
+    applications: ['Subseasonal to seasonal forecasting', 'Climate risk assessment', 'Agricultural planning', 'Extreme weather preparedness'],
+  },
+  {
     title: 'Learning Level Set Method by Echo State Network for Image Segmentation',
     authors: 'TL Mashinini',
     venue: 'MSc Thesis, University of the Witwatersrand, 2022',
