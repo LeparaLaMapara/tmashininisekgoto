@@ -1401,7 +1401,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     highlight: 'Distinction · Echo State Networks for image segmentation',
     links: [
       { label: 'Thesis (WIReDSpace)', href: 'https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643' },
-      { label: 'Code', href: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation' },
+      // master, not the repo root: the default branch (main) holds only a README
+      // and the data folder; the code, notebooks and thesis are all on master.
+      { label: 'Code', href: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation/tree/master' },
     ],
     skills: ['Recurrent Neural Nets', 'Image Segmentation', 'Research'],
   },
