@@ -47,6 +47,13 @@ test.describe('publishing schedule', () => {
     }
   })
 
+  test('a scheduled post is dated the day it goes live', () => {
+    // Moving a post means changing both lines. This catches the one that was forgotten.
+    for (const p of frontmatter().filter((p) => p.data.publishOn)) {
+      expect(day(p.data.date), `${p.slug}: date and publishOn differ`).toBe(day(p.data.publishOn))
+    }
+  })
+
   test('a scheduled post shows its publishOn date, not the draft date', () => {
     for (const p of frontmatter().filter((p) => p.data.publishOn && p.data.published !== false)) {
       const live = getAllPosts().find((post) => post.slug === p.slug)!
