@@ -76,11 +76,12 @@ export interface BlogPost {
    * The day this post goes live, YYYY-MM-DD, from `publishOn`.
    *
    * A scheduled post stays `published: false` until the publish-scheduled
-   * workflow flips it on this date. When set, it is also the post's public
-   * `date`, so the listing, feed and schema show the day readers first saw it
-   * rather than the day it was drafted. `date` itself is left as written:
-   * editing it on main would collide with nonprod's `published` line, which
-   * sits directly beneath it.
+   * workflow flips it on this date. `date` is set to the same day (a test
+   * holds them together), so the file says when readers first saw the post.
+   * `publishOn` is still needed as the trigger: a held draft also has
+   * `published: false` and a past `date`, and must not go out. When both are
+   * present `publishOn` wins, so a post moved without updating `date` still
+   * shows the day it actually went live.
    */
   publishOn?: string
 }

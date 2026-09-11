@@ -12,7 +12,8 @@
 //   node scripts/blog/publish-due.mjs --list       # print the whole schedule
 //   node scripts/blog/publish-due.mjs --today 2026-09-14   # pretend it is that day
 //
-// In GitHub Actions it writes `count` and `slugs` to $GITHUB_OUTPUT.
+// In GitHub Actions it writes `count` and `slugs` (published by this run) and
+// `recent` (live within the last few days, ready to syndicate) to $GITHUB_OUTPUT.
 //
 // Deliberately dependency free (no gray-matter), so the workflow that runs it
 // does not need an npm install.
@@ -109,9 +110,21 @@ for (const post of due) {
 
 if (due.length === 0) console.log(`Nothing due on ${today}.`)
 
+// Posts that went live on one of the previous few days are the ones to
+// syndicate. Not today's: the canonical copy should be indexed before a
+// dev.to or Hashnode copy exists. A window rather than just yesterday, so a
+// skipped run still catches up; the syndication script skips anything it has
+// already sent unchanged, so re-sending within the window is harmless.
+const SYNDICATE_WINDOW_DAYS = 3
+const windowStart = new Date(`${today}T00:00:00Z`)
+windowStart.setUTCDate(windowStart.getUTCDate() - SYNDICATE_WINDOW_DAYS)
+const since = windowStart.toISOString().slice(0, 10)
+const recent = posts.filter((p) => p.published && p.publishOn && p.publishOn >= since && p.publishOn < today)
+if (recent.length) console.log(`Recently live, to syndicate: ${recent.map((p) => p.slug).join(' ')}`)
+
 if (process.env.GITHUB_OUTPUT) {
   fs.appendFileSync(
     process.env.GITHUB_OUTPUT,
-    `count=${due.length}\nslugs=${due.map((p) => p.slug).join(' ')}\n`,
+    `count=${due.length}\nslugs=${due.map((p) => p.slug).join(' ')}\nrecent=${recent.map((p) => p.slug).join(' ')}\n`,
   )
 }

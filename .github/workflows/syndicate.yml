@@ -10,9 +10,10 @@ name: Syndicate
 # it prints which posts would be created and which already exist, which is the
 # check you want before handing the job real credentials.
 #
-# Publishing to third-party platforms from CI is deliberately gated on a manual
-# `workflow_dispatch` as well, so the first real push is a decision rather than
-# a side effect of merging.
+# Publishing to third-party platforms from CI is gated on `workflow_dispatch`
+# with publish=true, so it is never a side effect of merging. Since September
+# 2026 the publish-scheduled workflow makes that dispatch for each scheduled
+# post the day after it goes live; a manual dispatch still works as before.
 
 on:
   push:
@@ -33,8 +34,14 @@ on:
         type: boolean
         default: false
       post:
-        description: 'Limit to a single post slug (optional)'
+        description: 'Limit to these post slugs, space separated (optional)'
         type: string
+
+# Runs queue rather than overlap: each publish run commits syndication.json,
+# and two at once would race on the push.
+concurrency:
+  group: syndicate-${{ github.event_name }}
+  cancel-in-progress: false
 
 jobs:
   syndicate:
@@ -58,7 +65,10 @@ jobs:
           DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
           HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
           HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
-        run: node scripts/syndicate.mjs ${{ inputs.post && format('--post {0}', inputs.post) || '' }}
+          POSTS: ${{ inputs.post }}
+        run: |
+          if [ -z "$POSTS" ]; then node scripts/syndicate.mjs; exit; fi
+          for slug in $POSTS; do node scripts/syndicate.mjs --post "$slug"; done
 
       - name: Publish
         if: github.event_name == 'workflow_dispatch' && inputs.publish == true
@@ -66,13 +76,20 @@ jobs:
           DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
           HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
           HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
-        run: node scripts/syndicate.mjs --publish ${{ inputs.post && format('--post {0}', inputs.post) || '' }}
+          POSTS: ${{ inputs.post }}
+        run: |
+          if [ -z "$POSTS" ]; then node scripts/syndicate.mjs --publish; exit; fi
+          failed=0
+          for slug in $POSTS; do node scripts/syndicate.mjs --publish --post "$slug" || failed=1; done
+          exit $failed
 
       # The state file records which remote article belongs to which post. If it
       # is lost, the next run re-creates every article as a duplicate, so it is
-      # committed straight back rather than left as a build artefact.
+      # committed straight back rather than left as a build artefact. Even when
+      # the publish step failed: one platform failing (Hashnode, say) must not
+      # throw away the record of what another platform already published.
       - name: Commit syndication state
-        if: github.event_name == 'workflow_dispatch' && inputs.publish == true
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.publish == true
         run: |
           if git diff --quiet -- data/syndication.json; then
             echo "No state change"
@@ -82,4 +99,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/syndication.json
           git commit -m "chore(syndication): record cross-post ids"
+          git pull --rebase --quiet
           git push
