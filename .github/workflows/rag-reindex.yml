@@ -1,0 +1,74 @@
+name: Reindex Thabang AI
+
+# Keeps the /ai assistant's knowledge base in step with the site. It answers
+# only from what is indexed, so a post that is live but not indexed does not
+# exist as far as /ai is concerned, and a claim removed from lib/data.ts keeps
+# being repeated until the index catches up.
+#
+# Runs on pushes that change the corpus, and is dispatched by the
+# publish-scheduled workflow, whose pushes trigger nothing on their own.
+#
+# It indexes in process (scripts/rag/reindex-direct.ts) rather than calling
+# production's /api/admin/reindex: the knowledge base is its own Supabase
+# project, and production's service key belongs to the site's other project.
+#
+# Needs two repository secrets. Until both exist the job says so and exits
+# cleanly, the same way Syndicate treats a missing platform key:
+#   KB_SUPABASE_SERVICE_KEY        service role key for the knowledge base project
+#   GOOGLE_GENERATIVE_AI_API_KEY   Gemini key, for embeddings
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/blog/**'
+      - 'lib/data.ts'
+      - 'lib/blog.ts'
+      - 'lib/rag/**'
+      - 'scripts/rag/**'
+  workflow_dispatch:
+
+# Reindexing is idempotent, so a queued run is fine and a cancelled one loses
+# nothing; the latest content always gets a run.
+concurrency:
+  group: rag-reindex
+  cancel-in-progress: true
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check secrets
+        id: secrets
+        env:
+          KB_KEY: ${{ secrets.KB_SUPABASE_SERVICE_KEY }}
+          GEMINI_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+        run: |
+          if [ -z "$KB_KEY" ] || [ -z "$GEMINI_KEY" ]; then
+            echo "::notice::KB_SUPABASE_SERVICE_KEY or GOOGLE_GENERATIVE_AI_API_KEY is not set, skipping the reindex."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.secrets.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.secrets.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+        if: steps.secrets.outputs.ready == 'true'
+
+      - name: Reindex
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.KB_SUPABASE_SERVICE_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+        run: npm run rag:reindex:direct

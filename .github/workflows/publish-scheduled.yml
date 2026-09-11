@@ -13,9 +13,14 @@ name: Publish scheduled posts
 # Vercel's Hobby plan only builds commits from the account's own author, so a
 # bot-authored commit could land on main and never deploy.
 #
-# A push made with GITHUB_TOKEN does not trigger other workflows, so IndexNow
-# is dispatched explicitly. Cross-posting to dev.to and Hashnode stays a manual
-# decision in the Syndicate workflow.
+# A push made with GITHUB_TOKEN does not trigger other workflows, so the ones
+# that should follow a publish are dispatched explicitly:
+#   - IndexNow, for the new URL
+#   - Reindex Thabang AI, so /ai can answer from the new post
+#   - Syndicate, for posts that went live on an earlier day. Never the same
+#     day: the copy on dev.to and Hashnode should only appear after the
+#     original has had a day to be indexed, so Google treats this site as the
+#     source.
 
 on:
   schedule:
@@ -59,8 +64,17 @@ jobs:
             -m "Scheduled by publishOn and published by the publish-scheduled workflow."
           git push
 
-      - name: Announce to IndexNow
+      - name: Announce to IndexNow and reindex Thabang AI
         if: steps.due.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run indexnow.yml --ref main
+        run: |
+          gh workflow run indexnow.yml --ref main
+          gh workflow run rag-reindex.yml --ref main
+
+      - name: Syndicate posts that went live on an earlier day
+        if: steps.due.outputs.recent != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RECENT: ${{ steps.due.outputs.recent }}
+        run: gh workflow run syndicate.yml --ref main -f publish=true -f post="${RECENT}"
