@@ -23,8 +23,11 @@ function frontmatter() {
 const day = (value: unknown) => new Date(String(value)).toISOString().slice(0, 10)
 
 test.describe('publishing schedule', () => {
-  test('posts go out on Mondays and Thursdays, one per day', () => {
-    const scheduled = frontmatter().filter((p) => p.data.publishOn)
+  // The rule governs the queue ahead, not what has already gone out: a whole
+  // series can be released at once on purpose, as the agents roadmap was on
+  // 12 September 2026.
+  test('posts still waiting go out on Mondays and Thursdays, one per day', () => {
+    const scheduled = frontmatter().filter((p) => p.data.publishOn && p.data.published === false)
     const days = scheduled.map((p) => day(p.data.publishOn))
     expect(new Set(days).size, 'two posts share a publishOn date').toBe(days.length)
     for (const p of scheduled) {
