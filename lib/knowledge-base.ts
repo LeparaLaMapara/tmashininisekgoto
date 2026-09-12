@@ -191,8 +191,6 @@ Photography & Filmmaking, Music Production, Calisthenics & Exploring, Skydiving,
 - GitHub: [LeparaLaMapara](https://github.com/LeparaLaMapara)
 - LinkedIn: [Thabang Mashinini](https://www.linkedin.com/in/thabang-mashinini-0081b5b6/)
 - YouTube: [Thabang Vision](https://www.youtube.com/@tmashininisekgoto)
-- Instagram: [thabanglukheto](https://www.instagram.com/thabanglukheto)
-- Twitter/X: [thabangline](https://x.com/thabangline)
 - Email: [thabangline@gmail.com](mailto:thabangline@gmail.com)
 - Google Scholar: [Thabang Mashinini on Google Scholar](https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ)
 - Book a call: [Schedule a meeting](https://calendar.app.google/JzUn4JQ2pnzmmjLx5)

@@ -130,8 +130,6 @@ export const SOCIAL_LINKS = {
   github: 'https://github.com/LeparaLaMapara',
   linkedin: 'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
   youtube: 'https://www.youtube.com/@tmashininisekgoto',
-  instagram: 'https://www.instagram.com/thabanglukheto',
-  twitter: 'https://x.com/thabangline',
   email: 'thabangline@gmail.com',
   scholar: 'https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ',
   // Where the blog is syndicated. Listed so the copies are declared as the same

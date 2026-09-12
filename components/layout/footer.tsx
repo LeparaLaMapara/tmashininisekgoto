@@ -1,14 +1,11 @@
 import Link from 'next/link'
-import { Github, Youtube, Linkedin, Instagram, Twitter, Mail, GraduationCap, Sparkles } from 'lucide-react'
+import { Github, Youtube, Linkedin, GraduationCap, Sparkles } from 'lucide-react'
 import { SOCIAL_LINKS } from '@/lib/data'
 
 const socialIcons = [
   { href: SOCIAL_LINKS.github, icon: Github, label: 'GitHub' },
   { href: SOCIAL_LINKS.youtube, icon: Youtube, label: 'YouTube' },
   { href: SOCIAL_LINKS.linkedin, icon: Linkedin, label: 'LinkedIn' },
-  { href: SOCIAL_LINKS.instagram, icon: Instagram, label: 'Instagram' },
-  { href: SOCIAL_LINKS.twitter, icon: Twitter, label: 'X / Twitter' },
-  { href: `mailto:${SOCIAL_LINKS.email}`, icon: Mail, label: 'Email' },
   { href: SOCIAL_LINKS.scholar, icon: GraduationCap, label: 'Google Scholar' },
 ]
 
