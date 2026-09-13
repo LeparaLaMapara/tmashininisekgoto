@@ -67,6 +67,46 @@
         "hash": "d89d55915c6449d9",
         "syncedAt": "2026-09-07T08:22:28.714Z"
       }
+    },
+    "agent-knowledge-and-retrieval": {
+      "devto": {
+        "id": 4642964,
+        "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-3-giving-an-agent-knowledge-3o5e",
+        "hash": "d5711409aaa1cbe8",
+        "syncedAt": "2026-09-13T09:42:59.382Z"
+      }
+    },
+    "agent-reliability-and-ci": {
+      "devto": {
+        "id": 4642965,
+        "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-5-making-agents-reliable-enough-to-ship-52k0",
+        "hash": "32414f73fc44ae65",
+        "syncedAt": "2026-09-13T09:43:01.456Z"
+      }
+    },
+    "agent-security-and-permissions": {
+      "devto": {
+        "id": 4642966,
+        "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-4-making-agents-safe-enough-to-act-553e",
+        "hash": "56478c2d02c53d57",
+        "syncedAt": "2026-09-13T09:43:39.998Z"
+      }
+    },
+    "agent-tools-and-integrations": {
+      "devto": {
+        "id": 4642967,
+        "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-2-giving-an-agent-hands-561j",
+        "hash": "945d9d927a13c3ef",
+        "syncedAt": "2026-09-13T09:43:42.075Z"
+      }
+    },
+    "from-one-agent-to-an-agentic-system": {
+      "devto": {
+        "id": 4642970,
+        "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-6-from-one-agent-to-an-agentic-system-jol",
+        "hash": "4481143837eaec6e",
+        "syncedAt": "2026-09-13T09:44:19.267Z"
+      }
     }
   }
 }
