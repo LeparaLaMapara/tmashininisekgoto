@@ -71,6 +71,24 @@ instead of one title string for consumers to guess at.
 
 ---
 
+### Series pages
+
+A series of posts had no address of its own, so the only way to hand someone
+the whole argument was six links or part one and a hope they found the rest.
+Each series now has one page.
+
+| URL | What it is |
+|---|---|
+| `/blog/series` | every series, each with its planned length and total reading time |
+| `/blog/series/<slug>` | one series: its parts in reading order, with a share block for the series itself |
+
+The slug comes from `lib/series.ts`, which also holds the intro and meta
+description. A series with no entry there still gets a page, addressed by its
+slugified name; an entry only shortens the URL and gives the page written copy.
+Series pages are in the sitemap, in `/llms.txt` with their parts listed in
+order, and in site search as their own result type. Nothing is listed before it
+has a published part, so an announced series cannot leak a title early.
+
 ## 2. Syndication
 
 `scripts/syndicate.mjs`. Reads `content/blog`, pushes to dev.to and Hashnode,

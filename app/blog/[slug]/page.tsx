@@ -7,7 +7,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
-import { cardSubtitle, getAllPosts, getPostBySlug, getSeries, getUnpublishedPosts, metaDescription } from '@/lib/blog'
+import { cardSubtitle, getAllPosts, getPostBySlug, getSeries, getUnpublishedPosts, metaDescription, partTitle } from '@/lib/blog'
 import { JsonLd } from '@/components/seo/json-ld'
 import { blogPostingSchema, breadcrumbSchema } from '@/lib/schema'
 import { slugifyTag } from '@/lib/topics'
@@ -176,6 +176,17 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {/* Post header */}
       <header className="mb-12">
+        {/* Most readers of a middle part arrive from a link rather than from
+            the index, so the series is named before the title, not only in the
+            navigation at the foot of the page. */}
+        {series && seriesLabel && (
+          <Link
+            href={`/blog/series/${series.slug}`}
+            className="mb-3 inline-block text-[11px] font-mono uppercase tracking-wider text-signal transition-colors hover:text-ivory"
+          >
+            {seriesLabel}
+          </Link>
+        )}
         <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ivory leading-tight">
           {post.title}
         </h1>
@@ -221,8 +232,16 @@ export default async function BlogPostPage({ params }: PageProps) {
         />
       </article>
 
-      {/* Share */}
-      <ShareButtons title={post.title} url={`${SITE_URL}/blog/${slug}`} />
+      {/* Share. A post in a series can also hand over the whole series. */}
+      <ShareButtons
+        title={post.title}
+        url={`${SITE_URL}/blog/${slug}`}
+        series={
+          series && seriesLabel
+            ? { name: series.name, url: `${SITE_URL}/blog/series/${series.slug}` }
+            : undefined
+        }
+      />
 
       {/* Previous / next. In a series these are the adjacent parts; otherwise
           the date-sequential neighbours, so every post is reachable from its
@@ -232,9 +251,17 @@ export default async function BlogPostPage({ params }: PageProps) {
           aria-label={seriesLabel ? 'More in this series' : 'More posts'}
           className="mt-16 border-t border-border pt-8"
         >
-          {seriesLabel && (
+          {seriesLabel && series && (
             <p className="mb-4 text-[11px] font-mono uppercase tracking-wider text-signal">
-              {seriesLabel}
+              {/* The label is a link, so a reader who arrives at part four can
+                  reach the whole series rather than reconstructing it from the
+                  previous and next arrows. */}
+              <Link
+                href={`/blog/series/${series.slug}`}
+                className="transition-colors hover:text-ivory"
+              >
+                {seriesLabel}
+              </Link>
             </p>
           )}
           <div className="grid gap-4 sm:grid-cols-2">
@@ -244,7 +271,10 @@ export default async function BlogPostPage({ params }: PageProps) {
                   {seriesLabel ? 'Previous part' : 'Previous'}
                 </span>
                 <span className="mt-1 block font-display text-lg font-semibold text-ivory transition-colors group-hover:text-synapse">
-                  {previous.title}
+                  {/* Inside a series the label above already names it, so the
+                      arrows show what is different about the next part rather
+                      than repeating the series name twice more. */}
+                  {seriesLabel ? partTitle(previous) : previous.title}
                 </span>
               </Link>
             ) : (
@@ -256,7 +286,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   {seriesLabel ? 'Next part' : 'Next'}
                 </span>
                 <span className="mt-1 block font-display text-lg font-semibold text-ivory transition-colors group-hover:text-synapse">
-                  {next.title}
+                  {seriesLabel ? partTitle(next) : next.title}
                 </span>
               </Link>
             )}

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Command } from 'cmdk'
 import {
   Search, Home, User, FolderOpen, BookOpen, Mic, Sparkles, FileText,
-  GraduationCap, FileCode, Pencil,
+  GraduationCap, FileCode, Pencil, Library,
 } from 'lucide-react'
 import type { SearchKind, SearchResult } from '@/lib/search'
 
@@ -23,13 +23,14 @@ const PAGES = [
 
 /** Icon and display order per result type. */
 const KIND_META: Record<SearchKind, { icon: typeof Home; label: string; order: number }> = {
-  Post:        { icon: BookOpen,       label: 'Writing',      order: 0 },
-  Project:     { icon: FolderOpen,     label: 'Work',         order: 1 },
-  Publication: { icon: FileCode,       label: 'Publications', order: 2 },
-  Talk:        { icon: Mic,            label: 'Talks',        order: 3 },
-  Course:      { icon: GraduationCap,  label: 'Courses',      order: 4 },
-  Writing:     { icon: Pencil,         label: 'Press',        order: 5 },
-  Page:        { icon: Home,           label: 'Pages',        order: 6 },
+  Series:      { icon: Library,        label: 'Series',       order: 0 },
+  Post:        { icon: BookOpen,       label: 'Writing',      order: 1 },
+  Project:     { icon: FolderOpen,     label: 'Work',         order: 2 },
+  Publication: { icon: FileCode,       label: 'Publications', order: 3 },
+  Talk:        { icon: Mic,            label: 'Talks',        order: 4 },
+  Course:      { icon: GraduationCap,  label: 'Courses',      order: 5 },
+  Writing:     { icon: Pencil,         label: 'Press',        order: 6 },
+  Page:        { icon: Home,           label: 'Pages',        order: 7 },
 }
 
 export function CommandPalette() {

@@ -6,6 +6,14 @@ import { Linkedin, Twitter, Link2, Check } from 'lucide-react'
 interface ShareButtonsProps {
   title: string
   url: string
+  /**
+   * The series this page belongs to, when it belongs to one.
+   *
+   * A reader who found part four useful usually wants to send someone the
+   * whole argument, not the part they happened to land on. Without this the
+   * only shareable thing on the page is a single post.
+   */
+  series?: { name: string; url: string }
 }
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -16,8 +24,37 @@ function WhatsAppIcon({ className }: { className?: string }) {
   )
 }
 
-export function ShareButtons({ title, url }: ShareButtonsProps) {
+/** Copy-to-clipboard control. One per URL, since each keeps its own state. */
+function CopyLink({
+  url,
+  label = 'Copy link',
+  className,
+}: {
+  url: string
+  label?: string
+  className?: string
+}) {
   const [copied, setCopied] = useState(false)
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard unavailable; nothing sensible to do
+    }
+  }
+
+  return (
+    <button onClick={copy} aria-label={label} className={className}>
+      {copied ? <Check className="w-4 h-4 text-signal" /> : <Link2 className="w-4 h-4" />}
+      {copied ? 'Copied' : label}
+    </button>
+  )
+}
+
+export function ShareButtons({ title, url, series }: ShareButtonsProps) {
 
   const text = encodeURIComponent(title)
   const link = encodeURIComponent(url)
@@ -40,15 +77,8 @@ export function ShareButtons({ title, url }: ShareButtonsProps) {
     },
   ]
 
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(url)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      // clipboard unavailable; nothing sensible to do
-    }
-  }
+  const pill =
+    'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border text-ivory/80 text-sm font-medium hover:border-synapse/40 hover:text-synapse transition-colors'
 
   return (
     <div className="mt-12 pt-8 border-t border-border">
@@ -63,21 +93,37 @@ export function ShareButtons({ title, url }: ShareButtonsProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border text-ivory/80 text-sm font-medium hover:border-synapse/40 hover:text-synapse transition-colors"
+            className={pill}
           >
             <Icon className="w-4 h-4" />
             {label.replace('Share on ', '')}
           </a>
         ))}
-        <button
-          onClick={copy}
-          aria-label="Copy link"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border text-ivory/80 text-sm font-medium hover:border-synapse/40 hover:text-synapse transition-colors"
-        >
-          {copied ? <Check className="w-4 h-4 text-signal" /> : <Link2 className="w-4 h-4" />}
-          {copied ? 'Copied' : 'Copy link'}
-        </button>
+        <CopyLink url={url} className={pill} />
       </div>
+
+      {/* Sharing the series is a separate offer from sharing this part, so it
+          gets its own line rather than a fifth button that looks the same as
+          the four above it. */}
+      {series && (
+        <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
+          <span>
+            This is part of{' '}
+            <a
+              href={series.url}
+              className="text-ivory/90 underline decoration-border underline-offset-4 hover:text-synapse hover:decoration-synapse/40"
+            >
+              {series.name}
+            </a>
+            . Send the whole series instead:
+          </span>
+          <CopyLink
+            url={series.url}
+            label="Copy series link"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-synapse hover:text-ivory transition-colors"
+          />
+        </div>
+      )}
     </div>
   )
 }
