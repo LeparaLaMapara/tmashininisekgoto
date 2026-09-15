@@ -1,0 +1,184 @@
+---
+title: "Ubunye Engine Part 4: The Same Folder, Somewhere Else"
+seoTitle: "Ubunye Engine Part 4: The Same Folder, Somewhere Else"
+date: 2026-09-16
+published: true
+tags: [open source, data science, software engineering]
+summary: "One folder runs on a laptop, in a sealed container, on a cluster of machines, against cloud storage and through a cloud style submission, and a build fails unless all five produce byte identical output. What a fingerprint is, and the real bug this check caught on its first day."
+series: "Ubunye Engine"
+seriesPart: 4
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 4: The Same Folder, Somewhere Else
+
+*Part 4 of 7. The claim the whole engine stands on, and how it is checked.*
+
+---
+
+## What you will have at the end
+
+An answer to the question Part 1 left open. Not "can the same folder run in
+different places", but "how would anyone know it really did the same thing".
+
+That question has a better answer than a promise, and the answer is a number.
+
+---
+
+## First, what a fingerprint is
+
+Take some text. Run it through a recipe that turns any text into a long number.
+The recipe always gives the same answer for the same text, and a wildly
+different answer for text that differs even slightly.
+
+Here is one line of our people file, and the same line with one digit changed:
+
+```text
+Dineo,34,Soshanguve   ->  2dc55cbf4321fb6f923eeac3f24738c0953fe622419a44ac63fd5978d5ba592a
+Dineo,35,Soshanguve   ->  174188ab10ed2dc7055af1fe9b2aa31231c3b24f070bc0f6d845663d86e340bc
+```
+
+Those two numbers have **zero characters in common in the same position**, out of
+sixty four. I counted, rather than assuming. One digit changed in the input, and
+nothing at all survived in the output.
+
+That property is what makes the number useful. If two results have the same
+fingerprint, they are the same result. Not similar, not close enough. The same.
+
+You already met this in Part 3, where the CSV run and the Parquet run produced
+the same fingerprint, and that is how we knew the answer had not shifted.
+
+---
+
+## Now the claim
+
+One task folder. Five different places to run it. The same fingerprint from all
+five, checked automatically, with the build failing if any of them disagrees.
+
+![One task folder feeding five environments, a laptop, a container, a cluster, object storage and a cloud style submission, all producing one identical fingerprint](/posts/ubunye_run_anywhere.png)
+
+Here is the actual comparison from a real build:
+
+```text
+  local Spark:        067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  Docker:             067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  Kubernetes:         067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  object store (s3a): 067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  spark-submit      : 067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+
+  identical output — local, Docker, Kubernetes, s3a://, spark-submit
+```
+
+In plain terms, those five are: your own machine, a sealed box that carries its
+own miniature operating system, a group of machines being managed as one, a
+storage service that speaks the same language as Amazon's, and the way clouds
+hand a job to a machine when there is no person and no terminal involved.
+
+Different owners, different sizes, different operating systems. Same folder.
+Same answer, down to the byte.
+
+---
+
+## Why asserting on the output matters
+
+The easy version of this test is to run the job in five places and check that
+none of them crashed. Almost everybody who claims portability means that.
+
+It is a much weaker claim than it sounds, because a pipeline can succeed
+everywhere and still produce different data in each place. Nothing crashes.
+Every log is green. The numbers quietly disagree.
+
+So the check does not look at whether the job finished. It looks at what the job
+wrote.
+
+---
+
+## The bug it caught on its first day
+
+Three environments agreed. Databricks did not.
+
+Nothing had crashed. The pipeline was fine. The problem was the data: git had
+quietly rewritten the line endings in the input files on one platform, because
+Windows and Linux disagree about how a line ends, and git tries to be helpful
+about it.
+
+So one platform read text that was invisibly different from what the others
+read. The rows looked identical on screen. The fingerprint did not, because a
+fingerprint does not care what looks identical.
+
+"It did not crash anywhere" would have sailed straight past that. It is the
+reason this example asserts on output rather than on exit codes, and it earned
+its keep before it was a day old.
+
+---
+
+## What actually changes between the five
+
+Three settings. That is the entire portability surface.
+
+```text
+SPARK_MASTER       where the compute is
+UBUNYE_SINK        what kind of table to write
+UBUNYE_DATA_ROOT   where the data lives
+```
+
+Nothing else moves. Not the config file, not the work file, not a single line of
+either.
+
+And one rule is enforced strictly: **a task is not allowed to choose its own
+cluster.** If a config tries to set where the compute is, the engine refuses to
+run it.
+
+That sounds unhelpful until you know what it prevents. When a cloud hands a job
+to a machine, the platform has already decided where the work goes. A task that
+overrode that would run everything on the one machine that handed out the work,
+ignoring the other hundred, finish successfully, report success, and bill you
+for a hundred machines it never used. Nothing fails. The output is correct.
+There is simply far less of it per hour than there should be, forever.
+
+An error you can see beats a silent bill you cannot.
+
+---
+
+## What this does not prove, stated plainly
+
+**Databricks is not in that comparison.** It runs the same folder through its own
+job, where each notebook checks its own output, but its fingerprint is not one
+of the five being compared. Saying "six environments" would be a slightly
+better story and would not be true.
+
+**Amazon and Google serverless have never been run.** The setup scripts and the
+submission scripts for both exist, and neither has been executed, because
+neither service has a free tier. The build says so in plain words rather than
+going green and letting you assume. What the `spark-submit` environment proves
+is that the *shape* of a cloud submission works. What remains unknown is whether
+those two particular clouds accept the job, which is a different question.
+
+A claim with its edges drawn is worth more than a bigger one with the edges
+hidden.
+
+---
+
+## Your goal for this part
+
+You cannot run five environments on your own machine today, and you do not need
+to. Do the small version.
+
+Run your Part 2 task twice, without changing anything, and fingerprint the
+output both times. In Python that is a few lines, and you already have the
+output folder.
+
+They should match exactly. If they ever do not, something in your work is not
+repeatable, which usually means it depends on the current time, on a random
+number, or on the order rows happened to arrive in. Finding that out on your
+laptop is much cheaper than finding it out later.
+
+That is the same test as the five environment one. It is just run in one place.
+
+---
+
+## Next
+
+Part 5 gives the engine a harder job than filtering rows. It trains a model,
+refuses to register it unless it is good enough, and then scores new data with
+whatever is currently approved, without the scoring job ever naming a version.
