@@ -1,0 +1,256 @@
+---
+title: "Ubunye Engine Part 7: What Happens When You Press Run"
+seoTitle: "Ubunye Engine Part 7: What Happens When You Press Run"
+date: 2026-09-16
+published: true
+tags: [open source, python, software engineering]
+summary: "The inside of the engine, opened up. The order the settings are read in and why that order matters, how a one word name finds a piece of code nobody imported, and the one thing a task is forbidden from doing."
+series: "Ubunye Engine"
+seriesPart: 7
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 7: What Happens When You Press Run
+
+*Part 7 of 7. The code in this part is the real code, quoted as it is. The
+explanations around it are the plain version.*
+
+---
+
+## What you will have at the end
+
+You have been typing one command since Part 2 and getting a table out. This part
+opens the lid.
+
+Not because you need to know, but because a tool you cannot see inside is a tool
+you have to trust. After this you can check instead.
+
+---
+
+## The order, and why the order is the point
+
+You type:
+
+```bash
+ubunye run -d ./pipelines -u demo -p starter -t filter_adults
+```
+
+Six things happen, in this order:
+
+**One, the settings are read and checked.** All of it, before anything else.
+
+**Two, the plugs are found.** The word under `format:` is looked up, and the
+piece of code that knows how to read that kind of source is fetched.
+
+**Three, Spark is started.** Or, if something else already started one, that one
+is used.
+
+**Four, the inputs are opened** and handed over under the names you gave them.
+
+**Five, your `transform` is called.** This is the only step you wrote.
+
+**Six, what you returned is written** where the settings said, in the format the
+settings said, and the run is recorded.
+
+Notice that checking comes first and starting the machinery comes third. That
+ordering is a decision, not an accident. Starting Spark takes tens of seconds,
+and on a cluster it costs money. Finding out that you misspelled a key should
+not require paying for a cluster first.
+
+---
+
+## Reading the settings, in three moves
+
+Inside step one there are three smaller steps, and their order matters so much
+that getting it wrong produced errors that made no sense.
+
+Here is the real code, with the noise removed:
+
+```python
+raw = yaml.safe_load(raw_yaml) or {}          # 1. text becomes a dictionary
+resolved = resolve_config(raw, cli_vars=...)  # 2. fill in the blanks
+cfg = UbunyeConfig.model_validate(resolved)   # 3. check every field
+```
+
+**One, the text becomes a dictionary.** YAML is just an agreed way of writing a
+list of settings so a program can read it.
+
+**Two, the blanks get filled in.** Your settings can contain placeholders like
+`{{ dt }}` for today's date or `{{ env.UBUNYE_CATALOG }}` for something the
+machine knows. This step replaces them with real values.
+
+**Three, everything is checked.** Is `mode` one of the words allowed? Is
+`merge_keys` a list? Does `options` hold a dictionary, which is the error I made
+in Part 3?
+
+The ordering is the whole lesson. If checking ran before filling in the blanks,
+the checker would be looking at the literal text `{{ dt }}` and asking whether
+that is a valid date. It is not, and the error message would talk about dates
+when the real answer is "that placeholder has not been replaced yet".
+
+That is why a general rule is worth stating: **resolve first, then validate.**
+Check the thing you are actually going to use, not the thing before it.
+
+---
+
+## How a word finds code that nobody imported
+
+In your settings you wrote `format: s3`. Somewhere a class knows how to read
+files. Nothing in the engine imports that class by name at the point it is used.
+
+Instead, every plug announces itself when it is installed, under a name:
+
+```text
+hive     = ubunye.plugins.readers.hive:HiveReader
+jdbc     = ubunye.plugins.readers.jdbc:JdbcReader
+s3       = ubunye.plugins.readers.s3:S3Reader
+delta    = ubunye.plugins.readers.delta:DeltaReader
+binary   = ubunye.plugins.readers.binary:BinaryReader
+unity    = ubunye.plugins.readers.unity:UnityTableReader
+rest_api = ubunye.plugins.readers.rest_api:RestApiReader
+```
+
+When the engine needs `s3`, it asks Python which installed package claims that
+name, and uses whatever answers.
+
+This is why Part 3's promise holds. Your own package can announce a name the
+same way, and the engine will find it without one line of the engine changing,
+because the engine was never looking at a list it owns. It is looking at a list
+that anything installed can add to.
+
+Eleven kinds of thing work this way, not just readers: writers, transforms,
+models, the places models are stored, the places lineage is stored, the ways of
+logging in.
+
+**One honest note.** Until version 0.4.0 this did not actually work. The allowed
+values of `format:` were a fixed list inside the engine, so a correctly
+registered plug was rejected during checking, before anything ever consulted the
+list of installed plugs. The extension story was written down and was not true.
+It is true now, and a test proves it using a connector the engine has never
+seen.
+
+---
+
+## Finding your code
+
+Your work is in `transformations.py`, and the engine has never heard of your
+class. It finds it by looking:
+
+```python
+for attr in mod.__dict__.values():
+    if isinstance(attr, type) and issubclass(attr, Task) and attr is not Task:
+        return attr
+```
+
+In words: go through everything in that file, and take the first thing that is a
+class, and is a kind of `Task`, and is not `Task` itself.
+
+The folder is also put on the search path first, so `transformations.py` can
+import a `model.py` sitting next to it. And afterwards it is taken off again,
+along with anything loaded from it, so that a second task with its own `model.py`
+gets its own, not the first one's. That is the kind of detail nobody thinks about
+until two tasks in the same pipeline quietly share a file and one of them starts
+behaving like the other.
+
+---
+
+## What the engine is willing to know about your data
+
+The engine hands your `transform` a table and takes a table back. What is a
+table, as far as the engine is concerned?
+
+```python
+@runtime_checkable
+class DataFramePort(Protocol):
+    @property
+    def schema(self) -> Any: ...
+    def count(self) -> int: ...
+    def collect(self) -> List[Dict[str, Any]]: ...
+```
+
+Three things: it can describe its own columns, it can count its rows, and it can
+hand them all over.
+
+Anything with those three can flow through the engine. A Spark table has them
+already. A pandas table gets a thin wrapper. Something nobody has written yet
+also qualifies, as long as it can do those three, and it does not have to
+inherit from anything.
+
+This is the same idea as the model contract in Part 5, applied to data instead
+of models. **What a system does not ask for, it cannot be tied to.** The engine
+never asks what kind of table this is, so it cannot be stuck with one kind.
+
+---
+
+## What gets written down about the run
+
+Step six ended with "and the run is recorded". That record is worth a minute,
+because it answers the question that arrives at the worst possible moment.
+
+Somebody says the Tuesday number looks wrong. The job that produced it has run
+every night since. The code has changed twice. What data did *that* run actually
+see?
+
+With `--lineage`, each run leaves a small record: when it started and finished,
+whether it succeeded, and a fingerprint of what it read and what it wrote. Not
+the data, which could be enormous and private. Just enough to answer whether two
+runs saw the same thing.
+
+```bash
+ubunye lineage list
+ubunye lineage trace -t filter_adults
+```
+
+The fingerprints are the same idea as Part 4, pointed at a different question.
+There, they proved five places agreed. Here they prove, or disprove, that
+Tuesday and Wednesday read the same input. Without that, answering the question
+means archaeology through logs and hoping somebody kept a copy.
+
+---
+
+## The one thing a task may not do
+
+A task cannot choose the machine it runs on. If a config tries, the engine
+refuses to run rather than quietly ignoring it.
+
+The reason is in Part 4, and it is worth repeating because it is the most
+expensive silent failure the engine ever had. When a cloud hands a job out, the
+platform has already chosen where the work goes. A task that overrode that would
+run everything in the one place that handed out the work, ignore every other
+machine, finish, report success, and bill for a cluster it never touched.
+
+Nothing fails. The answer is right. There is simply far less of it per hour than
+there should be, forever, and no message anywhere says so.
+
+The engine's own test file for this says it plainly: *the most expensive silent
+failure the engine had.*
+
+---
+
+## Your goal for this part
+
+Run the two commands that show you the inside, on your own task:
+
+```bash
+ubunye validate -d ./pipelines -u demo -p starter -t filter_adults
+ubunye plan     -d ./pipelines -u demo -p starter -t filter_adults
+```
+
+The first does step one and stops. The second shows you what it intends to do
+before it does any of it.
+
+If you get into the habit of running `plan` before `run` on anything expensive,
+this series has paid for itself.
+
+---
+
+## That is the series
+
+Seven parts. A recipe that only works in one kitchen, your first pipeline, the
+plug and the socket, one folder in five places, a gate a bad model cannot pass,
+eleven examples you can run, and now the inside.
+
+The thing worth keeping is smaller than the engine. **Write down what the work
+does, separately from where it runs.** Everything else here is bookkeeping in
+service of that one habit, and the habit is worth having even if you never
+install any of this.
