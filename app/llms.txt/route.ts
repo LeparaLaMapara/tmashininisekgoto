@@ -1,10 +1,11 @@
-import { getAllPosts } from '@/lib/blog'
+import { getAllPosts, getSeries } from '@/lib/blog'
 import { SITE_URL } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
 export function GET() {
   const posts = getAllPosts()
+  const series = getSeries()
 
   const lines = [
     '# Thabang Mashinini-Sekgoto',
@@ -32,6 +33,26 @@ export function GET() {
         `- [${p.title}](${SITE_URL}/blog/${p.slug}) ([md](${SITE_URL}/blog/${p.slug}.md)): ${p.summary}`
     ),
     '',
+    // Several posts are one argument in parts. Listed flat they read as
+    // unrelated articles, so the grouping is stated explicitly with the one
+    // URL that stands for the whole thing.
+    ...(series.length
+      ? [
+          '## Series',
+          '',
+          'These posts are parts of a single argument. Each series has one page that',
+          'lists its parts in reading order.',
+          '',
+          ...series.flatMap((s) => [
+            `- [${s.name}](${SITE_URL}/blog/series/${s.slug}): ${s.posts.length} of ${s.total} parts published`,
+            ...s.posts.map(
+              (p) =>
+                `  - Part ${p.seriesPart ?? '?'}: [${p.title}](${SITE_URL}/blog/${p.slug})`
+            ),
+          ]),
+          '',
+        ]
+      : []),
     '## Main pages',
     '',
     `- [Work and projects](${SITE_URL}/work): every project with why it was built, what it is, and its impact`,
@@ -43,6 +64,7 @@ export function GET() {
     `- [Career journey](${SITE_URL}/career): the path from BSc at Wits to leading a data science capability`,
     `- [Now](${SITE_URL}/now): what he is working on at the moment`,
     `- [Topics](${SITE_URL}/tags): the writing grouped by subject, each topic its own page`,
+    `- [Series](${SITE_URL}/blog/series): the multi part writing, each series readable in order from one page`,
     `- [Thabang AI Assist](${SITE_URL}/ai): an AI assistant grounded on his work (it is an assistant, not him)`,
     '',
     '## Related sites',

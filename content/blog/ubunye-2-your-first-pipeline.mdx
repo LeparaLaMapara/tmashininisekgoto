@@ -1,0 +1,303 @@
+---
+title: "Ubunye Engine Part 2: Your First Pipeline"
+seoTitle: "Ubunye Engine Part 2: Your First Pipeline"
+date: 2026-09-15
+published: true
+tags: [open source, python, data science]
+summary: "Install one thing, make a folder with two small files in it, type one command, and open the file that comes out. About ten minutes, and at the end you will have run a real data pipeline on your own machine."
+series: "Ubunye Engine"
+seriesPart: 2
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 2: Your First Pipeline
+
+*Part 2 of 7. Everything below was run on my machine before it was written, and
+the output you see is the output I got.*
+
+---
+
+## What you will have at the end
+
+A folder with two small files in it. A command you type. A table of results you
+can open and read.
+
+The example is deliberately small: a list of people, and we keep only the adults.
+That is not impressive, and it is not meant to be. It is the smallest complete
+example of the shape every pipeline has, which is information in, a decision,
+information out. Once you can do this one, the difference between it and a real
+one is the size of the data, not the shape of the work.
+
+Give it about ten minutes.
+
+---
+
+## What you need first
+
+**Python.** Version 3.9 or newer. Type `python --version` and if it prints a
+number you have it.
+
+**Java.** This one surprises people, so here is why. The heavy lifting is done
+by a piece of software called Spark, which is what lets the same instructions
+work on a small file on your laptop and on a very large one across many
+machines. Spark is written in Java, so Java has to be on your computer for it to
+start. Version 11 or 17. Type `java -version` to check.
+
+If Java is missing, install Temurin 11, which is free. That is the only
+installation in this whole series that is not one line.
+
+---
+
+## Step one, install it
+
+It is good practice to keep each project's tools in their own box, so that
+installing something for one project cannot break another. Python calls that box
+a virtual environment.
+
+```bash
+python -m venv my-first-pipeline
+source my-first-pipeline/bin/activate
+```
+
+On Windows the second line is `my-first-pipeline\Scripts\activate` instead.
+
+Now install the engine:
+
+```bash
+pip install "ubunye-engine[spark]"
+```
+
+Check it arrived:
+
+```bash
+ubunye version
+```
+
+```text
+Ubunye Engine v0.5.0
+```
+
+---
+
+## Step two, make the folder
+
+Create this, by hand or with `mkdir`:
+
+```text
+pipelines/
+    demo/
+        starter/
+            filter_adults/
+                config.yaml
+                transformations.py
+```
+
+Those three names before the files are not decoration, and they are not
+required to be these words. They are a filing system. The outermost is the area
+of work, then the group of related jobs, then the single job. Think of it as
+department, then shelf, then folder. When you have two jobs it feels like
+overkill. When you have sixty it is the reason you can still find anything.
+
+You also need something to read. Make a file called `people.csv` with this in
+it:
+
+```text
+name,age,city
+Dineo,34,Soshanguve
+Thabo,15,Pretoria
+Naledi,52,Soweto
+Sipho,9,Durban
+Lerato,27,Johannesburg
+```
+
+---
+
+## Step three, describe the kitchen
+
+This is `config.yaml`. In Part 1 we called this the place: where things come
+from, where they go.
+
+```yaml
+MODEL: "etl"
+VERSION: "1.0.0"
+
+ENGINE:
+  spark_conf:
+    spark.sql.shuffle.partitions: "1"
+
+CONFIG:
+  inputs:
+    people:
+      format: s3
+      file_format: csv
+      path: "file:///full/path/to/people.csv"
+      options:
+        header: "true"
+        inferSchema: "true"
+
+  transform: {}
+
+  outputs:
+    adults:
+      format: s3
+      file_format: parquet
+      path: "file:///full/path/to/adults"
+      mode: overwrite
+```
+
+Reading it from the top:
+
+`MODEL: "etl"` says what kind of job this is. ETL stands for extract, transform,
+load, which is the old name for fetch, change, store.
+
+`spark.sql.shuffle.partitions: "1"` tells Spark not to split this work up. Spark
+assumes it is dealing with something huge and splits work into many pieces by
+default. Our file has five lines, so one piece is plenty.
+
+`inputs` names what comes in. We called ours `people`, and that name matters in
+a minute. `format: s3` looks wrong on a local file and is not. It is the general
+purpose file reader, and it reads local files, Amazon storage and Google storage
+through the same code. `file:///` at the front of the path means the file lives
+on this computer.
+
+`header: "true"` says the first line holds column names rather than data.
+`inferSchema: "true"` asks it to work out that `age` holds numbers, so that
+comparing it to 18 means something.
+
+`outputs` names what goes out and where. Parquet is a file format built for
+tables. It is smaller than a CSV and it remembers which columns held numbers.
+`mode: overwrite` means replace yesterday's answer rather than adding to it.
+
+**Put the real, full path to your own file in both `path` lines.** That single
+detail is the whole of Part 1 in practice: the path is the place, and it is the
+only thing that changes when the job moves somewhere else.
+
+---
+
+## Step four, write the work
+
+This is `transformations.py`, and this one is the work.
+
+```python
+from typing import Any, Dict
+from ubunye.core.interfaces import Task
+
+
+class FilterAdults(Task):
+    """Keep only the people who are 18 or older."""
+
+    def transform(self, sources: Dict[str, Any]) -> Dict[str, Any]:
+        people = sources["people"]
+        return {"adults": people.filter("age >= 18")}
+```
+
+Two things to notice, because they are the entire connection between the two
+files.
+
+`sources["people"]` is the `people` you named under `inputs`. The engine has
+already opened the file and handed you the contents under that name.
+
+`{"adults": ...}` is the `adults` you named under `outputs`. Whatever you put
+under that name is what gets written. You never open a file, never close one,
+never write a loop over rows.
+
+The single line of actual thinking is `people.filter("age >= 18")`.
+
+---
+
+## Step five, run it
+
+```bash
+ubunye run -d ./pipelines -u demo -p starter -t filter_adults
+```
+
+The letters are the filing system again: `-d` the pipelines directory, `-u` the
+use case, `-p` the package, `-t` the task.
+
+Spark says a lot on startup. The line that matters is the last one:
+
+```text
+Starting task: filter_adults (Mode: DEV, Deploy: client)
+[OK] Run complete for filter_adults
+```
+
+---
+
+## Step six, look at what came out
+
+The output is a folder, not a single file, because Spark writes one file per
+piece of work and expects there to be many. Ours has one inside it.
+
+Reading it back gives this, which is the actual result from the run above:
+
+```text
+  name  age         city
+ Dineo   34   Soshanguve
+Naledi   52       Soweto
+Lerato   27 Johannesburg
+```
+
+Five people went in. Three came out. Thabo is fifteen and Sipho is nine, so both
+were left behind, which is exactly what `age >= 18` asked for.
+
+That is a pipeline. It is a real one, run by the same engine that runs the large
+ones.
+
+---
+
+## What actually happened when you pressed enter
+
+In order:
+
+1. The engine read `config.yaml` and checked it made sense before doing any work.
+2. It started Spark.
+3. It opened your CSV and handed it to you under the name `people`.
+4. It called your `transform`, the only part you wrote.
+5. It took what you returned under the name `adults` and wrote it where the
+   config said, in the format the config said.
+6. It shut Spark down.
+
+You wrote step four. The engine did the other five. Part 7 opens that up
+properly, line by line.
+
+---
+
+## If it did not work
+
+**`java: command not found`** or a long error mentioning `JAVA_HOME`. Java is
+missing or your computer does not know where it is.
+
+**`Missing transformations.py`.** The folder path in the command does not match
+the folder you made. The three names after `-u`, `-p` and `-t` must match the
+three folder names exactly.
+
+**`Path does not exist`.** The path in `config.yaml` is relative or slightly
+wrong. It needs to be the full path, starting with `file:///`.
+
+**No Task subclass found.** Your class needs `(Task)` after its name and the
+import at the top.
+
+The engine tries to say what went wrong and what to do about it rather than
+printing a wall of red. If it ever fails to, that is a bug worth reporting.
+
+---
+
+## Your goal for this part
+
+You have run a pipeline. Check the two halves are clear in your head, because
+everything else builds on them.
+
+**The place** is `config.yaml`. Paths, formats, settings.
+
+**The work** is `transformations.py`. One method, one line of thinking.
+
+If you want to prove the split to yourself before moving on, change the filter
+from 18 to 30 and run it again. One file changes. The other does not.
+
+---
+
+## Next
+
+Part 3 keeps that same work and changes where the information comes from. The
+CSV becomes a live weather service on the internet, and `transformations.py` is
+not touched at all.

@@ -1,0 +1,202 @@
+---
+title: "Ubunye Engine Part 1: The Recipe and the Kitchen"
+seoTitle: "Ubunye Engine Part 1: The Recipe and the Kitchen"
+date: 2026-09-15
+published: true
+tags: [open source, data science]
+summary: "Most computer work is written so that it only runs on one machine, which is why it has to be rebuilt every time anything moves. This part explains the problem using a recipe and a kitchen, with nothing to install and no code to read."
+series: "Ubunye Engine"
+seriesPart: 1
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 1: The Recipe and the Kitchen
+
+*Part 1 of 7. Nothing to install. Nothing to type. By the end of this you will
+be able to look at any piece of work and split it into two things, which is the
+one skill the rest of the series is built on.*
+
+---
+
+## A recipe your grandmother could send to anyone
+
+Think about a recipe for a stew.
+
+A good one lists what you need and what to do. Brown the meat. Add the onions.
+Let it cook slowly for two hours. Written that way, the recipe travels. Your
+aunt can cook it in her kitchen. A stranger can cook it in a kitchen on the
+other side of the world. The stew comes out the same, because the recipe
+describes the cooking and not the kitchen.
+
+Now imagine a different recipe for the same stew:
+
+> Turn the third knob from the left to the second notch. Take the blue pot from
+> the shelf above the sink. Put it on the back right plate, the one that runs
+> hot.
+
+Every instruction is true. Follow it in that kitchen and you get a good stew.
+Take it anywhere else and it is worthless. There is no third knob. There is no
+blue pot. The stew is the same stew, but the recipe has been welded to one room.
+
+Almost all computer work is written the second way. That is the whole problem,
+and everything else in this series follows from it.
+
+---
+
+## What the work actually is
+
+Before going further, it helps to know what kind of work we are talking about.
+
+Picture a small chain of shops. Every till records every sale. At the end of the
+day somebody needs a simple thing: how much did each shop sell, and what sold
+most. So a small program runs at night. It collects yesterday's sales, adds them
+up per shop, and writes the answer into a table the manager opens in the morning
+with her coffee.
+
+That is it. That is the job. Something goes and fetches information, changes its
+shape, and puts the result somewhere useful. People in the industry call it a
+pipeline, which is a fair name, because information goes in one end and comes
+out the other in a more useful form.
+
+Every bank, hospital, school system, delivery company and insurance company runs
+thousands of these. They are unglamorous and everything depends on them.
+
+---
+
+## Where it goes wrong
+
+The job above is easy to describe. Fetch the sales. Add them up. Write the
+answer.
+
+But the person writing it does not only write that. They also have to write
+down where the sales live, which machine to use, which password unlocks it, how
+much memory to ask for, and what to do when the network hiccups. And those
+instructions get mixed into the same file as the work itself, the way the knob
+and the blue pot got mixed into the recipe.
+
+Now watch what happens over the next two years.
+
+The company moves its information to a different provider. Nothing about the
+work has changed. Sales are still sales, and adding them up is still adding them
+up. But the instructions were about one kitchen, so the job has to be rebuilt.
+
+The person who wrote it leaves. The next person opens the file and cannot tell
+which lines are the work and which lines are the room. So they do not touch it.
+They write a new one next to it. Now there are two.
+
+Someone tries the job on their own laptop to test a change. It fails, because
+the laptop has no third knob. So they stop testing on their laptop, and changes
+go straight to the real system and are checked there, which is how the manager's
+morning table ends up wrong on a Tuesday.
+
+None of this is anybody being careless. Each person did a sensible thing. The
+trouble started earlier, when the recipe and the kitchen were written down as
+one thing.
+
+---
+
+## The idea, which is almost embarrassingly small
+
+Keep them apart.
+
+Write the work as the work. Fetch the sales, add them up, write the answer.
+Write the kitchen as a separate short list of settings. Where the sales live
+today. Which machine to use today. Where to put the answer today.
+
+When you move to a new kitchen, you change the short list. The work does not
+move, because the work never knew where it was.
+
+That is Ubunye Engine. It is a tool that makes you keep those two things apart,
+and then does the boring middle part for you: opening the connection, fetching
+the information, handing it to your work, and writing the result where you said.
+
+*Ubunye* is an isiZulu word meaning oneness. The point of the name is that the
+pieces should fit together instead of each solving its own corner.
+
+---
+
+## What it looks like, without any code
+
+A job is a folder. Inside it are two files.
+
+```text
+hourly_temperatures/
+    config.yaml            the kitchen: where things come from, where they go
+    transformations.py     the work: what to actually do
+```
+
+The first file is a list of settings. A person who has never programmed can read
+it and roughly follow it, because it is mostly names and addresses.
+
+The second file holds the work, and in most real jobs it is short. Often five or
+ten lines. The reason it stays short is that everything around it, the
+connecting and fetching and writing, has been taken out and put in the first
+file.
+
+We will build exactly this folder in Part 2, and run it, and open the file it
+produces.
+
+---
+
+## The claim this series has to prove
+
+Here is the promise, stated plainly so you can hold me to it.
+
+Take that folder. Run it on a laptop. Then run the same folder, unchanged, on a
+big machine in a data centre. Then run it again inside a container, which is a
+sealed box that carries its own tiny operating system. Then on a cluster, which
+is many machines pretending to be one.
+
+Different rooms, different sizes, different owners. The answer should come out
+identical every time.
+
+Not similar. Identical, down to the last character. In Part 4 we check that with
+a fingerprint, a short string of letters and numbers calculated from the result,
+where changing a single character anywhere changes the fingerprint completely.
+Five different places, one fingerprint, checked automatically every time the
+code changes. If they ever disagree, the build fails and somebody has to look.
+
+That check has already caught a real problem, and the story of what it caught is
+in Part 4.
+
+---
+
+## Who this series is for
+
+If you write software for a living, you will find this straightforward and you
+may go faster than it is written.
+
+If you do not, that is fine, and you have not opened the wrong page. Every part
+explains what it is doing in the sentence where it does it. You will need a
+computer and a willingness to type things you do not fully understand yet, which
+is how everybody starts.
+
+Part 1 needs neither. It only needed the recipe.
+
+---
+
+## Your goal for this part
+
+One thing. Look at something you know well, anything, a job you do, a process at
+work, a dish you cook, and split it into two lists.
+
+**The work.** The steps that would still be true in a different place, with
+different equipment, next year.
+
+**The place.** The steps that are only true here, now, with this equipment.
+
+For the stew: browning the meat is the work, the blue pot is the place. For the
+shop job: adding up the sales is the work, the address where the sales live is
+the place.
+
+That is the whole skill. Once you see the split, you cannot stop seeing it, and
+every part after this is the practical business of keeping the two apart.
+
+---
+
+## Next
+
+Part 2 builds the folder. You install one thing, create two files, run one
+command, and open the file that comes out at the other end. It takes about ten
+minutes, and at the end of it you will have run a real pipeline on your own
+machine.

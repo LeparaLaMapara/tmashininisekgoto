@@ -1,5 +1,6 @@
 import { COURSES, PROJECTS, PUBLICATIONS, TALKS, WRITINGS } from '@/lib/data'
-import { getAllPosts } from '@/lib/blog'
+import { getAllPosts, getSeries } from '@/lib/blog'
+import { getSeriesCopy } from '@/lib/series'
 
 /**
  * Server-side search across everything on the site.
@@ -9,7 +10,15 @@ import { getAllPosts } from '@/lib/blog'
  * promise. The command palette stays a separate, client-side convenience.
  */
 
-export type SearchKind = 'Page' | 'Post' | 'Project' | 'Talk' | 'Publication' | 'Course' | 'Writing'
+export type SearchKind =
+  | 'Page'
+  | 'Post'
+  | 'Series'
+  | 'Project'
+  | 'Talk'
+  | 'Publication'
+  | 'Course'
+  | 'Writing'
 
 export interface SearchResult {
   kind: SearchKind
@@ -113,6 +122,17 @@ function buildIndex(): Indexed[] {
     keywords: `${post.tags.join(' ')} ${post.content}`,
   }))
 
+  // A series is a destination of its own, so searching its name should offer
+  // the whole thing rather than only whichever part mentions it most.
+  const series: Indexed[] = getSeries().map((s) => ({
+    kind: 'Series',
+    title: s.name,
+    description:
+      getSeriesCopy(s.name)?.description ?? `A series in ${s.total} parts.`,
+    href: `/blog/series/${s.slug}`,
+    keywords: `series parts ${s.posts.map((p) => p.title).join(' ')}`,
+  }))
+
   const projects: Indexed[] = PROJECTS.map((project) => ({
     kind: 'Project',
     title: project.title,
@@ -154,7 +174,16 @@ function buildIndex(): Indexed[] {
     keywords: writing.date,
   }))
 
-  return [...PAGES, ...posts, ...projects, ...publications, ...talks, ...courses, ...writings]
+  return [
+    ...PAGES,
+    ...series,
+    ...posts,
+    ...projects,
+    ...publications,
+    ...talks,
+    ...courses,
+    ...writings,
+  ]
 }
 
 /**

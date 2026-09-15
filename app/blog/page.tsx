@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
 import { Clock } from 'lucide-react'
-import { getAllPosts, getAllTags, getSeries } from '@/lib/blog'
+import { getAllPosts, getAllTags, getSeries, partTitle } from '@/lib/blog'
 import { slugifyTag } from '@/lib/topics'
 import { formatDate } from '@/lib/utils'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   title: 'Writing: Applied AI, Data Science & Engineering',
   description:
     'Notes from inside the build: production AI and data systems, engineering craft, open source infrastructure, and applied research. Written while building, not after.',
-  alternates: { canonical: '/blog' },
+  alternates: { canonical: '/blog' },
+
   openGraph: pageOpenGraph('/blog', 'Writing by Thabang Mashinini-Sekgoto'),
 }
 
@@ -67,9 +68,17 @@ export default function BlogPage() {
           starting part one knows what they are starting. */}
       {series.length > 0 && (
         <div className="mt-16">
-          <h2 className="font-display text-xl font-semibold text-muted mb-6">
-            Series
-          </h2>
+          <div className="mb-6 flex items-baseline justify-between gap-4">
+            <h2 className="font-display text-xl font-semibold text-muted">
+              Series
+            </h2>
+            <Link
+              href="/blog/series"
+              className="font-mono text-xs text-muted transition-colors hover:text-synapse"
+            >
+              All series &rarr;
+            </Link>
+          </div>
           <div className="space-y-6">
             {series.map((s) => (
               <div
@@ -78,7 +87,12 @@ export default function BlogPage() {
               >
                 <div className="flex items-baseline justify-between gap-4 flex-wrap">
                   <h3 className="font-display text-lg font-semibold text-ivory">
-                    {s.name}
+                    <Link
+                      href={`/blog/series/${s.slug}`}
+                      className="transition-colors hover:text-synapse"
+                    >
+                      {s.name}
+                    </Link>
                   </h3>
                   <span className="font-mono text-xs text-muted">
                     {s.posts.length} of {s.total} published
@@ -94,7 +108,7 @@ export default function BlogPage() {
                         href={`/blog/${post.slug}`}
                         className="text-ivory/85 hover:text-synapse transition-colors leading-snug"
                       >
-                        {post.title}
+                        {partTitle(post)}
                       </Link>
                     </li>
                   ))}
@@ -104,6 +118,16 @@ export default function BlogPage() {
                     The remaining {s.total - s.posts.length} are being written.
                   </p>
                 )}
+                {/* The series has a page of its own, which is the link to
+                    send someone who should read the whole thing rather than
+                    whichever part you happened to be on. */}
+                <Link
+                  href={`/blog/series/${s.slug}`}
+                  className="mt-4 inline-flex items-center gap-1.5 font-mono text-xs text-synapse transition-colors hover:text-ivory"
+                >
+                  Read the series
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
               </div>
             ))}
           </div>

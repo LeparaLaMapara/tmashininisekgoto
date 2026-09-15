@@ -49,9 +49,10 @@ export const metadata: Metadata = {
     siteName: 'Thabang Mashinini-Sekgoto',
     locale: 'en_ZA',
   },
+  // The card type still gives a decent preview wherever a link is pasted. No
+  // creator handle: the X profile is no longer linked from the site.
   twitter: {
     card: 'summary_large_image',
-    creator: '@thabangline',
   },
   robots: { index: true, follow: true },
   // Search-engine ownership verification. Both read from env vars so that when

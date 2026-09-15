@@ -61,9 +61,7 @@ function sameAsProfiles(): string[] {
     SOCIAL_LINKS.github,
     SOCIAL_LINKS.linkedin,
     SOCIAL_LINKS.scholar,
-    SOCIAL_LINKS.twitter,
     SOCIAL_LINKS.youtube,
-    SOCIAL_LINKS.instagram,
     // The syndication targets. A cross-post carries a canonical back here, but
     // the canonical is a hint about which copy ranks, not a statement about who
     // wrote it. Declaring the profiles says the dev.to and Medium accounts are

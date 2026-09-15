@@ -130,8 +130,6 @@ export const SOCIAL_LINKS = {
   github: 'https://github.com/LeparaLaMapara',
   linkedin: 'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
   youtube: 'https://www.youtube.com/@tmashininisekgoto',
-  instagram: 'https://www.instagram.com/thabanglukheto',
-  twitter: 'https://x.com/thabangline',
   email: 'thabangline@gmail.com',
   scholar: 'https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ',
   // Where the blog is syndicated. Listed so the copies are declared as the same
@@ -174,13 +172,13 @@ export const PROJECTS: Project[] = [
     title: 'Ubunye Engine',
     category: 'open-source',
     order: 1,
-    cardTitle: 'Everything you build sits on engineering',
+    cardTitle: 'The pipeline should outlive the platform it runs on',
     oneLiner:
-      'Most of what an organisation builds with data and AI is gated by engineering, not by the idea, and the same plumbing gets rebuilt on every team and every platform. Ubunye Engine is one agreed way to describe a pipeline, wherever it ends up running.',
+      'Data and ML teams rebuild the same infrastructure plumbing every time work moves between a laptop, a shared cluster and production. Ubunye Engine separates what a pipeline does from where it runs, so the logic stays still while the infrastructure underneath it is replaced.',
     why:
-      'The tools are not the problem. People work on laptops, on-prem clusters and different clouds, and piping it all together is where the effort goes. Whether the team is small or large, and whether the job is one file or big data, that part should only be solved once.',
+      'The tools are not the problem. The same read, transform and write scaffolding gets rewritten per team and per platform, and a pipeline written for one environment quietly hardcodes it. The cost is duplicated engineering, results that are hard to reproduce anywhere else, and capability that belongs to whichever platform it was built on.',
     outcome:
-      'A standardisation layer over Spark: one YAML plus a Python class, seven built-in connectors, a model registry and lineage. A build job runs the same pipeline across six environments and fails if the outputs differ by a single byte.',
+      'A pipeline is one YAML file and a Python transform. Connectors, model registries, lineage stores and artifact storage are all plugins registered from outside the engine, so a new source or a new storage backend needs no engine edit. The same task folder runs on local Spark, Docker, Kubernetes, S3-compatible storage and spark-submit, and a build job fails unless all five produce byte-identical output.',
     topics: ['AI Engineering', 'MLOps', 'Data Pipelines', 'Reproducible Research', 'Open Source'],
     artifacts: [
       { kind: 'github', href: 'https://github.com/ubunye-ai-ecosystems/ubunye_engine' },
@@ -199,13 +197,13 @@ export const PROJECTS: Project[] = [
       contribution:
         'I built the Engine around three ideas. Config over code: a pipeline is a YAML file declaring inputs, outputs and settings, not a program. Plugins for everything: a connector is a small class registered from outside, so a new data source needs no engine edits. Folders as architecture: every project is laid out as use case, pipeline, task, and the CLI uses that structure to scaffold, validate, plan and run. You write a transform() method; the engine handles connections, the Spark session, the read and write loop, model versioning and lineage.',
       changed:
-        'The same task folder runs on a laptop, in Docker, on Kubernetes, against object storage, on Databricks and through a cloud submit path, with no code change. That is tested rather than claimed: a build job runs one pipeline across six environments and fails if a single byte of output differs. One rule makes it work, and it is deliberately strict: a task never chooses its own cluster, and the engine refuses a config that tries to, because a silent single-node run on paid compute is worse than an error.',
+        'The same task folder runs on a laptop, in Docker, on Kubernetes, against object storage, through a spark-submit path and on Databricks, with no code change. Most of that is tested rather than claimed: a build job runs one pipeline on local Spark, Docker, Kubernetes, an S3-compatible store and spark-submit, and fails unless all five produce byte-identical output. Databricks deploys and runs the same folder through its own job, where each notebook asserts its own output rather than being compared against the other five. One rule makes it work, and it is deliberately strict: a task never chooses its own cluster, and the engine refuses a config that tries to, because a silent single-node run on paid compute is worse than an error.',
       benefited:
         'Teams that have outgrown scattered scripts, at either end of the size range, and the next person who opens the repo and can run something in minutes instead of a week. It is also deliberately scoped, which matters as much as what it does: it is not an agent framework, not an orchestrator and not a compute engine. It is the standardisation layer between data sources and applications, and it makes the plumbing boring.',
       remained:
-        'A published framework on PyPI with a documentation site and eleven worked examples that have all actually been run, seven built-in connectors, a model registry that writes to a local folder, a Databricks volume, S3 or GCS chosen purely by the path, lineage you can trace after the fact, and a plugin contract that lets someone add a source the engine has never seen. Claims that could not be executed were removed from the docs rather than left to mislead.',
+        'A published framework on PyPI with a documentation site and eleven worked examples, each one executed rather than only reviewed, seven built-in connectors, a model registry that writes to a local folder, a Databricks volume, S3 or GCS chosen purely by the path, lineage you can trace after the fact, and a plugin contract that lets someone add a source the engine has never seen. Claims that could not be executed were removed from the docs rather than left to mislead.',
       technicalContext:
-        'Apache Spark, Python, config as YAML with Jinja2 templating validated by Pydantic, connectors for hive, jdbc, delta, s3, unity, binary and rest_api, a CLI (init, validate, plan, run, test, lineage, models), a Python API for Databricks, Delta Lake, Docker, Kubernetes, and submit paths for EMR Serverless and Dataproc Serverless. The package ships its types and a type checker guards every merge.',
+        'Apache Spark, Python, config as YAML with Jinja2 templating validated by Pydantic, connectors for hive, jdbc, delta, s3, unity, binary and rest_api, a CLI (init, validate, plan, run, test, lineage, models), a Python API for Databricks, Delta Lake, Docker, Kubernetes, and a spark-submit path, which is the shape EMR Serverless and Dataproc Serverless use. The setup and submit scripts for both exist and are deliberately marked as not yet executed, since neither service has a free tier. The package ships its types and a type checker guards every merge.',
     },
     // Legacy fields for search/related/RAG/schema.
     problem:
@@ -213,7 +211,7 @@ export const PROJECTS: Project[] = [
     solution:
       'A standardisation layer over Spark: describe a pipeline as a YAML file plus a Python transform, and run that same task folder on a laptop, Docker, Kubernetes, object storage, Databricks or a cloud submit path.',
     impact:
-      'Published on PyPI with a documentation site, eleven worked examples, seven connectors, a model registry and lineage, with a build job that runs one pipeline across six environments and fails if the outputs differ by a byte.',
+      'Published on PyPI with a documentation site, eleven worked examples, seven connectors, a model registry and lineage, with a build job that runs one pipeline on five execution environments and fails if the outputs differ by a byte.',
     skills: ['Python', 'Apache Spark', 'Databricks', 'Kubernetes', 'Docker', 'CI/CD'],
     image: '/projects/ubunye-ai.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/ubunye_engine',
@@ -221,21 +219,22 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'tfilterspy',
-    title: 'Tfilterspy',
+    title: 'TFiltersPy',
     category: 'open-source',
     order: 2,
-    cardTitle: 'Making noisy sensor data easier to work with',
+    cardTitle: 'You should not have to become a specialist to get a clean signal',
     oneLiner:
-      'Working with telemetry across telecoms and insurance, the same problem kept coming back, real sensors lie, so I built the filtering methods I kept re-implementing into one library behind an API people already know.',
+      'Real sensors lie, and the mathematics that corrects them is well established but different for every method. TFiltersPy puts five Bayesian filters behind one familiar fit, predict and score interface, so choosing a method becomes a decision about the problem rather than a rewrite of everything around it.',
     why:
-      'The mathematics is well known, but the available implementations assumed you were already a state-estimation specialist, which put an expert in the path of an ordinary modelling task.',
+      'Each filter has its own mathematics and its own implementation shape, so moving from a Kalman filter to a particle filter usually means rebuilding the surrounding code as well. That cost is why teams tend to stay with the first method they tried, or wait for the one person who can derive the right one.',
     outcome:
-      'Five Bayesian filters, Kalman, Extended, Unscented, Ensemble and Particle, behind one scikit-learn compatible fit, predict and score API, with smoothing, forecasting and streaming updates. Published on PyPI with documentation and worked examples.',
+      'Kalman, Extended, Unscented, Ensemble and Particle filters share one estimator interface, with online updates on all five, RTS smoothing on the linear and extended filters, and forecasting on the linear one. A worked radar example compares EKF against UKF on the same data, and a decision guide says which filter suits which problem. Published on PyPI, tested on Python 3.9 through 3.12.',
     topics: ['Sensor Data', 'State Estimation', 'Kalman Filtering', 'Time Series', 'Open Source'],
     artifacts: [
       { kind: 'github', href: 'https://github.com/ubunye-ai-ecosystems/tfilterspy' },
       { kind: 'pypi', href: 'https://pypi.org/project/tfilterspy/' },
-      { kind: 'docs', href: 'https://ubunye-ai-ecosystems.github.io/tfilterspy' },
+      { kind: 'docs', href: 'https://ubunye-ai-ecosystems.github.io/tfilterspy/' },
+      { kind: 'examples', href: 'https://github.com/ubunye-ai-ecosystems/tfilterspy/tree/main/examples' },
     ],
     caseStudy: {
       problem:
@@ -245,26 +244,26 @@ export const PROJECTS: Project[] = [
       context:
         'The recurring context was telemetry: the same class of noisy time-series problem appearing across telecommunications and insurance, in telematics and IoT. The methods themselves are not specific to vehicles, which shaped the scope. The same five filters serve radar tracking, robot localisation, high-dimensional weather and ocean models, EEG, image denoising, and even smoothing signals in text.',
       contribution:
-        'I built Tfilterspy as an open-source Python library. The design decision that mattered was familiarity: every filter is a scikit-learn compatible estimator, so fit, predict, score, get_params and set_params behave the way a practitioner already expects, and a filter can slot into tooling built around that convention. I also wrote the part people actually get stuck on, a decision guide for choosing among the five: a Kalman filter for linear systems, an Extended Kalman filter where you can supply Jacobians, an Unscented Kalman filter where you cannot, an Ensemble Kalman filter for very high-dimensional states, and a Particle filter for non-Gaussian or multimodal problems. It is built to scale beyond one machine, with optional Dask parallelism for the ensemble and particle methods.',
+        'I built TFiltersPy as an open-source Python library. The design decision that mattered was familiarity: every filter follows the scikit-learn convention, so fit, predict, score, get_params and set_params behave the way a practitioner already expects, and switching methods does not mean rewriting the code around them. It follows that convention rather than depending on scikit-learn, so the package installs with numpy, scipy and dask and nothing else. I also wrote the part people actually get stuck on, a decision guide for choosing among the five: a Kalman filter for linear systems, an Extended Kalman filter where you can supply Jacobians, an Unscented Kalman filter where you cannot, an Ensemble Kalman filter for very high-dimensional states, and a Particle filter for non-Gaussian or multimodal problems. It is built to scale beyond one machine: there are Dask-parallel variants of the Kalman and particle filters, and the ensemble filter propagates its members through Dask by default.',
       changed:
-        'Filtering stopped being a re-derivation exercise and became fitting a familiar estimator. Beyond the forward pass there is RTS smoothing, forecasting a number of steps ahead, and a filter_step call for online use against a live stream. Particle degeneracy is visible rather than silent through effective sample size monitoring, and a memory mode drops covariance storage for roughly an 80 percent saving on very long series, so a million-step run is practical.',
+        'Filtering stopped being a re-derivation exercise and became fitting a familiar estimator. Beyond the forward pass, every filter has a filter_step call for online use against a live stream, the linear and extended filters add RTS smoothing, and the linear one forecasts a number of steps ahead. Particle degeneracy is visible rather than silent, recorded per step as an effective sample size, and the Kalman filter can drop its stored covariances for very long series, which trades the ability to smooth for the memory to keep going.',
       benefited:
         'Engineers and scientists working with noisy time series who are not filtering specialists, starting with the telemetry problems across telecommunications and insurance that it was built from.',
       remained:
-        'A published, documented library on PyPI: five filters behind one API, worked examples for GPS vehicle tracking, radar tracking and robot localisation, notebooks covering EEG, image denoising and benchmarks across all five, and a test suite that includes a ten thousand step dataset.',
+        'A published, documented library on PyPI: five filters behind one API, worked examples for GPS vehicle tracking, radar tracking as a direct EKF against UKF comparison, and robot localisation, notebooks covering EEG, image denoising and benchmarks across all five, a decision guide for choosing between them, and a test suite of forty one tests run on Python 3.9 through 3.12.',
       technicalContext:
-        'Python, NumPy, SciPy, a scikit-learn BaseEstimator API, optional Dask for parallel ensemble and particle propagation, a parameter estimator utility, 37+ tests including a 10,000-step run, PyPI.',
+        'Python, NumPy, SciPy and Dask, an estimator API following the scikit-learn convention rather than depending on it, Dask-parallel Kalman and particle variants, a parameter estimator with four noise-estimation strategies, 41 tests on a Python 3.9 to 3.12 matrix, PyPI.',
     },
     problem:
       'Real sensors lie. GPS, radar, vehicle trackers and IoT devices all produce noisy readings, and you need an honest estimate of what is actually happening underneath the noise.',
     solution:
-      'An open-source Python library of five Bayesian filters, Kalman, Extended, Unscented, Ensemble and Particle, behind one scikit-learn compatible API, with smoothing, forecasting, streaming updates and optional Dask parallelism.',
+      'An open-source Python library of five Bayesian filters, Kalman, Extended, Unscented, Ensemble and Particle, behind one estimator API following the scikit-learn convention, with streaming updates on every filter, smoothing on the linear and extended ones, forecasting on the linear one, and Dask-parallel variants.',
     impact:
       'Published on PyPI with documentation and worked examples across GPS, radar and robotics, built for the noisy telemetry problems met across telecommunications and insurance.',
     skills: ['Python', 'NumPy', 'SciPy', 'Dask', 'PyPI', 'CI/CD'],
     image: '/projects/tfilterspy.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/tfilterspy',
-    productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy',
+    productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy/',
   },
   {
     slug: 'insurance-data-science-capability',
@@ -1401,7 +1400,9 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     highlight: 'Distinction · Echo State Networks for image segmentation',
     links: [
       { label: 'Thesis (WIReDSpace)', href: 'https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643' },
-      { label: 'Code', href: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation' },
+      // master, not the repo root: the default branch (main) holds only a README
+      // and the data folder; the code, notebooks and thesis are all on master.
+      { label: 'Code', href: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation/tree/master' },
     ],
     skills: ['Recurrent Neural Nets', 'Image Segmentation', 'Research'],
   },

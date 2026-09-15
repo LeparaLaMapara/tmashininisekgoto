@@ -2,7 +2,7 @@ import fs from 'fs'
 import { execFileSync } from 'child_process'
 import path from 'path'
 import type { MetadataRoute } from 'next'
-import { getAllPosts, getAllTags, getPostsByTag } from '@/lib/blog'
+import { getAllPosts, getAllTags, getPostsByTag, getSeries } from '@/lib/blog'
 import { getProjectsOrdered } from '@/lib/data'
 import { SITE_URL } from '@/lib/site'
 
@@ -90,6 +90,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }
 
+  // Series landing pages. A series is a page people link to in its own right,
+  // so it belongs here rather than being reachable only from /blog. Each is as
+  // fresh as its newest published part.
+  const series = getSeries()
+  // With nothing published as a series the index has nothing on it, so it is
+  // not offered to crawlers.
+  const seriesPages = series.length === 0 ? [] : [
+    {
+      url: `${SITE_URL}/blog/series`,
+      lastModified: newestPostDate(series.flatMap((s) => s.posts)),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    ...series.map((s) => ({
+      url: `${SITE_URL}/blog/series/${s.slug}`,
+      lastModified: newestPostDate(s.posts),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+  ]
+
   const postPages = posts.map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,
     // The revision date, not the publish date. A rewritten post that still
@@ -117,5 +138,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }))
 
-  return [...staticPages, blogIndex, ...postPages, ...tagPages, ...workPages]
+  return [
+    ...staticPages,
+    blogIndex,
+    ...seriesPages,
+    ...postPages,
+    ...tagPages,
+    ...workPages,
+  ]
 }

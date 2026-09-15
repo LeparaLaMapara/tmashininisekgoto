@@ -3,6 +3,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import readingTime from 'reading-time'
 import { slugifyTag } from '@/lib/topics'
+import { slugifySeries } from '@/lib/series'
 
 const CONTENT_DIR = path.join(process.cwd(), 'content/blog')
 
@@ -13,6 +14,12 @@ export interface BlogPost {
   tags: string[]
   summary: string
   readingTime: string
+  /**
+   * The same estimate as `readingTime`, as a number, so a set of posts can be
+   * totalled. A series page states what the whole thing costs to read, and
+   * summing the "6 min read" strings would mean parsing prose back into maths.
+   */
+  readingMinutes: number
   content: string
   published: boolean
   /**
@@ -88,6 +95,8 @@ export interface BlogPost {
 
 export interface Series {
   name: string
+  /** URL segment for `/blog/series/<slug>`. */
+  slug: string
   /** Published parts only, in reading order. */
   posts: BlogPost[]
   /** Planned length, which can exceed `posts.length` while a series is in progress. */
@@ -151,6 +160,7 @@ function parsePost(fileName: string): BlogPost {
     tags: (data.tags as string[]) ?? [],
     summary: data.summary ?? '',
     readingTime: stats.text,
+    readingMinutes: stats.minutes,
     content,
     published: data.published !== false,
     lastModified,
@@ -225,6 +235,7 @@ export function getSeries(): Series[] {
   return Array.from(grouped.entries())
     .map(([name, posts]) => ({
       name,
+      slug: slugifySeries(name),
       posts: posts.sort((a, b) => (a.seriesPart ?? 0) - (b.seriesPart ?? 0)),
       total: Math.max(...posts.map((p) => p.seriesTotal ?? p.seriesPart ?? 1)),
     }))
@@ -233,6 +244,48 @@ export function getSeries(): Series[] {
         Math.max(...s.posts.map((p) => new Date(p.date).getTime()))
       return latest(b) - latest(a)
     })
+}
+
+/**
+ * A post's title with the series name stripped off the front.
+ *
+ * Every part of a series repeats the series name in its own title, which is
+ * right on a search result and wrong in a list under that same name, where it
+ * produces six headings that differ only in their last four words. The full
+ * title is untouched everywhere else.
+ *
+ * Falls back to the whole title whenever stripping would leave nothing, so a
+ * part titled exactly after its series still has a heading.
+ */
+export function partTitle(post: BlogPost): string {
+  if (!post.series) return post.title
+  if (!post.title.toLowerCase().startsWith(post.series.toLowerCase())) return post.title
+
+  const trimmed = post.title
+    .slice(post.series.length)
+    // The separator between the series name and the part's own title varies:
+    // ", Part 3: ", " Part 3: ", ": ". All of it is noise once the list has
+    // already said which series this is and numbered the row.
+    .replace(/^[\s,:.–—-]*(part\s*\d+\s*[:.–—-]?\s*)?/i, '')
+    .trim()
+
+  return trimmed.length > 0 ? trimmed : post.title
+}
+
+/**
+ * One series by its URL segment, or null.
+ *
+ * Only the canonical slug resolves. A series that has nothing published yet
+ * has no page, for the same reason it has no entry on the index: the page
+ * would be an empty promise.
+ */
+export function getSeriesBySlug(slug: string): Series | null {
+  return getSeries().find((s) => s.slug === slug) ?? null
+}
+
+/** Total reading time for a set of posts, in whole minutes. */
+export function totalReadingMinutes(posts: BlogPost[]): number {
+  return Math.round(posts.reduce((sum, post) => sum + post.readingMinutes, 0))
 }
 
 /**

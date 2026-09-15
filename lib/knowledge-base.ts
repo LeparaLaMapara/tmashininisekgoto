@@ -64,7 +64,7 @@ GitHub: LeparaLaMapara
 ### 1. Ubunye AI Ecosystems (UAIE) [Open Source]
 Why it was built: Every data team rebuilds the same pipelines, and the work dies whenever the platform changes. And too much of the tooling Africa runs on is built elsewhere. Ubunye (isiZulu for unity) exists to produce serious open source from here.
 What it is: An open source organisation whose flagship, Ubunye Engine, lets you describe a data or ML pipeline once, as a small folder of config and Python, and run that exact folder on a laptop, Docker, Kubernetes, cloud clusters, or Databricks. For data and ML teams who want pipelines that outlive their platform, and for learners who want production habits from day one.
-Impact: The engine is at version 0.5.0. The define once run anywhere claim is proven, not promised: the same pipeline folder produces byte-identical output (the same fingerprint hash) on SEVEN different environments — local Spark, Docker, Kubernetes, MinIO object storage over the S3 protocol, bare spark-submit, Databricks serverless, and a fresh package install on Windows. CI asserts this on every pull request. There is a public examples repository with eleven worked examples (ingestion, ML lifecycle, LLM/RAG, MLOps, run-anywhere) at [ubunye-examples](https://github.com/ubunye-ai-ecosystems/ubunye-examples).
+Impact: The engine is at version 0.5.0. The define once run anywhere claim is tested, not promised: a CI job in the public examples repository runs the same pipeline folder on FIVE environments — local Spark, Docker, Kubernetes, MinIO object storage over the S3 protocol and bare spark-submit — and fails the build unless all five produce byte-identical output (the same fingerprint hash). Databricks deploys and runs the same folder through a separate job whose notebooks assert their own output, rather than being compared against those five. The AWS EMR Serverless and GCP Dataproc Serverless scripts exist but are deliberately marked as not yet executed, because neither has a free tier. There is a public examples repository with eleven worked examples (ingestion, ML lifecycle, LLM/RAG, MLOps, run-anywhere) at [ubunye-examples](https://github.com/ubunye-ai-ecosystems/ubunye-examples).
 Tech: Python, Apache Spark, Databricks, Kubernetes, Docker, CI/CD
 Key features: Config system (YAML + Jinja2 + Pydantic v2), lineage tracking with dataset fingerprints, model registry with promotion gates that can write directly to cloud storage (s3:// and gs:// paths), plugin connectors discovered via entry points (no engine edits needed to add one), CLI (ubunye init/validate/plan/run/lineage/models), MkDocs documentation site, PyPI published.
 Architecture: Hexagonal / ports-and-adapters, structurally typed: any class that implements the required methods satisfies the contract, no inheritance needed. The engine never imports sklearn/PyTorch/XGBoost; models plug in through the UbunyeModel contract (train/predict/save/load). The DataFramePort abstraction (proposed in the blog series) SHIPPED in 0.5.0, together with a PandasDataFrameAdapter. The portability surface is three environment variables: SPARK_MASTER, UBUNYE_SINK, UBUNYE_DATA_ROOT. A config is not allowed to set spark.master — that belongs to the platform, and the engine raises an error if a pipeline tries to claim it.
@@ -72,12 +72,12 @@ GitHub: [Ubunye AI Ecosystems](https://github.com/ubunye-ai-ecosystems)
 Docs: [Ubunye Engine Documentation](https://ubunye-ai-ecosystems.github.io/ubunye_engine/)
 PyPI: pip install ubunye-engine
 
-### 2. Tfilterspy: Bayesian Filtering Library [Open Source]
-Problem: IoT and telematics pipelines required robust filtering for noisy sensor data and real-time state estimation.
-Solution: Created an open-source Bayesian filtering library supporting Kalman, Particle, and Ensemble filters with distributed execution.
-Impact: Built for the noisy telemetry and time-series problems met across telecommunications and insurance, published on PyPI with documentation. This was Thabang's first published Python library.
-Tech: Python, NumPy, Dask, PyPI, CI/CD
-GitHub: [Tfilterspy](https://github.com/ubunye-ai-ecosystems/tfilterspy)
+### 2. TFiltersPy: Bayesian Filtering Library [Open Source]
+Problem: IoT and telematics pipelines required robust filtering for noisy sensor data and real-time state estimation. The mathematics is well established, but each method has its own implementation shape, so changing method usually means rebuilding the code around it.
+Solution: An open-source library of FIVE Bayesian filters — Kalman, Extended Kalman, Unscented Kalman, Ensemble Kalman and Particle — behind one estimator interface that follows the scikit-learn convention (fit, predict, score, get_params, set_params) rather than depending on scikit-learn. Every filter supports online updates through filter_step; the linear and extended filters add RTS smoothing; the linear filter forecasts ahead. Dask-parallel variants exist for the Kalman and particle filters, and the ensemble filter propagates its members through Dask.
+Impact: Built for the noisy telemetry and time-series problems met across telecommunications and insurance, published on PyPI with a documentation site, a decision guide for choosing between the filters, worked examples for GPS tracking, radar tracking (a direct EKF against UKF comparison) and robot localisation, and 41 tests run on a Python 3.9 to 3.12 matrix. This was Thabang's first published Python library.
+Tech: Python, NumPy, SciPy, Dask, PyPI, CI/CD
+GitHub: [TFiltersPy](https://github.com/ubunye-ai-ecosystems/tfilterspy)
 
 ### 3. Kasilam Digital Platforms [Social Impact]
 Why it was built: Two problems with one root. Township businesses stay invisible online because agencies cost more than they can spend. And township youth cannot turn their potential into income, because the skills that now pay — building with AI — are taught everywhere except here. Kasilam tackles both at once.
@@ -191,8 +191,6 @@ Photography & Filmmaking, Music Production, Calisthenics & Exploring, Skydiving,
 - GitHub: [LeparaLaMapara](https://github.com/LeparaLaMapara)
 - LinkedIn: [Thabang Mashinini](https://www.linkedin.com/in/thabang-mashinini-0081b5b6/)
 - YouTube: [Thabang Vision](https://www.youtube.com/@tmashininisekgoto)
-- Instagram: [thabanglukheto](https://www.instagram.com/thabanglukheto)
-- Twitter/X: [thabangline](https://x.com/thabangline)
 - Email: [thabangline@gmail.com](mailto:thabangline@gmail.com)
 - Google Scholar: [Thabang Mashinini on Google Scholar](https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ)
 - Book a call: [Schedule a meeting](https://calendar.app.google/JzUn4JQ2pnzmmjLx5)

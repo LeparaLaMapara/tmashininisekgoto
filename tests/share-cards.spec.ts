@@ -99,9 +99,11 @@ async function expectCompleteCard(
 test.describe('share cards', () => {
   test('every blog post in the sitemap has a complete card', async ({ request }) => {
     const sitemap = await (await request.get('/sitemap.xml')).text()
+    // Series landing pages live under /blog/ too, and they are collections
+    // rather than articles, so they are asserted separately below.
     const paths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
       .map((m) => toLocalPath(m[1]))
-      .filter((p) => p.startsWith('/blog/'))
+      .filter((p) => p.startsWith('/blog/') && !p.startsWith('/blog/series'))
 
     // If this ever hits zero the loop below passes by doing nothing, which
     // would be the quietest possible way for this test to stop testing.
@@ -129,8 +131,42 @@ test.describe('share cards', () => {
     }
   })
 
+  test('every series page in the sitemap has a complete card', async ({ request }) => {
+    const sitemap = await (await request.get('/sitemap.xml')).text()
+    const paths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
+      .map((m) => toLocalPath(m[1]))
+      .filter((p) => p.startsWith('/blog/series'))
+
+    // A series with no page is the whole reason these routes exist, so an
+    // empty list here is a failure rather than a quiet pass.
+    expect(paths.length, 'no series pages found in the sitemap').toBeGreaterThan(0)
+
+    for (const path of paths) {
+      const html = await expectCompleteCard(request, path)
+      expect(meta(html, 'og:type'), `${path} should be a website, not an article`).toBe(
+        'website'
+      )
+      expect(
+        meta(html, 'og:description')!.length,
+        `${path} has an empty description`
+      ).toBeGreaterThan(0)
+    }
+  })
+
+  test('a shared series page lists its parts in order', async ({ request }) => {
+    const html = await (await request.get('/blog/series/ai-agents-roadmap')).text()
+    const links = [...html.matchAll(/href="\/blog\/([a-z0-9-]+)"/g)].map((m) => m[1])
+
+    // Part one first. A series read in publication order is read backwards,
+    // which is the bug this page exists to prevent.
+    expect(links).toContain('how-i-used-ai-to-build-this-site')
+    expect(links.indexOf('how-i-used-ai-to-build-this-site')).toBeLessThan(
+      links.indexOf('from-one-agent-to-an-agentic-system')
+    )
+  })
+
   test('the pages people link to have complete cards', async ({ request }) => {
-    for (const path of ['/', '/about', '/work', '/publications', '/blog', '/talks', '/resume', '/career', '/ai', '/courses', '/tags', '/now']) {
+    for (const path of ['/', '/about', '/work', '/publications', '/blog', '/blog/series', '/talks', '/resume', '/career', '/ai', '/courses', '/tags', '/now']) {
       await expectCompleteCard(request, path)
     }
   })
