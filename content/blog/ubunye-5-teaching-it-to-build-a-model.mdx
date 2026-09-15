@@ -1,0 +1,172 @@
+---
+title: "Ubunye Engine Part 5: Teaching It to Build a Model"
+seoTitle: "Ubunye Engine Part 5: Teaching It to Build a Model"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "Training a model is just another task with the same two files. What makes it useful is the gate that refuses to register a model which is not good enough, and a scoring job that never names a version. Real numbers from a real run."
+series: "Ubunye Engine"
+seriesPart: 5
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 5: Teaching It to Build a Model
+
+*Part 5 of 7. The numbers in this part came out of a real run on a real
+workspace, on 15 September 2026.*
+
+---
+
+## What you will have at the end
+
+An understanding of the only part of machine learning that most teams get wrong,
+which is not the maths.
+
+It is this: how do you stop a bad model reaching the thing that uses it.
+
+---
+
+## Training is not special
+
+In Part 2 the task read some people and kept the adults. A training task reads
+some data and produces a model. Same two files, same shape, same command.
+
+The engine does not have a separate mode for machine learning. A task that
+trains a model is a task. So is one that scores with it. What differs is what
+`transformations.py` says, not what kind of thing it is.
+
+That matters more than it sounds, because it means everything from the first
+four parts still applies. The model training job reads from a plug, runs
+anywhere, and fingerprints its output like anything else.
+
+---
+
+## The mistake everybody makes once
+
+You train a model on some data. You then check how well it does, using the same
+data it learned from. It does brilliantly.
+
+Of course it does. You asked it questions it had already seen the answers to.
+That is not a test, it is a memory check, and it tells you nothing about
+tomorrow.
+
+So the data gets split into three parts before any training happens:
+
+**train**, the rows the model learns from.
+**test**, rows it never sees during learning, kept back to judge it honestly.
+**score**, rows standing in for the new work it will do in production.
+
+The split happens in the feature task, before training, and it is written down
+in the table rather than decided fresh each time. If the split moved between
+runs, two runs would not be comparable, and you would never know which change
+helped.
+
+---
+
+## Then the gate
+
+Once the model has been judged on data it never saw, one question decides
+everything: is it good enough?
+
+If yes, it is registered and promoted. If no, **it is never registered at all.**
+
+That is the whole idea, and it is stronger than it looks. The scoring task later
+asks for whatever is currently approved. A model that failed is not there to be
+asked for. You do not need a rule saying "do not use bad models", because a bad
+model never becomes something that can be used.
+
+![Example 04 end to end: raw trips into feature engineering, then training with a gate that a failing model cannot pass, then batch inference asking the registry for whatever is in production](/posts/ubunye_ex04_architecture.png)
+
+One detail in that picture is easy to skim past and is the reason the gate works
+at all: **the gate reads the test score, never the training score.** A gate that
+checked training performance would pass everything, because a model always looks
+good on the answers it memorised. A gate that always passes is decoration.
+
+---
+
+## What a real run produced
+
+These are the numbers that came out of the workspace on 15 September:
+
+![What the run produced: production version 1.0.8, test error 1.77, test fit 0.969, three runs logged to MLflow, and the split showing 15,249 rows learned from against 3,226 judged on](/posts/ubunye_ex04_metrics.png)
+
+Two of those deserve plain words.
+
+**Test error 1.77** means that on journeys the model had never seen, its guess at
+the fare was out by about 1.77 on average, in whatever unit the fare is in. Lower
+is better. Zero would mean perfect, and would also mean something had gone wrong.
+
+**Test fit 0.969** is on a scale where 1 is perfect and 0 is no better than
+guessing the average every time. It is high because predicting a taxi fare from
+the distance and duration of the journey is a genuinely easy problem. A fraud
+model would never look like this, and if it did I would go looking for a mistake.
+
+**Version 1.0.8** is the eighth model to pass the gate and be promoted. The seven
+before it are still in the registry. Nothing was overwritten.
+
+---
+
+## Shipping a better model changes no code
+
+This is the part worth taking away.
+
+The scoring task does not say "use version 1.0.8". It asks the registry for
+whichever version is currently marked production, and uses that.
+
+So releasing a better model is a promotion in the registry. Nobody edits the
+scoring job, nobody redeploys it, nobody reviews a change to it. And rolling
+back after a bad release is the same action pointed at the older version, which
+takes about as long as typing the command.
+
+Compare that with the common alternative, where the version is written inside
+the scoring code. Now shipping a model means a code change, a review, a deploy,
+and a rollback is another one of each, at exactly the moment everybody is
+panicking.
+
+---
+
+## The engine does not know what a model is
+
+There is one more thing that makes this work across teams, and it is a small
+piece of design rather than a feature.
+
+The engine never imports scikit-learn, or PyTorch, or TensorFlow, or anything
+else that makes models. It knows four things a model can do:
+
+```text
+train    learn from data
+predict  answer for new data
+save     write yourself to this folder
+load     read yourself back
+```
+
+Anything that can do those four is a model as far as the engine is concerned.
+Your model can be a decision tree today, a neural network next quarter, and
+something bought from a vendor the year after. The registry stores it, the gate
+judges it, the scoring task loads it, and none of them ever learn what is inside.
+
+There is an example in the repository that trains the same model three ways, in
+scikit-learn, PyTorch and TensorFlow, and the three settings files are
+identical, character for character. The difference lives entirely in the model
+file, which is business logic and belongs to you.
+
+---
+
+## Your goal for this part
+
+No command this time. A question to be able to answer, because it is the one that
+separates a demo from something that can run for years:
+
+**If your model gets worse next month, what stops it reaching production?**
+
+If the answer is "we would notice", that is not a gate, it is a hope. A gate is
+a number checked against a threshold on data the model has not seen, with a
+refusal on the other side of it.
+
+---
+
+## Next
+
+Part 6 is the one you can play with. Eleven complete examples, what problem each
+one solves, how they connect, and how to run them yourself, either in a free
+Databricks workspace or on your own machine.
