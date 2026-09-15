@@ -1,0 +1,222 @@
+---
+title: "Ubunye Engine Part 3: Changing Where the Data Comes From"
+seoTitle: "Ubunye Engine Part 3: Changing Where the Data Comes From"
+date: 2026-09-15
+published: true
+tags: [open source, python, data science]
+summary: "The same job, reading from a completely different place, with the work file untouched. Two lines change in the settings, the answer comes out identical, and the proof is a fingerprint that matches."
+series: "Ubunye Engine"
+seriesPart: 3
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 3: Changing Where the Data Comes From
+
+*Part 3 of 7. Everything below was run before it was written. You need the folder
+from Part 2.*
+
+---
+
+## What you will have at the end
+
+The same job you built in Part 2, reading from a completely different kind of
+file, with `transformations.py` never opened. Not edited. Not opened.
+
+And a way to prove it, rather than take my word for it.
+
+---
+
+## A plug and a socket
+
+Your kettle has a plug. The wall has a socket. The kettle does not know whether
+the electricity comes from a coal station, a solar panel on the roof, or a
+generator in the yard. It knows the shape of the plug.
+
+That is the whole idea. The engine has a socket, and each way of reading data is
+a plug that fits it. Your work asks for "the thing called people" and gets it.
+Where it came from is somebody else's problem, and in this case the somebody
+else is the settings file.
+
+![The engine with one socket, and several plugs that fit it: a database, files, a web service, cloud storage, and a dashed empty slot for a plug someone writes themselves](/posts/ubunye_connectors.png)
+
+---
+
+## Do it
+
+In Part 2 your input block read a CSV:
+
+```yaml
+  inputs:
+    people:
+      format: s3
+      file_format: csv
+      path: "file:///full/path/to/people.csv"
+      options:
+        header: "true"
+        inferSchema: "true"
+```
+
+Make a copy of the same five people as a Parquet file, the table format from
+Part 2, then change the input to point at it:
+
+```yaml
+  inputs:
+    people:
+      format: s3
+      file_format: parquet
+      path: "file:///full/path/to/people_parquet"
+```
+
+Two lines changed. The `options` are gone because Parquet does not need them: a
+CSV is plain text, so somebody has to say that the first row holds names and
+that `age` is a number, while a Parquet file already carries that with it.
+
+Now run exactly the same command:
+
+```bash
+ubunye run -d ./pipelines -u demo -p starter -t filter_adults
+```
+
+```text
+Starting task: filter_adults (Mode: DEV, Deploy: client)
+[OK] Run complete for filter_adults
+```
+
+---
+
+## Prove it, do not trust it
+
+Two claims are worth checking. That the work file really was untouched, and that
+the answer really is the same.
+
+The first one is a fingerprint of the file itself. Before and after, it reads
+`098bff79d5094869785865733de9788d`. Same file. Not similar, the same.
+
+The second is a fingerprint of the result. Here are both runs, the one that read
+the CSV and the one that read the Parquet:
+
+```text
+FROM THE CSV SOURCE
+  name  age         city
+ Dineo   34   Soshanguve
+Lerato   27 Johannesburg
+Naledi   52       Soweto
+
+FROM THE PARQUET SOURCE
+  name  age         city
+ Dineo   34   Soshanguve
+Lerato   27 Johannesburg
+Naledi   52       Soweto
+
+csv result     6c82ba934c5ccdfe0cd92853f853cba95afc59d02ebd46af5f8c798377ec343b
+parquet result 6c82ba934c5ccdfe0cd92853f853cba95afc59d02ebd46af5f8c798377ec343b
+identical      True
+```
+
+A fingerprint is a long number calculated from the contents. Change one
+character anywhere and it changes completely, so two matching fingerprints mean
+the two results are the same down to the last byte. Part 4 leans on this
+properly.
+
+---
+
+## A mistake I made, left in on purpose
+
+Editing that config, I deleted the two `options` lines but left the word
+`options:` sitting there with nothing under it. The engine stopped straight
+away:
+
+```text
+[ERROR] Config validation failed for 'filter_adults':
+
+  CONFIG.inputs.people.options:
+    - Input should be a valid dictionary
+```
+
+Notice what did not happen. It did not start Spark, spend forty seconds getting
+ready, read the file, and then fall over somewhere deep inside with a message
+about a null pointer. It read the settings, found one key that made no sense,
+named it by its full path, and stopped.
+
+You can ask for that check on its own, before running anything:
+
+```bash
+ubunye validate -d ./pipelines -u demo -p starter -t filter_adults
+```
+
+On a job that takes two minutes this is a nicety. On one that runs for an hour
+on paid machines it is the difference between a typo costing you five seconds
+and costing you an hour.
+
+---
+
+## What else fits the socket
+
+Seven ways in ship with the engine. You choose one with a single word in the
+settings, `format:`.
+
+| `format:` | Reads |
+|---|---|
+| `s3` | files anywhere: your disk, Amazon, Google. CSV, Parquet, JSON |
+| `delta` | Delta tables, which remember their own history |
+| `hive` | tables in an older style catalogue |
+| `unity` | tables in Databricks Unity Catalog, by name or by SQL |
+| `jdbc` | any normal database: Postgres, MySQL, SQL Server, Oracle |
+| `rest_api` | a web service on the internet, with retries and rate limiting |
+| `binary` | whole files as they are: images, PDFs, audio |
+
+Six of those can also be written to. `binary` cannot, because Spark can read raw
+files but not write them back that way, and the engine tells you so rather than
+failing later.
+
+The important one is `jdbc`. Most organisations keep their real information in
+an ordinary database, and this is the line that reaches it:
+
+```yaml
+  inputs:
+    customers:
+      format: jdbc
+      url: "jdbc:postgresql://host:5432/shop"
+      dbtable: "public.customers"
+```
+
+Your `transformations.py` does not change when you point at that instead. It
+still asks for `sources["customers"]`.
+
+---
+
+## The plug that does not exist yet
+
+Say your company keeps something in a system nobody else has ever heard of.
+
+You write a small class that knows how to read it, and you register its name
+from your own package. The engine finds it by that name and uses it. You do not
+fork the engine, you do not edit it, and your class does not have to inherit
+from anything of theirs.
+
+That sounds like a detail, and it is the difference between a tool you can live
+with and one you cannot. There is a test in the engine's own test suite that
+proves it, using a connector the engine has never seen.
+
+---
+
+## Your goal for this part
+
+Change your input from the CSV to the Parquet copy and run it. Then check the
+two things I checked:
+
+**Did the work file change?** It did not, and you can prove that with a
+fingerprint rather than believing it.
+
+**Did the answer change?** It did not, and you can prove that too.
+
+If both hold, you have demonstrated the claim from Part 1 on your own machine:
+the work and the place are separate, and moving the place leaves the work alone.
+
+---
+
+## Next
+
+Part 4 takes the same folder and, instead of changing where the data comes from,
+changes where the job itself runs. A laptop, a sealed container, a cluster of
+machines. Same folder, and one fingerprint across all of them.
