@@ -11,7 +11,7 @@ import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Thabang Mashinini-Sekgoto, from Soshanguve. A curious person who would rather build a thing than use one, is interested in what intelligence actually is, teaches whenever he can, and spends the rest of his time behind a camera or somewhere off the ground.',
+    'Thabang Mashinini-Sekgoto, from Soshanguve. A curious person who would rather build a thing than use one, is interested in what intelligence actually is and in technology as an equaliser, and teaches whenever he can.',
   alternates: { canonical: '/about' },
   openGraph: profileOpenGraph('/about'),
 }
@@ -47,7 +47,7 @@ export default function AboutPage() {
             path: '/about',
             name: 'About Thabang Mashinini-Sekgoto',
             description:
-              'Who Thabang Mashinini-Sekgoto is: where he is from, what he is curious about, why he teaches, and what he does when he is not at a computer.',
+              'Who Thabang Mashinini-Sekgoto is: where he is from, what he is curious about, what he researches, and why he teaches.',
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -108,12 +108,37 @@ export default function AboutPage() {
             done differently?
           </p>
           <p>
+            That last question is the one I keep returning to. The way we frame
+            artificial intelligence today is one paradigm, arrived at through a
+            particular history. I am interested in whether it is the only one,
+            or whether it is one option among several that were never followed.
+          </p>
+          <p>
             I am also curious whether African ways of thinking, the collective
             ones especially, and ideas like ubuntu and ubunye, have something to
             say about how we frame intelligence. I want to be careful here. That
             is a question I find interesting, not a theory I have developed or a
             claim I can defend. I do not know the answer. That is most of the
             appeal.
+          </p>
+        </Section>
+
+        <Section title="Technology as an equaliser" delay={0.05}>
+          <p>
+            The other thing I keep coming back to is access. Knowledge, tools
+            and opportunity are not evenly distributed, and most of that gap is
+            not talent. It is proximity. Who happened to be in the room, who
+            knew someone, who could afford the thing.
+          </p>
+          <p>
+            Technology is the cheapest lever I know for closing some of that
+            distance. Past papers that open on a phone with no data. A website
+            for a business that could never pay an agency. An explanation
+            written for someone who was never handed the background.
+          </p>
+          <p>
+            The aim is narrow and I would rather state it plainly than dress it
+            up: more people getting the same shot at the same things.
           </p>
         </Section>
 
@@ -135,34 +160,6 @@ export default function AboutPage() {
             I am not trying to be the person who builds things for people. I
             would rather someone understood enough to build the next one without
             me.
-          </p>
-        </Section>
-
-        <Section title="Beyond the computer" delay={0.05}>
-          <p>
-            I am a photographer. I like seeing the world through a camera, and I
-            like the part where you have to stand somewhere long enough to
-            notice something.
-          </p>
-          <p>
-            I love cars. Drifting, drag racing, going sideways on purpose.
-          </p>
-          <p>
-            I train Muay Thai, and martial arts more generally. I sprint, 100m
-            and 800m, and I run and cycle. I enjoy being bad at something
-            difficult and slowly becoming less bad at it.
-          </p>
-          <p>
-            I skydive, which I am still actively doing and would like to take as
-            far as I can, maybe to a professional level one day. I paraglide.
-            And I am currently learning to rock climb, with the emphasis on
-            learning.
-          </p>
-          <p>
-            When I am not building something, researching something, teaching
-            someone, taking photographs, driving sideways or voluntarily leaving
-            a perfectly functional aircraft, there is a good chance I am
-            watching anime.
           </p>
         </Section>
 
