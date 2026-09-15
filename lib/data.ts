@@ -233,7 +233,8 @@ export const PROJECTS: Project[] = [
     artifacts: [
       { kind: 'github', href: 'https://github.com/ubunye-ai-ecosystems/tfilterspy' },
       { kind: 'pypi', href: 'https://pypi.org/project/tfilterspy/' },
-      { kind: 'docs', href: 'https://ubunye-ai-ecosystems.github.io/tfilterspy' },
+      { kind: 'docs', href: 'https://ubunye-ai-ecosystems.github.io/tfilterspy/' },
+      { kind: 'examples', href: 'https://github.com/ubunye-ai-ecosystems/tfilterspy/tree/main/examples' },
     ],
     caseStudy: {
       problem:
@@ -262,7 +263,7 @@ export const PROJECTS: Project[] = [
     skills: ['Python', 'NumPy', 'SciPy', 'Dask', 'PyPI', 'CI/CD'],
     image: '/projects/tfilterspy.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/tfilterspy',
-    productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy',
+    productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy/',
   },
   {
     slug: 'insurance-data-science-capability',
