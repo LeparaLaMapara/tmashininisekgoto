@@ -1,0 +1,140 @@
+---
+title: "Ubunye Engine Part 6.3: Text and Loose Files, Made Searchable"
+seoTitle: "Ubunye Engine 6.3: Making Text and Files Searchable"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "Customer reviews in a table, text files on a drive, and neither of them shaped like data. 210 documents became 262 overlapping chunks, and the overlap is the whole trick."
+series: "Ubunye Engine: the examples"
+seriesPart: 3
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.3: Text and Loose Files, Made Searchable
+
+*Example 03 of eleven. Runs in three minutes forty.*
+
+---
+
+## The problem
+
+Most of what an organisation knows is not in a table.
+
+It is in reviews customers wrote, contracts somebody signed, policies in a
+folder, notes from a call. It is text, written by people, for people. No
+columns, no types, no keys.
+
+You cannot query it, and the useful question is never "find me the word refund".
+It is "what are people unhappy about", which no amount of searching for words
+will answer.
+
+Before any of that is possible, the text has to be turned into something with
+edges.
+
+---
+
+## What it looks like
+
+![Example 03: reviews read as a table and files read as raw bytes, combined into one document list, then cut into overlapping chunks](/posts/ubunye_ex03_architecture.png)
+
+Two sources that could not be more different, going into one task and coming out
+the same shape.
+
+---
+
+## Two kinds of source, two lines of settings
+
+The reviews are already in a table, so they come in like any table.
+
+The files are not. They are files on a drive, and what you want is their
+contents:
+
+```yaml
+    files:
+      format: binary
+      path: "/Volumes/.../corpus"
+```
+
+`binary` hands you each file as raw bytes, along with its path, its size and
+when it was modified. That is deliberately the lowest possible level, because a
+PDF, a photograph and a text file have nothing in common except being a pile of
+bytes with a name. What you do with them next is your business.
+
+This one is read only, and the engine tells you so if you try to write with it,
+rather than letting you find out later.
+
+---
+
+## The idea worth stopping on: overlap
+
+Once you have the text, it has to be cut into pieces. Pieces small enough that
+each one is about a single thing, because a whole contract is not a useful unit
+of meaning.
+
+The obvious way is to cut every 500 characters. And the obvious way loses
+information at every cut.
+
+Imagine the sentence that matters is *"refunds are not available after thirty
+days unless the item was faulty"*. Your cut lands in the middle of it. Now the
+first piece ends with "refunds are not available after thirty" and the second
+begins with "days unless the item was faulty". Ask later whether faulty items can
+be refunded and neither piece can tell you, because the sentence that knew has
+been cut in half and both halves are misleading.
+
+The fix is to make the pieces **overlap**. Each chunk starts somewhat before the
+previous one ended, so every sentence sits whole inside at least one chunk.
+
+You pay for it in storage, and it is not close. 210 documents became **262
+chunks**, so roughly a quarter more pieces than documents, and the ones near a
+boundary appear twice. That is the trade: a bit more storage against never
+losing a sentence to a cut.
+
+---
+
+## What the real run produced
+
+```text
+documents      210
+  from files     6
+  from reviews 204
+chunks         262
+```
+
+204 real customer reviews and 6 text files, all arriving in the same list. From
+here nothing downstream knows or cares which is which, which is the point of
+doing this step at all.
+
+Those chunks are the input to 6.5, where they become searchable by meaning
+rather than by word.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** open
+`examples/03_ingest_unstructured/notebooks/run_document_index.py`. Three minutes
+forty. The reviews are already in the workspace; the notebook creates the volume
+and puts the six text files in it.
+
+**On your own machine:** the same task, with the corpus pointed at a local
+folder. One environment variable changes.
+
+---
+
+## What to take from this one
+
+**A pile of files is a valid source.** You do not need to load them into a
+database first.
+
+**Cut with overlap.** The cost is storage and the saving is not being confidently
+wrong later.
+
+**Normalise early.** Two sources that arrive completely differently should stop
+being different as soon as possible. After this task, one list.
+
+---
+
+## Next
+
+**Part 6.4** is the full machine learning lifecycle: features, training, a gate
+a bad model cannot get past, and scoring that never names a version.

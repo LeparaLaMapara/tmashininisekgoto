@@ -1,0 +1,185 @@
+---
+title: "Ubunye Engine Part 6.2: A Public Web Service, Turned Into a Table"
+seoTitle: "Ubunye Engine 6.2: Turning a REST API Into Rows"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "A weather service hands back one document holding 168 times and 168 temperatures, which is not a table. Turning that into rows is a business rule, and getting it wrong gives you 28,224 rows of nonsense that all look fine."
+series: "Ubunye Engine: the examples"
+seriesPart: 2
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.2: A Public Web Service, Turned Into a Table
+
+*Example 02 of eleven. Runs in fifty one seconds.*
+
+---
+
+## The problem
+
+Plenty of useful information is not in your database. It is behind a web address
+somewhere, and you fetch it by asking politely over the internet.
+
+Weather is the honest example, because it is free and nobody has to sign up for
+anything. Open-Meteo will tell you the next seven days of hourly forecast for
+any point on earth.
+
+What comes back is **one document**. Not 168 rows. One thing, containing a list
+of 168 timestamps and, beside it, a list of 168 temperatures, and another list of
+168 humidities.
+
+That is a perfectly sensible way to send data over a wire and a useless way to
+store it, because you cannot join it to anything or filter it or total it.
+
+---
+
+## What it looks like
+
+![Example 02: a call to a public web service with retries, one document back, the lists zipped into rows, and written by hour with merge](/posts/ubunye_ex02_architecture.png)
+
+---
+
+## The part the connector does
+
+Calling a web service is a solved problem and it is fiddly. Query parameters.
+What to do when the service says "too many requests". What to do when it is
+briefly down. How long to wait before trying again.
+
+None of that is your business, so it is settings:
+
+```yaml
+  inputs:
+    forecast:
+      format: rest_api
+      url: "https://api.open-meteo.com/v1/forecast"
+      params:
+        latitude: -26.2041      # Johannesburg
+        longitude: 28.0473
+        hourly: "temperature_2m,relative_humidity_2m,precipitation"
+        forecast_days: 7
+      rate_limit:
+        requests_per_second: 2
+        retry_on: [429, 503]
+        max_retries: 3
+```
+
+Two of those numbers are manners. `429` means you are asking too fast and `503`
+means come back shortly. Both are worth retrying. A `404` is not, and it is
+deliberately not in the list, because retrying a thing that does not exist three
+times is just being slow about it.
+
+---
+
+## The part that is yours, and the trap inside it
+
+You have one row with three lists in it. You want 168 rows with one value each.
+
+There is an obvious wrong way to do this, and it is worth dwelling on because
+the result looks completely fine.
+
+If you expand the timestamp list into rows, and then expand the temperature list
+into rows, you do not get 168 rows. You get **168 times 168**, which is 28,224.
+Every hour paired with every temperature, including 167 that belong to somebody
+else.
+
+Nothing errors. The table fills up. The numbers are all real numbers. The
+averages are even roughly plausible, because averaging every hour against every
+temperature gives you something near the middle.
+
+The right way is to **zip** them: take the first timestamp with the first
+temperature, the second with the second. One list of pairs, not two lists
+multiplied together.
+
+That is why this task has a `transformations.py` at all. No connector can do it,
+because no connector knows that your third list lines up with your first. That
+is knowledge about your data, which makes it business logic.
+
+---
+
+## Why running it twice does not double anything
+
+The forecast is a rolling seven day window. Run it today and tomorrow and the
+two overlap by six days, with tomorrow's version of those hours being slightly
+better informed.
+
+So the output merges on the hour:
+
+```yaml
+      mode: merge
+      merge_keys: ["city", "observed_at"]
+```
+
+An hour already in the table gets corrected. An hour that is new gets added.
+Which is exactly what you want from a forecast, and exactly the idempotence idea
+from 6.1, applied to something that changes.
+
+---
+
+## The bug this example had, which is the useful part
+
+When this repository's examples were finally run twice, this one failed:
+
+```text
+AssertionError: expected ~168 hourly rows, got 336
+```
+
+336 is exactly twice 168, and nothing was wrong with the pipeline.
+
+The check counted **the whole table**. But the table accumulates on purpose, and
+the two runs were two months apart, so the windows did not overlap at all.
+Nothing was corrected, all 168 rows were added, and the table doubled.
+
+So the assertion was only ever true the first time it ran, and guaranteed to
+fail every time afterwards. It had passed once, in July, and nobody ran it again
+until September.
+
+The fix is to count what **this run** produced, which is the window from today
+forward:
+
+```python
+window = fc.filter("observed_at >= current_date()")
+assert 150 < window.count() < 200
+```
+
+The lesson is bigger than the bug. **A check that measures history tells you
+nothing about the run.** If your test would give a different answer on the tenth
+run than the first, it is not testing what you think.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** open
+`examples/02_ingest_rest_api/notebooks/run_hourly_forecast.py` and press Run all.
+Fifty one seconds.
+
+One thing that will bite you elsewhere: Databricks serverless restricts outgoing
+internet to trusted addresses, and which ones is not documented anywhere.
+`api.open-meteo.com` works. `raw.githubusercontent.com` does not. That was found
+by running a script on the cluster to check, rather than by hoping, and it is
+why no example in the repository downloads its own data.
+
+**On your own machine:** it runs with no Databricks anywhere. One catch worth
+knowing, because it is a real packaging bug in the engine: the library that makes
+the web request lives in the developer extras, so `pip install ubunye-engine[spark]`
+gives you a `rest_api` reader that cannot make a request. On Databricks it works
+by accident, because the runtime already has it. Install `requests` explicitly.
+
+---
+
+## What to take from this one
+
+**Retry the things worth retrying**, and nothing else.
+
+**Zip, do not explode.** Two lists that line up are not two independent things.
+
+**A test that can only pass once is not a test.** Ask what your check would say
+on the tenth run.
+
+---
+
+## Next
+
+**Part 6.3** takes on data with no shape at all: customer reviews and loose text
+files, and the question of how you make a paragraph searchable.

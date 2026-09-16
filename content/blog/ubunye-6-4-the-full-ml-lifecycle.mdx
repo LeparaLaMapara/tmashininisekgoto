@@ -1,0 +1,153 @@
+---
+title: "Ubunye Engine Part 6.4: From Raw Trips to a Scored Table"
+seoTitle: "Ubunye Engine 6.4: The Full ML Lifecycle, Run"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "Three tasks, one model, and a gate it has to get past. Part 5 explained why the gate matters. This one runs it, shows the split that makes it honest, and reports what the model actually scored."
+series: "Ubunye Engine: the examples"
+seriesPart: 4
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.4: From Raw Trips to a Scored Table
+
+*Example 04 of eleven. Runs in two minutes fifty six. Part 5 covered why this
+works; this part is the running of it.*
+
+---
+
+## The problem
+
+Somebody wants to know what a taxi journey will cost before it happens.
+
+That is a model, and building one is the easy part. Half a day with the data
+gets you something that predicts fares well. Getting it to do that **next month,
+run by somebody else, without anyone having to remember anything**, is the part
+that fails.
+
+The specific failures, all of which are common:
+
+The model is judged on the data it learned from, so it looks brilliant and is
+not. The version in production is written inside the scoring code, so releasing a
+new one means a code change. Nobody can say which model produced last Tuesday's
+numbers. A worse model replaces a better one because nothing was comparing them.
+
+---
+
+## What it looks like
+
+![Example 04 end to end: raw trips into feature engineering, then training with a gate a failing model cannot pass, then batch inference asking the registry for whatever is in production](/posts/ubunye_ex04_architecture.png)
+
+Three tasks, and the registry sitting between the second and the third.
+
+---
+
+## Task 1: build the features, and split before anything else
+
+The first task reads raw journeys and makes the columns a model can use:
+distance, duration, time of day.
+
+Then it does the important bit, which is deciding, **before any training
+happens**, which rows are for learning, which are for judging, and which stand in
+for tomorrow's work. Those labels get written into the table.
+
+Doing it here rather than inside the training task is deliberate. If the split
+were decided fresh each run, two runs would not be comparable, and you would
+never be able to say whether your change helped or whether you just got a kinder
+split.
+
+---
+
+## Task 2: train, judge, gate, register, promote
+
+Five things, in an order that matters:
+
+**Train** on the training rows.
+
+**Judge** on the test rows, which the model has never seen.
+
+**Gate** on that judgement. The gate reads `test_` numbers, never `train_` ones.
+A gate reading the training score passes everything, because a model always looks
+good on answers it memorised.
+
+**Register** the artifact, but only if the gate passed. A model that fails is
+never registered, so nothing downstream can pick it up. There is no rule saying
+"do not use bad models", because a bad model never becomes a thing that can be
+used.
+
+**Promote** it to production.
+
+The code says this as plainly as the diagram:
+
+```python
+self._gate(test_metrics)          # raises, and nothing below runs
+version = self._register_and_promote(model, metrics)
+```
+
+That comment is the whole design. `_gate` does not return a flag that somebody
+might forget to check. It raises, and everything below it simply does not happen.
+
+---
+
+## Task 3: score, without naming a version
+
+The third task loads **whatever is currently in production** and scores the rows
+held back in task 1.
+
+It does not name a version. That is the thing worth copying even if you never use
+this engine: shipping a better model becomes a promotion in the registry, not a
+code change to the scoring job, and rolling back is the same action pointed
+backwards.
+
+---
+
+## What the real run produced
+
+![What the run produced: production version 1.0.10, test error 1.77, test fit 0.969, three runs logged to MLflow, and the split of 15,249 rows learned from against 3,226 judged on](/posts/ubunye_ex04_metrics.png)
+
+**Test error 1.77.** On journeys the model had never seen, its guess at the fare
+was out by about 1.77 on average. Lower is better.
+
+**Test fit 0.969**, where 1 is perfect and 0 is no better than guessing the
+average every time. That is high because predicting a fare from distance and
+duration is genuinely easy. A fraud model would never look like this, and if it
+did I would go looking for the mistake.
+
+**Version 1.0.10.** Every run that passes the gate promotes another version, and
+all the earlier ones are still there. Nothing is overwritten, which is what makes
+6.8 able to roll back to one of them.
+
+That number keeps moving, and it should. The figures here come from a real run
+and the next run will report its own.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** the three notebooks under
+`examples/04_ml_taxi_fare/notebooks/`, run in order. Two minutes fifty six for
+all three. It reads `samples.nyctaxi`, which is already in every workspace.
+
+**On your own machine:** all three run on plain Spark with a local folder as the
+registry, because the registry is built on paths rather than on a service. The
+build does exactly that on every push.
+
+---
+
+## What to take from this one
+
+**Split before you train**, and write the split down.
+
+**Gate on data the model never saw**, and make the gate raise rather than return.
+
+**Never name a version in the scoring job.** Ask for production and let the
+registry answer.
+
+---
+
+## Next
+
+**Part 6.5** answers questions from your own documents, using the chunks from
+6.3, and shows the refusal that matters: what it does when the answer is not in
+them.
