@@ -1,0 +1,142 @@
+---
+title: "Ubunye Engine Part 6: Eleven Examples You Can Run Today"
+seoTitle: "Ubunye Engine Part 6: Eleven Worked Examples"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "Eleven complete pipelines, from a table join to a language model teaching a smaller one. What each solves, how long it takes, and how to run it yourself in a free workspace or on your own machine. Each one has its own part."
+series: "Ubunye Engine"
+seriesPart: 6
+seriesTotal: 7
+---
+
+# Ubunye Engine Part 6: Eleven Examples You Can Run Today
+
+*Part 6 of 7. This part is the map. Each example then gets its own part, numbered
+6.1 to 6.11, because eleven of them in one page would be an afternoon.*
+
+---
+
+## What these are
+
+Not snippets. Eleven complete pipelines, each a folder you can run, each solving
+a problem somebody actually has.
+
+They live in their own repository, they install the engine from PyPI rather than
+from a branch, and every one of them has been run. Not reviewed, not validated.
+Run, with the output inspected.
+
+On 16 September 2026 all ten of the ones a free workspace can run went green on
+a real Databricks workspace, in one build, in under forty minutes.
+
+---
+
+## The map
+
+**Getting data in**
+
+**6.1 Two tables in, two answers out.** Joining shops to their sales, with the
+join pushed down into the database instead of dragging both tables out first.
+
+**6.2 A public web service, turned into a table.** A weather forecast arrives as
+one document holding parallel lists. Turning that into rows is a business rule,
+not a setting.
+
+**6.3 Text and loose files, made searchable.** Customer reviews and text files on
+a drive, cut into overlapping chunks. 210 documents, 262 chunks.
+
+**Machine learning**
+
+**6.4 From raw trips to a scored table.** The full lifecycle: features, training,
+a gate a bad model cannot pass, a registry, and scoring that never names a
+version.
+
+**6.5 Asking a question of your own documents.** Embedding, retrieval, and an
+answer grounded in your paragraphs, including a tested refusal when the answer is
+not in them.
+
+**6.6 A big model teaches a small one.** A large language model labels reviews
+once, a small model learns from the labels, and the small one does the work from
+then on. It agreed with its teacher on 97.4% of held out reviews.
+
+**Keeping it honest**
+
+**6.7 A data contract, actually enforced.** Seven rules, five deliberately broken
+rows, all five quarantined and none leaked into the clean table.
+
+**6.8 Catching a model after it has gone wrong.** Drift and decay are different
+problems, and a rollback fixes only one. A broken model was caught at a live
+error of 5.99 and rolled back to a version at 0.45.
+
+**Harder things**
+
+**6.9 Reading a real database without melting it.** Why a database read is single
+threaded unless you tell it otherwise, and how to slice it across connections.
+
+**6.10 The same model in three frameworks.** scikit-learn, PyTorch and
+TensorFlow, with three config files identical character for character, ending in
+a leaderboard that admits the winner does not mean anything.
+
+**6.11 The same folder, everywhere.** The portability example from Part 4, this
+time as something you run yourself.
+
+---
+
+## What each one costs you in time
+
+![How long each example takes on Databricks free serverless, measured on a real run: most under four minutes, distillation the outlier at nearly eighteen](/posts/ubunye_example_runtimes.png)
+
+Worth knowing before you start: **6.6 takes eighteen minutes**, because a small
+model is genuinely being trained. Everything else is minutes. The whole set is
+about forty.
+
+---
+
+## How to run them
+
+**In a free Databricks workspace, in about five minutes**
+
+1. Sign up for Databricks Free Edition. No credit card.
+2. In the workspace: Workspace, then Create, then Git folder, and paste the
+   repository URL. It is public, so you need no token.
+3. Open any notebook under `examples/*/notebooks/` and press Run all.
+
+The notebook installs the engine, creates what it needs, and runs the task.
+Nothing is downloaded from the internet, because serverless compute cannot be
+relied on to reach it, and an example that needs the internet is an example that
+fails on somebody else's network.
+
+**On your own machine**
+
+You already did this in Part 2. The same folders run locally with the settings
+from Part 4, and a build runs nine of the eleven off Databricks entirely, on
+plain Spark, in a container and on a cluster.
+
+---
+
+## Something worth saying about these examples
+
+Until yesterday, none of these had actually run in a build for two months.
+
+The workflow deployed them on every push and never ran them, because of a
+condition that silently evaluated to false. The build went green in
+twenty five seconds and meant "the upload worked", which is not the same as
+"the pipelines work" and reads identically.
+
+Fixing that took one line. The first real run then failed immediately, on an
+assertion in 6.2 that could only ever pass once: it counted the whole table
+rather than what that run produced, and the table accumulates on purpose.
+
+Both are fixed. Every example now runs on every push, and every notebook hands
+its numbers back out of the workspace, so the figures quoted in these parts come
+from a real run and refresh on the next one.
+
+That is the reason the numbers in this series are worth reading. Not because
+they are impressive, but because nothing here is a screenshot of a good day.
+
+---
+
+## Next
+
+**Part 6.1** starts with the simplest one: two tables, one join, and why the join
+belongs inside the database rather than after it.

@@ -1,0 +1,168 @@
+---
+title: "Ubunye Engine Part 6.1: Two Tables In, Two Answers Out"
+seoTitle: "Ubunye Engine 6.1: Joining Tables, Pushed Down"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "The most ordinary job there is. Two tables, one join, two answers a manager reads on Monday. Why the join belongs inside the database, and why this one is safe to run twice."
+series: "Ubunye Engine: the examples"
+seriesPart: 1
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.1: Two Tables In, Two Answers Out
+
+*Example 01 of eleven. Part of the Ubunye Engine series, expanding Part 6.*
+
+---
+
+## The problem
+
+A bakery chain has shops, and it has sales. They live in two tables, because
+that is how databases are supposed to work: the shop's address is written once,
+not copied onto every till receipt.
+
+But nobody wants to read two tables. The manager wants one list: **which shop
+made the most money**, and **which product sold best**.
+
+So every month somebody exports both, opens a spreadsheet, does a lookup, makes
+a pivot, and sends it round. It takes a morning. It is somebody's Tuesday, every
+month, forever, and it goes wrong quietly whenever a new shop opens.
+
+---
+
+## What it looks like
+
+![Example 01: two source tables read with SQL pushed down, totalled per shop and per product, and written with merge so a rerun is safe](/posts/ubunye_ex01_architecture.png)
+
+One task. Two tables in, two tables out.
+
+---
+
+## The first idea: let the database do the join
+
+There are two ways to join two tables.
+
+**The obvious way.** Pull all the shops out. Pull all the sales out. Match them
+up yourself.
+
+**The other way.** Ask the database to match them and hand you the result.
+
+The second is almost always right, and the reason is traffic. Sales tables are
+enormous. Shop tables are tiny. If you drag every sale across the network and
+then throw most of it away, you paid to move data you did not want.
+
+In the settings you do that by giving the input some SQL instead of a table name:
+
+```yaml
+  inputs:
+    transactions:
+      format: unity
+      sql: |
+        SELECT t.*, f.city, f.district
+        FROM   samples.bakehouse.sales_transactions t
+        JOIN   samples.bakehouse.sales_franchises  f
+          ON   t.franchiseID = f.franchiseID
+```
+
+The engine hands your code the result of that, already joined. Your
+`transformations.py` then has one thing left to do, which is the totalling, and
+that is business logic.
+
+The general rule is worth stating because it applies far beyond this example:
+**move the work to the data, not the data to the work.** Moving less is usually
+the whole optimisation.
+
+---
+
+## The second idea: safe to run twice
+
+Here is a question that separates a demo from something you can schedule.
+
+It is Tuesday. The job ran, wrote half its output, and the machine died. You fix
+it and run it again. What happens to the half that was already written?
+
+Three possible answers:
+
+**Append.** You now have that half twice. Every total is wrong, and nothing
+tells you.
+
+**Overwrite everything.** Correct, and you just rewrote a year of history to fix
+one day.
+
+**Merge.** Rows that exist are corrected, rows that do not are added. Run it
+once or run it five times, the answer is the same.
+
+That last property has a name worth knowing, because people say it constantly
+and rarely explain it: a job is **idempotent** when running it again does not
+change the result. It is one of the few pieces of jargon that earns its place,
+because the alternative is the sentence "safe to run more than once", which you
+will need every day.
+
+```yaml
+  outputs:
+    franchise_revenue:
+      format: unity
+      table: "...franchise_revenue"
+      mode: merge
+      merge_keys: ["franchiseID", "dt"]
+```
+
+`merge_keys` is the part people get wrong. It is the answer to "how do I know
+this is the same row as that one". Get it wrong and merge either duplicates
+everything or overwrites the wrong rows.
+
+---
+
+## Running it
+
+**In a free Databricks workspace:** open
+`examples/01_ingest_tables_sql/notebooks/run_customer_revenue.py` and press Run
+all. It takes **one minute fifty two seconds**, measured on a real run.
+
+It reads `samples.bakehouse`, which already exists in every Databricks
+workspace, so there is nothing to upload and no credentials to arrange.
+
+**On your own machine:** the same task runs against a local metastore with the
+same config, unchanged. The build does exactly that on every push, with tables
+of the same names and different rows, because the point is the process rather
+than the data.
+
+---
+
+## What it produced
+
+On the real run it wrote both tables and the notebook checked they were not
+empty, which sounds trivial and is the failure that matters. A job that
+successfully writes nothing looks exactly like a job that worked.
+
+The check is an assertion, not a chart:
+
+```python
+for table in ["franchise_revenue", "product_revenue"]:
+    n = spark.table(catalog + "." + schema + "." + table).count()
+    assert n > 0, table + " is empty"
+```
+
+That is the smallest useful test in the whole repository, and the one most
+pipelines in the world are missing.
+
+---
+
+## What to take from this one
+
+**Push the join down.** Let the database do what databases are good at.
+
+**Decide what a rerun means** before you schedule anything. If you cannot answer
+"what happens if this runs twice", it is not ready.
+
+**Assert that something landed.** Not that the job finished. That the table has
+rows in it.
+
+---
+
+## Next
+
+**Part 6.2** takes data from somewhere with no tables at all: a public weather
+service that hands back one document containing 168 times and 168 temperatures,
+and no rows whatsoever.
