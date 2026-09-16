@@ -1,0 +1,140 @@
+---
+title: "Ubunye Engine Part 6.9: Reading a Real Database Without Melting It"
+seoTitle: "Ubunye Engine 6.9: Partitioned JDBC Reads"
+date: 2026-09-16
+published: true
+tags: [open source, data science, software engineering]
+summary: "A database read is single threaded unless you tell it otherwise: one connection, one worker, and the rest of your cluster watching. Against a public database of 54 million rows, and the one example that cannot run on a free workspace."
+series: "Ubunye Engine: the examples"
+seriesPart: 9
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.9: Reading a Real Database Without Melting It
+
+*Example 09 of eleven. The only one that has never run on Databricks, and it says
+so.*
+
+---
+
+## The problem
+
+Most of an organisation's real information is in an ordinary database. Not a data
+lake, not a warehouse. Postgres, MySQL, SQL Server, something that has been
+running since before anybody currently employed arrived.
+
+So you point your cluster of thirty machines at it and ask for the table.
+
+And one machine does all the work, over one connection, while the other twenty
+nine sit idle. This surprises people every single time, and it is the default
+behaviour, not a bug.
+
+---
+
+## What it looks like
+
+![Example 09: a public Postgres of 54 million rows, sliced across four connections by a chosen column, with the filter pushed into SQL](/posts/ubunye_ex09_architecture.png)
+
+---
+
+## Why one connection
+
+The reading tool has no idea how to divide up your table.
+
+It cannot guess which column would split it evenly, and it will not go poking
+around your production database to find out, because that would be rude and
+expensive. So it does the only safe thing: opens one connection and pulls the
+rows through it.
+
+For a small table that is right. For 54 million rows it is a very long afternoon.
+
+---
+
+## Telling it how to slice
+
+You have to name the seam yourself: a column, its rough lowest and highest
+values, and how many pieces you want.
+
+```yaml
+    sequences:
+      format: jdbc
+      url: "jdbc:postgresql://host:5432/database"
+      dbtable: "..."
+      partition_column: "id"
+      lower_bound: 1
+      upper_bound: 54000000
+      num_partitions: 4
+```
+
+Now four connections open at once, each asking for a quarter of the range, and
+four machines work at the same time.
+
+**The column you choose decides whether this helps.** It has to be evenly spread.
+Slice on an identifier that is densely packed at the low end and sparse at the
+high end and you get four connections where one does almost everything and three
+finish immediately, which is the original problem plus three extra connections.
+
+And the bounds do not have to be exact. They are how the range is divided, not a
+filter. Rows outside them still arrive.
+
+---
+
+## The other half: do not fetch what you will discard
+
+The second lever is the same idea as 6.1. Filter in the database, not after.
+
+If you want sequences longer than a thousand, say so in the SQL. Fetching 54
+million rows to keep 200,000 means paying to move 53.8 million rows you did not
+want, twice: once through the database, once across the network.
+
+---
+
+## The honest note on this one
+
+This is the only example in the set that has **never been run on Databricks**,
+and its own README says so at the top rather than letting you assume.
+
+The reason is specific. A database read needs a driver, which is a small piece of
+software that knows how to talk to Postgres. Free serverless compute ships none
+and cannot install one. That is not a limitation of the engine. It is what
+"serverless" means: you do not get to put things on the machine.
+
+So it was run end to end against the live public database on local Spark
+instead: **56 databases, 200,000 rows, across 4 partitions.** The pipeline, the
+reader, the pushed down SQL, the partitioned read and the transformation all ran
+for real. What has not been proved is the notebook on a Databricks classic
+cluster.
+
+I would rather a repository tell me that than quietly include an example nobody
+verified. It is also a useful fact in its own right: **the restricted platform is
+the managed one.** On open source Spark, adding the driver is one line.
+
+---
+
+## Running it
+
+**On your own machine:** works, and needs no signup. It reads RNAcentral's public
+Postgres, which is a genuine scientific database anyone may query. The build
+runs this example on plain Spark and in a container on every push.
+
+**On Databricks:** it needs a classic cluster rather than serverless, and it has
+its own bundle for that. Untested, and marked untested.
+
+---
+
+## What to take from this one
+
+**A database read is single threaded until you say otherwise.** Nobody tells you
+this and everybody discovers it.
+
+**Slice on an evenly spread column**, or the slicing does nothing.
+
+**Filter at the source.** The cheapest row to move is the one you never asked
+for.
+
+---
+
+## Next
+
+**Part 6.10** settles a framework argument with evidence, and then refuses to
+declare a winner.

@@ -1,0 +1,156 @@
+---
+title: "Ubunye Engine Part 6.11: The Same Folder, Everywhere"
+seoTitle: "Ubunye Engine 6.11: Run Anywhere, Checked"
+date: 2026-09-16
+published: true
+tags: [open source, data science, software engineering]
+summary: "The example the whole engine stands on, this time as something you run rather than something you read about. One task folder, five environments, one fingerprint, and the bug it caught on its first day."
+series: "Ubunye Engine: the examples"
+seriesPart: 11
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.11: The Same Folder, Everywhere
+
+*Example 11 of eleven. Runs in one minute on Databricks. Part 4 explained the
+claim; this is the folder that proves it.*
+
+---
+
+## The problem
+
+Everything in this series has been building to one question, and it is the
+question Part 1 asked with a recipe and a kitchen.
+
+If a pipeline runs in two places, how do you know it did the same thing?
+
+"It did not crash" is the usual answer, and it is much weaker than it sounds. A
+pipeline can finish successfully in five places and write five different answers.
+Nothing fails. Every log is green. The numbers quietly disagree, and you find out
+months later from somebody in finance.
+
+---
+
+## What it looks like
+
+![One task folder feeding five environments, a laptop, a container, a cluster, object storage and a cloud style submission, all producing one identical fingerprint](/posts/ubunye_run_anywhere.png)
+
+---
+
+## The task itself is deliberately dull
+
+It reads text files and cuts them into chunks. That is all. It is example 03 with
+the interesting parts removed, on purpose.
+
+The task is not the point. **What is being tested is the engine, not the
+pipeline.** A complicated task would make it harder to tell whether a difference
+came from the platform or from the work.
+
+---
+
+## What actually changes between the five
+
+Three settings, and nothing else:
+
+```text
+SPARK_MASTER       where the compute is
+UBUNYE_SINK        what kind of table to write
+UBUNYE_DATA_ROOT   where the data lives
+```
+
+Not the config file. Not the work file. Not one line of either.
+
+And the five places are genuinely different: your own machine, a sealed container
+carrying its own miniature operating system, a Kubernetes cluster, an object
+store speaking the same protocol as Amazon's, and a job submitted the way a cloud
+submits one when there is no person and no terminal involved.
+
+---
+
+## The fingerprint, and why the check asserts on output
+
+Each run ends by calculating a fingerprint of what it wrote, and the build
+compares all five:
+
+```text
+  local Spark:        067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  Docker:             067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  Kubernetes:         067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  object store (s3a): 067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+  spark-submit      : 067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+```
+
+If any one of them differs by a single byte, the build goes red.
+
+There is a small detail in this example worth copying. The notebook does not
+print the fingerprint and stop. It **exits** with it, and the comment explains
+why: a notebook's printed output cannot be retrieved afterwards, only what it
+exits with can. Printing the hash makes it visible to a human watching and
+invisible to the job whose entire purpose is comparing it.
+
+That one line is why the check works at all, and it is the pattern the other ten
+examples have now adopted so their numbers escape the workspace too.
+
+---
+
+## The bug it caught on its first day
+
+Three platforms agreed. Databricks did not.
+
+Nothing had crashed and the pipeline was fine. Git had quietly rewritten the line
+endings of the input files on one platform, because Windows and Linux disagree
+about how a line ends and git tries to be helpful.
+
+So one platform read text that was invisibly different. On screen the rows were
+identical. The fingerprint was not, because a fingerprint does not care what
+looks identical.
+
+**The pipeline was portable. The data was not.** And "it did not crash anywhere"
+would have sailed straight past it.
+
+---
+
+## What is not proved, again
+
+Databricks runs this folder through its own job, and its fingerprint is not part
+of the five way comparison. Amazon and Google serverless have scripts written and
+have never been executed, because neither has a free tier, and the build says so
+in plain words instead of going green quietly.
+
+Five is the honest number. Six would be a slightly better story.
+
+---
+
+## Running it
+
+**Free Databricks workspace:**
+`examples/11_run_anywhere/notebooks/run_document_index.py`. One minute.
+
+**On your own machine:** `platforms/local/run.sh` prints the fingerprint as its
+last line. Compare it with the one above. If you have Docker, run the container
+version and compare that too. Two environments is enough to see the idea work.
+
+---
+
+## What to take from this one
+
+**Assert on output, not on exit codes.** Green means finished, not correct.
+
+**Make the number leave the room.** A result nothing can read is a result nobody
+will check.
+
+**Keep the test subject boring.** When you are testing the machinery, use the
+dullest possible workload.
+
+---
+
+## That is the eleven
+
+A table join, a web service, loose text, a model lifecycle, retrieval, a big
+model teaching a small one, a data contract, monitoring, a real database, three
+frameworks, and this.
+
+All of them are folders. All of them are two files each. Everything else in this
+series has been detail hanging off that one shape.
+
+Part 7 opens the engine up, if you want to see what is underneath.

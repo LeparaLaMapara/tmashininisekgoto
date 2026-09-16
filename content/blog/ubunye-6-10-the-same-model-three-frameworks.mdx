@@ -1,0 +1,123 @@
+---
+title: "Ubunye Engine Part 6.10: The Same Model in Three Frameworks"
+seoTitle: "Ubunye Engine 6.10: sklearn vs PyTorch vs TensorFlow"
+date: 2026-09-16
+published: true
+tags: [open source, data science, python]
+summary: "scikit-learn, PyTorch and TensorFlow on the same data, with three settings files identical character for character. They landed within half a percent, so the leaderboard says too close to call instead of crowning one."
+series: "Ubunye Engine: the examples"
+seriesPart: 10
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.10: The Same Model in Three Frameworks
+
+*Example 10 of eleven. Runs in five minutes fifty seven.*
+
+---
+
+## The problem
+
+Every team has this argument. scikit-learn or PyTorch or TensorFlow.
+
+It is almost always settled by whoever feels most strongly, because running the
+same problem three ways on the same data is a week of work nobody has, and
+comparing published benchmarks means comparing three different problems on three
+different datasets.
+
+---
+
+## What it looks like
+
+![Example 10: one dataset and one split feeding three training tasks whose config files are byte for byte identical, producing a leaderboard](/posts/ubunye_ex10_architecture.png)
+
+---
+
+## The setup that makes the comparison mean something
+
+One dataset. One split, decided once, shared by all three. Three training tasks.
+
+And the part that carries the whole example: **the three `config.yaml` files are
+identical, character for character.** Not similar. The same bytes.
+
+Each `transformations.py` is four lines: name a model class, hand it to the same
+training run. The entire difference between using a decision tree library and a
+deep learning framework lives inside `model.py`, which is yours.
+
+That is the strongest possible demonstration of the idea from Part 5. The engine
+never learns what a framework is. If it did, these three files could not be
+identical.
+
+---
+
+## One practical detail worth stealing
+
+TensorFlow needs an older version of a numerical library than the other two can
+tolerate. They genuinely cannot share one Python environment.
+
+Which is exactly why they are three separate tasks rather than one task with
+three branches. **The task is the unit of isolation.** Three tasks, three
+environments, no arguing about which version wins, and nobody has to pin
+everything to the oldest common denominator.
+
+If you have ever had two libraries you could not install together, that is the
+shape of the fix.
+
+---
+
+## What the real run produced
+
+```text
+champion     pytorch
+score_rmse   1.3011
+margin_pct   0.5
+verdict      too close to call
+```
+
+PyTorch came first, by **half a percent**.
+
+And the task refuses to call that a win.
+
+I think this is the best thing in the whole repository, so it is worth being
+explicit about why. Sorting three numbers always produces a first place. That is
+arithmetic. It happens whether or not the difference means anything, and at half
+a percent it does not: the winner **flips depending on which held out split you
+rank on**.
+
+So the leaderboard prints `too close to call` and says what to decide on instead:
+training cost, how heavy the dependencies are, and who has to maintain it. Those
+three differ enormously between these frameworks, and the accuracy does not.
+
+A benchmark that always crowns somebody is a benchmark that will mislead you
+about half the time, confidently.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** run 6.4's feature task first so the features
+exist, then the four notebooks in `examples/10_ml_frameworks/notebooks/`, three
+trainings and the champion selection. Five minutes fifty seven.
+
+**On your own machine:** the build does this on every push in its own job, with
+the three frameworks pinned together in one environment purely so they can
+coexist for the test.
+
+---
+
+## What to take from this one
+
+**Compare on one dataset and one split**, or you are comparing something else.
+
+**The task is the unit of isolation.** Libraries that cannot share an environment
+should not share a task.
+
+**Let a benchmark say "no difference".** The verdict "these are the same, choose
+on cost" is more useful than a ranking, and far more honest.
+
+---
+
+## Next
+
+**Part 6.11** is the last one, and the one the whole engine rests on: the same
+folder, run everywhere, checked by a fingerprint.

@@ -1,0 +1,131 @@
+---
+title: "Ubunye Engine Part 6.8: Catching a Model After It Has Gone Wrong"
+seoTitle: "Ubunye Engine 6.8: Drift, Decay and Rollback"
+date: 2026-09-16
+published: true
+tags: [open source, data science, software engineering]
+summary: "A gate stops a bad model being born. It cannot help three months later. This catches a model at a live error of 5.99 and rolls back to one sitting at 0.45, and explains why drift and decay are different problems."
+series: "Ubunye Engine: the examples"
+seriesPart: 8
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.8: Catching a Model After It Has Gone Wrong
+
+*Example 08 of eleven. Runs in one minute forty two.*
+
+---
+
+## The problem
+
+In 6.4 a gate stopped a bad model being registered. That gate is a birth
+certificate check. It happens once, and it can say nothing about what happens
+next.
+
+Three months later the model is exactly as it was, and the world is not. Fuel
+prices moved. A new suburb opened. Somebody changed how the app records
+distance. The model has not got worse at what it learned. What it learned has
+got less true.
+
+Nothing crashes. No error appears. The predictions are still produced on
+schedule, and they are quietly worse every week.
+
+---
+
+## What it looks like
+
+![Example 08: comparing then against now for drift, measuring live error for decay, trying the other versions, and promoting the best](/posts/ubunye_ex08_architecture.png)
+
+---
+
+## Two different problems that get confused constantly
+
+**Drift** is the data changing. What comes in now does not look like what came in
+when the model was trained.
+
+**Decay** is the model getting worse. Its predictions are further from reality
+than they used to be.
+
+People treat these as the same thing, and they are not, and the difference
+decides what you should do.
+
+Data can drift without any harm at all. If journeys got slightly longer on
+average but the relationship between distance and fare is unchanged, the model is
+fine. Reacting to that is a waste of a day.
+
+A model can decay without any visible drift, if something changed in a way your
+monitoring does not measure.
+
+And here is the part that matters: **a rollback fixes only one of them.** If the
+model decayed because a newer version was worse, going back to the older one
+fixes it. If the world moved, the old model is just as wrong as the new one, and
+rolling back buys nothing. You need to retrain, which is a different day's work.
+
+So the job is not "detect that something changed". It is "work out which of these
+two happened", because they have different answers.
+
+---
+
+## What the example actually does
+
+It does not simulate this. It breaks a model on purpose.
+
+A deliberately bad model is trained and promoted, so there is genuinely a broken
+thing in production. Then monitoring runs, measures the live error, compares it
+against the other versions sitting in the registry, and promotes the best one
+back.
+
+That works because of the decision back in 6.4: **nothing is ever overwritten.**
+Every model that passed the gate is still there. Rolling back is not a rebuild or
+a redeploy, it is pointing production at a version that already exists.
+
+---
+
+## What the real run produced
+
+```text
+broken_version        1.0.11
+broken_live_mae       5.991
+rolled_back_to        1.0.1
+production_after      1.0.1
+production_test_mae   0.4533
+```
+
+The broken model was running at a live error of **5.99**. The version it rolled
+back to sits at **0.45**, more than ten times better.
+
+And notice what rolling back meant in practice: no code changed, no deploy
+happened, and the scoring task in 6.4 carried on asking for production without
+ever knowing anything had occurred. That is the payoff for never naming a version
+in the scoring job.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** run 6.4 first, so there are models and features to
+monitor, then `examples/08_model_monitoring/notebooks/run_monitor_model.py`. One
+minute forty two.
+
+**On your own machine:** it needs 6.4's model store and feature table, and then
+runs on plain Spark. The registry is built on paths, so a plain folder is all it
+wants.
+
+---
+
+## What to take from this one
+
+**A gate is not monitoring.** One checks the model at birth, the other watches it
+live. You need both and they are not substitutes.
+
+**Tell drift and decay apart** before reacting, because the fix differs.
+
+**Keep every version.** Rollback is only easy if nothing was overwritten, and
+that decision is made long before you need it.
+
+---
+
+## Next
+
+**Part 6.9** leaves the workspace entirely and reads a real public database with
+54 million rows in it, without melting either end.
