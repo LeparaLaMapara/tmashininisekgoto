@@ -1,0 +1,145 @@
+---
+title: "Ubunye Engine Part 6.5: Asking a Question of Your Own Documents"
+seoTitle: "Ubunye Engine 6.5: RAG Over Your Own Documents"
+date: 2026-09-16
+published: true
+tags: [open source, ai agents, python]
+summary: "A language model knows the internet and knows nothing about your company. This turns your own paragraphs into something it can read before answering, and refuses to answer when they do not cover the question."
+series: "Ubunye Engine: the examples"
+seriesPart: 5
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.5: Asking a Question of Your Own Documents
+
+*Example 05 of eleven. Runs in two minutes sixteen. Uses the chunks from 6.3.*
+
+---
+
+## The problem
+
+Ask a language model about your company's refund policy and it will tell you,
+fluently, in your own tone, and it will be making it up. It has never seen your
+policy. It has seen thousands of other people's, and it is producing the average
+of those with great confidence.
+
+This is the single most common way organisations get burned by these tools. The
+answer is not wrong in an obvious way. It is plausible, specific, and invented.
+
+---
+
+## What it looks like
+
+![Example 05: chunks turned into numbers, a question turned into numbers, the nearest chunks retrieved and handed to the model, which answers and cites](/posts/ubunye_ex05_architecture.png)
+
+---
+
+## The idea, which is simpler than the name
+
+The name for this is retrieval augmented generation, which tells you nothing.
+
+Here is the whole idea: **do not ask the model what it knows. Find the relevant
+paragraphs yourself, hand them over, and ask what they say.**
+
+That changes the question from "what do you know about refunds", which invites
+invention, to "according to these three paragraphs, what is the refund policy",
+which is a reading comprehension task. Models are very good at reading
+comprehension.
+
+---
+
+## Turning meaning into numbers
+
+To find the relevant paragraphs you need to search by meaning rather than by
+word. Somebody asking about "getting my money back" should find the paragraph
+about refunds, even though it never uses that phrase.
+
+The trick is to turn each chunk into a long list of numbers, arranged so that
+**things that mean similar things end up near each other**. Refund and
+reimbursement land close together. Refund and rainfall do not.
+
+Then the question goes through the same process, and finding the relevant chunks
+becomes measuring which ones are nearest. That is arithmetic, and computers are
+fast at arithmetic.
+
+This is task 1, and its output is a table of chunks with their numbers beside
+them.
+
+---
+
+## Answering, and citing
+
+Task 2 takes a question, turns it into numbers the same way, finds the nearest
+chunks, and hands **only those** to the model along with the question.
+
+It also keeps which chunks it used, and the answer comes back with its sources
+attached. That matters more than it sounds: an answer you cannot check is an
+answer you have to trust, and the whole point of this exercise was to stop
+trusting.
+
+On the real run it answered **five questions**, each with its sources and a
+similarity score.
+
+---
+
+## The part worth testing: the refusal
+
+There is one question in the example that the documents do not cover. Something
+about swallows.
+
+A system that invents an answer to that is dangerous, because it will invent an
+answer to a question about your refund policy too, and you will not be able to
+tell the difference.
+
+So the example asks the unanswerable question on purpose, and checks that it
+**says it does not know**. That refusal is asserted, not hoped for.
+
+If you build one of these, make that your first test. Not whether it answers
+well. Whether it declines when it should.
+
+---
+
+## Where the model comes from, which is business logic
+
+On Databricks this uses the workspace's own hosted models. Off Databricks it
+uses small open models that run on an ordinary processor with no account and no
+key.
+
+The interesting part is where that choice lives. Not in `config.yaml`, and not
+in the engine. It is in a `serving.py` beside the task, because **which model
+answers your customers is a business decision**, not a setting. One environment
+variable switches it, and the pipeline does not move.
+
+The answers from a small open model are worse than from a large hosted one, and
+that is not the claim. The claim is that the process, chunk and embed and
+retrieve and ground and cite, runs anywhere.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** run 6.3 first to produce the chunks, then the two
+notebooks in `examples/05_rag_documents/notebooks/`. Two minutes sixteen.
+
+**On your own machine:** set `MODEL_BACKEND=local` and it swaps the hosted models
+for open ones that download once and then work offline. The build runs it this
+way on every push, in a container with the weights baked into the image, because
+a container that fetches a gigabyte on startup silently depends on the internet.
+
+---
+
+## What to take from this one
+
+**Retrieve, then ask.** Never ask a model what it knows about your business.
+
+**Cite the sources.** An answer nobody can check is not much better than a guess.
+
+**Test the refusal first.** A system that never says "I do not know" is a system
+that will invent something at the worst possible moment.
+
+---
+
+## Next
+
+**Part 6.6** uses a large model once, to teach a small one, and then stops paying
+for the large one.

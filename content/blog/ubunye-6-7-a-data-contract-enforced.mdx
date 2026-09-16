@@ -1,0 +1,138 @@
+---
+title: "Ubunye Engine Part 6.7: A Data Contract, Actually Enforced"
+seoTitle: "Ubunye Engine 6.7: Data Quality Rules That Quarantine"
+date: 2026-09-16
+published: true
+tags: [open source, data science, software engineering]
+summary: "Bad rows are usually dropped quietly or they crash the job. There is a third option. Five deliberately broken rows went in, five were quarantined, none leaked, and the run still finished."
+series: "Ubunye Engine: the examples"
+seriesPart: 7
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.7: A Data Contract, Actually Enforced
+
+*Example 07 of eleven. Runs in one minute twelve.*
+
+---
+
+## The problem
+
+Data arrives broken. A price is negative. A date is in 1970. An identifier that
+should always be there is empty.
+
+There are two usual responses, and both are bad.
+
+**Drop the bad rows quietly.** The job finishes, the tables look fine, and the
+totals are wrong by however much you threw away. Nobody knows. Six months later
+somebody notices the numbers never quite reconciled.
+
+**Fail the whole job.** Now one broken row out of two million stops everything,
+including all the good rows, and somebody gets woken up to look at a single
+malformed date.
+
+---
+
+## What it looks like
+
+![Example 07: seven rules checked, good rows carrying on, bad rows quarantined rather than deleted, and a report of what happened](/posts/ubunye_ex07_architecture.png)
+
+---
+
+## The third option
+
+Sort the rows and keep both piles.
+
+Good rows carry on to the clean table. Bad rows go to a **quarantine** table,
+which is a real table you can query, with the reason attached. And a report
+records what was checked and what happened.
+
+Nothing is deleted, nothing is hidden, and nothing stops. Somebody can look at
+the quarantine tomorrow and ask why the shop in Soshanguve keeps sending
+negative prices, which is a question about the world rather than about the
+pipeline.
+
+---
+
+## Severity, which is the part people skip
+
+Not every broken thing deserves the same response, and the distinction is
+sharper than it first looks.
+
+**A bad row is a bad row.** One negative price is one bad transaction.
+Quarantine it and carry on.
+
+**A bad shape is a broken pipe.** If the column you were expecting is gone, or
+everything is suddenly null, that is not data quality, it is a structural change
+upstream. Quarantining two million rows one at a time is not a sensible response
+to that. The run should fail, loudly, because continuing means producing a
+confident answer from something you no longer understand.
+
+So rules carry a severity, and the two paths are genuinely different: one sets a
+row aside, the other stops the run.
+
+---
+
+## How you know it works
+
+Here is the part I find genuinely clever about this example.
+
+It is easy to write quality rules that pass because there is nothing wrong. That
+proves nothing. The example therefore **injects faults on purpose**: it takes
+real transactions and deliberately breaks five of them, remembering exactly
+which.
+
+Then it checks two things that would otherwise be assumptions:
+
+```python
+assert not missed,  "the quarantine MISSED deliberately broken rows"
+assert leaked == 0, "broken rows leaked into clean_transactions"
+```
+
+Every fault it planted must be caught, and none of them may reach the clean
+table. Both directions, because a quarantine that catches everything including
+good rows is just as broken as one that catches nothing.
+
+---
+
+## What the real run produced
+
+```text
+rules_checked        7
+faults_injected      5
+faults_quarantined   5
+leaked_into_clean    0
+```
+
+Five in, five caught, none leaked, seven rules reported. That is a data quality
+system proving itself rather than asserting itself.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** open
+`examples/07_data_quality/notebooks/run_validate_transactions.py`. One minute
+twelve. It reads `samples.bakehouse`, already in the workspace.
+
+**On your own machine:** identical, against locally seeded tables with the same
+names and different rows. Same rules, same severities, same quarantine.
+
+---
+
+## What to take from this one
+
+**Quarantine, do not drop.** A bad row is evidence about the world. Keep it.
+
+**Separate a bad row from a broken pipe.** One should be set aside, the other
+should stop everything.
+
+**Break your own data on purpose.** A quality check that has never caught
+anything is a quality check nobody has tested.
+
+---
+
+## Next
+
+**Part 6.8** turns the same suspicion on the model itself, and catches one that
+was fine when it was built and is not fine now.

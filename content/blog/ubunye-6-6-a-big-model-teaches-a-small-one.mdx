@@ -1,0 +1,130 @@
+---
+title: "Ubunye Engine Part 6.6: A Big Model Teaches a Small One"
+seoTitle: "Ubunye Engine 6.6: Distillation, Teacher and Student"
+date: 2026-09-16
+published: true
+tags: [open source, ai agents, data science]
+summary: "Use the expensive model once, to write down answers. Train a small model on those answers. The small one agreed with its teacher on 97.4% of reviews it had never seen, and it runs on anything."
+series: "Ubunye Engine: the examples"
+seriesPart: 6
+seriesTotal: 11
+---
+
+# Ubunye Engine Part 6.6: A Big Model Teaches a Small One
+
+*Example 06 of eleven. Runs in seventeen minutes fifty three, the longest in the
+set, because a model is genuinely being trained.*
+
+---
+
+## The problem
+
+You have a large language model that can read a customer review and tell you
+whether it is positive or negative. It is very good at this.
+
+It is also slow and expensive, and you have four million reviews arriving every
+month, forever.
+
+Running the large model on all of them costs more than the answer is worth. And
+the task itself is not hard. It is the kind of thing a much smaller model could
+do, if only somebody had labelled enough examples to train it on, which nobody
+has.
+
+---
+
+## What it looks like
+
+![Example 06: a large model labels reviews once, a small model trains on those labels, gated on catching the negatives](/posts/ubunye_ex06_architecture.png)
+
+---
+
+## The move
+
+Use the expensive model **once**, not forever.
+
+Run it over a few thousand reviews and write down what it says. That gives you
+labelled training data that did not exist this morning. Then train a small model
+on those labels, and from then on the small one does the work.
+
+The large model was the teacher. The small one is the student. This is called
+distillation, and the name is apt: you are extracting the part of a large thing
+that you actually need.
+
+What makes it worth doing is the economics. The teacher runs once, over a sample.
+The student runs forever, over everything, on hardware you already have.
+
+---
+
+## The gate, and why it reads an unusual number
+
+The student gets the same treatment as any other model, because it is a model:
+trained, judged on data it never saw, gated, registered only if it passes.
+
+But the gate here does not read overall accuracy, and the reason is worth
+understanding because it applies to most real classification problems.
+
+Most reviews are positive. If nine in ten are positive, a model that answers
+"positive" to absolutely everything, including furious complaints, scores **90%
+accuracy**. It looks excellent on the headline number and it is completely
+useless, because the only reviews anyone cares about are the negative ones.
+
+So the gate reads the number that exposes that: how many of the genuinely
+negative reviews the model actually caught. A model that answers positive to
+everything scores zero on that, and never gets registered.
+
+**Pick the number that a useless model would fail.** If your metric cannot tell
+the difference between your model and a model that always says the same thing,
+it is the wrong metric.
+
+---
+
+## What the real run produced
+
+```text
+agreement_with_teacher   0.974
+held_out_reviews         38
+classes_predicted        ['negative', 'positive']
+```
+
+The student agreed with its teacher on **97.4%** of reviews neither had been
+trained on. And `classes_predicted` is there for exactly the failure above: it
+proves the student actually produces both answers, rather than having learned to
+say one word.
+
+Those are small numbers of reviews, and that is honest. This is an example that
+has to run in a free workspace in under twenty minutes, not a production system.
+The process is the point, and the process is identical at four million.
+
+---
+
+## Running it
+
+**Free Databricks workspace:** the two notebooks in
+`examples/06_finetune_llm/notebooks/`, in order. **Give it twenty minutes.** It is
+the slowest example in the set and it is training a real model, not pretending
+to.
+
+**On your own machine:** the teacher becomes a small open model instead of a
+hosted one, and the student stays exactly what it was. Distillation is teacher to
+student, and neither of them has to be hosted by anyone. The build runs it that
+way on every push.
+
+---
+
+## What to take from this one
+
+**Expensive once, cheap forever.** A large model is often best used as a source
+of training data rather than as the thing in the hot path.
+
+**Labelled data can be manufactured.** The reason you could not train a small
+model was usually that nobody labelled anything. Now something can.
+
+**Gate on the number a lazy model would fail.** Overall accuracy hides the
+failure that matters when your classes are unbalanced, which they usually are.
+
+---
+
+## Next
+
+**Part 6.7** stops trusting the data itself: seven rules, five deliberately
+broken rows, and what happens to them.
