@@ -115,7 +115,15 @@ module.exports = {
         'http://localhost:3000/publications',
         'http://localhost:3000/blog',
         'http://localhost:3000/blog/how-to-build-python-packages',
-        'http://localhost:3000/tags/data-science',
+        // One of each page type the discoverability work added, each the
+        // richest of its kind so the budget measures the worst realistic case.
+        // /tags/data-science now redirects to its topic hub, so the hub is the
+        // page measured.
+        'http://localhost:3000/work/tfilterspy',
+        'http://localhost:3000/research',
+        'http://localhost:3000/research/echo-state-networks-level-set-segmentation',
+        'http://localhost:3000/topics',
+        'http://localhost:3000/topics/ai-education',
       ],
       // Three runs, median reported. A single run on a shared CI runner swings
       // by 10 points on performance for no reason at all.
