@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
+import { tagHref } from '@/lib/graph'
 import { Clock } from 'lucide-react'
 import { getAllPosts, getAllTags, getSeries, partTitle } from '@/lib/blog'
 import { slugifyTag } from '@/lib/topics'
@@ -51,7 +52,7 @@ export default function BlogPage() {
         {tags.map((tag) => (
           <Link
             key={tag.slug}
-            href={`/tags/${tag.slug}`}
+            href={tagHref(tag.name)}
             className="rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
           >
             {tag.name}
@@ -174,7 +175,7 @@ export default function BlogPage() {
                     {post.tags.map((tag) => (
                       <Link
                         key={tag}
-                        href={`/tags/${slugifyTag(tag)}`}
+                        href={tagHref(tag)}
                         className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                       >
                         {tag}

@@ -4,6 +4,8 @@ import path from 'path'
 import type { MetadataRoute } from 'next'
 import { getAllPosts, getAllTags, getPostsByTag, getSeries } from '@/lib/blog'
 import { getProjectsOrdered } from '@/lib/data'
+import { getHubTopics, getTopicHub, tagHref } from '@/lib/graph'
+import { getResearchWithPages } from '@/lib/graph/research'
 import { SITE_URL } from '@/lib/site'
 
 /**
@@ -23,7 +25,8 @@ const STATIC_ROUTES: { route: string; source: string }[] = [
   { route: '/talks/fabacademic-unfiltered', source: 'app/talks/fabacademic-unfiltered/page.tsx' },
   { route: '/ai', source: 'app/ai/page.tsx' },
   { route: '/courses', source: 'app/courses/page.tsx' },
-  { route: '/tags', source: 'app/tags/page.tsx' },
+  { route: '/topics', source: 'app/topics/page.tsx' },
+  { route: '/research', source: 'lib/graph/research.ts' },
   { route: '/now', source: 'app/now/page.tsx' },
   // /search is intentionally absent: it is noindex, so listing it would ask
   // crawlers to index a page that tells them not to.
@@ -122,7 +125,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Tag pages were absent entirely, so nothing pointed crawlers at the topic
   // landing pages. Each is as fresh as the newest post it lists.
-  const tagPages = getAllTags().map(({ name, slug }) => ({
+  // A tag whose subject has a topic hub redirects to the hub, so only the
+  // tags without one are pages in their own right.
+  const tagPages = getAllTags().filter(({ name }) => tagHref(name).startsWith('/tags/')).map(({ name, slug }) => ({
     url: `${SITE_URL}/tags/${slug}`,
     lastModified: newestPostDate(getPostsByTag(name)),
     changeFrequency: 'weekly' as const,
@@ -138,8 +143,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }))
 
+  // Research lines with enough evidence for a page. Each changes when the
+  // research record does.
+  const researchPages = getResearchWithPages().map((r) => ({
+    url: `${SITE_URL}/research/${r.slug}`,
+    lastModified: sourceModified('lib/graph/research.ts'),
+    changeFrequency: 'yearly' as const,
+    priority: 0.7,
+  }))
+
+  // Topic hubs are as fresh as the newest dated item under them, or the
+  // ontology file when nothing under them carries a date.
+  const topicPages = getHubTopics().map((t) => {
+    const hub = getTopicHub(t.slug)!
+    const dated = [...hub.items.post, ...hub.items.talk].filter((n) => n.date).map((n) => ({ date: n.date! }))
+    return {
+      url: `${SITE_URL}/topics/${t.slug}`,
+      lastModified: dated.length ? newestPostDate(dated) : sourceModified('lib/graph/topics.ts'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }
+  })
+
   return [
     ...staticPages,
+    ...researchPages,
+    ...topicPages,
     blogIndex,
     ...seriesPages,
     ...postPages,

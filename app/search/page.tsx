@@ -64,7 +64,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
       {query && results.length === 0 && (
         <p className="mt-6 text-muted">
           Nothing matched. Try a broader term, or{' '}
-          <Link href="/ai" className="text-synapse hover:underline">
+          <Link href="/ai" className="text-synapse underline underline-offset-2 hover:no-underline">
             ask Thabang AI Assist
           </Link>
           .

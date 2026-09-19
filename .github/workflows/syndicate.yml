@@ -33,6 +33,10 @@ on:
         description: 'Actually push to dev.to and Hashnode'
         type: boolean
         default: false
+      all:
+        description: 'With publish and no posts named: publish every eligible post'
+        type: boolean
+        default: false
       post:
         description: 'Limit to these post slugs, space separated (optional)'
         type: string
@@ -62,9 +66,11 @@ jobs:
       - name: Dry run
         if: github.event_name != 'workflow_dispatch' || inputs.publish != true
         env:
-          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
-          HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
-          HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
+          # Never on pull requests: a PR that edits scripts/syndicate.mjs would
+          # otherwise run its own code with the publishing keys.
+          DEVTO_API_KEY: ${{ github.event_name != 'pull_request' && secrets.DEVTO_API_KEY || '' }}
+          HASHNODE_TOKEN: ${{ github.event_name != 'pull_request' && secrets.HASHNODE_TOKEN || '' }}
+          HASHNODE_PUBLICATION_ID: ${{ github.event_name != 'pull_request' && secrets.HASHNODE_PUBLICATION_ID || '' }}
           POSTS: ${{ inputs.post }}
         run: |
           if [ -z "$POSTS" ]; then node scripts/syndicate.mjs; exit; fi
@@ -78,7 +84,12 @@ jobs:
           HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
           POSTS: ${{ inputs.post }}
         run: |
-          if [ -z "$POSTS" ]; then node scripts/syndicate.mjs --publish; exit; fi
+          # An empty post list means every eligible post. The script refuses
+          # that without --all, so a bulk run has to be asked for by name.
+          if [ -z "$POSTS" ]; then
+            if [ "${{ inputs.all }}" != "true" ]; then echo "Refusing a bulk publish: name the posts, or set all=true"; exit 1; fi
+            node scripts/syndicate.mjs --publish --all; exit
+          fi
           failed=0
           for slug in $POSTS; do node scripts/syndicate.mjs --publish --post "$slug" || failed=1; done
           exit $failed
@@ -88,6 +99,13 @@ jobs:
       # committed straight back rather than left as a build artefact. Even when
       # the publish step failed: one platform failing (Hashnode, say) must not
       # throw away the record of what another platform already published.
+      - name: Keep a copy of the syndication state
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.publish == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: syndication-state
+          path: data/syndication.json
+
       - name: Commit syndication state
         if: always() && github.event_name == 'workflow_dispatch' && inputs.publish == true
         run: |

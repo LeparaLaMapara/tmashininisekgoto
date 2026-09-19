@@ -3,53 +3,27 @@ import { pageOpenGraph } from '@/lib/site'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { ProjectFilter } from '@/components/work/project-filter'
 import { JsonLd } from '@/components/seo/json-ld'
-import { softwareSourceCodeSchema, webPageSchema, breadcrumbSchema } from '@/lib/schema'
-import { PROJECTS } from '@/lib/data'
+import { workIndexSchema, breadcrumbSchema } from '@/lib/schema'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Work: Problems, Systems & Open Source',
   description:
-    'Some problems Thabang Mashinini-Sekgoto has worked on: open-source infrastructure, production systems in telecoms and insurance, applied research, and community capability-building.',
+    'Problems Thabang Mashinini-Sekgoto has worked on: open source infrastructure, production systems in telecoms and insurance, research and community work.',
   alternates: { canonical: '/work' },
   openGraph: pageOpenGraph('/work', 'Projects by Thabang Mashinini-Sekgoto'),
 }
-
-/**
- * The open source projects, as code rather than as cards about code.
- *
- * Only projects with a real repository are emitted, and every field is read
- * from the project record. Nothing about adoption, stars or downloads is
- * asserted, because none of it can be verified from this repository.
- */
-const OPEN_SOURCE = PROJECTS.filter(
-  (project) => project.category === 'open-source' && project.ghLink
-)
 
 export default function WorkPage() {
   return (
     <section className="py-24 px-6">
       <JsonLd
         data={[
-          webPageSchema({
-            path: '/work',
-            name: 'Work and projects',
-            description:
-              'Production systems, open source infrastructure and applied research by Thabang Mashinini-Sekgoto.',
-          }),
+          workIndexSchema(),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'Work', path: '/work' },
           ]),
-          ...OPEN_SOURCE.map((project) =>
-            softwareSourceCodeSchema({
-              slug: project.slug,
-              name: project.title,
-              description: project.solution,
-              codeRepository: project.ghLink!,
-              url: project.productLink,
-              programmingLanguage: project.skills,
-            })
-          ),
         ]}
       />
       <div className="mx-auto max-w-6xl">
@@ -76,6 +50,12 @@ export default function WorkPage() {
             Much of this starts the same way: hit a problem, work out why it keeps
             happening, solve it once, then try to make the solution useful beyond
             me.
+          </p>
+          <p className="mt-6 text-lg text-muted max-w-2xl leading-relaxed">
+            The research behind some of it has its own pages under{' '}
+            <Link href="/research" className="text-synapse underline underline-offset-2 hover:no-underline">Research</Link>, and everything
+            here is also gathered by subject under{' '}
+            <Link href="/topics" className="text-synapse underline underline-offset-2 hover:no-underline">Topics</Link>.
           </p>
         </ScrollReveal>
       </div>

@@ -69,6 +69,34 @@ export interface Project {
   siteLinks?: { label: string; href: string }[]
   /** Set for work in progress; the card shows a Building now badge */
   building?: boolean
+
+  // --- Identity and graph fields (see DISCOVERABILITY_ARCHITECTURE.md). ---
+  /**
+   * The page title and H1: names what the thing IS, under 60 characters.
+   * `cardTitle` stays as the argument; this is the noun a searcher types.
+   */
+  headline: string
+  /** Meta description, under 160 characters, naming the thing and the problem. */
+  summary: string
+  /** What kind of thing it is, which decides its schema.org type. */
+  kind: 'software' | 'system' | 'programme'
+  status: 'active' | 'maintained' | 'completed'
+  /** Human readable period, as the evidence states it. */
+  period: string
+  /** Organisation slug from lib/graph/organizations.ts. */
+  organization?: string
+  /** Thabang's role, verb precise, as the CV states it. */
+  role: string
+  /** SPDX licence id, software only, read from the repository LICENSE file. */
+  license?: string
+  /** Authors as the package metadata lists them, software only. */
+  authors?: string[]
+  /** Topic slugs from lib/graph/topics.ts: what the work is about. */
+  graphTopics: string[]
+  /** Topic slugs of kind 'technology': what it is built with. */
+  technologies: string[]
+  /** What came before and after, with a public link where one exists. */
+  lineage?: { relation: 'before' | 'after'; name: string; href?: string; note: string }[]
 }
 
 /** What kind of public appearance this was. Drives the label and the section. */
@@ -169,6 +197,21 @@ export const IMPACT_NUMBERS: ImpactNumber[] = [
 export const PROJECTS: Project[] = [
   {
     slug: 'ubunye-engine',
+    headline: 'Ubunye Engine: portable Spark pipelines for data and ML',
+    summary:
+      'Ubunye Engine is an open source Python framework for config driven Spark pipelines. The same task folder runs on a laptop, Docker, Kubernetes or Databricks.',
+    kind: 'software',
+    status: 'active',
+    period: '2025 to present (repository created September 2025; version 0.5.0)',
+    organization: 'ubunye-ai-ecosystems',
+    role: 'Author and maintainer',
+    license: 'MIT',
+    graphTopics: ['data-engineering', 'mlops', 'etl', 'reproducibility', 'open-source'],
+    technologies: ['python', 'apache-spark', 'databricks', 'kubernetes', 'docker'],
+    lineage: [
+      { relation: 'before', name: 'Network intelligence at Vodacom', href: '/work/vodacom-network-intelligence', note: 'One of the environments where the same pipeline plumbing problem kept appearing.' },
+      { relation: 'before', name: 'Insurance data science at ABSA', href: '/work/insurance-data-science-capability', note: 'The enterprise ML setting the engine was designed against.' },
+    ],
     title: 'Ubunye Engine',
     category: 'open-source',
     order: 1,
@@ -219,6 +262,21 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'tfilterspy',
+    headline: 'TFiltersPy: Kalman and particle filters for Python',
+    summary:
+      'TFiltersPy is an open source Python library of Bayesian filters: Kalman, extended, unscented, ensemble and particle, behind one scikit-learn style API.',
+    kind: 'software',
+    status: 'maintained',
+    period: '2025 to present (repository created March 2025; version 1.0.6)',
+    organization: 'ubunye-ai-ecosystems',
+    role: 'Author and maintainer',
+    license: 'MIT',
+    authors: ['Thabang L. Mashinini-Sekgoto', 'Lebogang L. Sekgoto', 'Palesa L. Sekgoto'],
+    graphTopics: ['bayesian-filtering', 'kalman-filtering', 'particle-filtering', 'ensemble-kalman-filter', 'state-estimation', 'time-series', 'open-source', 'telematics'],
+    technologies: ['python', 'numpy', 'dask'],
+    lineage: [
+      { relation: 'before', name: 'kalmanfilter-', href: 'https://github.com/LeparaLaMapara/kalmanfilter-', note: 'Kalman and particle filter implementations from first principles (2023). Its own description says the ideas became TFiltersPy.' },
+    ],
     title: 'TFiltersPy',
     category: 'open-source',
     order: 2,
@@ -267,6 +325,16 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'insurance-data-science-capability',
+    headline: 'Insurance data science: telematics, flood risk and MLOps',
+    summary:
+      'Leading insurance data science at ABSA Insurance: telematics processing cut from months to under a day, flood risk across 230,000+ properties, MLOps.',
+    kind: 'programme',
+    status: 'active',
+    period: 'March 2024 to present',
+    organization: 'absa-insurance',
+    role: 'Lead Data Scientist, leading the Insurance Data Science capability',
+    graphTopics: ['mlops', 'telematics', 'climate-risk', 'geospatial-ml', 'insurance', 'data-engineering', 'technical-leadership'],
+    technologies: ['databricks', 'apache-spark', 'mlflow', 'python'],
     title: 'Building the capability around insurance data science',
     category: 'insurance',
     order: 3,
@@ -309,6 +377,16 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'vodacom-network-intelligence',
+    headline: 'Generator optimisation and streaming at Vodacom',
+    summary:
+      'Real time analytics and optimisation for a national telecoms network: generator dispatch across 15,000+ sites and tens of millions of events a day.',
+    kind: 'system',
+    status: 'completed',
+    period: 'November 2021 to March 2024',
+    organization: 'vodacom',
+    role: 'Senior Data Scientist, leading a team of ten',
+    graphTopics: ['mathematical-optimisation', 'stream-processing', 'telecommunications', 'decision-support', 'data-engineering', 'mlops', 'technical-leadership'],
+    technologies: ['apache-kafka', 'apache-flink', 'apache-spark', 'kubernetes', 'docker', 'python'],
     title: 'Network intelligence and optimisation',
     category: 'telecoms',
     order: 4,
@@ -354,6 +432,19 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'ibm-geospatial',
+    headline: 'Climate forecasting and geospatial ML at IBM Research',
+    summary:
+      'Applied ML research at IBM Research: climate forecasting models deployed into IBM PAIRS Geoscope, published work, and a provincial COVID-19 risk dashboard.',
+    kind: 'programme',
+    status: 'completed',
+    period: 'April 2020 to November 2021',
+    organization: 'ibm-research',
+    role: 'Machine Learning Research Scientist',
+    graphTopics: ['climate-risk', 'geospatial-ml', 'remote-sensing', 'seasonal-forecasting', 'deep-learning'],
+    technologies: ['tensorflow', 'python'],
+    lineage: [
+      { relation: 'after', name: 'Flood and natural catastrophe risk in insurance', href: '/work/insurance-data-science-capability', note: 'Geospatial climate risk carried into production insurance models.' },
+    ],
     title: 'Turning environmental data into something people can use',
     category: 'research',
     order: 5,
@@ -369,7 +460,6 @@ export const PROJECTS: Project[] = [
       { kind: 'publication', href: 'https://www.climatechange.ai/papers/neurips2020/74', label: 'NeurIPS 2020 CCAI workshop paper' },
       { kind: 'paper', href: 'https://arxiv.org/abs/2102.00085', label: 'arXiv' },
       { kind: 'github', href: 'https://github.com/IBM/ibmpairs', label: 'IBM PAIRS' },
-      { kind: 'product', href: 'https://www.ibm.com/products/environmental-intelligence-suite', label: 'IBM Environmental Intelligence Suite' },
     ],
     caseStudy: {
       problem:
@@ -398,12 +488,21 @@ export const PROJECTS: Project[] = [
     skills: ['IBM PAIRS', 'IBM Cloud', 'TensorFlow', 'Python', 'GeoPandas', 'Airflow', 'Hadoop'],
     image: '/projects/ibm-geospatial.png',
     ghLink: 'https://github.com/IBM/ibmpairs',
-    productLink: 'https://www.ibm.com/products/environmental-intelligence-suite',
     paperLink: 'https://www.climatechange.ai/papers/neurips2020/74',
     resume: { org: 'IBM Research', period: 'Apr 2020 - Nov 2021' },
   },
   {
     slug: 'wits-student-success',
+    headline: 'Student success analytics and recommendations at Wits',
+    summary:
+      'Analytics and a clustering based recommendation system for student success at Wits, with over R2 million a year in subsidy impact attributed to it.',
+    kind: 'system',
+    status: 'completed',
+    period: 'June 2018 to April 2020',
+    organization: 'wits',
+    role: 'Data Scientist, Business Intelligence Services',
+    graphTopics: ['recommender-systems', 'decision-support', 'data-science', 'ai-education'],
+    technologies: ['python'],
     title: 'Using data to help students and a university decide',
     category: 'education',
     order: 6,
@@ -446,6 +545,16 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'csir-municipal-decision-support',
+    headline: 'Decision support systems for municipalities at the CSIR',
+    summary:
+      'Django based predictive analytics and decision support systems serving 17 municipalities, including the City of Cape Town, built at the CSIR.',
+    kind: 'system',
+    status: 'completed',
+    period: 'November 2017 to January 2018',
+    organization: 'csir',
+    role: 'Data Scientist and Software Engineer',
+    graphTopics: ['decision-support', 'public-sector', 'data-science', 'data-engineering'],
+    technologies: ['django', 'python'],
     title: 'Decision support for municipalities',
     category: 'research',
     order: 7,
@@ -492,6 +601,15 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'ai-education-platform',
+    headline: 'AI education: FabAcademic Unfiltered and Thabang AI',
+    summary:
+      'Co hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, public technical writing, and Thabang AI, a grounded assistant that cites its sources.',
+    kind: 'programme',
+    status: 'active',
+    period: '2026 to present',
+    role: 'Co-host, writer and builder of the assistant',
+    graphTopics: ['ai-education', 'retrieval-augmented-generation'],
+    technologies: [],
     title: 'Making practical AI knowledge easier to reach',
     category: 'social-impact',
     order: 9,
@@ -538,6 +656,16 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'kasilam-digital',
+    headline: 'Kasilam: teaching township youth to build with AI',
+    summary:
+      'Kasilam is a free community initiative in South African townships where young people learn to build with AI by shipping real sites for local businesses.',
+    kind: 'programme',
+    status: 'active',
+    period: '2021 to present (first public repository August 2021)',
+    organization: 'kasilam',
+    role: 'Teacher: shows participants how to build; does not build their projects',
+    graphTopics: ['ai-education', 'capacity-building'],
+    technologies: [],
     title: 'Teaching people to build for themselves',
     category: 'social-impact',
     order: 8,
@@ -844,6 +972,12 @@ export const WRITINGS: Writing[] = [
 export const SEMANTIC_SCHOLAR_AUTHOR_ID = '1419516441'
 
 export interface Publication {
+  /** Stable key: the anchor on /publications and the tail of the @id. */
+  key: string
+  /** Research line slug from lib/graph/research.ts. */
+  research: string
+  /** Topic slugs from lib/graph/topics.ts. */
+  topics: string[]
   title: string
   authors: string
   venue: string
@@ -852,12 +986,21 @@ export interface Publication {
   scholarUrl: string
   semanticScholarId?: string
   doi?: string
+  /** arXiv identifier, where the work has an arXiv copy. */
+  arxiv?: string
+  /** arXiv primary category, as the arXiv record states it. */
+  arxivClass?: string
+  /** What the source abstract supports, and nothing more. See DISCOVERABILITY_AUDIT.md. */
   aiSummary: string
+  /** Possible applications, never results. Rendered under that heading. */
   applications: string[]
 }
 
 export const PUBLICATIONS: Publication[] = [
   {
+    key: 'mine-threshold-shift-rnn',
+    research: 'mine-worker-noise-hearing-loss',
+    topics: ['noise-induced-hearing-loss', 'occupational-health', 'recurrent-neural-networks'],
     title: 'Mine workers threshold shift estimation via optimization algorithms for deep recurrent neural networks',
     authors: 'MCI Madahana, JED Ekoru, TL Mashinini, OTC Nyandoro',
     venue: 'IFAC-PapersOnLine 52 (14), 117-122',
@@ -866,10 +1009,14 @@ export const PUBLICATIONS: Publication[] = [
     scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:u5HHmVD_uO8C',
     semanticScholarId: 'e1e1b14c8862a9e73b79ca06f3756e7c1f5d1057',
     doi: '10.1016/j.ifacol.2019.09.174',
-    aiSummary: 'Uses deep recurrent neural networks with optimization algorithms to estimate hearing threshold shifts in mine workers caused by noise exposure. The model predicts permanent hearing damage progression, enabling earlier intervention.',
-    applications: ['Occupational health monitoring', 'Mining safety systems', 'Predictive hearing loss detection', 'Industrial noise management'],
+    aiSummary:
+      'Applies recurrent neural networks to estimate hearing threshold shift in mine workers, and compares optimisation methods for training them. The adaptive subgradient method (Adagrad) was preferred for its fast convergence, and the network predicted threshold shift with 95% accuracy. The authors suggest the results could support an early intervention and monitoring system for mines.',
+    applications: ['Early intervention for hearing loss in mines', 'Hearing health monitoring for mine workers', 'Occupational health screening'],
   },
   {
+    key: 'mine-noise-policy-advising',
+    research: 'mine-worker-noise-hearing-loss',
+    topics: ['noise-induced-hearing-loss', 'occupational-health', 'machine-learning'],
     title: 'Noise level policy advising system for mine workers',
     authors: 'MCI Madahana, JED Ekoru, TL Mashinini, OTC Nyandoro',
     venue: 'IFAC-PapersOnLine 52 (14), 249-254',
@@ -878,38 +1025,53 @@ export const PUBLICATIONS: Publication[] = [
     scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:d1gkVwhDpl0C',
     semanticScholarId: '8e3e6948efbd0f5c392eecba48085724579d39db',
     doi: '10.1016/j.ifacol.2019.09.195',
-    aiSummary: 'Proposes an intelligent policy advising system that recommends noise exposure limits for mine workers. Combines real-time noise monitoring with ML models to generate actionable safety policies that comply with occupational health regulations.',
-    applications: ['Mining regulatory compliance', 'Real-time safety policy generation', 'Occupational noise control', 'Workplace health AI systems'],
+    aiSummary:
+      'Proposes a policy advising system to help mine administrators assign tasks to new employees. Workers are grouped with K-means clustering, then classified with logistic regression, support vector machines, decision trees and random forests using their baseline and predicted future hearing threshold shift, and suitable mining tasks are recommended from the class. Decision trees had the highest accuracy (91.25% average on test data), while logistic regression generalised best.',
+    applications: ['Task allocation for new mine employees', 'Hearing conservation planning', 'Occupational health decision support'],
   },
   {
-    title: 'Long-range seasonal forecasting of 2m-temperature with machine learning',
+    key: 'seasonal-forecasting-2m-temperature',
+    research: 'seasonal-climate-forecasting',
+    topics: ['seasonal-forecasting', 'climate-risk', 'recurrent-neural-networks', 'deep-learning'],
+    title: 'Long-Range Seasonal Forecasting of 2m-Temperature with Machine Learning',
     authors: 'EE Vos, A Gritzman, S Makhanya, T Mashinini, CD Watson',
-    venue: 'NeurIPS 2020, Tackling Climate Change with ML workshop',
+    venue: 'NeurIPS 2020 Workshop on Tackling Climate Change with Machine Learning',
+    arxiv: '2102.00085',
+    arxivClass: 'physics.ao-ph',
     year: 2020,
     citations: 8,
     scholarUrl: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=aLjffFkAAAAJ&citation_for_view=aLjffFkAAAAJ:UeHWp8X0CEIC',
     semanticScholarId: '7655474fe5524b7e1aa5ebeb9de6a7464f3eb8bc',
-    aiSummary: 'Developed ML models for long-range seasonal temperature forecasting, outperforming traditional numerical weather prediction at extended lead times. Published during IBM Research Africa tenure, integrated into climate intelligence workflows.',
-    applications: ['Climate risk assessment', 'Agricultural planning', 'Energy demand forecasting', 'Insurance & reinsurance modeling'],
+    aiSummary:
+      'Tests whether two machine learning models, a convolutional and a recurrent neural network, can beat climatology when forecasting 2 m temperature up to 52 weeks ahead at six locations. The models improved on climatology up to 30 weeks lead time by correlation and up to 52 weeks by RMSE skill score, but only at some locations, and the authors note further work is needed for the models to add value in the tropics.',
+    applications: ['Seasonal temperature outlooks', 'Climate risk assessment', 'Research into data driven seasonal forecasting'],
   },
   {
+    key: 'probabilistic-2m-temperature-precipitation',
+    research: 'seasonal-climate-forecasting',
+    topics: ['seasonal-forecasting', 'climate-risk', 'machine-learning'],
     title: 'ML-based Probabilistic Prediction of 2m Temperature and Total Precipitation',
-    authors: 'MA Zaytar, B Zadrozny, C Watson, DS Civitarese, EE Vos, TM Mathonsi, TL Mashinini',
-    venue: 'EGU General Assembly 2022',
+    authors: 'MA Zaytar, B Zadrozny, C Watson, D Salles Civitarese, EE Vos, TM Mathonsi, TL Mashinini',
+    venue: 'EGU General Assembly 2022, Vienna, Austria, EGU22-11063',
     year: 2022,
     scholarUrl: 'https://meetingorganizer.copernicus.org/EGU22/EGU22-11063.html',
     doi: '10.5194/egusphere-egu22-11063',
-    aiSummary: 'A daily probabilistic forecast model predicting 2m temperature and total precipitation globally, closing the skill gap between numerical weather prediction and seasonal forecasting. Combines physics-based ensembles, climate modes and recent climatology into features for Extreme Gradient Boosting, U-Net and Natural Gradient Boosting, and consistently outperforms ECMWF 46-day forecasts and climatology. Co-authored across IBM Research South Africa, Kenya, Brazil and the US.',
-    applications: ['Subseasonal to seasonal forecasting', 'Climate risk assessment', 'Agricultural planning', 'Extreme weather preparedness'],
+    aiSummary:
+      'Proposes a daily probabilistic model that forecasts 2 m temperature and total precipitation globally, aimed at the skill gap between weather and seasonal forecasting. Physics based ensembles, climate modes and recent climatology are combined as inputs to Extreme Gradient Boosting, U-Net and Natural Gradient Boosting models. The authors report that it consistently outperforms both ECMWF 46 day forecasts and climatology. Co-authored across IBM Research in South Africa, Kenya, Brazil and the US.',
+    applications: ['Subseasonal to seasonal forecasting', 'Climate risk assessment', 'Groundwork for forecasting climate extremes'],
   },
   {
+    key: 'esn-level-set-segmentation-msc',
+    research: 'echo-state-networks-level-set-segmentation',
+    topics: ['echo-state-networks', 'reservoir-computing', 'image-segmentation', 'level-set-method', 'recurrent-neural-networks', 'computer-vision'],
     title: 'Learning Level Set Method by Echo State Network for Image Segmentation',
     authors: 'TL Mashinini',
     venue: 'MSc Thesis, University of the Witwatersrand, 2022',
     year: 2022,
-    scholarUrl: 'https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643',
-    aiSummary: 'Proposes a novel approach using Echo State Networks for learning variational level set segmentation as a spatiotemporal method. Compares ESN, RNN, GRU, LSTM, and 3D CNN architectures. Found that leaking rate and spectral radius critically influence ESN performance.',
-    applications: ['Medical image segmentation', 'Autonomous vehicle vision', 'Satellite imagery analysis', 'Real-time object detection'],
+    scholarUrl: 'https://hdl.handle.net/10539/33910',
+    aiSummary:
+      'Studies echo state networks as a cheaper alternative to recurrent networks trained by backpropagation, applied to learning variational level set image segmentation as a spatiotemporal, data driven method. Five convolutional architectures were compared (ESN, RNN, GRU, LSTM and a 3D CNN) on four datasets; the GRU and LSTM variants performed best. The ESN performed poorly, which the dissertation attributes largely to the reservoir\'s leaking rate and spectral radius.',
+    applications: ['Iterative image segmentation research', 'Low cost recurrent model training', 'Level set segmentation methods'],
   },
 ]
 
@@ -1399,7 +1561,7 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     era: 'Mastering the Craft',
     highlight: 'Distinction · Echo State Networks for image segmentation',
     links: [
-      { label: 'Thesis (WIReDSpace)', href: 'https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643' },
+      { label: 'Thesis (WIReDSpace)', href: 'https://hdl.handle.net/10539/33910' },
       // master, not the repo root: the default branch (main) holds only a README
       // and the data folder; the code, notebooks and thesis are all on master.
       { label: 'Code', href: 'https://github.com/LeparaLaMapara/ESNIterativeSegmentation/tree/master' },

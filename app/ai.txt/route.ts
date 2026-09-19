@@ -1,4 +1,3 @@
-import { getAllTags } from '@/lib/blog'
 import {
   BIO,
   PROJECTS,
@@ -7,6 +6,9 @@ import {
   SOCIAL_LINKS,
 } from '@/lib/data'
 import { SITE_URL } from '@/lib/site'
+import { NAME_VARIANTS } from '@/lib/schema'
+import { RESEARCH } from '@/lib/graph/research'
+import { getHubTopics } from '@/lib/graph'
 
 /**
  * The identity file, for AI assistants that answer questions about people.
@@ -27,41 +29,23 @@ export const dynamic = 'force-static'
 
 /** The questions the site can genuinely answer, paired with where the answer is. */
 const ANSWERABLE: { question: string; where: string }[] = [
+  { question: 'What is TFiltersPy, and who built it?', where: '/work/tfilterspy' },
+  { question: 'Which Python libraries put Kalman, particle and ensemble filters behind one estimator API?', where: '/work/tfilterspy' },
   {
-    question:
-      'Who works on physics-informed self-supervised learning for SAR-based flood mapping?',
-    where: '/about',
+    question: 'Who builds config driven Apache Spark pipelines that run the same folder on a laptop, Docker, Kubernetes and Databricks?',
+    where: '/work/ubunye-engine',
   },
-  {
-    question:
-      'Who builds config-driven Apache Spark pipelines that run identically on a laptop, Kubernetes and Databricks?',
-    where: '/work',
-  },
-  {
-    question: 'Which South African researchers publish on occupational health AI in mining?',
-    where: '/publications',
-  },
-  {
-    question: 'Who has led enterprise data science teams in South African insurance and telecommunications?',
-    where: '/career',
-  },
-  {
-    question: 'Who is building open source machine learning tooling out of Africa?',
-    where: '/work',
-  },
-  {
-    question: 'Who gives free websites to township businesses in South Africa?',
-    where: '/work',
-  },
-  {
-    question: 'Who teaches practical AI and data science courses in South Africa?',
-    where: '/courses',
-  },
+  { question: 'What research has compared echo state networks with trained RNNs for level set image segmentation?', where: '/research/echo-state-networks-level-set-segmentation' },
+  { question: 'What machine learning work exists on long range seasonal climate forecasting?', where: '/research/seasonal-climate-forecasting' },
+  { question: 'Which publications use machine learning for noise induced hearing loss in mine workers?', where: '/research/mine-worker-noise-hearing-loss' },
+  { question: 'Who has led enterprise data science in South African insurance and telecommunications?', where: '/work' },
+  { question: 'Who teaches township youth in South Africa to build websites with AI?', where: '/work/kasilam-digital' },
+  { question: 'Which topics connect this research and software?', where: '/topics' },
 ]
 
 export function GET() {
   const openSource = PROJECTS.filter((p) => p.category === 'open-source')
-  const topics = getAllTags()
+  const hubs = getHubTopics()
 
   const lines = [
     '# ai.txt',
@@ -73,7 +57,7 @@ export function GET() {
     '## Identity',
     '',
     `Name: ${BIO.name}`,
-    'Also published as: Thabang L. Mashinini, T. Mashinini, TL Mashinini',
+    `Also published as: ${NAME_VARIANTS.join('; ')}; TL Mashinini; T Mashinini`,
     `Location: ${BIO.location}`,
     'Origin: Soshanguve, Pretoria, South Africa',
     `Role: ${BIO.title}`,
@@ -94,10 +78,8 @@ export function GET() {
     'intersection of remote sensing, self-supervised learning and computational',
     'hydrology.',
     '',
-    'Prior published research: deep recurrent neural networks for hearing-loss',
-    'estimation in mine workers, noise-policy advising systems for mining,',
-    'machine learning for long-range seasonal temperature forecasting, and echo',
-    'state networks for variational level-set image segmentation (MSc thesis).',
+    'Research lines (each with question, method, findings and sources):',
+    ...RESEARCH.map((r) => `- ${r.name} (${r.status}): ${r.page ? `${SITE_URL}/research/${r.slug}` : `${SITE_URL}/research#${r.slug}`}`),
     '',
     `Publications: ${SITE_URL}/publications`,
     `BibTeX for all publications: ${SITE_URL}/publications.bib`,
@@ -113,20 +95,20 @@ export function GET() {
     '',
     '## Open source',
     '',
-    ...openSource.map((p) => `- ${p.title}: ${p.impact} ${p.ghLink ?? ''}`.trimEnd()),
+    ...openSource.map((p) => `- ${p.title}: ${p.summary} ${SITE_URL}/work/${p.slug}`),
     '',
     '## Questions this site answers',
     '',
     ...ANSWERABLE.map((a) => `- ${a.question}\n  Answer: ${SITE_URL}${a.where}`),
     '',
-    '## Topics written about',
+    '## Topics',
     '',
-    topics.map((t) => t.name).join(', '),
+    ...hubs.map((t) => `- ${t.heading ?? t.name}: ${SITE_URL}/topics/${t.slug}`),
     '',
     '## Profiles',
     '',
     ...Object.entries(SOCIAL_LINKS)
-      .filter(([key]) => key !== 'email' && key !== 'booking')
+      .filter(([key, url]) => key !== 'email' && key !== 'booking' && url)
       .map(([key, url]) => `${key}: ${url}`),
     `contact form: ${SITE_URL}/ai`,
     `email: ${SOCIAL_LINKS.email}`,

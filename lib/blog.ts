@@ -91,6 +91,16 @@ export interface BlogPost {
    * shows the day it actually went live.
    */
   publishOn?: string
+  /**
+   * Extra ontology topics (lib/graph/topics.ts) beyond what the tags imply,
+   * from frontmatter `topics`. Not syndicated, so no five tag limit applies.
+   */
+  topics?: string[]
+  /**
+   * Project slugs this post discusses, from frontmatter `projects`. Stated,
+   * not inferred: the post page links to them and the project page links back.
+   */
+  projects?: string[]
 }
 
 export interface Series {
@@ -171,6 +181,8 @@ function parsePost(fileName: string): BlogPost {
     seriesPart: data.seriesPart,
     seriesTotal: data.seriesTotal,
     publishOn,
+    topics: Array.isArray(data.topics) ? (data.topics as string[]) : undefined,
+    projects: Array.isArray(data.projects) ? (data.projects as string[]) : undefined,
   }
 }
 

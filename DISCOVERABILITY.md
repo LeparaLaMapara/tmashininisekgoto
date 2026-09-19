@@ -1,5 +1,9 @@
 # Programmatic discoverability
 
+> Superseded as the entry point by `DISCOVERABILITY_ARCHITECTURE.md` and
+> `DISCOVERABILITY_STATUS.md` (September 2026). This file remains the record of
+> the July 2026 distribution work.
+
 Date: 2026-07-26
 Scope: `tmashininisekgoto`, the Next.js site behind https://www.tmashininisekgoto.com
 
@@ -185,8 +189,8 @@ checkable rather than something to take on trust. Your total went from 26 to 31.
 
 ## 4. Lighthouse CI
 
-`.github/workflows/lighthouse.yml` and `lighthouserc.js`. Seven representative
-URLs, three runs each, median, **mobile emulation** — desktop scores this site
+`.github/workflows/lighthouse.yml` and `lighthouserc.js`. Twelve representative
+URLs (seven until September 2026, when project, research and topic pages were added), three runs each, median, **mobile emulation** — desktop scores this site
 100 on every page and would gate nothing, and Google indexes the mobile page.
 A failure on `main` opens a GitHub issue, or comments on the existing one, so the
 finding outlives the pull request that caused it.
