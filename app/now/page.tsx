@@ -60,11 +60,11 @@ export default function NowPage() {
       </h1>
       <p className="mt-4 text-lg text-ivory/85 leading-relaxed">
         A snapshot of what has my attention. If you want the whole picture, the{' '}
-        <Link href="/work" className="text-synapse hover:underline">
+        <Link href="/work" className="text-synapse underline underline-offset-2 hover:no-underline">
           work
         </Link>{' '}
         and{' '}
-        <Link href="/publications" className="text-synapse hover:underline">
+        <Link href="/publications" className="text-synapse underline underline-offset-2 hover:no-underline">
           publications
         </Link>{' '}
         pages go deeper.
@@ -86,7 +86,7 @@ export default function NowPage() {
           Witwatersrand, building on the MSc work on learning the level set method
           with echo state networks for image segmentation. It is at proposal stage
           and not yet registered. The published papers are on the{' '}
-          <Link href="/publications" className="text-synapse hover:underline">
+          <Link href="/publications" className="text-synapse underline underline-offset-2 hover:no-underline">
             publications
           </Link>{' '}
           page.
@@ -118,7 +118,7 @@ export default function NowPage() {
             {upcomingCourses.length} courses in preparation, from zero-code AI agents
             through to agentic engineering and production ML. Details and waitlists on
             the{' '}
-            <Link href="/courses" className="text-synapse hover:underline">
+            <Link href="/courses" className="text-synapse underline underline-offset-2 hover:no-underline">
               courses
             </Link>{' '}
             page.
@@ -179,7 +179,7 @@ export default function NowPage() {
 
       <p className="mt-16 border-t border-border pt-8 text-muted">
         Want to work together?{' '}
-        <Link href="/ai" className="text-synapse hover:underline">
+        <Link href="/ai" className="text-synapse underline underline-offset-2 hover:no-underline">
           Ask Thabang AI Assist
         </Link>{' '}
         or reach out from there.

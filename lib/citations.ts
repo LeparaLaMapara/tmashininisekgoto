@@ -18,7 +18,7 @@ import type { Publication } from '@/lib/data'
 /* Venue parsing                                                              */
 /* -------------------------------------------------------------------------- */
 
-type VenueKind = 'journal' | 'preprint' | 'thesis'
+type VenueKind = 'journal' | 'preprint' | 'thesis' | 'workshop' | 'abstract'
 
 interface ParsedVenue {
   kind: VenueKind
@@ -48,6 +48,16 @@ export function parseVenue(venue: string): ParsedVenue {
   if (/thesis|dissertation/i.test(venue)) {
     const school = venue.match(/(University[^,]*|Universiteit[^,]*)/i)?.[1]?.trim()
     return { kind: 'thesis', container: venue, school }
+  }
+
+  // A workshop paper is a conference contribution, not a journal article.
+  if (/workshop/i.test(venue)) {
+    return { kind: 'workshop', container: venue.trim() }
+  }
+
+  // A conference abstract (EGU, AGU) is neither a paper nor a preprint.
+  if (/General Assembly|EGU\d|abstract/i.test(venue)) {
+    return { kind: 'abstract', container: venue.trim() }
   }
 
   const arxiv = venue.match(/arXiv:\s*([\d.]+(?:v\d+)?)/i)
@@ -88,8 +98,17 @@ interface ParsedAuthor {
  * `van der Merwe`, which would need a particle list. Worth fixing the day a
  * co-author has one, not before.
  */
+/**
+ * Family names of more than one word, as the source records them. EGU cites
+ * "Salles Civitarese, D.", so splitting on the last space would be wrong.
+ */
+const COMPOUND_FAMILY_NAMES = ['Salles Civitarese']
+
 function parseAuthor(name: string): ParsedAuthor {
-  const parts = name.trim().split(/\s+/)
+  const trimmed = name.trim()
+  const compound = COMPOUND_FAMILY_NAMES.find((f) => trimmed.endsWith(` ${f}`))
+  if (compound) return { family: compound, given: trimmed.slice(0, -compound.length).trim() }
+  const parts = trimmed.split(/\s+/)
   if (parts.length === 1) return { family: parts[0], given: '' }
   return { family: parts[parts.length - 1], given: parts.slice(0, -1).join(' ') }
 }
@@ -132,6 +151,7 @@ function initials(given: string): string {
  * per-citation token; it works today and is the first thing to rot.
  */
 function sourceUrl(pub: Publication, venue: ParsedVenue): string {
+  if (pub.arxiv) return `https://arxiv.org/abs/${pub.arxiv}`
   if (pub.doi) return `https://doi.org/${pub.doi}`
   if (venue.eprint) return `https://arxiv.org/abs/${venue.eprint}`
   return pub.scholarUrl
@@ -156,13 +176,32 @@ export function citationKey(pub: Publication): string {
 }
 
 /**
- * Escape the five characters that break a BibTeX parse.
+ * Escape the characters that break a BibTeX parse or change its meaning.
  *
  * Titles here are plain English, but `&` appears in institution names and an
- * unescaped one silently truncates the field in some parsers.
+ * unescaped one silently truncates the field in some parsers. Backslash goes
+ * first so the escapes added after it are not themselves escaped.
  */
 function bibtexEscape(value: string): string {
-  return value.replace(/([&%$#_])/g, '\\$1')
+  return value
+    .replace(/\\/g, '\\textbackslash{}')
+    .replace(/([{}])/g, '\\$1')
+    .replace(/~/g, '\\textasciitilde{}')
+    .replace(/\^/g, '\\textasciicircum{}')
+    .replace(/([&%$#_])/g, '\\$1')
+}
+
+/**
+ * Protect words a sentence case style would wrongly lowercase: acronyms,
+ * anything with a digit ("2m"), and the proper name "Echo State Network".
+ * Without this, "ML-based" renders as "Ml-based" in half the styles.
+ */
+function protectCase(title: string): string {
+  return title
+    .replace(/Echo State Networks?/g, (m) => `{${m}}`)
+    .split(' ')
+    .map((word) => (/[{}]/.test(word) || !/[A-Z].*[A-Z]|\d/.test(word) ? word : `{${word}}`))
+    .join(' ')
 }
 
 /** One BibTeX entry. `@mastersthesis` for the thesis, `@misc` for preprints. */
@@ -176,7 +215,7 @@ export function toBibtex(pub: Publication): string {
     .join(' and ')
 
   const fields: [string, string | undefined][] = [
-    ['title', bibtexEscape(pub.title)],
+    ['title', protectCase(bibtexEscape(pub.title))],
     ['author', bibtexEscape(authors)],
     ['year', String(pub.year)],
   ]
@@ -192,9 +231,15 @@ export function toBibtex(pub: Publication): string {
       type = 'misc'
       fields.push(['eprint', venue.eprint])
       fields.push(['archivePrefix', 'arXiv'])
-      // No `primaryClass`: the arXiv category is not recorded in lib/data.ts and
-      // guessing one would put a wrong fact in every reference manager that
-      // imports this file.
+      break
+    case 'workshop':
+      type = 'inproceedings'
+      fields.push(['booktitle', bibtexEscape(venue.container)])
+      break
+    case 'abstract':
+      type = 'misc'
+      fields.push(['howpublished', bibtexEscape(venue.container)])
+      fields.push(['note', 'Conference abstract'])
       break
     default:
       type = 'article'
@@ -204,6 +249,12 @@ export function toBibtex(pub: Publication): string {
       fields.push(['pages', venue.pages?.replace(/[-–]/, '--')])
   }
 
+  if (pub.arxiv) {
+    fields.push(['eprint', pub.arxiv])
+    fields.push(['archivePrefix', 'arXiv'])
+    // Only from the record, where it was read off the arXiv listing.
+    fields.push(['primaryClass', pub.arxivClass])
+  }
   if (pub.doi) fields.push(['doi', pub.doi])
   fields.push(['url', sourceUrl(pub, venue)])
 
@@ -234,13 +285,24 @@ export function toApa(pub: Publication): string {
   const authors = apaAuthorList(parseAuthors(pub.authors))
   const link = sourceUrl(pub, venue)
 
+  // APA puts the descriptor in brackets straight after the title, before the full stop.
+  let descriptor = ''
   let source: string
   switch (venue.kind) {
     case 'thesis':
-      source = `[Master's thesis, ${venue.school ?? 'University of the Witwatersrand'}]`
+      descriptor = ` [Master's thesis, ${venue.school ?? 'University of the Witwatersrand'}]`
+      source = 'WIReDSpace'
       break
     case 'preprint':
       source = `arXiv${venue.eprint ? `:${venue.eprint}` : ''} [Preprint]`
+      break
+    case 'workshop':
+      descriptor = ' [Paper presentation]'
+      source = venue.container
+      break
+    case 'abstract':
+      descriptor = ' [Conference presentation abstract]'
+      source = venue.container
       break
     default: {
       const volume = venue.volume
@@ -251,7 +313,7 @@ export function toApa(pub: Publication): string {
     }
   }
 
-  return `${authors} (${pub.year}). ${pub.title}. ${source}. ${link}`
+  return `${authors} (${pub.year}). ${pub.title}${descriptor}. ${source}. ${link}`
 }
 
 /** `Madahana, M. C. I., J. E. D. Ekoru, and O. T. C. Nyandoro` — only the first is inverted. */
@@ -279,6 +341,12 @@ export function toChicago(pub: Publication): string {
     case 'preprint':
       source = `arXiv preprint arXiv${venue.eprint ? `:${venue.eprint}` : ''}`
       break
+    case 'workshop':
+      source = `Paper presented at ${venue.container}`
+      break
+    case 'abstract':
+      source = `Abstract, ${venue.container}`
+      break
     default: {
       const volume = venue.volume
         ? ` ${venue.volume}${venue.issue ? ` (${venue.issue})` : ''}`
@@ -288,7 +356,8 @@ export function toChicago(pub: Publication): string {
     }
   }
 
-  return `${authors}. ${pub.year}. "${pub.title}." ${source}. ${link}.`
+  // "Mashinini, T. L." already ends in a full stop; do not add a second.
+  return `${authors.replace(/\.$/, '')}. ${pub.year}. "${pub.title}." ${source}. ${link}.`
 }
 
 export type CitationFormat = 'BibTeX' | 'APA' | 'Chicago'

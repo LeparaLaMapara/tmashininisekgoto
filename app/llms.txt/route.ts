@@ -1,26 +1,69 @@
 import { getAllPosts, getSeries } from '@/lib/blog'
+import { BIO, getProjectsOrdered, PUBLICATIONS } from '@/lib/data'
+import { RESEARCH } from '@/lib/graph/research'
+import { getHubTopics } from '@/lib/graph'
+import { NAME_VARIANTS } from '@/lib/schema'
 import { SITE_URL } from '@/lib/site'
 
 export const dynamic = 'force-static'
 
+/**
+ * /llms.txt: an index for language models, in the format proposed at
+ * llmstxt.org. A supplementary surface only: the HTML pages, the sitemap and
+ * the structured data carry the same facts and do not depend on it.
+ *
+ * Every fact is read from the canonical records (lib/data.ts, lib/graph/*,
+ * the MDX frontmatter). The previous version typed some facts out by hand and
+ * they drifted: it claimed identical output on seven environments when the
+ * project record, rewritten against the repository, says five.
+ */
 export function GET() {
   const posts = getAllPosts()
   const series = getSeries()
+  const projects = getProjectsOrdered()
+  const hubs = getHubTopics()
 
   const lines = [
     '# Thabang Mashinini-Sekgoto',
     '',
-    '> Personal site of Thabang Mashinini-Sekgoto: applied AI, data science, AI',
-    '> engineering and research. Lead Data Scientist at ABSA Insurance, previously',
-    '> Vodacom and IBM Research, MSc from the University of the Witwatersrand, founder',
-    '> of Ubunye AI Ecosystems, and builder from Soshanguve, South Africa. He builds',
-    '> production AI and data systems, reusable open source data and ML infrastructure,',
-    '> and free websites for township businesses through the Kasilam community project.',
+    `> ${BIO.disciplines}. ${BIO.title}, based in ${BIO.location}. Builds production AI and data`,
+    '> systems, open source data and ML infrastructure, and applied research, and teaches',
+    '> practical AI in South African communities. This site is the canonical record of the work.',
     '',
-    'Key facts: creator of Ubunye Engine (config driven Spark pipelines that run identically',
-    'on laptops, Docker, Kubernetes, cloud clusters and Databricks, proven by identical',
-    'output hashes on seven environments); leader of Kasilam (free websites for township',
-    'businesses, seven live sites shipped).',
+    `Also published as: ${NAME_VARIANTS.join('; ')}. These are the same person.`,
+    'Not a PhD candidate: a doctoral proposal is in preparation, with registration planned for 2027.',
+    '',
+    '## Work',
+    '',
+    'Each project page states what it is, the role, organisation, period, status, the',
+    'evidence (code, packages, papers) and what it connects to.',
+    '',
+    ...projects.map((p) => `- [${p.headline}](${SITE_URL}/work/${p.slug}): ${p.summary}`),
+    '',
+    '## Research',
+    '',
+    'Each research page states the question, method, data, findings, limitations and',
+    'sources. Possible applications are labelled as such and are not results.',
+    '',
+    ...RESEARCH.map((r) =>
+      r.page
+        ? `- [${r.headline}](${SITE_URL}/research/${r.slug}): ${r.summary}`
+        : `- ${r.headline} (${r.status}, no page yet): ${r.summary}`
+    ),
+    '',
+    '## Publications',
+    '',
+    ...PUBLICATIONS.map(
+      (p) =>
+        `- [${p.title}](${SITE_URL}/publications#${p.key}) (${p.year}, ${p.venue})${p.doi ? ` doi:${p.doi}` : ''}${p.arxiv ? ` arXiv:${p.arxiv}` : ''}`
+    ),
+    '',
+    '## Topics',
+    '',
+    'Subjects with enough work behind them to have their own page, each gathering the',
+    'projects, research, publications, writing and talks on that subject.',
+    '',
+    ...hubs.map((t) => `- [${t.heading ?? t.name}](${SITE_URL}/topics/${t.slug}): ${t.description}`),
     '',
     '## Blog posts',
     '',
@@ -40,43 +83,28 @@ export function GET() {
       ? [
           '## Series',
           '',
-          'These posts are parts of a single argument. Each series has one page that',
-          'lists its parts in reading order.',
-          '',
           ...series.flatMap((s) => [
             `- [${s.name}](${SITE_URL}/blog/series/${s.slug}): ${s.posts.length} of ${s.total} parts published`,
-            ...s.posts.map(
-              (p) =>
-                `  - Part ${p.seriesPart ?? '?'}: [${p.title}](${SITE_URL}/blog/${p.slug})`
-            ),
+            ...s.posts.map((p) => `  - Part ${p.seriesPart ?? '?'}: [${p.title}](${SITE_URL}/blog/${p.slug})`),
           ]),
           '',
         ]
       : []),
     '## Main pages',
     '',
-    `- [Work and projects](${SITE_URL}/work): every project with why it was built, what it is, and its impact`,
     `- [About](${SITE_URL}/about): who Thabang is`,
-    `- [Publications](${SITE_URL}/publications): peer reviewed research`,
-    `- [Talks](${SITE_URL}/talks): talks and media`,
-    `- [Teaching](${SITE_URL}/courses): courses and sessions`,
     `- [CV](${SITE_URL}/resume): full career history`,
-    `- [Career journey](${SITE_URL}/career): the path from BSc at Wits to leading a data science capability`,
+    `- [Talks](${SITE_URL}/talks): talks, sessions and media`,
+    `- [Teaching](${SITE_URL}/courses): courses and sessions`,
+    `- [Career journey](${SITE_URL}/career): the path from a BSc at Wits to leading a data science capability`,
     `- [Now](${SITE_URL}/now): what he is working on at the moment`,
-    `- [Topics](${SITE_URL}/tags): the writing grouped by subject, each topic its own page`,
-    `- [Series](${SITE_URL}/blog/series): the multi part writing, each series readable in order from one page`,
-    `- [Thabang AI Assist](${SITE_URL}/ai): an AI assistant grounded on his work (it is an assistant, not him)`,
-    '',
-    '## Related sites',
-    '',
-    '- [Ubunye Engine documentation](https://ubunye-ai-ecosystems.github.io/ubunye_engine/)',
-    '- [Ubunye examples repository](https://github.com/ubunye-ai-ecosystems/ubunye-examples)',
-    '- [Kasilam Digital Platforms](https://kasilamdigitialplatforms.vercel.app)',
+    `- [Topics](${SITE_URL}/topics): every subject the work is about`,
+    `- [Thabang AI Assist](${SITE_URL}/ai): an assistant grounded on this site (it is an assistant, not him)`,
     '',
     '## Machine-readable files',
     '',
-    `- [/ai.txt](${SITE_URL}/ai.txt): identity, research focus, expertise and the terms for quoting this material`,
-    `- [/llms-full.txt](${SITE_URL}/llms-full.txt): this index with the full text of every post and publication inlined`,
+    `- [/llms-full.txt](${SITE_URL}/llms-full.txt): this index with the full text of every project, research line, post and publication`,
+    `- [/ai.txt](${SITE_URL}/ai.txt): identity, research focus and the terms for quoting this material`,
     `- [/publications.bib](${SITE_URL}/publications.bib): BibTeX for every publication`,
     `- [/feed.xml](${SITE_URL}/feed.xml): RSS`,
     `- [/sitemap.xml](${SITE_URL}/sitemap.xml): every indexable URL`,

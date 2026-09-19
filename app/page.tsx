@@ -3,7 +3,7 @@ import { pageOpenGraph } from '@/lib/site'
 import { ImpactCounters } from '@/components/home/impact-counters'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { JsonLd } from '@/components/seo/json-ld'
-import { personSchema } from '@/lib/schema'
+import { personSchema, organizationsSchema } from '@/lib/schema'
 import { getAllPosts } from '@/lib/blog'
 import { BIO, CAREER_TIMELINE, PROJECTS, PUBLICATIONS, TALKS, COURSES, SOCIAL_LINKS } from '@/lib/data'
 import { formatDate } from '@/lib/utils'
@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <>
-      <JsonLd data={personSchema()} />
+      <JsonLd data={[personSchema(), ...organizationsSchema()]} />
 
       {/* ---------------- 1. HERO ----------------
           Deliberately NOT wrapped in ScrollReveal. That component starts at
@@ -234,10 +234,10 @@ export default function Home() {
               The research feeds the systems, and the systems feed the research
             </h2>
             <p className="text-lg text-ivory/85 leading-relaxed mb-10">
-              Two years as a machine learning research scientist at IBM Research, an MSc
-              by dissertation at the University of the Witwatersrand, and published work
-              in remote sensing, occupational health and forecasting. The questions that
-              interest me now come from problems I met in production.
+              A year and a half as a machine learning research scientist at IBM Research, an
+              MSc by dissertation at the University of the Witwatersrand, and published work
+              in climate forecasting, occupational health and computer vision. The questions
+              that interest me now come from problems I met in production.
             </p>
           </ScrollReveal>
 
@@ -248,7 +248,9 @@ export default function Home() {
                   {MSC.period} · Completed
                 </p>
                 <h3 className="font-display text-lg font-semibold text-ivory mb-3">
-                  {MSC.role}
+                  <Link href="/research/echo-state-networks-level-set-segmentation" className="hover:text-synapse transition-colors">
+                    {MSC.role}
+                  </Link>
                 </h3>
                 <p className="text-sm text-ivory/70 leading-relaxed">{MSC.description}</p>
               </div>
@@ -267,13 +269,20 @@ export default function Home() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <div className="mt-10">
+            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
+              <Link
+                href="/research"
+                className="inline-flex items-center gap-2 text-synapse hover:underline font-medium"
+              >
+                The research, line by line
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
               <Link
                 href="/publications"
                 className="inline-flex items-center gap-2 text-synapse hover:underline font-medium"
               >
                 {PUBLICATIONS.length} publications
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </div>
           </ScrollReveal>

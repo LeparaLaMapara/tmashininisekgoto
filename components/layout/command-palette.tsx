@@ -6,6 +6,7 @@ import { Command } from 'cmdk'
 import {
   Search, Home, User, FolderOpen, BookOpen, Mic, Sparkles, FileText,
   GraduationCap, FileCode, Pencil, Library,
+  FlaskConical, Hash,
 } from 'lucide-react'
 import type { SearchKind, SearchResult } from '@/lib/search'
 
@@ -26,6 +27,8 @@ const KIND_META: Record<SearchKind, { icon: typeof Home; label: string; order: n
   Series:      { icon: Library,        label: 'Series',       order: 0 },
   Post:        { icon: BookOpen,       label: 'Writing',      order: 1 },
   Project:     { icon: FolderOpen,     label: 'Work',         order: 2 },
+  Research:    { icon: FlaskConical,   label: 'Research',     order: 2.5 },
+  Topic:       { icon: Hash,           label: 'Topics',       order: 2.7 },
   Publication: { icon: FileCode,       label: 'Publications', order: 3 },
   Talk:        { icon: Mic,            label: 'Talks',        order: 4 },
   Course:      { icon: GraduationCap,  label: 'Courses',      order: 5 },

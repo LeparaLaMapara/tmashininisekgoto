@@ -94,6 +94,9 @@ function parseArgs(argv) {
   return {
     publish: flag('publish'),
     draft: flag('draft'),
+    // A publish with no --post touches every eligible post on every platform.
+    // That is never a side effect: it needs --all to say so on purpose.
+    all: flag('all'),
     post: value('post'),
     platform: value('platform'),
   }
@@ -301,7 +304,7 @@ async function syndicateDevto(posts, state) {
     const tracked = state.posts[post.slug]?.devto
     const live = existing.get(canonical)
 
-    if (live && tracked?.hash === hash) {
+    if (live && tracked?.hash === hash && live.published === !args.draft) {
       console.log(`  unchanged  ${post.slug}`)
       continue
     }
@@ -321,6 +324,9 @@ async function syndicateDevto(posts, state) {
       ...state.posts[post.slug],
       devto: { id: result.id, url: result.url, hash, syncedAt: new Date().toISOString() },
     }
+    // Saved after every write, not once at the end: a run cancelled halfway
+    // must not forget what it already published, or the next run duplicates it.
+    writeState(state)
     console.log(`  ${action}d   ${post.slug} -> ${result.url}`)
 
     // A courtesy pause only. The real throttle on article creation is roughly
@@ -385,6 +391,10 @@ async function syndicateHashnode(posts, state) {
   }
 
   console.log('\nHashnode')
+  if (args.draft) {
+    console.log('  skipped: --draft was asked for and this API has no draft mode, so it would publish publicly')
+    return
+  }
 
   for (const post of posts) {
     const body = syndicationBody(post, SITE_URL)
@@ -418,10 +428,14 @@ async function syndicateHashnode(posts, state) {
         })
 
     const result = data.publishPost?.post ?? data.updatePost?.post
+    if (!result?.id) {
+      throw new Error(`Hashnode answered without a post id for ${post.slug}; check the publication before re-running, it may already exist`)
+    }
     state.posts[post.slug] = {
       ...state.posts[post.slug],
       hashnode: { id: result.id, url: result.url, hash, syncedAt: new Date().toISOString() },
     }
+    writeState(state)
     console.log(`  ${action}d   ${post.slug} -> ${result.url}`)
     await new Promise((resolve) => setTimeout(resolve, 1000))
   }
@@ -506,6 +520,7 @@ async function syndicateMedium(posts, state) {
       ...state.posts[post.slug],
       medium: { id: result.id, url: result.url, syncedAt: new Date().toISOString() },
     }
+    writeState(state)
     console.log(`  created   ${post.slug} -> ${result.url}`)
     await new Promise((resolve) => setTimeout(resolve, 1000))
   }
@@ -584,6 +599,10 @@ async function main() {
     if (posts.length === 0) throw new Error(`No published post with slug "${args.post}"`)
   }
 
+  if (args.publish && !args.post && !args.all) {
+    throw new Error('--publish needs --post <slug>, or --all to confirm a run across every eligible post')
+  }
+
   console.log(`${posts.length} post(s) eligible for syndication`)
   if (!args.publish) {
     console.log('DRY RUN. Nothing will be sent. Re-run with --publish to push.')
@@ -593,6 +612,30 @@ async function main() {
   }
 
   const state = readState()
+
+  // A copy whose original is no longer live points its canonical at a 404,
+  // which leaves the copy as the only working version. Report every one; the
+  // script never unpublishes anything itself.
+  const eligible = new Set(readPosts().map((post) => post.slug))
+  for (const [slug, record] of Object.entries(state.posts)) {
+    if (eligible.has(slug)) continue
+    for (const [platform, copy] of Object.entries(record)) {
+      if (copy && copy.published !== false) {
+        console.warn(`  ORPHAN COPY  ${slug} on ${platform} (${copy.url ?? copy.id}): the original is not live`)
+      }
+    }
+  }
+
+  // Canonical first: the original must answer 200 before any copy of it is
+  // created or updated, so a copy can never point at a missing page.
+  if (args.publish) {
+    for (const post of posts) {
+      const res = await fetch(`${SITE_URL}/blog/${post.slug}`, { redirect: 'manual' })
+      if (res.status !== 200) {
+        throw new Error(`${post.slug}: the original returns ${res.status}, refusing to syndicate a copy of it`)
+      }
+    }
+  }
 
   // One platform failing must not discard what another platform already did.
   // Hashnode throwing on a missing Pro plan used to abort main() before

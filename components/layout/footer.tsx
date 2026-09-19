@@ -36,11 +36,14 @@ export function Footer() {
               {[
                 { href: '/about', label: 'About' },
                 { href: '/work', label: 'Work' },
+                { href: '/research', label: 'Research' },
                 { href: '/blog', label: 'Writing' },
                 { href: '/publications', label: 'Publications' },
+                { href: '/topics', label: 'Topics' },
                 { href: '/talks', label: 'Talks' },
                 { href: '/courses', label: 'Teaching' },
                 { href: '/career', label: 'Journey' },
+                { href: '/now', label: 'Now' },
                 { href: '/resume', label: 'CV' },
               ].map(({ href, label }) => (
                 <Link
@@ -74,7 +77,7 @@ export function Footer() {
               key={label}
               href={href}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="me noopener noreferrer"
               aria-label={label}
               className="p-2.5 sm:p-3 rounded-full text-muted hover:text-synapse hover:bg-synapse/10 transition-all duration-200"
             >

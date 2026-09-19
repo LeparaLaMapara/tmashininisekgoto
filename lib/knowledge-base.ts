@@ -3,6 +3,30 @@
 // Comprehensive knowledge base for the conversational AI agent
 // ============================================================
 
+import { PUBLICATIONS } from '@/lib/data'
+
+/**
+ * The publication section, generated from the corrected records in
+ * lib/data.ts rather than typed out a second time. The hand typed copy that
+ * used to live here had drifted into claims the abstracts do not support.
+ */
+function publicationsKnowledge(): string {
+  return [
+    `## PUBLICATIONS (${PUBLICATIONS.length} total)`,
+    'Summaries state only what each abstract supports. Applications are possibilities, not results.',
+    '',
+    ...PUBLICATIONS.flatMap((p, i) => [
+      `### ${i + 1}. "${p.title}" (${p.year})`,
+      `Authors: ${p.authors}`,
+      `Venue: ${p.venue}${p.doi ? ` | DOI ${p.doi}` : ''}${p.arxiv ? ` | arXiv:${p.arxiv}` : ''}`,
+      `Summary: ${p.aiSummary}`,
+      `Possible applications: ${p.applications.join(', ')}`,
+      `Research page: [/research/${p.research}](/research/${p.research}) · Link: [source](${p.doi ? `https://doi.org/${p.doi}` : p.scholarUrl})`,
+      '',
+    ]),
+  ].join('\n')
+}
+
 export function buildSystemPrompt(): string {
   return `You are an AI representation of Thabang Mashinini-Sekgoto. You respond in first person as Thabang. Direct, honest, practitioner-first. No hype. No buzzwords. You speak like someone who has built production systems and knows the difference between a demo and a deployment.
 
@@ -118,8 +142,8 @@ A technical memoir series on building Ubunye Engine. Covers the full journey fro
 - Part 3: The Boring Work That Ships Software — documentation, CI/CD debugging, PyPI publishing, subtle bugs
 - Part 4: From Kaggle to Production — end-to-end validation, honest gaps, comparison to Kedro/MLflow/DVC
 - Part 5: Building With an Agent: The Real Numbers — ~30 human hours, 8-12x speedup, R1,520 vs R302,000 team cost, vibe coding critique
-- Part 6: How to Use It, With Real Examples (July 2026) — version 0.5.0, install, the first pipeline, the three environment variables, the seven environments producing the identical output hash, and the ML lifecycle from config. Every snippet was run before it was written.
-- Key lesson: agents give more leverage to senior engineers than juniors, because amplification only works if verification capacity exists. And a claim you do not test is a story: the seven identical hashes are the difference between saying a pipeline runs anywhere and knowing it.
+- Part 6: How to Use It, With Real Examples (July 2026) — version 0.5.0, install, the first pipeline, the three environment variables, the same pipeline folder producing byte identical output on five environments (local Spark, Docker, Kubernetes, S3 compatible storage, spark-submit), with Databricks running it separately and asserting its own output, and the ML lifecycle from config. Every snippet was run before it was written.
+- Key lesson: agents give more leverage to senior engineers than juniors, because amplification only works if verification capacity exists. And a claim you do not test is a story: the identical output across environments are the difference between saying a pipeline runs anywhere and knowing it.
 
 ### "The Modern Data Scientist: A Roadmap for the Age of AI Agents" (March 2026)
 A practitioner's guide — not a hype piece. Written from the perspective of someone who has built production ML systems at IBM, Vodacom, and ABSA. Covers:
@@ -139,38 +163,7 @@ From curiosity to real work. Thabang's first blog post. Covers:
 - Mindset shift: from "something I write for today" to "something I build for people — including my future self"
 - Led to tfilterspy, his first published library, and eventually Ubunye Engine
 
-## PUBLICATIONS (5 total)
-
-### 1. "Mine workers threshold shift estimation via optimization algorithms for deep recurrent neural networks" (2019)
-Authors: MCI Madahana, JED Ekoru, TL Mashinini, OTC Nyandoro
-Venue: IFAC-PapersOnLine 52 (14), 117-122 | 5 citations
-AI Summary: Uses deep recurrent neural networks with optimization algorithms to estimate hearing threshold shifts in mine workers caused by noise exposure. The model predicts permanent hearing damage progression, enabling earlier intervention.
-Applications: Occupational health monitoring, Mining safety systems, Predictive hearing loss detection, Industrial noise management
-
-### 2. "Noise level policy advising system for mine workers" (2019)
-Authors: MCI Madahana, JED Ekoru, TL Mashinini, OTC Nyandoro
-Venue: IFAC-PapersOnLine 52 (14), 249-254 | 3 citations
-AI Summary: Proposes an intelligent policy advising system that recommends noise exposure limits for mine workers. Combines real-time noise monitoring with ML models to generate actionable safety policies that comply with occupational health regulations.
-Applications: Mining regulatory compliance, Real-time safety policy generation, Occupational noise control, Workplace health AI systems
-
-### 3. "Long-range seasonal forecasting of 2m-temperature with machine learning" (2020)
-Authors: EE Vos, A Gritzman, S Makhanya, T Mashinini, CD Watson
-Venue: NeurIPS 2020, Tackling Climate Change with ML workshop (arXiv:2102.00085) | 8 citations
-AI Summary: Developed ML models for long-range seasonal temperature forecasting, outperforming traditional numerical weather prediction at extended lead times. Published during IBM Research Africa tenure, integrated into climate intelligence workflows.
-Applications: Climate risk assessment, Agricultural planning, Energy demand forecasting, Insurance & reinsurance modeling
-
-### 4. "Learning Level Set Method by Echo State Network for Image Segmentation" (2022) — MSc Thesis
-Author: TL Mashinini
-Venue: MSc Thesis — University of the Witwatersrand, 2022
-AI Summary: Proposes a novel approach using Echo State Networks for learning variational level set segmentation as a spatiotemporal method. Compares ESN, RNN, GRU, LSTM, and 3D CNN architectures. Found that leaking rate and spectral radius critically influence ESN performance.
-Applications: Medical image segmentation, Autonomous vehicle vision, Satellite imagery analysis, Real-time object detection
-Link: [Read the thesis](https://wiredspace.wits.ac.za/items/2c23f3d9-05fd-410e-ad52-31ecffbbf643)
-
-### 5. "ML-based Probabilistic Prediction of 2m Temperature and Total Precipitation" (2022)
-Authors: MA Zaytar, B Zadrozny, C Watson, DS Civitarese, EE Vos, TM Mathonsi, TL Mashinini
-Venue: EGU General Assembly 2022
-AI Summary: A daily probabilistic forecast model for 2m temperature and total precipitation, combining physics-based ensembles, climate modes and recent climatology as features for gradient boosting and U-Net models, outperforming ECMWF 46-day forecasts and climatology.
-Link: [EGU22 abstract](https://meetingorganizer.copernicus.org/EGU22/EGU22-11063.html)
+${publicationsKnowledge()}
 
 ## TECH STACK
 

@@ -166,7 +166,7 @@ test.describe('share cards', () => {
   })
 
   test('the pages people link to have complete cards', async ({ request }) => {
-    for (const path of ['/', '/about', '/work', '/publications', '/blog', '/blog/series', '/talks', '/resume', '/career', '/ai', '/courses', '/tags', '/now']) {
+    for (const path of ['/', '/about', '/work', '/publications', '/blog', '/blog/series', '/talks', '/resume', '/career', '/ai', '/courses', '/topics', '/research', '/now']) {
       await expectCompleteCard(request, path)
     }
   })

@@ -1,6 +1,9 @@
 import { COURSES, PROJECTS, PUBLICATIONS, TALKS, WRITINGS } from '@/lib/data'
 import { getAllPosts, getSeries } from '@/lib/blog'
 import { getSeriesCopy } from '@/lib/series'
+import { RESEARCH } from '@/lib/graph/research'
+import { TOPICS, getTopicDef } from '@/lib/graph/topics'
+import { getHubTopics } from '@/lib/graph'
 
 /**
  * Server-side search across everything on the site.
@@ -15,6 +18,8 @@ export type SearchKind =
   | 'Post'
   | 'Series'
   | 'Project'
+  | 'Research'
+  | 'Topic'
   | 'Talk'
   | 'Publication'
   | 'Course'
@@ -133,20 +138,41 @@ function buildIndex(): Indexed[] {
     keywords: `series parts ${s.posts.map((p) => p.title).join(' ')}`,
   }))
 
+  const topicNames = (slugs: string[]) => slugs.map((t) => getTopicDef(t)?.name ?? '').join(' ')
+
   const projects: Indexed[] = PROJECTS.map((project) => ({
     kind: 'Project',
-    title: project.title,
-    description: project.problem,
+    title: project.headline,
+    description: project.summary,
     href: `/work/${project.slug}`,
-    keywords: `${project.solution} ${project.impact} ${project.skills.join(' ')} ${project.category}`,
+    keywords: `${project.title} ${project.cardTitle} ${project.solution} ${project.impact} ${project.skills.join(' ')} ${project.category} ${topicNames([...project.graphTopics, ...project.technologies])}`,
+  }))
+
+  const research: Indexed[] = RESEARCH.map((r) => ({
+    kind: 'Research',
+    title: r.headline,
+    description: r.summary,
+    href: r.page ? `/research/${r.slug}` : `/research#${r.slug}`,
+    keywords: `${r.name} ${r.question ?? ''} ${r.approach ?? ''} ${(r.findings ?? []).join(' ')} ${(r.datasets ?? []).join(' ')} ${topicNames(r.topics)}`,
+  }))
+
+  // Every topic is searchable. Those with a hub land on it; the rest land on
+  // the topics index, which lists where that work lives.
+  const hubSlugs = new Set(getHubTopics().map((t) => t.slug))
+  const topics: Indexed[] = TOPICS.map((t) => ({
+    kind: 'Topic',
+    title: t.heading ?? t.name,
+    description: t.description ?? `Work on ${t.name.toLowerCase()} across projects, research and writing.`,
+    href: hubSlugs.has(t.slug) ? `/topics/${t.slug}` : '/topics',
+    keywords: `${t.name} ${t.kind}`,
   }))
 
   const publications: Indexed[] = PUBLICATIONS.map((pub) => ({
     kind: 'Publication',
     title: pub.title,
     description: pub.aiSummary,
-    href: '/publications',
-    keywords: `${pub.authors} ${pub.venue} ${pub.year} ${pub.applications.join(' ')}`,
+    href: `/publications#${pub.key}`,
+    keywords: `${pub.authors} ${pub.venue} ${pub.year} ${pub.applications.join(' ')} ${topicNames(pub.topics)}`,
   }))
 
   const talks: Indexed[] = TALKS.map((talk) => ({
@@ -179,6 +205,8 @@ function buildIndex(): Indexed[] {
     ...series,
     ...posts,
     ...projects,
+    ...research,
+    ...topics,
     ...publications,
     ...talks,
     ...courses,
