@@ -41,6 +41,12 @@ interface Indexed {
   href: string
   /** Extra text that should match but is not shown. */
   keywords: string
+  /**
+   * The entity's own name, for things that have one (a project, a research
+   * line, a topic). A query that is exactly that name is asking for that
+   * thing, so its own page outranks posts that merely mention it.
+   */
+  name?: string
 }
 
 const PAGES: Indexed[] = [
@@ -145,6 +151,7 @@ function buildIndex(): Indexed[] {
     title: project.headline,
     description: project.summary,
     href: `/work/${project.slug}`,
+    name: project.title,
     keywords: `${project.title} ${project.cardTitle} ${project.solution} ${project.impact} ${project.skills.join(' ')} ${project.category} ${topicNames([...project.graphTopics, ...project.technologies])}`,
   }))
 
@@ -153,6 +160,7 @@ function buildIndex(): Indexed[] {
     title: r.headline,
     description: r.summary,
     href: r.page ? `/research/${r.slug}` : `/research#${r.slug}`,
+    name: r.name,
     keywords: `${r.name} ${r.question ?? ''} ${r.approach ?? ''} ${(r.findings ?? []).join(' ')} ${(r.datasets ?? []).join(' ')} ${topicNames(r.topics)}`,
   }))
 
@@ -164,6 +172,7 @@ function buildIndex(): Indexed[] {
     title: t.heading ?? t.name,
     description: t.description ?? `Work on ${t.name.toLowerCase()} across projects, research and writing.`,
     href: hubSlugs.has(t.slug) ? `/topics/${t.slug}` : '/topics',
+    name: t.name,
     keywords: `${t.name} ${t.kind}`,
   }))
 
@@ -235,6 +244,7 @@ function scoreDocument(doc: Indexed, terms: string[]): number {
     if (inDescription) score += 3
     if (inKeywords) score += 1
   }
+  if (doc.name && doc.name.toLowerCase() === terms.join(' ')) score += 20
   return score
 }
 
