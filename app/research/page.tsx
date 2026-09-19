@@ -34,9 +34,9 @@ export default function ResearchIndex() {
       <p className="mt-4 text-lg leading-relaxed text-muted">
         Each research line with the question it asked, how it was done, what was found and what was not,
         and the code and papers behind it. The individual papers are listed on{' '}
-        <Link href="/publications" className="text-synapse hover:underline">Publications</Link>, and the
+        <Link href="/publications" className="text-synapse underline underline-offset-2 hover:no-underline">Publications</Link>, and the
         production work that grew out of some of this is under{' '}
-        <Link href="/work" className="text-synapse hover:underline">Work</Link>.
+        <Link href="/work" className="text-synapse underline underline-offset-2 hover:no-underline">Work</Link>.
       </p>
 
       <ol className="mt-14 space-y-8">

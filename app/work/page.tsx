@@ -53,9 +53,9 @@ export default function WorkPage() {
           </p>
           <p className="mt-6 text-lg text-muted max-w-2xl leading-relaxed">
             The research behind some of it has its own pages under{' '}
-            <Link href="/research" className="text-synapse hover:underline">Research</Link>, and everything
+            <Link href="/research" className="text-synapse underline underline-offset-2 hover:no-underline">Research</Link>, and everything
             here is also gathered by subject under{' '}
-            <Link href="/topics" className="text-synapse hover:underline">Topics</Link>.
+            <Link href="/topics" className="text-synapse underline underline-offset-2 hover:no-underline">Topics</Link>.
           </p>
         </ScrollReveal>
       </div>

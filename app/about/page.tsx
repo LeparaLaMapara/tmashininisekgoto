@@ -200,15 +200,15 @@ export default function AboutPage() {
             <p className="text-muted leading-relaxed">
               Looking for the professional side? The problems I have worked on
               are under{' '}
-              <Link href="/work" className="text-synapse hover:underline">
+              <Link href="/work" className="text-synapse underline underline-offset-2 hover:no-underline">
                 work
               </Link>
               , the full career detail is on my{' '}
-              <Link href="/resume" className="text-synapse hover:underline">
+              <Link href="/resume" className="text-synapse underline underline-offset-2 hover:no-underline">
                 CV
               </Link>
               , and what I have been thinking about lately is in my{' '}
-              <Link href="/blog" className="text-synapse hover:underline">
+              <Link href="/blog" className="text-synapse underline underline-offset-2 hover:no-underline">
                 writing
               </Link>
               .

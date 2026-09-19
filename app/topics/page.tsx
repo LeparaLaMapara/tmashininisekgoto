@@ -75,7 +75,7 @@ export default function TopicsIndex() {
                     {where.slice(0, 3).map((n, i) => (
                       <span key={`${n.type}:${n.key}`}>
                         {i > 0 && <span className="text-muted">, </span>}
-                        <Link href={n.href} className="text-synapse hover:underline">{n.title}</Link>
+                        <Link href={n.href} className="text-synapse underline underline-offset-2 hover:no-underline">{n.title}</Link>
                       </span>
                     ))}
                     {!first && <span className="text-muted">no linked work yet</span>}

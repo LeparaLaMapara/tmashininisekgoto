@@ -46,7 +46,7 @@ export default function PublicationsPage() {
             vision: two journal papers, a workshop paper, a conference abstract and a
             thesis. Each belongs to a research line described in full, with its
             question, method and findings, under{' '}
-            <Link href="/research" className="text-synapse hover:underline">Research</Link>.
+            <Link href="/research" className="text-synapse underline underline-offset-2 hover:no-underline">Research</Link>.
           </p>
           <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-muted mb-4">
             <span className="rounded-full border border-border bg-surface px-4 py-1.5">

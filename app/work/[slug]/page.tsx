@@ -210,9 +210,9 @@ export default async function WorkCaseStudy({ params }: PageProps) {
                 <dd className="mt-1 text-ivory/85">
                   {l.href ? (
                     l.href.startsWith('/') ? (
-                      <Link href={l.href} className="font-medium text-synapse hover:underline">{l.name}</Link>
+                      <Link href={l.href} className="font-medium text-synapse underline underline-offset-2 hover:no-underline">{l.name}</Link>
                     ) : (
-                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="font-medium text-synapse hover:underline">{l.name}</a>
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="font-medium text-synapse underline underline-offset-2 hover:no-underline">{l.name}</a>
                     )
                   ) : (
                     <span className="font-medium">{l.name}</span>
