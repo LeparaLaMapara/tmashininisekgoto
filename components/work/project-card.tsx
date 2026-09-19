@@ -45,7 +45,7 @@ export function ProjectCard({ project }: { project: Project }) {
         >
           <Image
             src={project.image}
-            alt={`${project.cardTitle} — ${project.title}`}
+            alt={`${project.headline}: ${project.cardTitle}`}
             fill
             className={`transition-transform duration-500 group-hover:scale-105 ${project.imageFit === 'contain' ? 'object-contain p-6' : 'object-cover'}`}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -62,6 +62,8 @@ export function ProjectCard({ project }: { project: Project }) {
         {/* Category */}
         <span className="text-[11px] font-mono uppercase tracking-wider text-synapse-ink">
           {PROJECT_CATEGORIES[project.category] ?? project.category}
+          {/* The name, so the card says what the thing is before its argument. */}
+          {project.title !== project.cardTitle ? ` · ${project.title}` : ''}
         </span>
 
         {/* Problem-oriented title */}

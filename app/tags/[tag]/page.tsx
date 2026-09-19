@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getAllTags, getPostsBySlug, getTagNameBySlug } from '@/lib/blog'
 import { getTopic, slugifyTag } from '@/lib/topics'
+import { tagHref } from '@/lib/graph'
 import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { breadcrumbSchema, collectionPageSchema } from '@/lib/schema'
@@ -12,14 +13,24 @@ interface PageProps {
   params: Promise<{ tag: string }>
 }
 
+/**
+ * A tag whose subject has a topic hub is served by the hub instead. The hub
+ * holds the same posts plus the projects, research and talks on the subject,
+ * so two pages about one subject would only compete with each other.
+ */
+function hubFor(name: string): string | null {
+  const href = tagHref(name)
+  return href.startsWith('/topics/') ? href : null
+}
+
 export async function generateStaticParams() {
-  return getAllTags().map((tag) => ({ tag: tag.slug }))
+  return getAllTags().filter((tag) => !hubFor(tag.name)).map((tag) => ({ tag: tag.slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { tag: slug } = await params
   const name = getTagNameBySlug(slug)
-  if (!name) return {}
+  if (!name || hubFor(name)) return {}
 
   const topic = getTopic(name)
   const heading = topic?.heading ?? name
@@ -84,7 +95,8 @@ export default async function TagPage({ params }: PageProps) {
       successor = RETIRED[successor]
     }
     if (successor && getTagNameBySlug(successor)) {
-      permanentRedirect(`/tags/${successor}`)
+      // Straight to the final destination, never through a second redirect.
+      permanentRedirect(tagHref(getTagNameBySlug(successor)!))
     }
 
     // Tag pages used to be addressed by the raw tag, so `/tags/open source`
@@ -93,10 +105,13 @@ export default async function TagPage({ params }: PageProps) {
     // handled without touching config.
     const asSlug = slugifyTag(slug)
     if (asSlug !== slug && getTagNameBySlug(asSlug)) {
-      permanentRedirect(`/tags/${asSlug}`)
+      permanentRedirect(tagHref(getTagNameBySlug(asSlug)!))
     }
     notFound()
   }
+
+  const hub = hubFor(name)
+  if (hub) permanentRedirect(hub)
 
   const posts = getPostsBySlug(slug)
   const topic = getTopic(name)
@@ -166,7 +181,7 @@ export default async function TagPage({ params }: PageProps) {
               {post.tags.map((t) => (
                 <Link
                   key={t}
-                  href={`/tags/${slugifyTag(t)}`}
+                  href={tagHref(t)}
                   className="rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11px] font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                 >
                   {t}

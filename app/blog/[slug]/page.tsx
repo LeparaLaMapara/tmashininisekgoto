@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { tagHref } from '@/lib/graph'
 import { existsSync } from 'fs'
 import path from 'path'
 import { notFound } from 'next/navigation'
@@ -18,7 +19,9 @@ import { Comments } from '@/components/blog/comments'
 import { SubscribeForm } from '@/components/blog/subscribe-form'
 import { TableOfContents } from '@/components/blog/table-of-contents'
 import { ShareButtons } from '@/components/blog/share-buttons'
-import { RelatedContent } from '@/components/blog/related-content'
+import { GraphConnections } from '@/components/graph/connections'
+import { postTopics } from '@/lib/graph'
+import { slugifySeries } from '@/lib/series'
 import { AudioPlayer } from '@/components/blog/audio-player'
 import { ReadingProgress } from '@/components/blog/reading-progress'
 import { PostSummary } from '@/components/blog/post-summary'
@@ -157,6 +160,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             dateModified: post.lastModified,
             tags: post.tags,
             imageUrl: `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}`,
+            topics: postTopics(post),
+            projects: post.projects,
+            series: post.series ? { name: post.series, slug: slugifySeries(post.series), part: post.seriesPart } : undefined,
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -199,7 +205,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           {post.tags.map((tag) => (
             <Link
               key={tag}
-              href={`/tags/${slugifyTag(tag)}`}
+              href={tagHref(tag)}
               className="rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
             >
               {tag}
@@ -295,7 +301,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       )}
 
       {/* Related content across writing, work, research and talks */}
-      <RelatedContent type="Post" contentKey={slug} heading="Related" />
+      <GraphConnections type="post" contentKey={slug} />
 
       {/* Subscribe CTA */}
       <div className="mt-16">
