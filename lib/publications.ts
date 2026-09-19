@@ -25,10 +25,12 @@ import remoteRaw from '@/data/publications.remote.json'
  * Scholar's corpus is broad but lags on recent work. Google Scholar indexes
  * theses, preprints and grey literature that neither of the others sees.
  *
- * None of them can overcount: a citation has to exist somewhere to be indexed.
- * So every figure is a lower bound on the truth, and the largest lower bound is
- * the best estimate available. That is the rule, and the source is printed next
- * to the number so anyone can check it rather than take it on trust.
+ * None of them is exact. Each can also overcount: Google Scholar in particular
+ * counts duplicates and non scholarly sources. So the figure shown is labelled
+ * as the *highest observed* count, never as the true one, with the provider
+ * printed next to it and all three available on hover, so anyone can check it
+ * rather than take it on trust. (An earlier version of this comment claimed no
+ * provider can overcount; that was not established by any source.)
  */
 
 interface RemotePaper {

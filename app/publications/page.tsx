@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { publicationsSchema, breadcrumbSchema } from '@/lib/schema'
@@ -12,8 +13,9 @@ import { ExternalLink, GraduationCap, Brain, Sparkles, FileDown } from 'lucide-r
 export const metadata: Metadata = {
   title: 'Publications: ML & Deep Learning Research',
   description:
-    'Peer-reviewed publications, conference papers, and thesis work by Thabang Mashinini-Sekgoto in AI, ML, and computational science.',
-  alternates: { canonical: '/publications' },
+    'Journal papers, a NeurIPS workshop paper, a conference abstract and an MSc thesis: hearing loss in mine workers, climate forecasting, echo state networks.',
+  alternates: { canonical: '/publications' },
+
   openGraph: pageOpenGraph('/publications', 'Publications by Thabang Mashinini-Sekgoto'),
 }
 
@@ -40,15 +42,18 @@ export default function PublicationsPage() {
             <span className="text-synapse">Publications</span>
           </h1>
           <p className="text-muted text-lg max-w-2xl mb-6">
-            Peer-reviewed research in occupational health AI, climate intelligence,
-            probabilistic forecasting, and computer vision.
+            Research in occupational health, seasonal climate forecasting and computer
+            vision: two journal papers, a workshop paper, a conference abstract and a
+            thesis. Each belongs to a research line described in full, with its
+            question, method and findings, under{' '}
+            <Link href="/research" className="text-synapse hover:underline">Research</Link>.
           </p>
           <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-muted mb-4">
             <span className="rounded-full border border-border bg-surface px-4 py-1.5">
               {publications.length} publications
             </span>
             <span className="rounded-full border border-border bg-surface px-4 py-1.5">
-              {totalCitations} citations
+              {totalCitations} citations (highest observed per paper)
             </span>
             {/* Plain <a>: /publications.bib is a route handler, not a page, so a
                 soft navigation would have nothing to render. */}
@@ -60,13 +65,17 @@ export default function PublicationsPage() {
               BibTeX for all
             </a>
           </div>
-          {/* Where the numbers come from, stated rather than implied. The counts
-              are refreshed by scripts/publications/sync.mjs; see lib/publications.ts
-              for why the highest of the three sources is the one shown. */}
-          <p className="text-xs font-mono text-muted mb-16">
-            Citation counts are the highest reported by Google Scholar, Semantic
-            Scholar or CrossRef, each labelled with its source. Last refreshed{' '}
-            {formatDate(citationsFetchedAt())}.
+          {/* Where the numbers come from, stated rather than implied. The providers
+              disagree, and no one of them is exact, so the figure is labelled as the
+              highest observed, with its source, and the retrieval date is stated
+              only for the counts a script actually retrieved. */}
+          <p className="text-xs font-mono text-muted mb-16 max-w-2xl leading-relaxed">
+            Each paper shows the highest citation count observed across Google Scholar,
+            Semantic Scholar and Crossref, labelled with its source; hover for all three.
+            The providers disagree and none is treated as exact. Semantic Scholar and
+            Crossref counts were retrieved on {formatDate(citationsFetchedAt())}. Google
+            Scholar counts were recorded by hand from the Scholar profile and carry no
+            retrieval date.
           </p>
         </ScrollReveal>
 
@@ -77,7 +86,8 @@ export default function PublicationsPage() {
             return (
               <ScrollReveal key={pub.title} delay={i * 0.05}>
                 <article
-                  className={`relative rounded-2xl border p-6 sm:p-8 transition-colors ${
+                  id={pub.key}
+                  className={`relative scroll-mt-28 rounded-2xl border p-6 sm:p-8 transition-colors ${
                     isThesis
                       ? 'border-signal/30 bg-signal/[0.03]'
                       : 'border-border bg-surface/50 hover:border-synapse/20'
@@ -107,7 +117,7 @@ export default function PublicationsPage() {
                           {/* No opacity on the source label: dimming small text
                               below full --color-muted is what caused the two
                               contrast failures fixed in SEO-AUDIT.md. */}
-                          {pub.bestCitation.count} citations ({pub.bestCitation.source})
+                          {pub.bestCitation.count} citations, highest observed ({pub.bestCitation.source})
                         </span>
                       </>
                     )}
@@ -124,8 +134,8 @@ export default function PublicationsPage() {
                   {/* AI Summary */}
                   <div className="rounded-xl border border-synapse/15 bg-synapse/[0.04] p-4 mb-5">
                     <div className="flex items-center gap-2 text-synapse-ink text-sm font-medium mb-2">
-                      <Brain className="w-4 h-4" />
-                      AI Summary
+                      <Brain className="w-4 h-4" aria-hidden="true" />
+                      What the abstract reports
                     </div>
                     <p className="text-[0.9375rem] text-ivory/80 leading-relaxed">
                       {pub.aiSummary}
@@ -135,8 +145,8 @@ export default function PublicationsPage() {
                   {/* Applications */}
                   <div className="mb-5">
                     <div className="flex items-center gap-2 text-muted text-sm font-medium mb-2.5">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Real-World Applications
+                      <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                      Possible applications (not results)
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {pub.applications.map((app) => (
@@ -160,10 +170,27 @@ export default function PublicationsPage() {
                     <ExternalLink className="w-4 h-4" />
                     {pub.scholarUrl.includes('scholar.google')
                       ? 'View on Google Scholar'
-                      : pub.scholarUrl.includes('wiredspace')
+                      : pub.scholarUrl.includes('wiredspace') || pub.scholarUrl.includes('hdl.handle.net')
                         ? 'View on WIReDSpace'
                         : 'View the abstract'}
                   </a>
+                  {pub.arxiv && (
+                    <a
+                      href={`https://arxiv.org/abs/${pub.arxiv}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-5 inline-flex items-center gap-2 text-sm font-medium text-synapse-ink hover:text-synapse transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                      arXiv:{pub.arxiv}
+                    </a>
+                  )}
+                  <Link
+                    href={`/research/${pub.research}`}
+                    className="ml-5 inline-flex items-center gap-2 text-sm font-medium text-synapse-ink hover:text-synapse transition-colors"
+                  >
+                    The research behind it
+                  </Link>
 
                   {/* Generated on the server so the strings are deterministic;
                       the client component only toggles and copies. */}
