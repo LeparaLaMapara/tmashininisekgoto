@@ -194,9 +194,12 @@ dev.to, Medium, Semantic Scholar. `rel="me"` on the footer profile links.
 `alternateName` carries the variants the published record uses: Thabang
 Mashinini (arXiv, NeurIPS), Thabang L. Mashinini (Crossref, Semantic Scholar),
 Thabang Lukhetho Mashinini (EGU, OpenAlex), T. L. Mashinini (author lists) and
-Thabang L. Mashinini-Sekgoto (PyPI). Not declared until confirmed: ORCID (a
-candidate record exists and is in the human queue), OpenAlex (the profile is
-split in two), PyPI user pages.
+Thabang L. Mashinini-Sekgoto (PyPI). Google Scholar is the scholarly identity of record (decision, 2026-09-20): no
+ORCID is registered and an unconfirmed one is never asserted, so
+`SOCIAL_LINKS.orcid` stays empty and the Person entity omits it. The Scholar
+link carries no `authuser` parameter, which named an account slot in the
+visitor's browser rather than the profile. Also not declared: OpenAlex (the
+profile is split in two) and PyPI user pages.
 
 ## 10. Monitoring
 

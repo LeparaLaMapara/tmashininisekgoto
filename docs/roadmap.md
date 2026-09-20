@@ -92,7 +92,7 @@ data model, privacy and performance notes are in the knowledge-platform audit.
 
 ## Account tasks (need a login, not a commit)
 
-- [ ] ORCID: register, claim the 4 DOIs, paste the iD into `SOCIAL_LINKS.orcid`
+- [x] Scholarly identity settled (2026-09-20): Google Scholar is the identity of record, no ORCID (see docs/external-profiles.md section 4)
       (flows into schema automatically).
 - [ ] LinkedIn headline + About aligned to the site (draft in
       `docs/external-profiles.md`), no PhD-candidate claim.
