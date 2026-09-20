@@ -76,18 +76,31 @@ Author = "https://www.tmashininisekgoto.com"
 
 ---
 
-## 4. ORCID
+## 4. Scholarly identity: Google Scholar, not ORCID
 
-Register at https://orcid.org/register (free). Then:
+Decision, 2026-09-20: the Google Scholar profile is the scholarly identity of
+record. No ORCID is registered, and an unconfirmed one is never asserted on the
+site. `SOCIAL_LINKS.orcid` stays empty, and the Person schema simply omits it.
 
-1. Add the four publications by DOI (Add works → Search & link, or by DOI). The
-   DOIs are in `lib/data.ts` under `PUBLICATIONS`.
-2. Add `https://www.tmashininisekgoto.com` under "Websites & social links".
-3. Put the resulting iD (e.g. `https://orcid.org/0000-0000-0000-0000`) into
-   `SOCIAL_LINKS.orcid` in `lib/data.ts`. It flows into `sameAs` and the Person
-   schema automatically. Also add it to the Google Scholar profile.
+What that makes worth doing on the Scholar profile itself, all in Scholar:
 
----
+1. Check every publication is on the profile, including the MSc dissertation
+   (https://hdl.handle.net/10539/33910) and the EGU 2022 abstract, which
+   Semantic Scholar does not have either.
+2. Set the profile to **Public** and add `https://www.tmashininisekgoto.com` as
+   the homepage, so the return link exists from Scholar back to the site.
+3. Confirm the verified email on the profile is a current one.
+4. Merge any duplicate entries Scholar has created for the same paper.
+
+The site links to the profile from the footer, the Person `sameAs`, `/ai.txt`
+and the short URL `/scholar`. The link no longer carries `authuser=1`, which
+named a signed in account slot in the visitor's own browser rather than the
+profile, and could resolve to the wrong account for anyone with more than one
+Google login.
+
+If a publisher or funder ever requires an ORCID, register one, put the full iD
+into `SOCIAL_LINKS.orcid`, and it flows into `sameAs` and the Person schema
+with no other file touched.
 
 ## 5. Search Console and Bing — the true baseline
 

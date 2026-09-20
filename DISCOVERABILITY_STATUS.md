@@ -110,14 +110,18 @@ The human action queue. Only things that cannot be done from the repository.
    Unblocks: `scripts/discoverability/scorecard.ts`, the branded versus non
    branded measure, and the 30/60/90 day checks.
 
-4. **Confirm or create an ORCID.**
-   Needed: say whether ORCID 0000-0002-6530-5011 ("Thabang Mashinini",
-   University of the Witwatersrand, Astronomy and Astrophysics and Computational
-   and Applied Mathematics, no works) is yours. If yes, add the five works and
-   the site URL to it; if no, register one.
-   Why: the strongest scholarly identity link, and not assertable unconfirmed.
-   Where: orcid.org; then set `SOCIAL_LINKS.orcid` in `lib/data.ts`.
-   Unblocks: ORCID in `sameAs` everywhere, automatically.
+4. **Tidy the Google Scholar profile** (small, and the only scholarly identity
+   task left).
+   Needed: on the Scholar profile, make it public, add
+   `https://www.tmashininisekgoto.com` as the homepage, add the MSc
+   dissertation and the EGU 2022 abstract if missing, and merge any duplicate
+   entries.
+   Why: Scholar is now the scholarly identity of record (decision 2026-09-20,
+   no ORCID), so it is the one profile that should be complete and should link
+   back here.
+   Where: scholar.google.com, your profile; steps in
+   `docs/external-profiles.md` section 4.
+   Unblocks: a complete return link from the strongest scholarly profile.
 
 5. **Resolve the MSc dates.**
    Needed: say what "2018 to 2019" (CV) and "2022" (thesis record and repository)

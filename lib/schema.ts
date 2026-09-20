@@ -127,8 +127,10 @@ export function organizationsSchema() {
 }
 
 /**
- * Profiles that prove the same person across the web. ORCID is absent until
- * one is registered; add it to SOCIAL_LINKS.orcid rather than guessing a URL.
+ * Profiles that prove the same person across the web. Google Scholar is the
+ * scholarly identity of record. ORCID is absent by decision, not by oversight
+ * (see SOCIAL_LINKS.orcid); if one is ever registered, setting that field adds
+ * it here automatically.
  */
 export function sameAsProfiles(): string[] {
   return [
@@ -143,8 +145,8 @@ export function sameAsProfiles(): string[] {
     SOCIAL_LINKS.devto,
     SOCIAL_LINKS.medium,
     `https://www.semanticscholar.org/author/${SEMANTIC_SCHOLAR_AUTHOR_ID}`,
-    // Emitted only once SOCIAL_LINKS.orcid is filled, so an empty ORCID
-    // never becomes a broken profile link.
+    // Emitted only if SOCIAL_LINKS.orcid is ever filled, so the absent ORCID
+    // never becomes a broken or guessed profile link.
     ...(SOCIAL_LINKS.orcid ? [SOCIAL_LINKS.orcid] : []),
   ].filter(Boolean)
 }

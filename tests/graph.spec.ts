@@ -129,10 +129,15 @@ test.describe('evidence', () => {
     expect(NAME_VARIANTS.length).toBe(new Set(NAME_VARIANTS).size)
   })
 
-  test('no ORCID or other identifier is asserted without a value', () => {
+  test('the scholarly identity is Google Scholar, and no identifier is guessed', () => {
     const sameAs = personSchema().sameAs
     expect(sameAs.every((u) => /^https:\/\//.test(u))).toBe(true)
-    expect(sameAs.some((u) => u.includes('orcid.org/'))).toBe(false) // until one is confirmed
+    // Google Scholar is the scholarly identity of record (lib/data.ts).
+    expect(sameAs.some((u) => u.startsWith('https://scholar.google.com/citations?user='))).toBe(true)
+    // `authuser` names an account slot in the visitor's browser, not a profile.
+    expect(sameAs.some((u) => u.includes('authuser'))).toBe(false)
+    // No ORCID is registered, and an unconfirmed one must never be asserted.
+    expect(sameAs.some((u) => u.includes('orcid.org/'))).toBe(false)
   })
 })
 

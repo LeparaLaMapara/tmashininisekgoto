@@ -73,8 +73,12 @@ Format: **ITEM**. Deferred because. Reconsider when.
   about oneself are frowned upon. The site already links its concepts and
   organisations to Wikidata. Reconsider if a third party creates one; then add
   it to `sameAs`.
-- **OpenAlex and Semantic Scholar merges, ORCID.** In the human queue; they
-  need the author's own login.
+- **ORCID.** Not used, by decision (2026-09-20): Google Scholar is the
+  scholarly identity of record. Reconsider when a publisher, funder or
+  institution requires an iD; then register one and set `SOCIAL_LINKS.orcid`,
+  which is all the code needs.
+- **OpenAlex and Semantic Scholar merges.** In the human queue; they need the
+  author's own login.
 
 ## Engineering
 

@@ -159,16 +159,21 @@ export const SOCIAL_LINKS = {
   linkedin: 'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
   youtube: 'https://www.youtube.com/@tmashininisekgoto',
   email: 'thabangline@gmail.com',
-  scholar: 'https://scholar.google.com/citations?hl=en&authuser=1&user=aLjffFkAAAAJ',
+  // The scholarly identity of record. `authuser=1` was dropped from this URL:
+  // it names a signed in account slot in the visitor's own browser, so the
+  // link could resolve to the wrong account, or to an error, for anyone signed
+  // into more than one Google account. The profile id alone is stable.
+  scholar: 'https://scholar.google.com/citations?user=aLjffFkAAAAJ&hl=en',
   // Where the blog is syndicated. Listed so the copies are declared as the same
   // person's work rather than looking like someone reposting it.
   devto: 'https://dev.to/thabanglukheth0',
   medium: 'https://medium.com/@thabangline',
   booking: 'https://calendar.app.google/JzUn4JQ2pnzmmjLx5',
-  // ORCID. Fill this the moment the iD is registered (the full URL, e.g.
-  // https://orcid.org/0000-0002-1825-0097). Empty means no ORCID yet; it
-  // flows automatically into sameAs and the Person schema when set, so no
-  // other file needs touching.
+  // ORCID, deliberately empty. Decision, 2026-09-20: Google Scholar above is
+  // the scholarly identity of record, and no ORCID is registered or claimed.
+  // The field stays so that the day a publisher or funder requires an iD, the
+  // full URL goes here and flows into sameAs and the Person schema on its own,
+  // with no other file touched. Never fill it with an unconfirmed id.
   orcid: '',
 } as const
 
