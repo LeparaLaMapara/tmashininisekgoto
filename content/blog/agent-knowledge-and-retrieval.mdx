@@ -211,6 +211,33 @@ That is Part 4: what actually stops an agent doing something damaging, why
 instructions in a prompt are not a security control, and what this site does at
 the infrastructure level so that a bad decision cannot become a bad outcome.
 
+
+## Try it yourself
+
+The companion kit rebuilds this post at small scale, fully local and free:
+chunking, embeddings, an exact scan, and all three bugs, reproduced. It lives in
+[the Part 3 folder of the kit](https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts/03-giving-an-agent-knowledge), with
+setup in [the kit's README](https://github.com/LeparaLaMapara/agent-roadmap-kit). The first run downloads a 23 MB embedding
+model; after that it works offline.
+
+```bash
+npm run part3 -- --compare "When do you shut?"
+npm run part3:bugs
+```
+
+- Compare keyword and meaning based search on a question that shares no words
+  with the answer. Keyword search finds nothing; search by meaning finds the
+  opening hours.
+- Run the bugs script and watch a clustering index return zero results on a
+  small corpus, while checking every vector takes microseconds and never misses.
+- Raise the similarity threshold and ask again. Retrieval comes back empty and
+  the answer gets worse, while the model has not changed at all.
+- Point the kit at a different notes folder without rebuilding. The index names
+  what it was built from and refuses, instead of quietly answering from the
+  wrong data.
+- Edit a note and ask again. The kit spots the stale index and embeds only the
+  piece that changed.
+
 ---
 
 *Next: [Part 4: Making Agents Safe Enough to Act](/blog/agent-security-and-permissions).*

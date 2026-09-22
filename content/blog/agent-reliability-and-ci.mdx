@@ -235,6 +235,31 @@ That is Part 6: what these ideas actually mean, what this project does and
 deliberately does not do, the economics nobody mentions, and where the human
 still belongs.
 
+
+## Try it yourself
+
+The companion kit has the feedback loop from this post, running for real: a
+golden set of questions, regression tests that each came from a real bug found
+while building the kit, and a CI workflow that runs them on every push. It is in
+[the Part 5 folder of the kit](https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts/05-making-agents-reliable), with setup in
+[the kit's README](https://github.com/LeparaLaMapara/agent-roadmap-kit). The checks run on the free mock, so CI costs nothing.
+
+```bash
+npm run part5:eval
+npm test
+```
+
+- Run the eval and read the table. Retrieval is a gate that fails the run;
+  answers are graded and reported.
+- Raise the similarity threshold in your settings and watch the gate close,
+  naming exactly which questions stopped finding their notes.
+- Break the private notes filter with a one line change and watch the eval and
+  the tests catch it before anything ships.
+- Run the eval three times against a small local model. The answers change from
+  run to run and some are wrong while the run still passes, which is this
+  post's point: green only means the checks you wrote passed.
+- Add a question of your own to the golden set, or write one for your own notes.
+
 ---
 
 *Next: [Part 6: From One Agent to an Agentic System](/blog/from-one-agent-to-an-agentic-system).*

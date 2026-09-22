@@ -253,6 +253,33 @@ If you want the argument for why this reshapes the job rather than just the
 tooling, that is [The Modern Data Scientist](/blog/modern-data-scientist-roadmap).
 This series was the how. That one is the why.
 
+
+## Try it yourself
+
+The companion kit ends here, with the whole assistant: a fixed workflow where
+code decides the steps and the model makes one call, beside the agent loop from
+Part 2, both guarded by everything from Parts 3 to 5. It is in
+[the Part 6 folder of the kit](https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts/06-from-agent-to-system), and
+[the kit's README](https://github.com/LeparaLaMapara/agent-roadmap-kit) has the setup. Like every stop, it is free to run.
+
+```bash
+npm run ask -- "Do you deliver to Block L?"
+npm run part6
+```
+
+- Ask the finished assistant a question and read the one line cost receipt:
+  one model call, a cited source.
+- Run the comparison. The same questions go through the workflow and the agent
+  loop, and the conclusion is computed from your own run. On a small local model
+  the workflow used about three times fewer model calls and tokens.
+- Find the question where the loop wins. On one payment question the agent
+  chose better search words than the workflow's fixed step, which is the trade
+  this post describes.
+- Ask it to leave a note for the owner. Code drafts it, and nothing is saved
+  until a human says yes.
+- Change the write rule in the policy file and run the same request. The code
+  stays the same; only the rules change. That is bounded autonomy.
+
 ---
 
 *This is the final part. Start at [Part 1: From Chat to Agent](/blog/how-i-used-ai-to-build-this-site).*

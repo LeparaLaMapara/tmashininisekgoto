@@ -202,6 +202,33 @@ readers do.
 That is Part 5: git, tests, CI, and the failures on this site where getting the
 build green would have been exactly the wrong goal.
 
+
+## Try it yourself
+
+Everything in this post has a runnable version in the companion kit, in
+[the Part 4 folder of the kit](https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts/04-making-agents-safe): a policy file, a
+spending limit, a human approval step, and an append only database that is the
+one door that writes. Setup is in [the kit's README](https://github.com/LeparaLaMapara/agent-roadmap-kit), and it is free.
+
+```bash
+npm run part4:attack
+npm run part4 -- --yes
+```
+
+- Run the attack demo and watch a small local model obey a planted line in a
+  customer note, while the owner's private number still never reaches it,
+  because the filter is code, not a prompt.
+- Follow the exercise that switches private notes into the search. A "never
+  reveal" line in the prompt does not stop the leak. Instructions are not a
+  security boundary.
+- Try to rewrite history with raw SQL on the kit's database. The database
+  refuses the update or delete even though your command never touches the
+  app's code.
+- In the policy file, change a customer write from ask to allow and watch the
+  human approval step disappear.
+- Lower the model call limit and watch the budget stop a conversation that
+  would otherwise keep going.
+
 ---
 
 *Next: [Part 5: Making Agents Reliable Enough to Ship](/blog/agent-reliability-and-ci).*
