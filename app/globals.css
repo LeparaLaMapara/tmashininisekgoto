@@ -50,6 +50,8 @@
   --font-display: "Work Sans", system-ui, sans-serif;
   --font-body: "Work Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  --font-dot: "Doto", ui-monospace, monospace;
+  --font-livery: "Barlow Condensed", "Arial Narrow", sans-serif;
 
   /* Signs are cut square. Pills (rounded-full) stay for dots and toggles. */
   --radius-md: 0.125rem;

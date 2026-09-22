@@ -7,6 +7,7 @@ import { BIO, CAREER_TIMELINE, PROJECTS, PUBLICATIONS, TALKS, COURSES, SOCIAL_LI
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowRight, Github, BookOpen } from 'lucide-react'
+import { DestinationBoard, LiveryStripes, CareerRoute } from '@/components/home/taxi-route'
 
 // Title and description come from the root layout's defaults; this only pins the
 // canonical so the homepage points at itself rather than inheriting anything.
@@ -77,6 +78,10 @@ export default function Home() {
           so crawlers, link previews and fast scrollers all see the same page. */}
       <section className="px-6 pt-32 sm:pt-36 pb-16">
         <div className="mx-auto max-w-6xl">
+          <DestinationBoard />
+          <div className="my-8 -mx-6 sm:mx-0">
+            <LiveryStripes />
+          </div>
           <div className="sign-board px-6 py-7 sm:px-10 sm:py-10">
             <p className="font-mono text-xs sm:text-sm font-semibold tracking-wider uppercase mb-5">
               Thabang means rejoice · Ubunye means unity
@@ -124,6 +129,21 @@ export default function Home() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* ---------------- 1b. THE ROUTE ----------------
+          The career as a taxi route. Every stop links to the page that proves it. */}
+      <section className="py-20 px-6 border-t-4 border-ivory">
+        <div className="mx-auto max-w-6xl">
+          <p className="sign-label mb-3">The route so far</p>
+          <h2 className="font-livery italic font-extrabold uppercase text-4xl sm:text-5xl leading-[0.95] text-ivory mb-4 text-balance">
+            Every stop <span className="text-[#e03a1e]">taught me</span> something.
+          </h2>
+          <p className="text-lg text-muted max-w-2xl mb-10">
+            From a stock exchange in 2017 to a PhD in 2027. Tap a stop to see the work done there.
+          </p>
+          <CareerRoute />
         </div>
       </section>
 
