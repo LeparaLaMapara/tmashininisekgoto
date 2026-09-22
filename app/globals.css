@@ -4,84 +4,83 @@
 @plugin "@tailwindcss/typography";
 
 /*
- * Ubunye Design System
+ * Signwriter Design System
  *
- * Warm, light first, grounded. Paper and ink instead of void and neon.
- * One clay accent, one deep green, one ochre. The token NAMES are kept
- * from the previous system (void, surface, synapse, signal, ivory) so
- * every component follows the new palette without being touched:
+ * Borrowed from the hand painted signs on spaza shops, salons and taverns in
+ * Soshanguve: white wall, black lettering, sign yellow boards, red and green
+ * paint, thick outlines and hard shadows. Square corners, no blur, no glow.
  *
- *   void     -> the page background   (paper / warm charcoal in dark)
- *   ivory    -> the text              (ink / bone in dark)
- *   synapse  -> primary accent        (burnt clay)
- *   signal   -> secondary accent      (deep green)
- *   accent   -> tertiary accent       (ochre)
+ * The token NAMES are kept from the earlier systems (void, surface, synapse,
+ * signal, ivory) so every component follows the palette without being touched:
+ *
+ *   void     -> the page background   (white wall / night in dark)
+ *   ivory    -> the text              (sign black / chalk in dark)
+ *   synapse  -> primary accent        (sign red)
+ *   signal   -> secondary accent      (paint green)
+ *   accent   -> the board             (sign yellow; never small text)
  */
 
 @theme {
-  /* Core palette — light is the default */
-  --color-void: #faf6ee;
+  /* Core palette, light is the default */
+  --color-void: #ffffff;
   --color-surface: #ffffff;
-  --color-surface-hover: #f2ebdd;
-  --color-synapse: #b5501e;
-  --color-synapse-dim: #ecd7c4;
-  /* Accessible variants of the two brand colours, for SMALL TEXT only. The
-     brand colours themselves are untouched: headings, icons, borders, large
-     type and every decorative use keep --color-synapse and --color-accent.
-
-     Use -ink whenever brand-coloured text is under ~18px, or sits on a tint
-     rather than the page background. Measured against every surface it lands
-     on (WCAG AA needs 4.5:1 for small text):
-
-       synapse-ink #9c4315   white 6.5   void 6.0   synapse/10 5.3   synapse-dim 4.6
-       accent-ink  #8a5f22   white 5.6   void 5.2
-
-     The values that made those the minimum: --color-synapse at 15px measured
-     3.6:1 on --color-synapse-dim (the /work filter buttons) and 4.28:1 on the
-     publication cards, and --color-accent measured 4.04:1 on white (inline
-     code in posts). All three failed. */
-  --color-synapse-ink: #9c4315;
-  --color-signal: #1f5c3a;
-  --color-signal-dim: #d9e7dc;
-  --color-accent: #a8742a;
-  --color-accent-ink: #8a5f22;
-  /* Code blocks are dark in both themes (`.prose pre` hardcodes #211b15), so
-     the language label above them needs its own colour rather than --color-muted,
-     which is dark ink in light mode and measured 1.84:1 there. 5.8:1 on #211b15. */
-  --color-code-muted: #a2957f;
-  --color-ivory: #201911;
-  --color-muted: #6e6353;
-  --color-border: rgba(32, 25, 17, 0.1);
+  --color-surface-hover: #fff6d1;
+  --color-synapse: #d62828;
+  --color-synapse-dim: #f9d4d1;
+  /* Small text in the brand colours. Measured on white (WCAG AA needs 4.5:1):
+       synapse-ink #b3201f  6.3     accent-ink #6e5200  7.0
+     The yellow itself is ~1.5:1 on white, so it is a surface, never text. */
+  --color-synapse-ink: #b3201f;
+  --color-signal: #1b7f3b;
+  --color-signal-dim: #d7efdd;
+  --color-accent: #ffd23f;
+  --color-accent-ink: #6e5200;
+  /* Lettering on a yellow board. Fixed in both themes: a sign is yellow and
+     black at night too. */
+  --color-sign-ink: #111111;
+  --color-sign-board: #ffd23f;
+  /* Code blocks are dark in both themes. 5.8:1 on #161616. */
+  --color-code-muted: #a8a294;
+  --color-ivory: #111111;
+  --color-muted: #555555;
+  --color-border: rgba(17, 17, 17, 0.16);
 
   /* Typography */
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-sign: "Bungee", Impact, "Arial Black", sans-serif;
+  --font-display: "Work Sans", system-ui, sans-serif;
+  --font-body: "Work Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  --font-dot: "Doto", ui-monospace, monospace;
+  --font-livery: "Barlow Condensed", "Arial Narrow", sans-serif;
+
+  /* Signs are cut square. Pills (rounded-full) stay for dots and toggles. */
+  --radius-md: 0.125rem;
+  --radius-lg: 0.1875rem;
+  --radius-xl: 0.25rem;
+  --radius-2xl: 0.25rem;
+  --radius-3xl: 0.25rem;
 
   /* Animation */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* === Dark mode: warm charcoal, evening light, never a server room === */
+/* === Dark mode: the same street after dark, signs still lit === */
 
 :root.dark {
-  --color-void: #171310;
-  --color-surface: #211b15;
-  --color-surface-hover: #2a231b;
-  --color-synapse: #d97742;
-  --color-synapse-dim: #7a3d17;
-  /* Dark mode already passes: light brand colours on dark surfaces. Both -ink
-     tokens equal their brand colour here, so using -ink anywhere is safe and
-     changes nothing in dark. */
-  --color-synapse-ink: #d97742;
-  --color-signal: #7cb593;
-  --color-signal-dim: #24402f;
-  --color-accent: #d3a253;
-  --color-accent-ink: #d3a253;
-  --color-ivory: #ece2d0;
-  --color-muted: #998c78;
-  --color-border: rgba(236, 226, 208, 0.1);
+  --color-void: #121212;
+  --color-surface: #1b1b1b;
+  --color-surface-hover: #262214;
+  --color-synapse: #ff6b5e;
+  --color-synapse-dim: #5c1d18;
+  --color-synapse-ink: #ff6b5e;
+  --color-signal: #52c77a;
+  --color-signal-dim: #173a24;
+  --color-accent: #ffd23f;
+  --color-accent-ink: #ffd23f;
+  --color-ivory: #f5f1e6;
+  --color-muted: #b3ada0;
+  --color-border: rgba(245, 241, 230, 0.18);
 }
 
 /* === Base === */
@@ -98,33 +97,6 @@ body {
   font-family: var(--font-body);
   font-size: 1.0625rem; /* 17px base — easier on the eyes than 16px */
   line-height: 1.7;
-  letter-spacing: 0.01em;
-}
-
-/*
- * The blanket stripe. A quiet nod to Basotho blanket banding:
- * clay, ochre, green, in one thin line across the top of every page.
- * It is the only decoration the design allows itself.
- */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  z-index: 60;
-  background: linear-gradient(
-    to right,
-    var(--color-synapse) 0%,
-    var(--color-synapse) 40%,
-    var(--color-accent) 40%,
-    var(--color-accent) 55%,
-    var(--color-signal) 55%,
-    var(--color-signal) 80%,
-    var(--color-ivory) 80%,
-    var(--color-ivory) 100%
-  );
 }
 
 /*
@@ -163,8 +135,8 @@ html.theme-fade * {
 /* === Selection === */
 
 ::selection {
-  background-color: rgba(181, 80, 30, 0.2);
-  color: var(--color-ivory);
+  background-color: var(--color-accent);
+  color: var(--color-sign-ink);
 }
 
 /* === Focus === */
@@ -197,15 +169,15 @@ html.theme-fade * {
 .prose h3,
 .prose h4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .prose pre {
-  background-color: #211b15 !important;
-  color: #ece2d0;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  background-color: #161616 !important;
+  color: #f5f1e6;
+  border: 2px solid var(--color-ivory);
+  border-radius: 0;
 }
 
 .prose code::before,
@@ -214,31 +186,83 @@ html.theme-fade * {
 }
 
 .prose img {
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border-radius: 0;
+  border: 2px solid var(--color-ivory);
 }
 
-/* === Card utility (was "glass" — now honest paper) === */
+/* === Card utility ===
+ * The class name "glass" is historical. Every card on the site is now a
+ * painted panel: solid surface, a sign outline and a hard offset shadow.
+ * Unlayered on purpose, so it wins over a card's own border-* utilities. */
 
 .glass {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border: 2px solid var(--color-ivory);
+  box-shadow: 4px 4px 0 var(--color-ivory);
 }
 
-:root.dark .glass {
-  background: rgba(33, 27, 21, 0.75);
-}
-
-/* === Former glow effects — now soft, honest shadows === */
-
-.glow-synapse {
-  box-shadow: 0 1px 2px rgba(32, 25, 17, 0.08), 0 4px 16px rgba(32, 25, 17, 0.08);
-}
-
+/* The former glow utilities, now the same hard shadow as a panel. */
+.glow-synapse,
 .glow-signal {
-  box-shadow: 0 1px 2px rgba(32, 25, 17, 0.08), 0 4px 16px rgba(32, 25, 17, 0.08);
+  box-shadow: 4px 4px 0 var(--color-ivory);
+}
+
+/* === Signwriter components === */
+
+@layer components {
+  /* A yellow board with black lettering. */
+  .sign-board {
+    background: var(--color-sign-board);
+    color: var(--color-sign-ink);
+    border: 5px solid var(--color-sign-ink);
+    box-shadow: 8px 8px 0 var(--color-ivory);
+  }
+
+  /* Short labels painted in Bungee. Keep them to a few words. */
+  .sign-label {
+    font-family: var(--font-sign);
+    font-size: 0.875rem;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: var(--color-synapse-ink);
+  }
+
+  /* The black closing board. On the dark page it needs a lit edge. */
+  :root.dark .night-board {
+    border-color: var(--color-sign-board);
+  }
+
+  .btn-sign,
+  .btn-sign-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    border: 3px solid var(--color-ivory);
+    box-shadow: 4px 4px 0 var(--color-ivory);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn-sign {
+    background: var(--color-ivory);
+    color: var(--color-void);
+  }
+  .btn-sign-outline {
+    background: var(--color-void);
+    color: var(--color-ivory);
+  }
+  .btn-sign:hover,
+  .btn-sign-outline:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--color-ivory);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-sign,
+    .btn-sign-outline {
+      transition: none;
+    }
+  }
 }
 
 /* === KaTeX math === */

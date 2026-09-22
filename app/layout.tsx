@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google'
+import { Bungee, Work_Sans, JetBrains_Mono, Doto, Barlow_Condensed } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Navbar } from '@/components/layout/navbar'
@@ -11,21 +11,37 @@ import { webSiteSchema } from '@/lib/schema'
 import { SITE_URL, ogImages } from '@/lib/site'
 import './globals.css'
 
-const fraunces = Fraunces({
+// The signwriter system. Bungee is a typeface drawn for street signage, used
+// only where a hand painted board would put words: the logo, the homepage
+// sign and the short section labels. Bungee has no lowercase, so it never
+// sets a long title. Work Sans carries every heading and all reading text.
+const bungee = Bungee({
   subsets: ['latin'],
-  variable: '--font-display',
+  weight: '400',
+  variable: '--font-sign',
   display: 'swap',
-  // `opsz` only. SOFT and WONK were requested but never used: nothing in the
-  // codebase sets font-variation-settings, so they were shipping extra bytes in
-  // the one font the LCP element depends on. `opsz` stays because browsers apply
-  // optical sizing automatically, which is what makes Fraunces look right at
-  // display sizes.
-  axes: ['opsz'],
 })
 
-const inter = Inter({
+const workSans = Work_Sans({
   subsets: ['latin'],
   variable: '--font-body',
+  display: 'swap',
+})
+
+// Taxi rank faces, used only by components/home/taxi-route.tsx: Doto for the
+// dot matrix destination board, Barlow Condensed for the livery lettering.
+const doto = Doto({
+  subsets: ['latin'],
+  weight: ['700', '900'],
+  variable: '--font-dot',
+  display: 'swap',
+})
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  style: ['normal', 'italic'],
+  variable: '--font-livery',
   display: 'swap',
 })
 
@@ -93,7 +109,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${bungee.variable} ${workSans.variable} ${jetbrainsMono.variable} ${doto.variable} ${barlowCondensed.variable}`}
     >
       <body className="min-h-screen bg-void text-ivory font-body antialiased">
         {/* WebSite is site-wide. The Person entity lives on the homepage and is
