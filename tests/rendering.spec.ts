@@ -41,7 +41,7 @@ test.describe('server-rendered HTML', () => {
 
   test('homepage below-fold sections are in the HTML', async ({ request }) => {
     const html = await (await request.get('/')).text()
-    expect(html).toContain('Real impact, real numbers')
+    expect(html).toContain('What the work delivered')
     expect(html).toContain('University of the Witwatersrand')
   })
 })
@@ -50,7 +50,7 @@ test.describe('reveal animations still work', () => {
   test('below-fold section becomes visible when scrolled into view', async ({ page }) => {
     await page.goto('/')
 
-    const heading = page.getByRole('heading', { name: 'Real impact, real numbers' })
+    const heading = page.getByRole('heading', { name: 'What the work delivered' })
     await heading.scrollIntoViewIfNeeded()
 
     // Not just attached: actually painted at full opacity.

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Sparkles } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
@@ -37,17 +37,15 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled
-          ? 'glass shadow-lg shadow-void/50'
-          : 'bg-transparent'
+        'fixed top-0 left-0 right-0 z-50 bg-void border-b-4 border-ivory transition-shadow duration-300',
+        scrolled && 'shadow-[0_4px_0_rgba(0,0,0,0.06)]'
       )}
     >
-      <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 py-5">
+      <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link
           href="/"
-          className="group font-display text-2xl sm:text-[1.7rem] font-semibold tracking-tight text-ivory"
+          className="group font-sign text-xl sm:text-2xl tracking-wide text-ivory"
         >
           Thabang<span className="text-synapse group-hover:text-signal transition-colors duration-300">.</span>
         </Link>
@@ -64,9 +62,9 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative px-4 py-2.5 text-[0.9375rem] font-medium transition-colors rounded-lg',
+                  'relative px-3.5 py-2.5 text-[0.9375rem] font-semibold transition-colors',
                   isActive
-                    ? 'text-synapse'
+                    ? 'text-ivory'
                     : 'text-muted hover:text-ivory'
                 )}
               >
@@ -74,7 +72,7 @@ export function Navbar() {
                 {isActive && (
                   <motion.div
                     layoutId="nav-indicator"
-                    className="absolute bottom-0 left-3 right-3 h-0.5 bg-synapse rounded-full"
+                    className="absolute bottom-0 left-2.5 right-2.5 h-1 bg-synapse"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -86,13 +84,10 @@ export function Navbar() {
           <Link
             href="/ai"
             className={cn(
-              'ml-4 flex items-center gap-2 px-5 py-2.5 text-[0.9375rem] font-medium rounded-full transition-all',
-              pathname === '/ai'
-                ? 'bg-synapse text-void'
-                : 'bg-synapse/10 text-synapse-ink hover:bg-synapse/20 border border-synapse/20'
+              'ml-4 mr-2 flex items-center px-4 py-2 text-[0.9375rem] font-semibold border-[3px] border-sign-ink text-sign-ink transition-transform hover:translate-x-px hover:translate-y-px',
+              pathname === '/ai' ? 'bg-synapse text-white' : 'bg-sign-board'
             )}
           >
-            <Sparkles className="w-4 h-4" />
             Talk to Thabang AI Assist
           </Link>
 
@@ -116,7 +111,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-border overflow-hidden"
+            className="md:hidden bg-void border-t-2 border-ivory overflow-hidden"
           >
             <div className="px-6 py-5 flex flex-col gap-1">
               {NAV_LINKS.map((link) => {
@@ -129,9 +124,9 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      'px-4 py-3 text-base font-medium rounded-lg transition-colors',
+                      'px-4 py-3 text-base font-semibold transition-colors',
                       isActive
-                        ? 'text-synapse-ink bg-synapse/10'
+                        ? 'text-ivory bg-surface-hover border-l-4 border-synapse'
                         : 'text-muted hover:text-ivory'
                     )}
                   >
@@ -141,9 +136,8 @@ export function Navbar() {
               })}
               <Link
                 href="/ai"
-                className="mt-3 flex items-center justify-center gap-2 px-5 py-3 text-base font-medium rounded-full bg-synapse/10 text-synapse-ink border border-synapse/20"
+                className="mt-3 flex items-center justify-center px-5 py-3 text-base font-semibold bg-sign-board text-sign-ink border-[3px] border-sign-ink"
               >
-                <Sparkles className="w-4 h-4" />
                 Talk to Thabang AI Assist
               </Link>
               <div className="mt-3 flex justify-center">

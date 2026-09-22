@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Github, Youtube, Linkedin, GraduationCap, Sparkles } from 'lucide-react'
+import { Github, Youtube, Linkedin, GraduationCap } from 'lucide-react'
 import { SOCIAL_LINKS } from '@/lib/data'
 
 const socialIcons = [
@@ -11,13 +11,13 @@ const socialIcons = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-void/80">
+    <footer className="border-t-4 border-ivory bg-void">
       <div className="mx-auto max-w-6xl px-6 py-12">
         {/* Top row: 3 columns */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Column 1: Brand */}
           <div>
-            <p className="font-display text-xl font-semibold">
+            <p className="font-sign text-xl">
               Thabang<span className="text-synapse">.</span>
             </p>
             <p className="text-muted text-sm mt-1">
@@ -62,9 +62,8 @@ export function Footer() {
             <h2 className="text-xs uppercase tracking-wider text-muted mb-3">Get in Touch</h2>
             <Link
               href="/ai"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-synapse/10 text-synapse-ink text-sm border border-synapse/20 hover:bg-synapse/20 transition-all"
+              className="inline-flex items-center px-4 py-2 bg-sign-board text-sign-ink text-sm font-semibold border-[3px] border-sign-ink transition-transform hover:translate-x-px hover:translate-y-px"
             >
-              <Sparkles className="w-4 h-4" />
               Talk to Thabang AI Assist
             </Link>
           </div>
