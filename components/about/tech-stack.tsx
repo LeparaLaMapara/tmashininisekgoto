@@ -169,7 +169,7 @@ export function TechStack() {
               Contribution Activity
             </h3>
             {active !== 'all' && (
-              <span className="text-sm text-synapse bg-synapse/10 px-3 py-1 rounded-full">
+              <span className="text-sm text-synapse bg-synapse/10 px-3 py-1 rounded-sm">
                 {TECH_CATEGORIES[active as TechItem['category']]}
               </span>
             )}

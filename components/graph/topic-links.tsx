@@ -17,12 +17,12 @@ export function TopicLinks({ slugs, className = '' }: { slugs: string[]; classNa
           {href ? (
             <Link
               href={href}
-              className="inline-block rounded-full border border-border px-2.5 py-0.5 text-xs font-mono text-muted transition-colors hover:border-synapse/40 hover:text-ivory"
+              className="inline-block rounded-sm border border-border px-2.5 py-0.5 text-xs font-mono text-muted transition-colors hover:border-synapse/40 hover:text-ivory"
             >
               {def!.name}
             </Link>
           ) : (
-            <span className="inline-block rounded-full border border-border/60 px-2.5 py-0.5 text-xs font-mono text-muted">
+            <span className="inline-block rounded-sm border border-border/60 px-2.5 py-0.5 text-xs font-mono text-muted">
               {def!.name}
             </span>
           )}

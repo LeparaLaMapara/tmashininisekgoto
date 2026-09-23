@@ -58,7 +58,7 @@ export function CiteBox({
                 type="button"
                 onClick={() => setFormat(option)}
                 aria-pressed={format === option}
-                className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
+                className={`rounded-sm border px-3 py-1 font-mono text-xs transition-colors ${
                   format === option
                     ? 'border-synapse/40 bg-synapse/10 text-synapse-ink'
                     : 'border-border bg-surface text-muted hover:text-ivory'
@@ -70,7 +70,7 @@ export function CiteBox({
             <button
               type="button"
               onClick={copy}
-              className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 font-mono text-xs text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
+              className="ml-auto inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-3 py-1 font-mono text-xs text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
             >
               {copied ? (
                 <>

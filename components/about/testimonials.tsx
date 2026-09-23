@@ -34,7 +34,7 @@ export function Testimonials() {
               </p>
               <p className="text-xs text-muted mt-0.5">{t.role}</p>
               <span
-                className={`inline-block mt-2 px-2.5 py-0.5 rounded-full text-[0.6875rem] font-mono border ${contextColors[t.context]}`}
+                className={`inline-block mt-2 px-2.5 py-0.5 rounded-sm text-[0.6875rem] font-mono border ${contextColors[t.context]}`}
               >
                 {contextLabels[t.context]}
               </span>

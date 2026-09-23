@@ -69,7 +69,7 @@ export function SuggestedQuestions({ onSelect }: SuggestedQuestionsProps) {
             onClick={() => setActive(g.key)}
             aria-pressed={g.key === active}
             className={cn(
-              'rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-200',
+              'rounded-sm border px-3.5 py-1.5 text-xs font-medium transition-all duration-200',
               'focus:outline-none focus:ring-1 focus:ring-synapse/40',
               g.key === active
                 ? 'border-synapse/30 bg-synapse/15 text-synapse'

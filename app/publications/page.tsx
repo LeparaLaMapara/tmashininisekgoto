@@ -49,17 +49,17 @@ export default function PublicationsPage() {
             <Link href="/research" className="text-synapse underline underline-offset-2 hover:no-underline">Research</Link>.
           </p>
           <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-muted mb-4">
-            <span className="rounded-full border border-border bg-surface px-4 py-1.5">
+            <span className="rounded-sm border border-border bg-surface px-4 py-1.5">
               {publications.length} publications
             </span>
-            <span className="rounded-full border border-border bg-surface px-4 py-1.5">
+            <span className="rounded-sm border border-border bg-surface px-4 py-1.5">
               {totalCitations} citations (highest observed per paper)
             </span>
             {/* Plain <a>: /publications.bib is a route handler, not a page, so a
                 soft navigation would have nothing to render. */}
             <a
               href="/publications.bib"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-1.5 transition-colors hover:border-synapse/30 hover:text-ivory"
+              className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-4 py-1.5 transition-colors hover:border-synapse/30 hover:text-ivory"
             >
               <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
               BibTeX for all
@@ -95,7 +95,7 @@ export default function PublicationsPage() {
                 >
                   {/* Thesis badge */}
                   {isThesis && (
-                    <div className="absolute -top-3 left-6 flex items-center gap-1.5 rounded-full bg-signal/15 border border-signal/30 px-3 py-1 text-xs font-mono text-signal">
+                    <div className="absolute -top-3 left-6 flex items-center gap-1.5 rounded-sm bg-signal/15 border border-signal/30 px-3 py-1 text-xs font-mono text-signal">
                       <GraduationCap className="w-3.5 h-3.5" />
                       MSc Thesis
                     </div>
@@ -152,7 +152,7 @@ export default function PublicationsPage() {
                       {pub.applications.map((app) => (
                         <span
                           key={app}
-                          className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-mono text-muted"
+                          className="rounded-sm border border-border bg-surface px-3 py-1 text-xs font-mono text-muted"
                         >
                           {app}
                         </span>

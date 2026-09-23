@@ -132,7 +132,7 @@ function SceneFallback() {
       <p className="max-w-md text-muted">
         The 3D scene couldn&apos;t run on this device. You can explore the same career story on the resume timeline.
       </p>
-      <Link href="/resume" className="rounded-full bg-synapse px-6 py-3 text-sm font-medium text-void hover:bg-synapse/90">
+      <Link href="/resume" className="rounded-sm bg-synapse px-6 py-3 text-sm font-medium text-void hover:bg-synapse/90">
         View the resume timeline
       </Link>
     </div>
@@ -234,7 +234,7 @@ export function CareerExperience() {
           Your browser doesn&apos;t support WebGL, so the interactive journey can&apos;t load. You can explore the
           same career story on the resume timeline.
         </p>
-        <Link href="/resume" className="rounded-full bg-synapse px-6 py-3 text-sm font-medium text-void hover:bg-synapse/90">
+        <Link href="/resume" className="rounded-sm bg-synapse px-6 py-3 text-sm font-medium text-void hover:bg-synapse/90">
           View the resume timeline
         </Link>
       </div>
@@ -274,7 +274,7 @@ export function CareerExperience() {
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 sm:p-6">
         <Link
           href="/resume"
-          className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-4 py-2 text-sm text-ivory backdrop-blur-md transition-colors hover:bg-surface"
+          className="pointer-events-auto inline-flex items-center gap-2 rounded-sm border border-border bg-surface/70 px-4 py-2 text-sm text-ivory backdrop-blur-md transition-colors hover:bg-surface"
         >
           <ArrowLeft className="h-4 w-4" />
           Resume
@@ -283,14 +283,14 @@ export function CareerExperience() {
           {started && coinTotal > 0 && (
             <span
               title="Berries collected"
-              className="flex items-center gap-1.5 rounded-full border border-signal/30 bg-surface/70 px-3 py-2 font-mono text-xs text-signal backdrop-blur-md"
+              className="flex items-center gap-1.5 rounded-sm border border-signal/30 bg-surface/70 px-3 py-2 font-mono text-xs text-signal backdrop-blur-md"
             >
               <CoinsIcon className="h-4 w-4" />
               {coins}/{coinTotal}
               <span className="hidden sm:inline">berries</span>
             </span>
           )}
-          <span className="rounded-full border border-border bg-surface/70 px-4 py-2 font-mono text-xs text-muted backdrop-blur-md">
+          <span className="rounded-sm border border-border bg-surface/70 px-4 py-2 font-mono text-xs text-muted backdrop-blur-md">
             {active != null ? `${active + 1} / ${JOURNEY.length}` : `${JOURNEY.length} stops`}
           </span>
           <button
@@ -306,7 +306,7 @@ export function CareerExperience() {
       {/* progress timeline / fast-travel */}
       {started && (
         <div className="pointer-events-none absolute inset-x-0 top-16 z-20 flex justify-center px-4 sm:top-20">
-          <div className="pointer-events-auto flex max-w-full items-center gap-1.5 overflow-x-auto rounded-full border border-border bg-surface/60 px-3 py-2 backdrop-blur-md">
+          <div className="pointer-events-auto flex max-w-full items-center gap-1.5 overflow-x-auto rounded-sm border border-border bg-surface/60 px-3 py-2 backdrop-blur-md">
             {JOURNEY.map((m, i) => {
               const on = active === i
               return (
@@ -315,7 +315,7 @@ export function CareerExperience() {
                   onClick={() => travelTo(i)}
                   title={`${m.shortOrg} · ${m.period}`}
                   aria-label={`Travel to ${m.org}`}
-                  className="group flex shrink-0 items-center gap-1.5 rounded-full px-1.5 py-1"
+                  className="group flex shrink-0 items-center gap-1.5 rounded-sm px-1.5 py-1"
                 >
                   <span
                     className={`h-2.5 w-2.5 rounded-full transition-all ${
@@ -381,7 +381,7 @@ export function CareerExperience() {
             </p>
             <button
               onClick={begin}
-              className="rounded-full bg-synapse px-8 py-3 font-medium text-void transition-all hover:bg-synapse/90"
+              className="rounded-sm bg-synapse px-8 py-3 font-medium text-void transition-all hover:bg-synapse/90"
             >
               Start walking
             </button>
@@ -415,7 +415,7 @@ export function CareerExperience() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs text-muted">{milestone.period}</span>
-                    <span className={`rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${ACCENT_BORDER[milestone.accent]} ${ACCENT_TEXT[milestone.accent]}`}>
+                    <span className={`rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${ACCENT_BORDER[milestone.accent]} ${ACCENT_TEXT[milestone.accent]}`}>
                       {milestone.era}
                     </span>
                   </div>
@@ -432,7 +432,7 @@ export function CareerExperience() {
                   {/* skill chips */}
                   <div className="flex flex-wrap gap-1.5">
                     {milestone.skills.map((s) => (
-                      <span key={s} className="rounded-full border border-border bg-white/5 px-2.5 py-1 text-[11px] text-muted">
+                      <span key={s} className="rounded-sm border border-border bg-white/5 px-2.5 py-1 text-[11px] text-muted">
                         {s}
                       </span>
                     ))}
@@ -446,14 +446,14 @@ export function CareerExperience() {
                   <span className="w-full text-xs text-muted">You&apos;ve reached the present. Let&apos;s talk about what&apos;s next.</span>
                   <Link
                     href="/ai"
-                    className="inline-flex items-center gap-1.5 rounded-full bg-synapse px-4 py-2 text-sm font-medium text-void transition-all hover:bg-synapse/90"
+                    className="inline-flex items-center gap-1.5 rounded-sm bg-synapse px-4 py-2 text-sm font-medium text-void transition-all hover:bg-synapse/90"
                   >
                     <Sparkles className="h-4 w-4" />
                     Talk to Thabang AI Assist
                   </Link>
                   <Link
                     href="/about"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white/5 px-4 py-2 text-sm text-ivory transition-colors hover:bg-white/10"
+                    className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-white/5 px-4 py-2 text-sm text-ivory transition-colors hover:bg-white/10"
                   >
                     <MessageCircle className="h-4 w-4" />
                     Get in touch
@@ -471,7 +471,7 @@ export function CareerExperience() {
           {coarse ? (
             <Joystick />
           ) : (
-            <span className="rounded-full border border-border bg-surface/60 px-3 py-1.5 font-mono text-[11px] text-muted backdrop-blur-md">
+            <span className="rounded-sm border border-border bg-surface/60 px-3 py-1.5 font-mono text-[11px] text-muted backdrop-blur-md">
               WASD / arrows to move
             </span>
           )}

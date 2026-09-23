@@ -224,7 +224,15 @@ export function getAllPosts(): BlogPost[] {
   return files
     .map(parsePost)
     .filter((post) => post.published)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    // Newest first. A series often publishes several parts on one date; within
+    // a date the later part is the newer post, so the homepage never lists
+    // Part 3, then 5, then 4.
+    .sort(
+      (a, b) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime() ||
+        (b.seriesPart ?? 0) - (a.seriesPart ?? 0) ||
+        a.title.localeCompare(b.title),
+    )
 }
 
 /**

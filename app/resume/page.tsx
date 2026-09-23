@@ -67,7 +67,7 @@ export default function ResumePage() {
             <a
               href="/resume.pdf"
               download
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-synapse text-void font-medium text-sm hover:bg-synapse/90 transition-all glow-synapse"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-synapse text-void font-medium text-sm hover:bg-synapse/90 transition-all glow-synapse"
             >
               <Download className="w-4 h-4" />
               Download PDF
@@ -194,14 +194,14 @@ export default function ResumePage() {
           <div className="mt-16 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/career"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-signal/10 text-signal font-medium text-sm hover:bg-signal/20 border border-signal/20 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-sm bg-signal/10 text-signal font-medium text-sm hover:bg-signal/20 border border-signal/20 transition-all"
             >
               <Gamepad2 className="w-4 h-4" />
               Walk through my journey
             </Link>
             <Link
               href="/ai"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-synapse/10 text-synapse font-medium text-sm hover:bg-synapse/20 border border-synapse/20 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-sm bg-synapse/10 text-synapse font-medium text-sm hover:bg-synapse/20 border border-synapse/20 transition-all"
             >
               <Sparkles className="w-4 h-4" />
               Talk to Thabang AI Assist

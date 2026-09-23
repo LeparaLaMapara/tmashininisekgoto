@@ -146,7 +146,7 @@ export function Comments({ slug }: CommentsProps) {
         <button
           type="submit"
           disabled={sending}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-ivory text-void font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-sm bg-ivory text-void font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           <MessageCircle className="w-4 h-4" />
           {sending ? 'Posting…' : 'Post comment'}

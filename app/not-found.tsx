@@ -16,14 +16,14 @@ export default function NotFound() {
         <div className="flex items-center justify-center gap-4 flex-wrap">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border text-ivory text-sm font-medium hover:bg-surface transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm border border-border text-ivory text-sm font-medium hover:bg-surface transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
             Go home
           </Link>
           <Link
             href="/ai"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-synapse/10 text-synapse text-sm font-medium border border-synapse/20 hover:bg-synapse/20 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-synapse/10 text-synapse text-sm font-medium border border-synapse/20 hover:bg-synapse/20 transition-all"
           >
             <Sparkles className="w-4 h-4" />
             Ask Thabang AI Assist

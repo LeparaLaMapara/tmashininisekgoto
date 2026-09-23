@@ -89,7 +89,7 @@ export function TalkCard({ talk, compact = false }: { talk: Talk; compact?: bool
             {talk.topics.map((topic) => (
               <span
                 key={topic}
-                className="rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-muted"
+                className="rounded-sm border border-border px-2.5 py-0.5 font-mono text-xs text-muted"
               >
                 {topic}
               </span>
