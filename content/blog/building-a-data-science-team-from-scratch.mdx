@@ -40,6 +40,8 @@ a time. Our work was going the other way, toward large volumes, reprocessed hist
 model training. We had plenty of places to run software. What we did not have was a good
 place to do data science at scale.
 
+![Two boards compared. On the left, infrastructure built for applications: Kubernetes, Jenkins and CI pipelines, SQL Server on premises, PostgreSQL databases, Windows virtual machines, some work on somebody's laptop and databases with no obvious owner. On the right, where the data science work was going: large volumes, reprocessed history and model training. The workload and the infrastructure did not share a shape.](/posts/ds_estate.png)
+
 And the budget is tight. Not tight as in negotiate harder. Tight as in there
 is no line item for any of what you are about to need.
 
@@ -47,6 +49,8 @@ Here is the first thing I want you to understand, because everything else follow
 it. In that situation, the temptation is to start fixing the loudest thing. Do not. The
 loudest thing is almost never the load bearing thing. What follows is the order that
 worked, and more importantly, the reasoning behind the order.
+
+![A route with seven stops in order: make the work visible, write everything down, play the long game, pay the infrastructure bill, teach the team you have, patterns not heroics, and learn to let go, ending with systems that outlive people.](/posts/ds_order.png)
 
 ## First, make the work visible
 
@@ -182,6 +186,8 @@ it arrives
    -> the backlog clears
 ```
 
+![Three small charts of backlog over time. When data arrives faster than it is processed, the backlog grows. At the same rate in and out, it stops growing but never shrinks. Only when processing is faster than arrival does the backlog clear.](/posts/ds_backlog.png)
+
 To recover we did not just need to process 100 million trips. We needed enough capacity
 to work through the backlog while still handling the million or so arriving every day.
 No amount of team discipline fixes that. The stack was built for hosting applications,
@@ -201,6 +207,8 @@ ingestion and ETL, reconciliation so we could prove a number, quality checks tha
 bad values before they spread, monitoring and alerts so we heard about problems from our
 systems rather than from a client, lineage so we could trace where a value came from, and
 the ability to safely reprocess history.
+
+![Three requirements, work through the backlog, keep up with what arrives daily and trust the data before anything downstream uses it, leading to six controls: reliable ingestion and ETL, reconciliation to prove a number, quality checks, monitoring and alerts, lineage, and safe reprocessing of history.](/posts/ds_recovery.png)
 
 None of that was academic. Clients complained, the business pushed hard and reasonably
 so, and people were under real stress for weeks.
@@ -266,6 +274,8 @@ capability rather than an emergency measure. You do not get to finish the second
 the first becomes urgent, and pretending otherwise is how people end up with a beautiful
 architecture and an angry business.
 
+![Two parallel tracks. Track one, today: get enough data onto the platform, processing, and supporting the business right now. Track two, the capability: architecture, funding, contracts, access, support and adoption. Only track one is an emergency measure; only track two is a beautiful architecture and an angry business.](/posts/ds_two_tracks.png)
+
 The risk was mine and I knew it. If it had failed, there would have been no confusion
 about whose idea it was. That is the ownership I keep talking about: putting your name
 on an outcome before you know how it ends.
@@ -298,6 +308,8 @@ an email told them to. The goal was never for me to become the expert everyone h
 come back to. It was for anything I learned or solved once to become ordinary team
 knowledge: I work it out, I prove it, I write it down, I teach it, somebody else uses it,
 and eventually nobody remembers it was ever a special skill.
+
+![A loop of six steps: work it out, prove it, write it down, teach it, somebody else uses it, and nobody remembers it was special. The goal was never to be the expert everyone comes back to.](/posts/ds_knowledge_loop.png)
 
 The best example of that is not a tool at all. One of the most valuable people in this
 story already worked here. They had strong data management knowledge and, more to the
@@ -375,6 +387,8 @@ important. Databricks was not the capability:
    compute, storage, catalog
 ```
 
+![A stack of five layers from the bottom up: platform for compute, storage and catalog; data engineering for ingestion, ETL and quality; data science for experiments, models and deployment; practices for documentation, standards, testing and CI/CD; and people for skills, trust and ownership. Take any layer out and the ones above it wobble.](/posts/ds_capability_stack.png)
+
 A platform gives people capabilities. A pattern tells the team how work should be
 structured. People and habits are what make the conventions normal. Take any layer out
 and the ones above it wobble.
@@ -405,6 +419,8 @@ data science. Sometimes you build what is missing, prove it, teach it, and then 
 to the team that should own it. If you want the theory underneath that move,
 [Team Topologies](https://teamtopologies.com/book) is the book: platform teams exist so
 that stream teams can flow.
+
+![On the left, a data science team that for a while also carries data engineering, platform enablement and everything nobody else picked up, which is necessary for a while and a terrible permanent arrangement. On the right, the work handed to the teams that should own it, giving data scientists their capacity back.](/posts/ds_hand_over.png)
 
 None of this would have worked one level up. My manager was not a micromanager, and the
 room I was given is the room I was able to give the team. It is difficult to build an
@@ -438,6 +454,8 @@ faster because we got safer.
 And the change that matters more than every number: the team stopped being reactive. We
 were once a team that chased whatever was on fire that day. We are now proactive for
 most of what we do, which means we choose our work instead of our work choosing us.
+
+![Before and after two years. Time to production went from unbounded to a new model shipping in days; work that piled up became capacity to work through it; onboarding by oral tradition became a documented path; inherited models nobody could explain became documented and governed; and a reactive team became a proactive one.](/posts/ds_two_years.png)
 
 I should be honest about where this actually sits. The capability is not finished. Some
 foundational ownership is still moving toward the teams that should hold it, and there is
