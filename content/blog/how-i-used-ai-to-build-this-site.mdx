@@ -242,6 +242,41 @@ That is Part 2. How you give an agent hands, what it can safely touch, and why
 the moment it becomes genuinely useful is also the moment it becomes genuinely
 dangerous.
 
+
+## Try it yourself
+
+Reading about agents only gets you so far, so I built a small companion kit you
+can download and run: [agent-roadmap-kit on GitHub](https://github.com/LeparaLaMapara/agent-roadmap-kit). Each part of this
+series is one stop in it. By Part 6 the pieces add up to one working assistant
+that answers customer questions for a made up Soshanguve home kitchen, Mama
+Dineo's Kitchen, from a folder of its notes. Swap in your own notes and it
+answers about yours.
+
+It costs nothing to run. You need Node 22.18 or newer and one of three free options: a Gemini key from Google AI Studio (no credit card), a small model on your own machine through Ollama, or the built in mock, which needs no key and no internet at all.
+
+```bash
+git clone https://github.com/LeparaLaMapara/agent-roadmap-kit
+cd agent-roadmap-kit
+npm install
+npm run check
+```
+
+This first stop is the chat half of "chat versus agent", plus the templates I
+actually use. It lives in [the Part 1 folder of the kit](https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts/01-from-chat-to-agent).
+
+```bash
+npm run part1 -- --once "Do you deliver to Block L?"
+```
+
+- Ask the chat a question the notes can answer. With no tools it cannot see
+  them, which is the whole point of Part 2.
+- Keep a chat going for ten turns and watch the tokens sent grow every turn.
+  That is the context window filling up.
+- Copy the brief template and fill it in for your own project, saying what you
+  want and why, never how.
+- Copy the starter instructions file into your project and write the "how to
+  run and check it" section first. It is how an agent finds out it was wrong.
+
 ---
 
 *Next: [Part 2: Giving an Agent Hands](/blog/agent-tools-and-integrations).*

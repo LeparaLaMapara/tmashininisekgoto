@@ -216,6 +216,30 @@ That is Part 3: how you give an agent knowledge it did not have, why "the model
 is bad" is usually the wrong diagnosis, and the retrieval bugs on this site that
 took me longest to find.
 
+
+## Try it yourself
+
+The companion kit has a working version of this post: a keyword search tool, an
+agent loop, and a small MCP server, in [the Part 2 folder of the kit](https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts/02-giving-an-agent-hands).
+It is free to run, and [the kit's README](https://github.com/LeparaLaMapara/agent-roadmap-kit) has the setup.
+
+```bash
+npm run part2
+npm run part2:inspect
+```
+
+- Run the agent and watch the loop happen: the model asks for the search tool,
+  reads the result, then answers.
+- Open the MCP Inspector and list the tools. Only the read tools are there
+  until you switch writes on, which is the read versus write line from this
+  post, enforced in code.
+- Connect the server to Claude Desktop with the snippet in the folder's README.
+  Local MCP servers work on the free plan.
+- Ask "Are all plates free this week?" and watch a planted line in the customer
+  feedback fool a small model. Tools give an agent power, not judgement.
+- Use the example permissions file as a starting point for your own: an allow
+  list narrow enough to be boring.
+
 ---
 
 *Next: [Part 3: Giving an Agent Knowledge](/blog/agent-knowledge-and-retrieval).*
