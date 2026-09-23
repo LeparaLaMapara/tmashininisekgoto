@@ -156,7 +156,7 @@ export interface ImpactNumber {
 
 export const SOCIAL_LINKS = {
   github: 'https://github.com/LeparaLaMapara',
-  linkedin: 'https://www.linkedin.com/in/thabang-mashinini-0081b5b6/',
+  linkedin: 'https://www.linkedin.com/in/thabang-mashinini-sekgoto/',
   youtube: 'https://www.youtube.com/@tmashininisekgoto',
   email: 'thabangline@gmail.com',
   // The scholarly identity of record. `authuser=1` was dropped from this URL:
