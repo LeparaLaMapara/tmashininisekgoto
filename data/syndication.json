@@ -72,40 +72,48 @@
       "devto": {
         "id": 4642964,
         "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-3-giving-an-agent-knowledge-3o5e",
-        "hash": "d5711409aaa1cbe8",
-        "syncedAt": "2026-09-13T09:42:59.382Z"
+        "hash": "c4767f27dddfc0c0",
+        "syncedAt": "2026-09-23T05:02:05.273Z"
       }
     },
     "agent-reliability-and-ci": {
       "devto": {
         "id": 4642965,
         "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-5-making-agents-reliable-enough-to-ship-52k0",
-        "hash": "32414f73fc44ae65",
-        "syncedAt": "2026-09-13T09:43:01.456Z"
+        "hash": "1641518c7d8d99ed",
+        "syncedAt": "2026-09-23T05:02:10.023Z"
       }
     },
     "agent-security-and-permissions": {
       "devto": {
         "id": 4642966,
         "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-4-making-agents-safe-enough-to-act-553e",
-        "hash": "56478c2d02c53d57",
-        "syncedAt": "2026-09-13T09:43:39.998Z"
+        "hash": "b67e2a7335e9036a",
+        "syncedAt": "2026-09-23T05:02:07.610Z"
       }
     },
     "agent-tools-and-integrations": {
       "devto": {
         "id": 4642967,
         "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-2-giving-an-agent-hands-561j",
-        "hash": "945d9d927a13c3ef",
-        "syncedAt": "2026-09-13T09:43:42.075Z"
+        "hash": "532d8dc009927a0a",
+        "syncedAt": "2026-09-23T05:02:03.139Z"
       }
     },
     "from-one-agent-to-an-agentic-system": {
       "devto": {
         "id": 4642970,
         "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-6-from-one-agent-to-an-agentic-system-jol",
-        "hash": "4481143837eaec6e",
-        "syncedAt": "2026-09-13T09:44:19.267Z"
+        "hash": "1c7abb32bc44e3c1",
+        "syncedAt": "2026-09-23T05:02:12.345Z"
+      }
+    },
+    "how-i-used-ai-to-build-this-site": {
+      "devto": {
+        "id": 4721061,
+        "url": "https://dev.to/thabanglukheth0/the-practical-roadmap-to-building-with-ai-agents-part-1-from-chat-to-agent-281j",
+        "hash": "e5a3ee1a56f0c1e2",
+        "syncedAt": "2026-09-23T05:02:00.805Z"
       }
     }
   }
