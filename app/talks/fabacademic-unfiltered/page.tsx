@@ -78,7 +78,7 @@ export default function FabAcademicSeriesPage() {
                   <Link
                     key={topic}
                     href={`/search?q=${encodeURIComponent(topic)}`}
-                    className="rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
+                    className="rounded-sm border border-border px-2.5 py-0.5 font-mono text-xs text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                   >
                     {topic}
                   </Link>

@@ -92,7 +92,7 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
         <button
           onClick={cycleSpeed}
           aria-label="Playback speed"
-          className="shrink-0 rounded-full border border-border px-2.5 py-1 text-xs font-mono text-muted hover:text-synapse hover:border-synapse/40 transition-colors"
+          className="shrink-0 rounded-sm border border-border px-2.5 py-1 text-xs font-mono text-muted hover:text-synapse hover:border-synapse/40 transition-colors"
         >
           {speed}x
         </button>

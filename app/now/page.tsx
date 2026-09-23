@@ -127,7 +127,7 @@ export default function NowPage() {
             {upcomingCourses.map((course) => (
               <li
                 key={course.slug}
-                className="rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted"
+                className="rounded-sm border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted"
               >
                 {course.title}
               </li>
@@ -169,7 +169,7 @@ export default function NowPage() {
           {BIO.hobbies.map((hobby) => (
             <li
               key={hobby.label}
-              className="rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm text-muted"
+              className="rounded-sm border border-border bg-surface px-3.5 py-1.5 text-sm text-muted"
             >
               <span aria-hidden="true">{hobby.emoji}</span> {hobby.label}
             </li>

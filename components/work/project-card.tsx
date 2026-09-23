@@ -51,7 +51,7 @@ export function ProjectCard({ project }: { project: Project }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           {project.building && (
-            <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent-ink text-void text-xs font-semibold uppercase tracking-wider">
+            <span className="absolute top-3 left-3 px-3 py-1 rounded-sm bg-accent-ink text-void text-xs font-semibold uppercase tracking-wider">
               Building now
             </span>
           )}
@@ -95,7 +95,7 @@ export function ProjectCard({ project }: { project: Project }) {
           {project.topics.map((topic) => (
             <span
               key={topic}
-              className="rounded-full border border-border px-2.5 py-0.5 text-xs font-mono text-muted"
+              className="rounded-sm border border-border px-2.5 py-0.5 text-xs font-mono text-muted"
             >
               {topic}
             </span>

@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   title: 'Courses: Practical AI & Data Science',
   description:
     'Practitioner-first AI and data science courses: from zero-code AI agents to agentic engineering with Claude Code, MCP, and Codex.',
-  alternates: { canonical: '/courses' },
+  alternates: { canonical: '/courses' },
+
   openGraph: pageOpenGraph('/courses', 'Courses by Thabang Mashinini-Sekgoto'),
 }
 
@@ -86,7 +87,7 @@ export default async function CoursesPage() {
         <ScrollReveal>
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="inline-flex items-center px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 No Code Required
               </span>
             </div>
@@ -112,7 +113,7 @@ export default async function CoursesPage() {
         <ScrollReveal>
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-synapse/10 text-synapse border border-synapse/20">
+              <span className="inline-flex items-center px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider bg-synapse/10 text-synapse border border-synapse/20">
                 For Developers
               </span>
             </div>

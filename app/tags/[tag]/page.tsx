@@ -182,7 +182,7 @@ export default async function TagPage({ params }: PageProps) {
                 <Link
                   key={t}
                   href={tagHref(t)}
-                  className="rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11px] font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
+                  className="rounded-sm border border-border bg-surface px-2.5 py-0.5 text-[11px] font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                 >
                   {t}
                 </Link>

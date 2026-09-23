@@ -28,7 +28,7 @@ export function ProjectFilter() {
         <button
           onClick={() => setActive(null)}
           className={cn(
-            'px-5 py-2 rounded-full text-[0.9375rem] font-medium border transition-colors',
+            'px-5 py-2 rounded-sm text-[0.9375rem] font-medium border transition-colors',
             active === null
               ? 'bg-synapse/20 text-synapse-ink border-synapse/30'
               : 'bg-surface text-muted border-border hover:text-ivory'
@@ -41,7 +41,7 @@ export function ProjectFilter() {
             key={key}
             onClick={() => setActive(key)}
             className={cn(
-              'px-5 py-2 rounded-full text-[0.9375rem] font-medium border transition-colors',
+              'px-5 py-2 rounded-sm text-[0.9375rem] font-medium border transition-colors',
               active === key
                 ? 'bg-synapse/20 text-synapse-ink border-synapse/30'
                 : 'bg-surface text-muted border-border hover:text-ivory'

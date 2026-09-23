@@ -115,7 +115,7 @@ export default function TalksPage() {
                     {seriesTopics.map((topic) => (
                       <span
                         key={topic}
-                        className="rounded-full border border-border px-2.5 py-0.5 font-mono text-xs text-muted"
+                        className="rounded-sm border border-border px-2.5 py-0.5 font-mono text-xs text-muted"
                       >
                         {topic}
                       </span>
@@ -260,7 +260,7 @@ export default function TalksPage() {
                 <Link
                   key={topic}
                   href={`/search?q=${encodeURIComponent(topic)}`}
-                  className="rounded-full border border-border bg-surface px-3.5 py-1.5 font-mono text-sm text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
+                  className="rounded-sm border border-border bg-surface px-3.5 py-1.5 font-mono text-sm text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                 >
                   {topic}
                 </Link>

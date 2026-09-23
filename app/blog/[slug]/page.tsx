@@ -206,7 +206,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <Link
               key={tag}
               href={tagHref(tag)}
-              className="rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
+              className="rounded-sm border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
             >
               {tag}
             </Link>

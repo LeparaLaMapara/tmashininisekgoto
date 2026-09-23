@@ -33,7 +33,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
       </p>
 
       <form action="/search" method="get" className="mt-8">
-        <div className="flex items-center gap-3 rounded-full border border-border bg-surface px-5 py-3 focus-within:border-synapse/40">
+        <div className="flex items-center gap-3 rounded-sm border border-border bg-surface px-5 py-3 focus-within:border-synapse/40">
           <SearchIcon className="w-4 h-4 shrink-0 text-muted" aria-hidden="true" />
           <label htmlFor="q" className="sr-only">
             Search this site
@@ -48,7 +48,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
           />
           <button
             type="submit"
-            className="shrink-0 rounded-full bg-ivory px-4 py-1.5 text-sm font-medium text-void transition-opacity hover:opacity-90"
+            className="shrink-0 rounded-sm bg-ivory px-4 py-1.5 text-sm font-medium text-void transition-opacity hover:opacity-90"
           >
             Search
           </button>

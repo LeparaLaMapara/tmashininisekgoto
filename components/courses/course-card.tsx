@@ -38,20 +38,20 @@ export function CourseCard({ course }: CourseCardProps) {
             <div className="flex items-center gap-2.5 flex-wrap">
               <span
                 className={cn(
-                  'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border',
+                  'inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-semibold border',
                   levelColors[course.level]
                 )}
               >
                 {course.level}
               </span>
               {course.status === 'coming-soon' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-signal/10 text-signal border border-signal/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-semibold bg-signal/10 text-signal border border-signal/20">
                   <Zap className="w-3 h-3" />
                   Coming Soon
                 </span>
               )}
               {course.status === 'full' && (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
                   Full
                 </span>
               )}
@@ -65,7 +65,7 @@ export function CourseCard({ course }: CourseCardProps) {
           </div>
           {course.waitlistCount > 0 && (
             <div className="flex-shrink-0">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-synapse/10 text-synapse border border-synapse/20">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-semibold bg-synapse/10 text-synapse border border-synapse/20">
                 <Users className="w-3 h-3" />
                 {course.waitlistCount} on waitlist
               </span>

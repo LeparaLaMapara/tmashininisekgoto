@@ -142,11 +142,11 @@ export default async function TopicPage({ params }: PageProps) {
                 .map(({ topic: t, hasHub }) => (
                   <li key={t.slug}>
                     {hasHub ? (
-                      <Link href={`/topics/${t.slug}`} className="inline-block rounded-full border border-border bg-surface px-3 py-1 text-sm font-mono text-muted transition-colors hover:border-synapse/40 hover:text-ivory">
+                      <Link href={`/topics/${t.slug}`} className="inline-block rounded-sm border border-border bg-surface px-3 py-1 text-sm font-mono text-muted transition-colors hover:border-synapse/40 hover:text-ivory">
                         {t.name}
                       </Link>
                     ) : (
-                      <span className="inline-block rounded-full border border-border/60 px-3 py-1 text-sm font-mono text-muted">{t.name}</span>
+                      <span className="inline-block rounded-sm border border-border/60 px-3 py-1 text-sm font-mono text-muted">{t.name}</span>
                     )}
                   </li>
                 ))}

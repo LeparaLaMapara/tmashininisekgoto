@@ -78,7 +78,7 @@ export function ShareButtons({ title, url, series }: ShareButtonsProps) {
   ]
 
   const pill =
-    'inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border text-ivory/80 text-sm font-medium hover:border-synapse/40 hover:text-synapse transition-colors'
+    'inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-surface border border-border text-ivory/80 text-sm font-medium hover:border-synapse/40 hover:text-synapse transition-colors'
 
   return (
     <div className="mt-12 pt-8 border-t border-border">
