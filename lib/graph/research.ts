@@ -74,8 +74,8 @@ export const RESEARCH: ResearchLine[] = [
     summary:
       'MSc research at Wits: can recurrent models learn the iterative evolution of a level set segmentation? Echo state networks against trained RNN, LSTM and GRU.',
     status: 'completed',
-    period: 'MSc research at Wits; dissertation dated 2022 (the CV lists the MSc as 2018 to 2019)',
-    year: 2022,
+    period: 'MSc at Wits, 2018 to 2019',
+    year: 2019,
     organization: 'wits',
     role: 'MSc candidate and sole author of the dissertation',
     question:

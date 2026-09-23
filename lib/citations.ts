@@ -39,7 +39,7 @@ interface ParsedVenue {
  *
  *   'IFAC-PapersOnLine 52 (14), 117-122'      -> journal, vol 52, issue 14, pp. 117-122
  *   'arXiv preprint arXiv:2102.00085'         -> preprint, eprint 2102.00085
- *   'MSc Thesis, University of the Witwatersrand, 2022' -> thesis, school Wits
+ *   'MSc Thesis, University of the Witwatersrand, 2019' -> thesis, school Wits
  *
  * Anything unrecognised falls back to the whole string as the container name,
  * which still produces a valid (if sparse) citation.

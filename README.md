@@ -63,3 +63,11 @@ npm install
 npm start
 
 ```
+
+## Licence
+
+The source code is under the [MIT licence](LICENSE): use it, change it, learn from it.
+
+The writing and media are not. Blog posts in `content/`, the CV, photographs, audio
+narrations and other files in `public/` are © Thabang Mashinini-Sekgoto, all rights
+reserved. Quoting with a link back is welcome; republishing is not without permission.
