@@ -10,6 +10,7 @@ import { input } from './input'
 import { CHARACTER_GLB_URL, CharacterModel } from './character-model'
 import { journeyAudio } from './audio'
 import { nav } from './nav'
+import { AnimeSky, AnimeClouds, Meadow, Petals, Shoreline, InkOutline } from './anime'
 
 // journey runs oldest -> newest so visitors walk forward through time
 export const JOURNEY = [...CAREER_TIMELINE].reverse()
@@ -31,14 +32,16 @@ const playerState = { x: 0, z: 0 }
 // stepped luminance ramp -> cel-shaded look on MeshToonMaterial
 function makeToonGradient(steps: number) {
   const data = new Uint8Array(steps)
-  for (let i = 0; i < steps; i++) data[i] = Math.round((i / (steps - 1)) * 255)
+  // A high floor keeps shadows coloured instead of black; the hemisphere
+  // light tints them lavender, the anime way.
+  for (let i = 0; i < steps; i++) data[i] = Math.round((0.5 + 0.5 * (i / (steps - 1))) * 255)
   const tex = new THREE.DataTexture(data, steps, 1, THREE.RedFormat)
   tex.needsUpdate = true
   tex.minFilter = THREE.NearestFilter
   tex.magFilter = THREE.NearestFilter
   return tex
 }
-const toonGradient = makeToonGradient(4)
+const toonGradient = makeToonGradient(3)
 
 export function positionFor(i: number): [number, number, number] {
   const side = i % 2 === 0 ? -1 : 1
@@ -334,10 +337,51 @@ function ProceduralWalker({
         <capsuleGeometry args={[0.32, 0.7, 6, 12]} />
         <meshToonMaterial color="#2b5e9e" gradientMap={toonGradient} />
       </mesh>
-      <mesh position={[0, 2.05, 0]} castShadow>
-        <sphereGeometry args={[0.3, 18, 18]} />
+      {/* chibi head: oversized, with spiky anime hair and big eyes */}
+      <mesh position={[0, 2.18, 0]} castShadow>
+        <sphereGeometry args={[0.44, 24, 20]} />
         <meshToonMaterial color="#c68642" gradientMap={toonGradient} />
       </mesh>
+      <group position={[0, 2.32, -0.04]}>
+        <mesh scale={[1.04, 0.82, 1.06]} castShadow>
+          <sphereGeometry args={[0.45, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
+          <meshToonMaterial color="#1d1a2a" gradientMap={toonGradient} />
+        </mesh>
+        {[
+          [0, 0.36, -0.08, -0.5, 0],
+          [0.22, 0.3, -0.16, -0.7, -0.5],
+          [-0.22, 0.3, -0.16, -0.7, 0.5],
+          [0.12, 0.24, -0.34, -1.2, -0.3],
+          [-0.12, 0.24, -0.34, -1.2, 0.3],
+          [0.3, 0.12, -0.3, -1.6, -0.9],
+          [-0.3, 0.12, -0.3, -1.6, 0.9],
+          [0.16, 0.2, 0.3, 0.9, -0.3],
+          [-0.12, 0.22, 0.32, 1.0, 0.4],
+        ].map(([x, y, z, rx, rz], i) => (
+          <mesh key={i} position={[x, y, z]} rotation={[rx, 0, rz]} castShadow>
+            <coneGeometry args={[0.13, 0.42, 5]} />
+            <meshToonMaterial color="#1d1a2a" gradientMap={toonGradient} />
+          </mesh>
+        ))}
+      </group>
+      {[0.15, -0.15].map((x) => (
+        <group key={x} position={[x, 2.14, 0.4]}>
+          <mesh scale={[0.075, 0.12, 0.04]}>
+            <sphereGeometry args={[1, 12, 10]} />
+            <meshBasicMaterial color="#1b1530" />
+          </mesh>
+          <mesh position={[0.025, 0.04, 0.03]} scale={[0.028, 0.035, 0.02]}>
+            <sphereGeometry args={[1, 8, 6]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+        </group>
+      ))}
+      {[0.27, -0.27].map((x) => (
+        <mesh key={x} position={[x, 2.02, 0.34]} scale={[0.07, 0.035, 0.02]}>
+          <sphereGeometry args={[1, 8, 6]} />
+          <meshBasicMaterial color="#f39aa6" />
+        </mesh>
+      ))}
       <mesh position={[0, 1.3, -0.32]} castShadow>
         <boxGeometry args={[0.5, 0.7, 0.26]} />
         <meshToonMaterial color="#22b8cf" gradientMap={toonGradient} />
@@ -530,8 +574,8 @@ function SunLight({ shadows }: { shadows: boolean }) {
     <directionalLight
       ref={ref}
       castShadow={shadows}
-      intensity={1.3}
-      color="#fff3d6"
+      intensity={1.55}
+      color="#ffe6bd"
       shadow-mapSize-width={1024}
       shadow-mapSize-height={1024}
       shadow-camera-near={1}
@@ -542,98 +586,6 @@ function SunLight({ shadows }: { shadows: boolean }) {
       shadow-camera-bottom={-22}
       shadow-bias={-0.0004}
     />
-  )
-}
-
-// ---- Sky dome (vertical gradient, ignores fog) ----
-
-function SkyDome() {
-  const mat = useMemo(
-    () =>
-      new THREE.ShaderMaterial({
-        side: THREE.BackSide,
-        depthWrite: false,
-        uniforms: {
-          top: { value: new THREE.Color('#1f74e8') },
-          bottom: { value: new THREE.Color('#d6ecff') },
-          expo: { value: 0.55 },
-        },
-        vertexShader: `
-          varying vec3 vWorld;
-          void main() {
-            vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          uniform vec3 top; uniform vec3 bottom; uniform float expo;
-          varying vec3 vWorld;
-          void main() {
-            float h = pow(max(normalize(vWorld).y, 0.0), expo);
-            gl_FragColor = vec4(mix(bottom, top, h), 1.0);
-          }
-        `,
-      }),
-    []
-  )
-  return (
-    <mesh>
-      <sphereGeometry args={[400, 32, 16]} />
-      <primitive object={mat} attach="material" />
-    </mesh>
-  )
-}
-
-// ---- Drifting low-poly clouds ----
-
-function Cloud({ position, scale }: { position: [number, number, number]; scale: number }) {
-  const puffs = useMemo(
-    () =>
-      [
-        [0, 0, 0, 1],
-        [0.9, -0.1, 0.2, 0.75],
-        [-0.9, -0.05, -0.1, 0.8],
-        [0.3, 0.35, -0.2, 0.7],
-        [-0.4, 0.3, 0.25, 0.65],
-      ] as [number, number, number, number][],
-    []
-  )
-  return (
-    <group position={position} scale={scale}>
-      {puffs.map((p, i) => (
-        <mesh key={i} position={[p[0], p[1], p[2]]} scale={[p[3] * 1.3, p[3], p[3]]}>
-          <sphereGeometry args={[1, 10, 8]} />
-          <meshToonMaterial color="#ffffff" gradientMap={toonGradient} />
-        </mesh>
-      ))}
-    </group>
-  )
-}
-
-function Clouds() {
-  const ref = useRef<THREE.Group>(null)
-  const clouds = useMemo(() => {
-    const arr: { pos: [number, number, number]; scale: number }[] = []
-    for (let i = 0; i < 9; i++) {
-      arr.push({
-        pos: [(i * 17) % 70 - 35, 16 + ((i * 5) % 8), i * 13 - 8],
-        scale: 2.5 + ((i * 7) % 4),
-      })
-    }
-    return arr
-  }, [])
-  useFrame((state) => {
-    if (ref.current) {
-      const drift = (state.clock.elapsedTime * 0.4) % 90
-      ref.current.position.x = drift
-    }
-  })
-  return (
-    <group ref={ref}>
-      {clouds.map((c, i) => (
-        <Cloud key={i} position={c.pos} scale={c.scale} />
-      ))}
-    </group>
   )
 }
 
@@ -650,15 +602,12 @@ function PalmTree({ position, scale = 1 }: { position: [number, number, number];
       {fronds.map((i) => {
         const a = (i / fronds.length) * Math.PI * 2
         return (
-          <mesh
-            key={i}
-            castShadow
-            position={[Math.cos(a) * 0.55, 3, Math.sin(a) * 0.55]}
-            rotation={[0.6, -a, 0]}
-          >
-            <coneGeometry args={[0.45, 1.9, 4]} />
-            <meshToonMaterial color="#2f9e44" gradientMap={toonGradient} />
-          </mesh>
+          <group key={i} position={[0, 3.05, 0]} rotation={[0, -a, 0]}>
+            <mesh castShadow position={[0.95, -0.28, 0]} rotation={[0, 0, -0.45]} scale={[1.05, 0.07, 0.32]}>
+              <sphereGeometry args={[1, 10, 6]} />
+              <meshToonMaterial color={i % 2 ? '#3fae4f' : '#2f9e44'} gradientMap={toonGradient} />
+            </mesh>
+          </group>
         )
       })}
       <mesh position={[0, 3, 0]}>
@@ -698,7 +647,7 @@ function Foliage() {
       ))}
       {bushes.map((b, i) => (
         <mesh key={i} castShadow position={b.pos} scale={[b.s * 1.3, b.s, b.s * 1.3]}>
-          <dodecahedronGeometry args={[1, 0]} />
+          <sphereGeometry args={[1, 14, 10]} />
           <meshToonMaterial color={b.c} gradientMap={toonGradient} />
         </mesh>
       ))}
@@ -718,7 +667,7 @@ function Ocean() {
       {[-1, 1].map((side) => (
         <mesh key={side} rotation={[-Math.PI / 2, 0, 0]} position={[side * 60, 0, PATH_END / 2]}>
           <planeGeometry args={[100, PATH_END + 120]} />
-          <meshToonMaterial color="#1ca0e0" gradientMap={toonGradient} transparent opacity={0.92} />
+          <meshToonMaterial color="#2b8fd8" gradientMap={toonGradient} transparent opacity={0.95} />
         </mesh>
       ))}
     </group>
@@ -1017,34 +966,33 @@ function StartArch() {
 
 function World({
   reducedMotion,
+  lowPower,
   onCoin,
 }: {
   reducedMotion: boolean
+  lowPower: boolean
   onCoin: (collected: number, total: number) => void
 }) {
   return (
     <group>
-      <SkyDome />
-      {!reducedMotion && <Clouds />}
-      {reducedMotion && (
-        <group>
-          <Cloud position={[-20, 18, 20]} scale={3} />
-          <Cloud position={[18, 20, 60]} scale={3.5} />
-        </group>
-      )}
+      <AnimeSky />
+      <AnimeClouds reducedMotion={reducedMotion} />
       <Ocean />
+      <Shoreline length={PATH_END} />
 
       {/* grassy island trail */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, PATH_END / 2]} receiveShadow>
         <planeGeometry args={[24, PATH_END + 60]} />
-        <meshToonMaterial color="#4fb04f" gradientMap={toonGradient} />
+        <meshToonMaterial color="#3f8f45" gradientMap={toonGradient} />
       </mesh>
       {/* sandy path down the middle */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, PATH_END / 2]} receiveShadow>
         <planeGeometry args={[6.5, PATH_END + 40]} />
-        <meshToonMaterial color="#e6cf94" gradientMap={toonGradient} />
+        <meshToonMaterial color="#ecd6a0" gradientMap={toonGradient} />
       </mesh>
 
+      <Meadow count={lowPower ? 5000 : 14000} length={PATH_END} reducedMotion={reducedMotion} />
+      {!reducedMotion && <Petals follow={playerState} count={lowPower ? 60 : 140} />}
       <Foliage />
       <Rocks />
       <Dock z={SPACING * 3 + 8} side={1} />
@@ -1080,19 +1028,21 @@ export function CareerScene({
       camera={{ position: [0, 5, -8], fov: 60, near: 0.1, far: 600 }}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
     >
-      <fog attach="fog" args={['#cfe7ff', 40, 170]} />
+      <fog attach="fog" args={['#e3ecf7', 45, 190]} />
 
-      <ambientLight intensity={0.55} />
-      <hemisphereLight args={['#bfe3ff', '#4a7a3a', 0.7]} />
+      {/* anime light: a warm key, and shadows filled with cool lavender, never grey */}
+      <ambientLight intensity={0.3} color="#b9b4ff" />
+      <hemisphereLight args={['#dff0ff', '#9a86c8', 0.85]} />
       <SunLight shadows={shadows} />
 
-      <World reducedMotion={reducedMotion} onCoin={onCoin} />
+      <World reducedMotion={reducedMotion} lowPower={lowPower} onCoin={onCoin} />
       {JOURNEY.map((m, i) => (
         <Monument key={i} index={i} accent={m.accent} label={m.shortOrg} year={m.period.slice(0, 4)} />
       ))}
       <Player onActiveChange={onActiveChange} reducedMotion={reducedMotion} />
 
       <EffectComposer multisampling={lowPower ? 0 : 4}>
+        <InkOutline />
         <Bloom intensity={lowPower ? 0.3 : 0.45} luminanceThreshold={0.85} luminanceSmoothing={0.4} mipmapBlur />
         <Vignette eskil={false} offset={0.3} darkness={0.4} />
       </EffectComposer>
