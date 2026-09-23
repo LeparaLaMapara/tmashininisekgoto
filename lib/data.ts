@@ -1130,8 +1130,8 @@ export const PUBLICATIONS: Publication[] = [
     topics: ['echo-state-networks', 'reservoir-computing', 'image-segmentation', 'level-set-method', 'recurrent-neural-networks', 'computer-vision'],
     title: 'Learning Level Set Method by Echo State Network for Image Segmentation',
     authors: 'TL Mashinini',
-    venue: 'MSc Thesis, University of the Witwatersrand, 2022',
-    year: 2022,
+    venue: 'MSc Thesis, University of the Witwatersrand, 2019',
+    year: 2019,
     scholarUrl: 'https://hdl.handle.net/10539/33910',
     aiSummary:
       'Studies echo state networks as a cheaper alternative to recurrent networks trained by backpropagation, applied to learning variational level set image segmentation as a spatiotemporal, data driven method. Five convolutional architectures were compared (ESN, RNN, GRU, LSTM and a 3D CNN) on four datasets; the GRU and LSTM variants performed best. The ESN performed poorly, which the dissertation attributes largely to the reservoir\'s leaking rate and spectral radius.',
