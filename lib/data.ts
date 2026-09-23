@@ -329,6 +329,65 @@ export const PROJECTS: Project[] = [
     productLink: 'https://ubunye-ai-ecosystems.github.io/tfilterspy/',
   },
   {
+    slug: 'agent-roadmap-kit',
+    headline: 'Agent Roadmap Kit: learn AI agents by building one, free',
+    summary:
+      'A free, open source companion to the six part agents series: six stops that build one working assistant, runnable at no cost.',
+    kind: 'software',
+    status: 'active',
+    period: '2026 to present (repository created September 2026)',
+    role: 'Author and maintainer',
+    license: 'MIT',
+    graphTopics: ['ai-agents', 'retrieval-augmented-generation', 'ai-education', 'software-engineering', 'reproducibility', 'open-source'],
+    technologies: [],
+    lineage: [
+      { relation: 'before', name: 'The Practical Roadmap to Building With AI Agents', href: '/blog/how-i-used-ai-to-build-this-site', note: 'The six part series the kit accompanies. Each post ends with a Try it yourself section that points at its stop in the kit.' },
+    ],
+    title: 'Agent Roadmap Kit',
+    category: 'open-source',
+    order: 2.5,
+    cardTitle: 'Understand agents by building one, for free',
+    oneLiner:
+      'A reader of the agents series asked where they could try it themselves. The kit is the answer: six stops, each adding one working piece, that end in an assistant answering questions from your own notes, with tools, search by meaning, safety controls, tests and CI.',
+    why:
+      'Most material about agents is either a demo that hides the hard parts or a framework that hides everything. Readers could follow the argument of the series but had nowhere to see a planted instruction fool a model, a retrieval index return nothing, or a green build pass while the answer was wrong.',
+    outcome:
+      'Six stops, sixty seven tests and a CI workflow that runs them on every push, all on free options: the free Gemini tier from Google, a small local model through Ollama, or a built in mock that needs no key and no internet.',
+    topics: ['AI Agents', 'Retrieval', 'AI Safety', 'Testing and CI', 'Open Source'],
+    artifacts: [
+      { kind: 'github', href: 'https://github.com/LeparaLaMapara/agent-roadmap-kit' },
+      { kind: 'examples', href: 'https://github.com/LeparaLaMapara/agent-roadmap-kit/tree/main/parts' },
+    ],
+    caseStudy: {
+      problem:
+        'Reading about agents only gets you so far. The series explained tools, retrieval, safety, reliability and orchestration, but a reader could not run any of it, and the failures that teach the most only make sense when you watch them happen.',
+      why:
+        'The lessons in the series came from real systems, which cannot be handed to a stranger: they need private data, paid services and credentials. A reader needed the same lessons in a form that runs on a laptop, costs nothing, and still behaves like the real thing, including the ways it fails.',
+      context:
+        "The example is a small home kitchen in Soshanguve, Mama Dineo's Kitchen, whose notes include a menu, delivery rules, a private supplier note and a customer review with a planted instruction. Pointing the kit at a different folder turns it into an assistant for your own notes.",
+      contribution:
+        'I designed the route and its constraints and built it with AI agents, the way the series describes: one stop per post, each adding one piece to the same assistant. A plain chat and templates; tools, an agent loop and an MCP server; search by meaning with the three retrieval bugs from the series reproduced on purpose; a policy file, a spending limit, human approval and an append only database as the one door that writes; a golden question set, regression tests and CI; and a fixed workflow beside the agent loop with a measured cost comparison.',
+      changed:
+        'The series went from an argument to something a reader can run in an afternoon. The kit also produced evidence the posts can point at: a small local model obeyed a planted instruction while the private data stayed out of its reach because the filter lives in code, a test run passed while the model claimed the kitchen sold pizza, and on the same questions the workflow used about three times fewer model calls than the agent loop.',
+      benefited:
+        'Developers, students and practitioners who want to understand agents by building one, without a credit card, including readers in places where paid APIs are a real barrier.',
+      remained:
+        'A public repository under the MIT licence with a README per stop, real captured output including the bad runs, sixty seven tests that run offline with the mock, and CI on GitHub Actions.',
+      technicalContext:
+        'TypeScript run directly by Node 22, plain fetch to Gemini and Ollama, local MiniLM embeddings through Transformers.js, SQLite through node:sqlite, the Model Context Protocol SDK, node:test and GitHub Actions.',
+    },
+    problem:
+      'Readers of the agents series could follow the argument but had nothing to run, and the failures that teach the most only make sense when you watch them happen.',
+    solution:
+      'A free, open source kit of six stops, one per post, that builds a single assistant answering questions from a folder of notes, with tools, retrieval, safety controls, tests and CI.',
+    impact:
+      'Runs at no cost on the free Gemini tier, a local Ollama model or an offline mock, with sixty seven tests and CI, and every post in the series now links to its stop.',
+    skills: ['TypeScript', 'Node.js', 'LLM tool calling', 'RAG', 'MCP', 'SQLite', 'GitHub Actions'],
+    image: '/projects/agent-roadmap-kit.png',
+    imageFit: 'contain',
+    ghLink: 'https://github.com/LeparaLaMapara/agent-roadmap-kit',
+  },
+  {
     slug: 'insurance-data-science-capability',
     headline: 'Insurance data science: telematics, flood risk and MLOps',
     summary:

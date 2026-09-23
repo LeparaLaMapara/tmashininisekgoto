@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Bungee, Work_Sans, JetBrains_Mono, Doto, Barlow_Condensed } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Navbar } from '@/components/layout/navbar'
@@ -11,42 +11,53 @@ import { webSiteSchema } from '@/lib/schema'
 import { SITE_URL, ogImages } from '@/lib/site'
 import './globals.css'
 
+// Fonts are served from app/fonts (Latin subset, woff2), not fetched from
+// Google at build time. A failed download from Google Fonts had been failing
+// CI builds at random; local files make every build reproducible.
+
 // The signwriter system. Bungee is a typeface drawn for street signage, used
 // only where a hand painted board would put words: the logo, the homepage
 // sign and the short section labels. Bungee has no lowercase, so it never
 // sets a long title. Work Sans carries every heading and all reading text.
-const bungee = Bungee({
-  subsets: ['latin'],
+const bungee = localFont({
+  src: './fonts/bungee-400-normal.woff2',
   weight: '400',
   variable: '--font-sign',
   display: 'swap',
 })
 
-const workSans = Work_Sans({
-  subsets: ['latin'],
+const workSans = localFont({
+  src: './fonts/worksans-100-900-normal.woff2',
+  weight: '100 900',
   variable: '--font-body',
   display: 'swap',
 })
 
 // Taxi rank faces, used only by components/home/taxi-route.tsx: Doto for the
 // dot matrix destination board, Barlow Condensed for the livery lettering.
-const doto = Doto({
-  subsets: ['latin'],
-  weight: ['700', '900'],
+const doto = localFont({
+  src: [
+    { path: './fonts/doto-700-normal.woff2', weight: '700', style: 'normal' },
+    { path: './fonts/doto-900-normal.woff2', weight: '900', style: 'normal' },
+  ],
   variable: '--font-dot',
   display: 'swap',
 })
 
-const barlowCondensed = Barlow_Condensed({
-  subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  style: ['normal', 'italic'],
+const barlowCondensed = localFont({
+  src: [
+    { path: './fonts/barlowcondensed-600-normal.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/barlowcondensed-700-normal.woff2', weight: '700', style: 'normal' },
+    { path: './fonts/barlowcondensed-800-normal.woff2', weight: '800', style: 'normal' },
+    { path: './fonts/barlowcondensed-800-italic.woff2', weight: '800', style: 'italic' },
+  ],
   variable: '--font-livery',
   display: 'swap',
 })
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
+const jetbrainsMono = localFont({
+  src: './fonts/jetbrainsmono-100-800-normal.woff2',
+  weight: '100 800',
   variable: '--font-mono',
   display: 'swap',
 })
