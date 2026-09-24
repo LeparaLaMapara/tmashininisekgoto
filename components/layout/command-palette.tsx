@@ -18,7 +18,7 @@ const PAGES = [
   { name: 'Writing', href: '/blog', icon: BookOpen },
   { name: 'Research and papers', href: '/research', icon: FileCode },
   { name: 'Talks', href: '/talks', icon: Mic },
-  { name: 'Talk to Lepara La Mapara', href: '/ai', icon: Sparkles },
+  { name: 'Talk to LeparaLaMapara', href: '/ai', icon: Sparkles },
   { name: 'CV', href: '/resume', icon: FileText },
 ]
 

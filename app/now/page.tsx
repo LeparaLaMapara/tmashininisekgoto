@@ -180,7 +180,7 @@ export default function NowPage() {
       <p className="mt-16 border-t border-border pt-8 text-muted">
         Want to work together?{' '}
         <Link href="/ai" className="text-synapse underline underline-offset-2 hover:no-underline">
-          Ask Lepara La Mapara
+          Ask LeparaLaMapara
         </Link>{' '}
         or reach out from there.
       </p>

@@ -665,9 +665,9 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'ai-education-platform',
-    headline: 'AI education: FabAcademic Unfiltered and Lepara La Mapara',
+    headline: 'AI education: FabAcademic Unfiltered and LeparaLaMapara',
     summary:
-      'Co hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, public technical writing, and Lepara La Mapara, a grounded assistant that cites its sources.',
+      'Co hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, public technical writing, and LeparaLaMapara, a grounded assistant that cites its sources.',
     kind: 'programme',
     status: 'active',
     period: '2026 to present',
@@ -688,7 +688,7 @@ export const PROJECTS: Project[] = [
     artifacts: [
       { kind: 'site', href: 'https://www.youtube.com/@Fabacademic', label: 'FabAcademic Unfiltered' },
       { kind: 'site', href: 'https://www.youtube.com/@tmashininisekgoto', label: 'YouTube' },
-      { kind: 'site', href: 'https://www.tmashininisekgoto.com/ai', label: 'Lepara La Mapara, my AI assistant' },
+      { kind: 'site', href: 'https://www.tmashininisekgoto.com/ai', label: 'LeparaLaMapara, my AI assistant' },
     ],
     caseStudy: {
       problem:
@@ -698,7 +698,7 @@ export const PROJECTS: Project[] = [
       context:
         'A public AI leadership and technical education effort, run alongside the day job rather than instead of it, aimed at practical adoption, mentorship and industry-wide literacy.',
       contribution:
-        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also built Lepara La Mapara, my retrieval-grounded AI assistant, which answers only from this site’s own content and cites its sources, so the material can be interrogated rather than only read.',
+        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also built LeparaLaMapara, my retrieval-grounded AI assistant, which answers only from this site’s own content and cites its sources, so the material can be interrogated rather than only read.',
       changed:
         'A large audience gets an accurate account of what building with AI involves, from someone doing it in production rather than describing it from outside.',
       benefited:
