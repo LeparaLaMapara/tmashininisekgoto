@@ -44,6 +44,11 @@ export function ShortVersion() {
           <li key={s.value} className="hl-board">
             <span className="hl-value">{s.value}</span>
             <span className="hl-caption">{s.caption}</span>
+            {s.value === 'MSc' && (
+              <span className="hl-loading" aria-label="PhD: loading, starting in 2027">
+                PhD loading<span className="hl-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>
+              </span>
+            )}
           </li>
         ))}
       </ul>
