@@ -142,7 +142,7 @@ export function Navbar() {
                 Talk to Lepara La Mapara
               </Link>
               <div className="mt-3 flex justify-center">
-                <ThemeToggle />
+                <ThemeToggle withLabel />
               </div>
             </div>
           </motion.div>

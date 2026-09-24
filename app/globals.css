@@ -68,12 +68,13 @@
 /* === Dark mode: the same street after dark, signs still lit === */
 
 :root.dark {
-  --color-void: #121212;
+  /* ThabangVision: crushed black and his banner orange, from his photographs. */
+  --color-void: #0b0b0c;
   --color-surface: #1b1b1b;
   --color-surface-hover: #262214;
-  --color-synapse: #ff6b5e;
-  --color-synapse-dim: #5c1d18;
-  --color-synapse-ink: #ff6b5e;
+  --color-synapse: #ff7a1a;
+  --color-synapse-dim: #5c2a0c;
+  --color-synapse-ink: #ff8a33;
   --color-signal: #52c77a;
   --color-signal-dim: #173a24;
   --color-accent: #ffd23f;
@@ -271,4 +272,66 @@ html.theme-fade * {
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0.5rem 0;
+}
+
+
+/* === The two themes, laid over the same pages (2026-09-25) ===
+ * Only the look changes; no text, font choice for reading, or layout does.
+ * Unlayered on purpose, so it wins over the Tailwind size utilities on each h1.
+ */
+
+/* Sosha Plata Jo: every page's big heading is painted on the yellow sign board.
+   The homepage heading already sits inside a .sign-board and is left alone. */
+html:not(.dark) main h1:not(.sign-board h1) {
+  width: fit-content;
+  max-width: 100%;
+  background: var(--color-sign-board);
+  color: var(--color-sign-ink);
+  border: 5px solid var(--color-sign-ink);
+  box-shadow: 8px 8px 0 var(--color-sign-ink);
+  padding: 0.35em 0.55em 0.3em;
+  font-family: var(--font-sign);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  font-size: clamp(1.55rem, 4.4vw, 2.6rem);
+  overflow-wrap: anywhere;
+  margin-bottom: 1.75rem;
+}
+
+/* ThabangVision: his photographs, tiny and quiet, behind everything. */
+.vision-collage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  grid-auto-rows: 60px;
+  gap: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.vision-collage i {
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1) contrast(1.1);
+  opacity: 0.1;
+  transition: filter 2.4s ease, opacity 2.4s ease;
+}
+/* A soft dark veil over the reading column, so the photos live at the edges. */
+.vision-veil {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 46% 75% at 50% 50%, rgba(11, 11, 12, 0.82), rgba(11, 11, 12, 0.35) 70%, rgba(11, 11, 12, 0.1));
+}
+.vision-collage { z-index: -2; }
+.vision-collage i.lit {
+  filter: none;
+  opacity: 0.34;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vision-collage i { transition: none; }
 }

@@ -6,6 +6,7 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeProvider } from '@/components/layout/theme-provider'
+import { VisionCollage } from '@/components/layout/vision-collage'
 import { JsonLd } from '@/components/seo/json-ld'
 import { webSiteSchema } from '@/lib/schema'
 import { SITE_URL, ogImages } from '@/lib/site'
@@ -127,6 +128,7 @@ export default function RootLayout({
             referenced from here and elsewhere by @id, so it is defined once. */}
         <JsonLd data={webSiteSchema()} />
         <ThemeProvider>
+          <VisionCollage />
           <CommandPalette />
           <Navbar />
           <main className="flex-1 pt-6">{children}</main>

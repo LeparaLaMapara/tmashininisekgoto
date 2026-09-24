@@ -7,6 +7,7 @@ import { SOCIAL_LINKS } from '@/lib/data'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { DestinationBoard, LiveryStripes } from '@/components/home/taxi-route'
 
 // Title and description come from the root layout's defaults; this only pins the
 // canonical so the homepage points at itself rather than inheriting anything.
@@ -62,9 +63,13 @@ export default function Home() {
           so crawlers, link previews and fast scrollers all see the same page. */}
       <div className="px-6 pt-32 sm:pt-36 pb-24">
         <div className="mx-auto max-w-3xl">
+          <DestinationBoard />
+          <div className="my-8 -mx-6 sm:mx-0">
+            <LiveryStripes />
+          </div>
           <p className="font-mono text-sm text-muted mb-4">Thabang Mashinini-Sekgoto · Soshanguve</p>
           <div className="sign-board px-6 py-7 sm:px-8 sm:py-8">
-            <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl leading-tight text-balance">
+            <h1 className="font-sign uppercase text-[1.9rem] leading-[1] sm:text-5xl text-balance">
               I build things, try them, see what breaks, and share what I find.
             </h1>
           </div>
