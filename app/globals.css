@@ -400,3 +400,39 @@ html.dark .kasi-street {
 @media (prefers-reduced-motion: reduce) {
   .kasi-taxi { animation: none; transform: translateX(640px); }
 }
+
+/* === The short version on the homepage: small boards, little text === */
+.short-version { display: grid; gap: 1.4rem; }
+.hl-board {
+  background: var(--color-void);
+  border: 3px solid var(--color-ivory);
+  box-shadow: 6px 6px 0 var(--color-ivory);
+}
+.hl-statement { padding: 1.1rem 1.3rem; transform: rotate(-0.4deg); width: fit-content; max-width: 100%; }
+.hl-lead { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; line-height: 1.3; margin: 0; }
+.hl-sub { margin: 0.3rem 0 0; color: var(--color-muted); font-size: 0.98rem; }
+.hl-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; list-style: none; margin: 0; padding: 0; }
+.hl-pills li {
+  border: 2px solid var(--color-ivory);
+  border-radius: 999px;
+  padding: 0.12rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--color-void);
+}
+.hl-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; list-style: none; margin: 0.4rem 0 0; padding: 0; }
+@media (max-width: 720px) { .hl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hl-stats .hl-board { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.hl-stats .hl-board:nth-child(odd) { transform: rotate(-0.8deg); }
+.hl-stats .hl-board:nth-child(even) { transform: rotate(0.7deg); }
+.hl-value { font-family: var(--font-sign); font-size: 1.9rem; line-height: 1; color: var(--color-synapse-ink); }
+.hl-caption { font-size: 0.84rem; line-height: 1.35; color: var(--color-muted); }
+
+/* Sosha Plata Jo: the stats are little painted boards, mounted like the big sign. */
+html:not(.dark) .hl-stats .hl-board { background-color: #fff; background-image: var(--sign-bolts); }
+html:not(.dark) .hl-stats .hl-board:first-child { background-color: var(--color-sign-board); }
+html:not(.dark) .hl-stats .hl-board:first-child .hl-caption { color: var(--color-sign-ink); }
+
+/* ThabangVision: quiet boards with his banner orange as the shadow. */
+html.dark .hl-board { border-color: var(--color-border); box-shadow: 6px 6px 0 var(--color-synapse); background: rgba(11, 11, 12, 0.92); }
+html.dark .hl-pills li { border-color: var(--color-border); background: rgba(11, 11, 12, 0.92); }

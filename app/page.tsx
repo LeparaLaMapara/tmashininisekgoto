@@ -8,6 +8,7 @@ import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { DestinationBoard, LiveryStripes } from '@/components/home/taxi-route'
+import { ShortVersion } from '@/components/home/short-version'
 
 // Title and description come from the root layout's defaults; this only pins the
 // canonical so the homepage points at itself rather than inheriting anything.
@@ -86,6 +87,8 @@ export default function Home() {
               part I find most interesting.
             </p>
           </div>
+
+          <ShortVersion />
 
           <section className="mt-16">
             <Heading>What I am building</Heading>
