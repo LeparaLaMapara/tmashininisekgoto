@@ -449,7 +449,7 @@ export function CareerExperience() {
                     className="inline-flex items-center gap-1.5 rounded-sm bg-synapse px-4 py-2 text-sm font-medium text-void transition-all hover:bg-synapse/90"
                   >
                     <Sparkles className="h-4 w-4" />
-                    Talk to Thabang AI Assist
+                    Talk to Lepara La Mapara
                   </Link>
                   <Link
                     href="/about"

@@ -95,7 +95,7 @@ export default function ResumePage() {
             </div>
             <div className="flex-1">
               <p className="font-display font-bold text-ivory text-[0.9375rem]">
-                Want to know more? Talk to Thabang AI Assist
+                Want to know more? Talk to Lepara La Mapara
               </p>
               <p className="text-sm text-muted mt-0.5">
                 Ask about my experience, projects, or download my latest CV, all through a conversation.
@@ -207,7 +207,7 @@ export default function ResumePage() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-sm bg-synapse/10 text-synapse font-medium text-sm hover:bg-synapse/20 border border-synapse/20 transition-all"
             >
               <Sparkles className="w-4 h-4" />
-              Talk to Thabang AI Assist
+              Talk to Lepara La Mapara
             </Link>
           </div>
         </ScrollReveal>
