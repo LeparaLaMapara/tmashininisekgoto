@@ -411,15 +411,6 @@ html.dark .kasi-street {
 .hl-statement { padding: 1.1rem 1.3rem; transform: rotate(-0.4deg); width: fit-content; max-width: 100%; }
 .hl-lead { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; line-height: 1.3; margin: 0; }
 .hl-sub { margin: 0.3rem 0 0; color: var(--color-muted); font-size: 0.98rem; }
-.hl-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; list-style: none; margin: 0; padding: 0; }
-.hl-pills li {
-  border: 2px solid var(--color-ivory);
-  border-radius: 999px;
-  padding: 0.12rem 0.7rem;
-  font-size: 0.82rem;
-  font-weight: 500;
-  background: var(--color-void);
-}
 .hl-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; list-style: none; margin: 0.4rem 0 0; padding: 0; }
 @media (max-width: 720px) { .hl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .hl-stats .hl-board { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
@@ -435,8 +426,7 @@ html:not(.dark) .hl-stats .hl-board:first-child .hl-caption { color: var(--color
 
 /* ThabangVision: quiet boards with his banner orange as the shadow. */
 html.dark .hl-board { border-color: var(--color-border); box-shadow: 6px 6px 0 var(--color-synapse); background: rgba(11, 11, 12, 0.92); }
-html.dark .hl-pills li { border-color: var(--color-border); background: rgba(11, 11, 12, 0.92); }
-
+html.dark 
 /* "PhD loading..." on the MSc board: the dots load, then start again. */
 .hl-loading { font-family: var(--font-mono); font-size: 0.74rem; color: var(--color-ivory); margin-top: 0.15rem; }
 .hl-dots i { font-style: normal; animation: hl-dot 1.8s infinite; opacity: 0; }

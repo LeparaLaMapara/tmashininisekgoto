@@ -121,6 +121,11 @@ export default function AboutPage() {
             claim I can defend. I do not know the answer. That is most of the
             appeal.
           </p>
+          <p>
+            And closer to home: what does distributed computing mean to someone
+            who wants to start a farm but has no capital? What is a directed
+            acyclic graph in a township?
+          </p>
         </Section>
 
         <Section title="Technology as an equaliser" delay={0.05}>
@@ -160,6 +165,46 @@ export default function AboutPage() {
             I am not trying to be the person who builds things for people. I
             would rather someone understood enough to build the next one without
             me.
+          </p>
+        </Section>
+
+        {/* Moved here from the homepage on 2026-09-25, summarised. */}
+        <Section title="What I am building" delay={0.05}>
+          <ul className="list-none space-y-3 pl-0">
+            <li>
+              <a href="https://kasilamdigitialplatforms.vercel.app" className="font-semibold text-ivory underline underline-offset-2 hover:no-underline" target="_blank" rel="noopener noreferrer">Kasilam Digital Platforms</a>:
+              free websites for township businesses, and teaching people to digitise their lives.
+            </li>
+            <li>
+              <a href="https://uaie.vercel.app" className="font-semibold text-ivory underline underline-offset-2 hover:no-underline" target="_blank" rel="noopener noreferrer">Ubunye AI Ecosystems</a>:
+              open source tools for people with small budgets and big problems. Take the best from out there, then build our own.
+            </li>
+            <li>
+              <span className="font-semibold text-ivory">A research engine</span>: it takes an idea to an
+              experiment to a paper, and tells me when I am wrong.
+            </li>
+            <li>
+              <span className="font-semibold text-ivory">A trading bot</span>: built to find out whether the
+              traders are telling the truth. It is humbling me.
+            </li>
+          </ul>
+          <p>And a few things I learn for no reason at all.</p>
+        </Section>
+
+        <Section title="How I like to work" delay={0.05}>
+          <p>
+            Share, teach, build capability, work alongside people. I do not
+            micromanage. Meetings are my least favourite part of any job, but I
+            show up when they matter.
+          </p>
+        </Section>
+
+        <Section title="Outside the work" delay={0.05}>
+          <p>
+            Photography is where my heart is: cameras, drones, film, music
+            production, and travelling to document streets, buildings and
+            landscapes. I love Naruto, Dragon Ball Z and One Punch Man. Lately I
+            am learning to enjoy rest.
           </p>
         </Section>
 
