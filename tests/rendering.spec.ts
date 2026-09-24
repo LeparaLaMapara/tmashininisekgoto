@@ -12,7 +12,7 @@ import { test, expect } from '@playwright/test'
  * Fixing (1) is easy in a way that silently breaks (2), so both are asserted.
  */
 
-const ROUTES = ['/', '/about', '/work', '/publications', '/blog', '/talks', '/resume', '/career', '/ai', '/courses', '/tags']
+const ROUTES = ['/', '/about', '/work', '/research', '/blog', '/talks', '/resume', '/career', '/ai', '/courses', '/tags']
 
 test.describe('server-rendered HTML', () => {
   for (const route of ROUTES) {
@@ -24,6 +24,17 @@ test.describe('server-rendered HTML', () => {
   }
 
   // The figures moved from the homepage to the CV on 2026-09-24.
+  // Publications became a section of /research on 2026-09-24. Old links, Scholar
+  // entries and search results must still arrive, and each paper keeps its anchor.
+  test('/publications redirects to /research, where every paper keeps its anchor', async ({ request }) => {
+    const res = await request.get('/publications', { maxRedirects: 0 })
+    expect(res.status()).toBe(308)
+    expect(res.headers()['location']).toMatch(/\/research$/)
+    const html = await (await request.get('/research')).text()
+    expect(html).toContain('id="papers"')
+    expect(html).toContain('Papers, and how to cite them')
+  })
+
   test('CV impact numbers are the real values, not zeros', async ({ request }) => {
     const html = await (await request.get('/resume')).text()
     const text = html.replace(/<[^>]+>/g, '')

@@ -56,7 +56,7 @@ export const topicSetId = () => `${SITE_URL}/topics#vocabulary`
 export const projectId = (p: Pick<Project, 'slug' | 'kind'>) =>
   `${SITE_URL}/work/${p.slug}#${p.kind === 'software' ? 'software' : 'work'}`
 export const researchId = (slug: string) => `${SITE_URL}/research/${slug}#research`
-export const publicationId = (key: string) => `${SITE_URL}/publications#${key}`
+export const publicationId = (key: string) => `${SITE_URL}/research#${key}`
 export const postId = (slug: string) => `${SITE_URL}/blog/${slug}#post`
 export const seriesId = (slug: string) => `${SITE_URL}/blog/series/${slug}#series`
 
@@ -111,7 +111,7 @@ function researchNode(r: ResearchLine): GraphNode {
 
 function publicationNode(pub: Publication): GraphNode {
   return {
-    type: 'publication', key: pub.key, title: pub.title, href: `/publications#${pub.key}`, id: publicationId(pub.key),
+    type: 'publication', key: pub.key, title: pub.title, href: `/research#${pub.key}`, id: publicationId(pub.key),
     blurb: pub.aiSummary, topics: pub.topics, links: [`research:${pub.research}`], date: String(pub.year),
   }
 }

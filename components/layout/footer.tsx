@@ -38,7 +38,6 @@ export function Footer() {
                 { href: '/work', label: 'Work' },
                 { href: '/research', label: 'Research' },
                 { href: '/blog', label: 'Writing' },
-                { href: '/publications', label: 'Publications' },
                 { href: '/topics', label: 'Topics' },
                 { href: '/talks', label: 'Talks' },
                 { href: '/courses', label: 'Teaching' },

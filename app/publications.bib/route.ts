@@ -21,7 +21,7 @@ export function GET() {
 
   const body = [
     '% BibTeX entries for the publications of Thabang Mashinini-Sekgoto',
-    `% ${SITE_URL}/publications`,
+    `% ${SITE_URL}/research#papers`,
     '%',
     '% Generated from the site source. Corrections are welcome: the venue strings',
     '% these are parsed from come from Google Scholar and are not always complete.',

@@ -67,8 +67,8 @@ const PAGES: Indexed[] = [
   {
     kind: 'Page',
     title: 'Publications',
-    description: 'Peer-reviewed papers, preprints, and thesis work.',
-    href: '/publications',
+    description: 'Peer-reviewed papers, preprints, and thesis work, with citations.',
+    href: '/research#papers',
     keywords: 'papers research scholar citations doi',
   },
   {
@@ -180,7 +180,7 @@ function buildIndex(): Indexed[] {
     kind: 'Publication',
     title: pub.title,
     description: pub.aiSummary,
-    href: `/publications#${pub.key}`,
+    href: `/research#${pub.key}`,
     keywords: `${pub.authors} ${pub.venue} ${pub.year} ${pub.applications.join(' ')} ${topicNames(pub.topics)}`,
   }))
 

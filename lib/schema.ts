@@ -309,7 +309,7 @@ function journalName(venue: string): string {
 /**
  * A publication. Theses are typed `Thesis`, everything else `ScholarlyArticle`,
  * because the MSc dissertation is not a journal article and claiming otherwise
- * would be wrong. Each has an `@id` at its anchor on /publications, and points
+ * would be wrong. Each has an `@id` at its anchor on /research, and points
  * at the research line it came from.
  */
 export function publicationSchema(pub: Publication) {
@@ -326,7 +326,7 @@ export function publicationSchema(pub: Publication) {
     author: parseAuthors(pub.authors),
     inLanguage: 'en',
     url: pub.scholarUrl,
-    mainEntityOfPage: absoluteUrl(`/publications#${pub.key}`),
+    mainEntityOfPage: absoluteUrl(`/research#${pub.key}`),
     about: terms(pub.topics),
   }
 
@@ -369,7 +369,7 @@ export function publicationSchema(pub: Publication) {
 }
 
 /**
- * All publications, for the /publications page.
+ * All publications, for the papers section of /research.
  *
  * Reads the enriched list rather than the raw one so `interactionStatistic`
  * carries the same citation figure the page prints. Two different numbers for
@@ -559,7 +559,7 @@ export function researchSchema(r: ResearchLine) {
         '@type': /thesis/i.test(p.venue) ? 'Thesis' : 'ScholarlyArticle',
         '@id': publicationId(p.key),
         name: p.title,
-        url: absoluteUrl(`/publications#${p.key}`),
+        url: absoluteUrl(`/research#${p.key}`),
       })),
       ...r.software.map((sw) => ({
         '@type': 'SoftwareSourceCode',

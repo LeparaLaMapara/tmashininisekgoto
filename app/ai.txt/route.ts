@@ -81,7 +81,7 @@ export function GET() {
     'Research lines (each with question, method, findings and sources):',
     ...RESEARCH.map((r) => `- ${r.name} (${r.status}): ${r.page ? `${SITE_URL}/research/${r.slug}` : `${SITE_URL}/research#${r.slug}`}`),
     '',
-    `Publications: ${SITE_URL}/publications`,
+    `Publications: ${SITE_URL}/research#papers`,
     `BibTeX for all publications: ${SITE_URL}/publications.bib`,
     `Google Scholar: ${SITE_URL}/scholar`,
     `Semantic Scholar: https://www.semanticscholar.org/author/${SEMANTIC_SCHOLAR_AUTHOR_ID}`,

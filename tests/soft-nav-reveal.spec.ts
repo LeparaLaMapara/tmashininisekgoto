@@ -11,7 +11,7 @@ import { test, expect, type Page } from '@playwright/test'
  * animates so the fix is not just "everything is always visible".
  */
 
-const ROUTES = ['/', '/work', '/talks', '/blog', '/publications', '/about', '/resume', '/courses']
+const ROUTES = ['/', '/work', '/talks', '/blog', '/research', '/about', '/resume', '/courses']
 
 /** Smallest opacity applied anywhere in an element's ancestor chain. */
 function effectiveOpacity(page: Page, selector: string, nth = 0) {

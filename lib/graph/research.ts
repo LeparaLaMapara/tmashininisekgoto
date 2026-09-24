@@ -1,6 +1,6 @@
 /**
  * Research lines: first class records for work that used to exist only as
- * rows on /publications.
+ * rows in the papers section of /research.
  *
  * A research line is the unit a person searches for ("reservoir computing for
  * image segmentation"), not a single paper. It gathers the question, the

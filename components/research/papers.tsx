@@ -1,52 +1,38 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
-import { pageOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
-import { publicationsSchema, breadcrumbSchema } from '@/lib/schema'
+import { publicationsSchema } from '@/lib/schema'
 import { citations } from '@/lib/citations'
 import { citationTotal, citationsFetchedAt, getPublications } from '@/lib/publications'
 import { CiteBox } from '@/components/publications/cite-box'
-import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { formatDate } from '@/lib/utils'
 import { ExternalLink, GraduationCap, Brain, Sparkles, FileDown } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Publications: ML & Deep Learning Research',
-  description:
-    'Journal papers, a NeurIPS workshop paper, a conference abstract and an MSc thesis: hearing loss in mine workers, climate forecasting, echo state networks.',
-  alternates: { canonical: '/publications' },
-
-  openGraph: pageOpenGraph('/publications', 'Publications by Thabang Mashinini-Sekgoto'),
-}
-
-export default function PublicationsPage() {
+/**
+ * The papers, as a section of /research.
+ *
+ * This was the /publications page until 2026-09-24, when Thabang asked why the
+ * research and the papers behind it were two menu items. The paper cards, their
+ * anchors (`#<key>`), the citation notes and the Scholarly JSON-LD are unchanged;
+ * /publications now redirects here (next.config.mjs), and browsers carry the
+ * `#<key>` fragment across the redirect so old deep links still land on a paper.
+ */
+export function Papers() {
   const publications = getPublications()
   const sorted = [...publications].sort((a, b) => b.year - a.year)
   const totalCitations = citationTotal()
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-6">
-      <JsonLd
-        data={[
-          ...publicationsSchema(),
-          breadcrumbSchema([
-            { name: 'Home', path: '/' },
-            { name: 'Publications', path: '/publications' },
-          ]),
-        ]}
-      />
-      <div className="mx-auto max-w-4xl">
+    <section id="papers" className="mt-24 scroll-mt-28">
+      <JsonLd data={publicationsSchema()} />
+      <div>
         {/* Header */}
-        <ScrollReveal>
-          <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4">
-            <span className="text-synapse">Publications</span>
-          </h1>
+        <div>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ivory mb-4">
+            Papers, and how to cite them
+          </h2>
           <p className="text-muted text-lg max-w-2xl mb-6">
-            Research in occupational health, seasonal climate forecasting and computer
-            vision: two journal papers, a workshop paper, a conference abstract and a
-            thesis. Each belongs to a research line described in full, with its
-            question, method and findings, under{' '}
-            <Link href="/research" className="text-synapse underline underline-offset-2 hover:no-underline">Research</Link>.
+            The papers that came out of the research above: two journal papers, a
+            workshop paper, a conference abstract and a thesis.
           </p>
           <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-muted mb-4">
             <span className="rounded-sm border border-border bg-surface px-4 py-1.5">
@@ -77,14 +63,14 @@ export default function PublicationsPage() {
             Scholar counts were recorded by hand from the Scholar profile and carry no
             retrieval date.
           </p>
-        </ScrollReveal>
+        </div>
 
         {/* Publications list */}
         <div className="space-y-8">
-          {sorted.map((pub, i) => {
+          {sorted.map((pub) => {
             const isThesis = pub.venue.includes('MSc Thesis')
             return (
-              <ScrollReveal key={pub.title} delay={i * 0.05}>
+              <div key={pub.title}>
                 <article
                   id={pub.key}
                   className={`relative scroll-mt-28 rounded-2xl border p-6 sm:p-8 transition-colors ${
@@ -124,9 +110,9 @@ export default function PublicationsPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="font-display text-xl font-semibold text-ivory mb-2 leading-snug">
+                  <h3 className="font-display text-xl font-semibold text-ivory mb-2 leading-snug">
                     {pub.title}
-                  </h2>
+                  </h3>
 
                   {/* Authors */}
                   <p className="text-sm text-muted mb-5">{pub.authors}</p>
@@ -196,11 +182,11 @@ export default function PublicationsPage() {
                       the client component only toggles and copies. */}
                   <CiteBox citations={citations(pub)} />
                 </article>
-              </ScrollReveal>
+              </div>
             )
           })}
         </div>
       </div>
-    </div>
+    </section>
   )
 }

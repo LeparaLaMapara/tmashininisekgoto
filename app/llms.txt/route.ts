@@ -55,7 +55,7 @@ export function GET() {
     '',
     ...PUBLICATIONS.map(
       (p) =>
-        `- [${p.title}](${SITE_URL}/publications#${p.key}) (${p.year}, ${p.venue})${p.doi ? ` doi:${p.doi}` : ''}${p.arxiv ? ` arXiv:${p.arxiv}` : ''}`
+        `- [${p.title}](${SITE_URL}/research#${p.key}) (${p.year}, ${p.venue})${p.doi ? ` doi:${p.doi}` : ''}${p.arxiv ? ` arXiv:${p.arxiv}` : ''}`
     ),
     '',
     '## Topics',

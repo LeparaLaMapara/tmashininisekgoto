@@ -95,6 +95,15 @@ const nextConfig = {
         destination: '/blog',
         permanent: false,
       },
+      // The papers became a section of /research on 2026-09-24. No fragment on
+      // the destination on purpose: browsers carry the request's own fragment
+      // across a redirect, so /publications#<key> lands on /research#<key>,
+      // where each paper keeps its anchor.
+      {
+        source: '/publications',
+        destination: '/research',
+        permanent: true,
+      },
     ]
   },
   // Note: the old percent-encoded tag URLs (/tags/open%20source, /tags/ci%2Fcd)

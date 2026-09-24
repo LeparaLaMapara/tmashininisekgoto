@@ -1036,7 +1036,7 @@ export const WRITINGS: Writing[] = [
 export const SEMANTIC_SCHOLAR_AUTHOR_ID = '1419516441'
 
 export interface Publication {
-  /** Stable key: the anchor on /publications and the tail of the @id. */
+  /** Stable key: the anchor on /research and the tail of the @id. */
   key: string
   /** Research line slug from lib/graph/research.ts. */
   research: string
