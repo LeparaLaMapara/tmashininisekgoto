@@ -7,6 +7,7 @@ import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/da
 import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
+import { TheRecord } from '@/components/resume/the-record'
 
 export const metadata: Metadata = {
   title: 'Resume: Data Science, AI Engineering & Research',
@@ -103,6 +104,8 @@ export default function ResumePage() {
             <MessageCircle className="w-5 h-5 text-synapse/50 group-hover:text-synapse transition-colors shrink-0" />
           </Link>
         </ScrollReveal>
+
+        <TheRecord />
 
         {/* Timeline */}
         <div className="relative">

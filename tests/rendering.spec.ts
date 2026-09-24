@@ -23,8 +23,9 @@ test.describe('server-rendered HTML', () => {
     })
   }
 
-  test('homepage impact numbers are the real values, not zeros', async ({ request }) => {
-    const html = await (await request.get('/')).text()
+  // The figures moved from the homepage to the CV on 2026-09-24.
+  test('CV impact numbers are the real values, not zeros', async ({ request }) => {
+    const html = await (await request.get('/resume')).text()
     const text = html.replace(/<[^>]+>/g, '')
 
     // The real figures from IMPACT_NUMBERS in lib/data.ts.
@@ -39,8 +40,8 @@ test.describe('server-rendered HTML', () => {
     expect(text).not.toContain('R0+')
   })
 
-  test('homepage below-fold sections are in the HTML', async ({ request }) => {
-    const html = await (await request.get('/')).text()
+  test('CV record sections are in the HTML', async ({ request }) => {
+    const html = await (await request.get('/resume')).text()
     expect(html).toContain('What the work delivered')
     expect(html).toContain('University of the Witwatersrand')
   })
@@ -48,7 +49,7 @@ test.describe('server-rendered HTML', () => {
 
 test.describe('reveal animations still work', () => {
   test('below-fold section becomes visible when scrolled into view', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/resume')
 
     const heading = page.getByRole('heading', { name: 'What the work delivered' })
     await heading.scrollIntoViewIfNeeded()
