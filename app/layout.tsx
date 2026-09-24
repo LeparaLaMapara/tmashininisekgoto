@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/footer'
 import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeProvider } from '@/components/layout/theme-provider'
 import { VisionCollage } from '@/components/layout/vision-collage'
+import { KasiStreet } from '@/components/layout/kasi-street'
 import { JsonLd } from '@/components/seo/json-ld'
 import { webSiteSchema } from '@/lib/schema'
 import { SITE_URL, ogImages } from '@/lib/site'
@@ -132,6 +133,7 @@ export default function RootLayout({
           <CommandPalette />
           <Navbar />
           <main className="flex-1 pt-6">{children}</main>
+          <KasiStreet />
           <Footer />
         </ThemeProvider>
         <Analytics />
