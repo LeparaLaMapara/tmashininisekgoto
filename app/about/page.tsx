@@ -180,12 +180,14 @@ export default function AboutPage() {
               open source tools for people with small budgets and big problems. Take the best from out there, then build our own.
             </li>
             <li>
-              <span className="font-semibold text-ivory">A research engine</span>: it takes an idea to an
-              experiment to a paper, and tells me when I am wrong.
+              <span className="font-semibold text-ivory">A fundamental scientific research engine</span>: give it
+              an idea or a paper and it implements it, makes its own decisions along the way, finds the gaps,
+              and ends with a working product. It also tells me when I am wrong.
             </li>
             <li>
-              <span className="font-semibold text-ivory">A trading bot</span>: built to find out whether the
-              traders are telling the truth. It is humbling me.
+              <span className="font-semibold text-ivory">A global markets quantitative engine</span>: it does
+              the work of a quantitative analyst. It studies the markets, forms ideas, tests them against real
+              costs, and trades only what survives.
             </li>
           </ul>
           <p>And a few things I learn for no reason at all.</p>
