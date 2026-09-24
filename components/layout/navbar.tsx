@@ -8,13 +8,15 @@ import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
-// Five items, trimmed on 2026-09-24 so the bar stops listing everything at once.
-// Publications became a section of /research; Talks, Topics, Teaching and the
-// rest stay reachable from the footer and the search palette.
+// Six items: trimmed on 2026-09-24 so the bar stops listing everything at once;
+// Talks came back on 2026-09-25 at Thabang's request.
+// Publications became a section of /research;
+// Topics, Teaching and the rest stay reachable from the footer and the search palette.
 const NAV_LINKS = [
   { href: '/blog', label: 'Writing' },
   { href: '/work', label: 'Work' },
   { href: '/research', label: 'Research' },
+  { href: '/talks', label: 'Talks' },
   { href: '/about', label: 'About' },
   { href: '/resume', label: 'CV' },
 ]
