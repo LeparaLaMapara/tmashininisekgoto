@@ -64,8 +64,8 @@ export default function NowPage() {
           work
         </Link>{' '}
         and{' '}
-        <Link href="/publications" className="text-synapse underline underline-offset-2 hover:no-underline">
-          publications
+        <Link href="/research" className="text-synapse underline underline-offset-2 hover:no-underline">
+          research
         </Link>{' '}
         pages go deeper.
       </p>
@@ -86,8 +86,8 @@ export default function NowPage() {
           Witwatersrand, building on the MSc work on learning the level set method
           with echo state networks for image segmentation. It is at proposal stage
           and not yet registered. The published papers are on the{' '}
-          <Link href="/publications" className="text-synapse underline underline-offset-2 hover:no-underline">
-            publications
+          <Link href="/research#papers" className="text-synapse underline underline-offset-2 hover:no-underline">
+            research
           </Link>{' '}
           page.
         </p>
@@ -180,7 +180,7 @@ export default function NowPage() {
       <p className="mt-16 border-t border-border pt-8 text-muted">
         Want to work together?{' '}
         <Link href="/ai" className="text-synapse underline underline-offset-2 hover:no-underline">
-          Ask Thabang AI Assist
+          Ask LeparaLaMapara
         </Link>{' '}
         or reach out from there.
       </p>

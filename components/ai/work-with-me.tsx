@@ -4,8 +4,6 @@ import { useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   Mic,
-  Briefcase,
-  UserPlus,
   Handshake,
   GraduationCap,
   CalendarDays,
@@ -27,8 +25,6 @@ type Card = {
 
 const CARDS: Card[] = [
   { icon: Mic, title: 'AI talks & workshops', blurb: 'Invite me to speak or run practical, no-hype AI training for your team.', interest: 'workshop' },
-  { icon: Briefcase, title: 'AI / data science consulting', blurb: 'Production ML, analytics, and AI strategy — from messy data to shipped systems.', interest: 'consulting' },
-  { icon: UserPlus, title: 'Recruit or hire me', blurb: 'Lead/principal data science & AI engineering roles. See what I am suited for.', interest: 'recruitment' },
   { icon: Handshake, title: 'Collaborate on applied AI', blurb: 'Research-to-product work, open source, and applied AI projects.', interest: 'collaboration' },
   { icon: GraduationCap, title: 'AI learning & career resources', blurb: 'Courses and guidance to start or level up in AI and data science.', href: '/courses' },
 ]
@@ -52,15 +48,11 @@ export function WorkWithMe() {
   return (
     <>
       <ScrollReveal>
-        <p className="font-mono text-xs uppercase tracking-widest text-synapse">Work With Me</p>
-        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-ivory sm:text-4xl">
-          Turn this into{' '}
-          <span className="text-synapse">
-            something real
-          </span>
+        <h2 className="font-display text-3xl font-bold tracking-tight text-ivory sm:text-4xl">
+          Get in touch
         </h2>
         <p className="mt-4 max-w-2xl text-muted">
-          Pick the path that fits — it pre-fills the form below, or book a call directly.
+          Pick what you have in mind and it fills in the form below, or book a call directly.
         </p>
       </ScrollReveal>
 
@@ -110,7 +102,7 @@ export function WorkWithMe() {
             href={`mailto:${SOCIAL_LINKS.email}`}
             className="text-sm text-muted transition-colors hover:text-ivory"
           >
-            or email {SOCIAL_LINKS.email}
+            or send an email
           </a>
         </div>
       </ScrollReveal>

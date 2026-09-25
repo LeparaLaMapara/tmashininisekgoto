@@ -5,7 +5,7 @@
  * could not be joined to the organisations' own entries in any knowledge
  * graph. Each one now has a stable `@id` on this site, its official site, and
  * its Wikidata id where one exists (checked by hand against label and
- * description; ABSA Insurance has none of its own, so it points at its parent).
+ * description).
  */
 
 export type OrgType =
@@ -30,8 +30,7 @@ export interface OrgDef {
 }
 
 export const ORGANIZATIONS: OrgDef[] = [
-  { slug: 'absa-group', name: 'ABSA Group', type: 'Corporation', url: 'https://www.absa.africa/', wikidata: 'Q58641733' },
-  { slug: 'absa-insurance', name: 'ABSA Insurance', type: 'Corporation', url: 'https://www.absa.co.za/', parent: 'absa-group' },
+  { slug: 'absa-group', name: 'Absa Group', type: 'Corporation', url: 'https://www.absa.africa/', wikidata: 'Q58641733' },
   { slug: 'vodacom', name: 'Vodacom', type: 'Corporation', url: 'https://www.vodacom.co.za/', wikidata: 'Q1856518' },
   { slug: 'ibm-research', name: 'IBM Research', type: 'ResearchOrganization', url: 'https://research.ibm.com/', wikidata: 'Q3146518' },
   {

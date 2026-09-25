@@ -42,21 +42,21 @@ test.describe('work data integrity', () => {
     expect(absa.artifacts).toHaveLength(0)
   })
 
-  test('ABSA figures match the CV and nothing unverified creeps in', () => {
-    // The public CV (September 2026) states 230,000+ properties and "months to
-    // under a day". It deliberately dropped the earlier "2M+ daily signals",
-    // "two months to under 24 hours" and the Ubunye Engine attribution, so none
-    // of those may appear here either. "26,000+ telematics customers" was only
-    // ever in a brief, never in the CV.
+  test('Absa figures match the CV and nothing unverified creeps in', () => {
+    // The public CV (25 September 2026) states Ubunye Engine at 100M+ events a
+    // day for 10+ products and telematics "months to under a day". It dropped the
+    // 230,000+ properties figure, and never stated "2M+ daily signals", "two
+    // months to under 24 hours" or "26,000+ telematics customers".
     const absa = PROJECTS.find((p) => p.slug === 'insurance-data-science-capability')!
     const blob = JSON.stringify(absa)
-    expect(blob).toContain('230,000+')
+    expect(blob).toContain('100M+')
     expect(blob).toContain('months to under a day')
+    expect(blob).toContain('Absa Group')
+    expect(blob).not.toContain('230,000')
     expect(blob).not.toContain('2M+')
     expect(blob).not.toContain('24 hours')
-    expect(blob).not.toContain('Ubunye Engine')
     expect(blob).not.toContain('26,000')
-    expect(blob).not.toContain('daily trips')
+    expect(blob).not.toContain('ABSA Insurance')
   })
 
   test('the NeurIPS paper is described as the workshop it actually was', () => {

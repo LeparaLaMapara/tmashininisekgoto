@@ -68,12 +68,13 @@
 /* === Dark mode: the same street after dark, signs still lit === */
 
 :root.dark {
-  --color-void: #121212;
+  /* ThabangVision: crushed black and his banner orange, from his photographs. */
+  --color-void: #0b0b0c;
   --color-surface: #1b1b1b;
   --color-surface-hover: #262214;
-  --color-synapse: #ff6b5e;
-  --color-synapse-dim: #5c1d18;
-  --color-synapse-ink: #ff6b5e;
+  --color-synapse: #ff7a1a;
+  --color-synapse-dim: #5c2a0c;
+  --color-synapse-ink: #ff8a33;
   --color-signal: #52c77a;
   --color-signal-dim: #173a24;
   --color-accent: #ffd23f;
@@ -272,3 +273,164 @@ html.theme-fade * {
   overflow-y: hidden;
   padding: 0.5rem 0;
 }
+
+
+/* === The two themes, laid over the same pages (2026-09-25) ===
+ * Only the look changes; no text, font choice for reading, or layout does.
+ * Unlayered on purpose, so it wins over the Tailwind size utilities on each h1.
+ */
+
+/* Sosha Plata Jo: every page's big heading is painted on the yellow sign board.
+   The homepage heading already sits inside a .sign-board and is left alone. */
+html:not(.dark) main h1:not(.sign-board h1) {
+  width: fit-content;
+  max-width: 100%;
+  background-color: var(--color-sign-board);
+  background-image: var(--sign-bolts), var(--sign-brush);
+  color: var(--color-sign-ink);
+  border: 5px solid var(--color-sign-ink);
+  box-shadow: 8px 8px 0 var(--color-sign-ink);
+  padding: 0.35em 0.55em 0.3em;
+  font-family: var(--font-sign);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  font-size: clamp(1.55rem, 4.4vw, 2.6rem);
+  overflow-wrap: anywhere;
+  margin-bottom: 1.75rem;
+}
+
+/* ThabangVision: his photographs, tiny and quiet, behind everything. */
+.vision-collage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  grid-auto-rows: 60px;
+  gap: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.vision-collage i {
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1) contrast(1.1);
+  opacity: 0.1;
+  transition: filter 2.4s ease, opacity 2.4s ease;
+}
+/* A soft dark veil over the reading column, so the photos live at the edges. */
+.vision-veil {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 46% 75% at 50% 50%, rgba(11, 11, 12, 0.82), rgba(11, 11, 12, 0.35) 70%, rgba(11, 11, 12, 0.1));
+}
+.vision-collage { z-index: -2; }
+.vision-collage i.lit {
+  filter: none;
+  opacity: 0.34;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vision-collage i { transition: none; }
+}
+
+/* === Sosha Plata Jo: the street around the sign === */
+
+:root {
+  /* The four bolts a real sign is mounted with, and the faint drag of a brush. */
+  --sign-bolts:
+    radial-gradient(circle at 9px 9px, #6b6b6b 0 2px, #111 2.6px, transparent 3.4px),
+    radial-gradient(circle at calc(100% - 9px) 9px, #6b6b6b 0 2px, #111 2.6px, transparent 3.4px),
+    radial-gradient(circle at 9px calc(100% - 9px), #6b6b6b 0 2px, #111 2.6px, transparent 3.4px),
+    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), #6b6b6b 0 2px, #111 2.6px, transparent 3.4px);
+  --sign-brush: repeating-linear-gradient(177deg, rgba(0, 0, 0, 0.035) 0 2px, transparent 2px 7px);
+}
+html:not(.dark) .sign-board {
+  background-image: var(--sign-bolts), var(--sign-brush);
+}
+
+/* The page is a painted wall: plaster, and a whisper of shweshwe. */
+html:not(.dark) body {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23p)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cg fill='%231f2a5a' fill-opacity='.045'%3E%3Cpath d='M14 4l4 4-4 4-4-4z'/%3E%3Ccircle cx='0' cy='22' r='1.6'/%3E%3Ccircle cx='28' cy='22' r='1.6'/%3E%3Ccircle cx='14' cy='22' r='1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Section headings carry a short stripe of the taxi livery. Not inside articles. */
+html:not(.dark) main h2:not(article h2)::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 9px;
+  margin-top: 0.55rem;
+  background: linear-gradient(#e03a1e 0 33%, #1f6fd6 33% 66%, #f0b400 66%);
+  transform: skewX(-20deg);
+  transform-origin: left;
+}
+
+/* The street above the footer. It belongs to Sosha Plata Jo only. */
+.kasi-street {
+  margin-top: 3.5rem;
+  line-height: 0;
+}
+.kasi-street svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  min-height: 110px;
+}
+html.dark .kasi-street {
+  display: none;
+}
+.kasi-taxi {
+  animation: kasi-taxi 26s linear infinite;
+}
+/* In from the left, a stop at the spaza for passengers, then off to the right. */
+@keyframes kasi-taxi {
+  0% { transform: translateX(-140px); }
+  28% { transform: translateX(300px); }
+  40% { transform: translateX(300px); }
+  72% { transform: translateX(1340px); }
+  100% { transform: translateX(1340px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kasi-taxi { animation: none; transform: translateX(640px); }
+}
+
+/* === The short version on the homepage: small boards, little text === */
+.short-version { display: grid; gap: 1.4rem; }
+.hl-board {
+  background: var(--color-void);
+  border: 3px solid var(--color-ivory);
+  box-shadow: 6px 6px 0 var(--color-ivory);
+}
+.hl-statement { padding: 1.3rem 1.5rem; transform: rotate(-0.3deg); max-width: 100%; }
+.hl-lead { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; line-height: 1.3; margin: 0; }
+.hl-sub { margin: 0.6rem 0 0; color: var(--color-ivory); opacity: 0.85; font-size: 1.02rem; line-height: 1.6; }
+.hl-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; list-style: none; margin: 0.4rem 0 0; padding: 0; }
+@media (max-width: 720px) { .hl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hl-stats .hl-board { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.hl-stats .hl-board:nth-child(odd) { transform: rotate(-0.8deg); }
+.hl-stats .hl-board:nth-child(even) { transform: rotate(0.7deg); }
+.hl-value { font-family: var(--font-sign); font-size: 1.9rem; line-height: 1; color: var(--color-synapse-ink); }
+.hl-caption { font-size: 0.84rem; line-height: 1.35; color: var(--color-muted); }
+
+/* Sosha Plata Jo: the stats are little painted boards, mounted like the big sign. */
+html:not(.dark) .hl-stats .hl-board { background-color: #fff; background-image: var(--sign-bolts); }
+html:not(.dark) .hl-stats .hl-board:first-child { background-color: var(--color-sign-board); }
+html:not(.dark) .hl-stats .hl-board:first-child .hl-caption { color: var(--color-sign-ink); }
+
+/* ThabangVision: quiet boards with his banner orange as the shadow. */
+html.dark .hl-board { border-color: var(--color-border); box-shadow: 6px 6px 0 var(--color-synapse); background: rgba(11, 11, 12, 0.92); }
+html.dark 
+/* "PhD loading..." on the MSc board: the dots load, then start again. */
+.hl-loading { font-family: var(--font-mono); font-size: 0.74rem; color: var(--color-ivory); margin-top: 0.15rem; }
+.hl-dots i { font-style: normal; animation: hl-dot 1.8s infinite; opacity: 0; }
+.hl-dots i:nth-child(2) { animation-delay: 0.3s; }
+.hl-dots i:nth-child(3) { animation-delay: 0.6s; }
+@keyframes hl-dot { 0%, 15% { opacity: 0; } 30%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hl-dots i { animation: none; opacity: 1; } }

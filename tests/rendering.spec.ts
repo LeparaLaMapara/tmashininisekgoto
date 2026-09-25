@@ -12,7 +12,7 @@ import { test, expect } from '@playwright/test'
  * Fixing (1) is easy in a way that silently breaks (2), so both are asserted.
  */
 
-const ROUTES = ['/', '/about', '/work', '/publications', '/blog', '/talks', '/resume', '/career', '/ai', '/courses', '/tags']
+const ROUTES = ['/', '/about', '/work', '/research', '/blog', '/talks', '/resume', '/career', '/ai', '/courses', '/tags']
 
 test.describe('server-rendered HTML', () => {
   for (const route of ROUTES) {
@@ -23,13 +23,27 @@ test.describe('server-rendered HTML', () => {
     })
   }
 
-  test('homepage impact numbers are the real values, not zeros', async ({ request }) => {
-    const html = await (await request.get('/')).text()
+  // The figures moved from the homepage to the CV on 2026-09-24.
+  // Publications became a section of /research on 2026-09-24. Old links, Scholar
+  // entries and search results must still arrive, and each paper keeps its anchor.
+  test('/publications redirects to /research, where every paper keeps its anchor', async ({ request }) => {
+    const res = await request.get('/publications', { maxRedirects: 0 })
+    expect(res.status()).toBe(308)
+    expect(res.headers()['location']).toMatch(/\/research$/)
+    const html = await (await request.get('/research')).text()
+    expect(html).toContain('id="papers"')
+    expect(html).toContain('Papers, newest first')
+    expect(html).toContain('BibTeX for all')
+  })
+
+  test('CV impact numbers are the real values, not zeros', async ({ request }) => {
+    const html = await (await request.get('/resume')).text()
     const text = html.replace(/<[^>]+>/g, '')
 
     // The real figures from IMPACT_NUMBERS in lib/data.ts.
     expect(text).toContain('R1B')
-    expect(text).toContain('230K+')
+    expect(text).toContain('100M+')
+    expect(text).not.toContain('230K')
     expect(text).toContain('R2M+')
     // Figures the CV does not state must not come back.
     expect(text).not.toContain('80-90%')
@@ -39,8 +53,8 @@ test.describe('server-rendered HTML', () => {
     expect(text).not.toContain('R0+')
   })
 
-  test('homepage below-fold sections are in the HTML', async ({ request }) => {
-    const html = await (await request.get('/')).text()
+  test('CV record sections are in the HTML', async ({ request }) => {
+    const html = await (await request.get('/resume')).text()
     expect(html).toContain('What the work delivered')
     expect(html).toContain('University of the Witwatersrand')
   })
@@ -48,7 +62,7 @@ test.describe('server-rendered HTML', () => {
 
 test.describe('reveal animations still work', () => {
   test('below-fold section becomes visible when scrolled into view', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/resume')
 
     const heading = page.getByRole('heading', { name: 'What the work delivered' })
     await heading.scrollIntoViewIfNeeded()

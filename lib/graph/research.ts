@@ -1,6 +1,6 @@
 /**
  * Research lines: first class records for work that used to exist only as
- * rows on /publications.
+ * rows in the papers section of /research.
  *
  * A research line is the unit a person searches for ("reservoir computing for
  * image segmentation"), not a single paper. It gathers the question, the
@@ -168,7 +168,7 @@ export const RESEARCH: ResearchLine[] = [
     topics: ['seasonal-forecasting', 'climate-risk', 'time-series', 'recurrent-neural-networks', 'deep-learning', 'geospatial-ml'],
     lineage: {
       after:
-        'Climate and geospatial risk continued in insurance, as flood and natural catastrophe risk models across more than 230,000 insured properties, and in the proposed doctoral research on flood mapping.',
+        'Climate and geospatial risk continued at a bank, as flood forecasting for underwriting, and in the proposed doctoral research on flood mapping.',
     },
     provenance: [
       { label: 'NeurIPS 2020 CCAI workshop paper', href: 'https://www.climatechange.ai/papers/neurips2020/74' },

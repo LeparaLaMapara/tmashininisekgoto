@@ -8,11 +8,14 @@ import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
+// Six items: trimmed on 2026-09-24 so the bar stops listing everything at once;
+// Talks came back on 2026-09-25 at Thabang's request.
+// Publications became a section of /research;
+// Topics, Teaching and the rest stay reachable from the footer and the search palette.
 const NAV_LINKS = [
+  { href: '/blog', label: 'Writing' },
   { href: '/work', label: 'Work' },
   { href: '/research', label: 'Research' },
-  { href: '/blog', label: 'Writing' },
-  { href: '/publications', label: 'Publications' },
   { href: '/talks', label: 'Talks' },
   { href: '/about', label: 'About' },
   { href: '/resume', label: 'CV' },
@@ -80,15 +83,15 @@ export function Navbar() {
             )
           })}
 
-          {/* AI CTA */}
+          {/* The assistant, as a quiet link rather than a button. */}
           <Link
             href="/ai"
             className={cn(
-              'ml-4 mr-2 flex items-center px-4 py-2 text-[0.9375rem] font-semibold border-[3px] border-sign-ink text-sign-ink transition-transform hover:translate-x-px hover:translate-y-px',
-              pathname === '/ai' ? 'bg-synapse text-white' : 'bg-sign-board'
+              'ml-2 mr-1 px-3.5 py-2.5 text-[0.9375rem] font-medium transition-colors',
+              pathname === '/ai' ? 'text-ivory' : 'text-muted hover:text-ivory'
             )}
           >
-            Talk to Thabang AI Assist
+            Talk to LeparaLaMapara
           </Link>
 
           <ThemeToggle />
@@ -136,12 +139,12 @@ export function Navbar() {
               })}
               <Link
                 href="/ai"
-                className="mt-3 flex items-center justify-center px-5 py-3 text-base font-semibold bg-sign-board text-sign-ink border-[3px] border-sign-ink"
+                className="px-4 py-3 text-base font-medium text-muted hover:text-ivory transition-colors"
               >
-                Talk to Thabang AI Assist
+                Talk to LeparaLaMapara
               </Link>
               <div className="mt-3 flex justify-center">
-                <ThemeToggle />
+                <ThemeToggle withLabel />
               </div>
             </div>
           </motion.div>

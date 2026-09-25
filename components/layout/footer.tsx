@@ -38,7 +38,6 @@ export function Footer() {
                 { href: '/work', label: 'Work' },
                 { href: '/research', label: 'Research' },
                 { href: '/blog', label: 'Writing' },
-                { href: '/publications', label: 'Publications' },
                 { href: '/topics', label: 'Topics' },
                 { href: '/talks', label: 'Talks' },
                 { href: '/courses', label: 'Teaching' },
@@ -64,7 +63,7 @@ export function Footer() {
               href="/ai"
               className="inline-flex items-center px-4 py-2 bg-sign-board text-sign-ink text-sm font-semibold border-[3px] border-sign-ink transition-transform hover:translate-x-px hover:translate-y-px"
             >
-              Talk to Thabang AI Assist
+              Talk to LeparaLaMapara
             </Link>
           </div>
         </div>

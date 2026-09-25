@@ -150,7 +150,7 @@ export default async function ResearchPage({ params }: PageProps) {
             <ul className="space-y-4">
               {pubs.map((p) => (
                 <li key={p.key} className="rounded-2xl border border-border bg-surface p-5">
-                  <Link href={`/publications#${p.key}`} className="font-medium text-ivory hover:text-synapse">{p.title}</Link>
+                  <Link href={`/research#${p.key}`} className="font-medium text-ivory hover:text-synapse">{p.title}</Link>
                   <p className="mt-1 text-sm text-muted">{p.authors}. {p.venue}, {p.year}.</p>
                   {p.doi && (
                     <a href={`https://doi.org/${p.doi}`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-mono text-synapse hover:underline">

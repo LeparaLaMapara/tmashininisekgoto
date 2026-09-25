@@ -55,7 +55,7 @@ export function GET() {
     '',
     ...PUBLICATIONS.map(
       (p) =>
-        `- [${p.title}](${SITE_URL}/publications#${p.key}) (${p.year}, ${p.venue})${p.doi ? ` doi:${p.doi}` : ''}${p.arxiv ? ` arXiv:${p.arxiv}` : ''}`
+        `- [${p.title}](${SITE_URL}/research#${p.key}) (${p.year}, ${p.venue})${p.doi ? ` doi:${p.doi}` : ''}${p.arxiv ? ` arXiv:${p.arxiv}` : ''}`
     ),
     '',
     '## Topics',
@@ -99,7 +99,7 @@ export function GET() {
     `- [Career journey](${SITE_URL}/career): the path from a BSc at Wits to leading a data science capability`,
     `- [Now](${SITE_URL}/now): what he is working on at the moment`,
     `- [Topics](${SITE_URL}/topics): every subject the work is about`,
-    `- [Thabang AI Assist](${SITE_URL}/ai): an assistant grounded on this site (it is an assistant, not him)`,
+    `- [LeparaLaMapara](${SITE_URL}/ai): Thabang's AI assistant, grounded on this site (it is an assistant, not him)`,
     '',
     '## Machine-readable files',
     '',

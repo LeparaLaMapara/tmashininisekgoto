@@ -7,11 +7,12 @@ import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/da
 import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
+import { TheRecord } from '@/components/resume/the-record'
 
 export const metadata: Metadata = {
   title: 'Resume: Data Science, AI Engineering & Research',
   description:
-    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research and Wits, with an MSc from the University of the Witwatersrand.',
+    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at Absa Group, previously Vodacom, IBM Research and Wits, with an MSc from the University of the Witwatersrand.',
   alternates: { canonical: '/resume' },
   openGraph: profileOpenGraph('/resume'),
 }
@@ -43,7 +44,7 @@ export default function ResumePage() {
             path: '/resume',
             name: 'Curriculum Vitae of Thabang Mashinini-Sekgoto',
             description:
-              'Career history: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research, Wits and the CSIR. MSc from the University of the Witwatersrand.',
+              'Career history: Lead Data Scientist at Absa Group, previously Vodacom, IBM Research, Wits and the CSIR. MSc from the University of the Witwatersrand.',
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -94,7 +95,7 @@ export default function ResumePage() {
             </div>
             <div className="flex-1">
               <p className="font-display font-bold text-ivory text-[0.9375rem]">
-                Want to know more? Talk to Thabang AI Assist
+                Want to know more? Talk to LeparaLaMapara
               </p>
               <p className="text-sm text-muted mt-0.5">
                 Ask about my experience, projects, or download my latest CV, all through a conversation.
@@ -103,6 +104,8 @@ export default function ResumePage() {
             <MessageCircle className="w-5 h-5 text-synapse/50 group-hover:text-synapse transition-colors shrink-0" />
           </Link>
         </ScrollReveal>
+
+        <TheRecord />
 
         {/* Timeline */}
         <div className="relative">
@@ -204,7 +207,7 @@ export default function ResumePage() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-sm bg-synapse/10 text-synapse font-medium text-sm hover:bg-synapse/20 border border-synapse/20 transition-all"
             >
               <Sparkles className="w-4 h-4" />
-              Talk to Thabang AI Assist
+              Talk to LeparaLaMapara
             </Link>
           </div>
         </ScrollReveal>

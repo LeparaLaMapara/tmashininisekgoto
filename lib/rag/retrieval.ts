@@ -49,13 +49,17 @@ export async function searchKb(
   return (data ?? []) as KbHit[]
 }
 
-/** Numbered, citable context blocks for the system prompt. */
+/**
+ * Context blocks for the system prompt, labelled by title and link. Not numbered:
+ * the chat window does not turn "[2]" into a link, so numbers leaked into answers
+ * as noise. The model links to the page itself instead.
+ */
 export function formatRetrievalContext(hits: KbHit[]): string {
   if (!hits.length) return ''
   return hits
-    .map((h, i) => {
-      const source = h.url ? `${h.title} — ${h.url}` : h.title
-      return `[${i + 1}] ${source}\n${h.content}`
+    .map((h) => {
+      const source = h.url ? `Source: ${h.title} (${h.url})` : `Source: ${h.title}`
+      return `${source}\n${h.content}`
     })
     .join('\n\n')
 }

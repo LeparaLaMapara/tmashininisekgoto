@@ -6,10 +6,11 @@ import { ChatInterface } from '@/components/ai/chat-interface'
 import { WorkWithMe } from '@/components/ai/work-with-me'
 
 export const metadata: Metadata = {
-  title: 'Thabang AI Assist: Ask About My Work',
+  title: 'LeparaLaMapara: my AI assistant, ask about my work',
   description:
     'Ask an AI assistant grounded on the real work, writing, talks, and projects of Thabang Mashinini-Sekgoto. Every answer cites its sources.',
-  alternates: { canonical: '/ai' },
+  alternates: { canonical: '/ai' },
+
   openGraph: pageOpenGraph('/ai', 'Ask the AI assistant about the work of Thabang Mashinini-Sekgoto'),
 }
 
@@ -18,10 +19,10 @@ export default function AIPage() {
     <>
       <JsonLd
         data={[
-          webPageSchema({ path: '/ai', name: 'Thabang AI Assist', description: 'An AI assistant grounded on the real work, writing and projects of Thabang Mashinini-Sekgoto.' }),
+          webPageSchema({ path: '/ai', name: 'LeparaLaMapara', description: 'An AI assistant grounded on the real work, writing and projects of Thabang Mashinini-Sekgoto.' }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
-            { name: 'Thabang AI Assist', path: '/ai' },
+            { name: 'LeparaLaMapara', path: '/ai' },
           ]),
         ]}
       />
@@ -31,13 +32,12 @@ export default function AIPage() {
           <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
             Talk to{' '}
             <span className="text-synapse">
-              Thabang AI Assist
+              LeparaLaMapara
             </span>
           </h1>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">
-            My AI assistant, grounded on my work, writing, talks and projects. It
-            knows what I have built and how I think, but it is not me. Ask it about
-            my experience or how we could work together, then take the next step below.
+            My AI assistant. It knows my public work and writing, and it will
+            tell you when it does not know something. It is not me.
           </p>
         </div>
 
