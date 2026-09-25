@@ -24,8 +24,17 @@ export function ShortVersion() {
   return (
     <section className="short-version mt-14" aria-label="The short version">
       <div className="hl-board hl-statement">
-        <p className="hl-lead">Lead Data Scientist at a bank.</p>
-        <p className="hl-sub">9+ years making data and AI work in the real world.</p>
+        <p className="hl-lead">I&apos;m Thabang, from Soshanguve.</p>
+        <p className="hl-sub">
+          For over nine years, I&apos;ve spent my time learning how things work: physics, mathematics,
+          AI, software, hardware engineering, data, and people, and then asking what those ideas mean
+          where I come from.
+        </p>
+        <p className="hl-sub">
+          Today, I&apos;m a Lead Data Scientist at a bank, but the question I keep coming back to is
+          bigger than my job: how do we take what we learn in universities, research labs and large
+          organisations and make it useful to ordinary people?
+        </p>
       </div>
 
       <ul className="hl-stats">
