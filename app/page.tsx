@@ -80,9 +80,8 @@ export default function Home() {
 
           <section className="mt-16 border-t-2 border-border pt-8">
             <p className="text-lg leading-relaxed text-ivory/85">
-              Say hello at{' '}
               <a href={`mailto:${SOCIAL_LINKS.email}`} className="font-semibold underline underline-offset-4">
-                {SOCIAL_LINKS.email}
+                Say hello by email
               </a>
               . The longer story is on the{' '}
               <Link href="/about" className="font-semibold underline underline-offset-4">about page</Link>, the work is

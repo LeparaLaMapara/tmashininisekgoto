@@ -5,46 +5,30 @@ import { cn } from '@/lib/utils'
 
 const QUESTION_GROUPS: { key: string; label: string; questions: string[] }[] = [
   {
-    key: 'recruiters',
-    label: 'Recruiters & Companies',
+    key: 'thinking',
+    label: 'How he thinks',
     questions: [
-      'What kind of AI/data roles is Thabang suited for?',
-      'What enterprise AI and data science work has Thabang done?',
-      'How can a company work with Thabang?',
+      'What is Thabang curious about?',
+      'What does he mean by access?',
+      'What is the mother test?',
     ],
   },
   {
-    key: 'businesses',
-    label: 'Businesses & Organisations',
+    key: 'building',
+    label: 'What he builds',
     questions: [
-      'How can Thabang help my business understand and apply AI?',
-      'Can Thabang run AI workshops or training?',
-      'What AI systems or agents can Thabang help build?',
-    ],
-  },
-  {
-    key: 'learners',
-    label: 'Learners & Job Seekers',
-    questions: [
-      'How can I start learning AI or data science?',
-      'What should I learn first: Python, SQL, Power BI, or machine learning?',
-      "Where can I find Thabang's AI learning resources?",
-    ],
-  },
-  {
-    key: 'collaborators',
-    label: 'Collaborators & Builders',
-    questions: [
-      'How can I collaborate with Thabang?',
-    ],
-  },
-  {
-    key: 'research',
-    label: 'Research & Technical',
-    questions: [
+      'What is the fundamental scientific research engine?',
       'What is Ubunye Engine?',
-      "What is Thabang's philosophy on AI systems?",
-      "What are Thabang's research interests?",
+      'What is the global market research engine?',
+    ],
+  },
+  {
+    key: 'help',
+    label: 'Getting help',
+    questions: [
+      'How do I get a free website for my business?',
+      'How can I start learning AI?',
+      'Can Thabang give a talk or workshop?',
     ],
   },
 ]
@@ -59,7 +43,7 @@ export function SuggestedQuestions({ onSelect }: SuggestedQuestionsProps) {
 
   return (
     <div className="flex flex-col items-center justify-center py-12">
-      <p className="mb-5 text-sm text-muted">Pick what describes you — try one of these:</p>
+      <p className="mb-5 text-sm text-muted">Not sure what to ask? Try one of these:</p>
 
       {/* Audience tabs */}
       <div className="mb-6 flex flex-wrap justify-center gap-2">
