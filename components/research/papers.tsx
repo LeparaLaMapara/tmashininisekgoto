@@ -8,7 +8,8 @@ import { formatDate } from '@/lib/utils'
 import { ExternalLink, GraduationCap, Brain, Sparkles, FileDown } from 'lucide-react'
 
 /**
- * The papers, as a section of /research.
+ * The papers, as the body of /research: the overall citation count on top, then
+ * every paper newest first, with or without citations.
  *
  * This was the /publications page until 2026-09-24, when Thabang asked why the
  * research and the papers behind it were two menu items. The paper cards, their
@@ -22,35 +23,31 @@ export function Papers() {
   const totalCitations = citationTotal()
 
   return (
-    <section id="papers" className="mt-24 scroll-mt-28">
+    <section id="papers" className="mt-10 scroll-mt-28">
       <JsonLd data={publicationsSchema()} />
       <div>
         {/* Header */}
         <div>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ivory mb-4">
-            Papers, and how to cite them
-          </h2>
-          <p className="text-muted text-lg max-w-2xl mb-6">
-            The papers that came out of the research above: two journal papers, a
-            workshop paper, a conference abstract and a thesis.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 text-sm font-mono text-muted mb-4">
-            <span className="rounded-sm border border-border bg-surface px-4 py-1.5">
-              {publications.length} publications
-            </span>
-            <span className="rounded-sm border border-border bg-surface px-4 py-1.5">
-              {totalCitations} citations (highest observed per paper)
-            </span>
+          {/* The overall citation count leads, as Thabang asked (2026-09-25). */}
+          <div className="papers-total flex flex-wrap items-end gap-x-8 gap-y-3 mb-4">
+            <p className="leading-none">
+              <span className="font-sign text-5xl sm:text-6xl text-synapse-ink">{totalCitations}</span>
+              <span className="ml-3 font-display text-xl font-bold text-ivory">citations</span>
+            </p>
+            <p className="font-mono text-sm text-muted pb-1">
+              across {publications.length} papers
+            </p>
             {/* Plain <a>: /publications.bib is a route handler, not a page, so a
                 soft navigation would have nothing to render. */}
             <a
               href="/publications.bib"
-              className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-4 py-1.5 transition-colors hover:border-synapse/30 hover:text-ivory"
+              className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-4 py-1.5 font-mono text-sm text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
             >
               <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
               BibTeX for all
             </a>
           </div>
+          <h2 className="sr-only">Papers, newest first</h2>
           {/* Where the numbers come from, stated rather than implied. The providers
               disagree, and no one of them is exact, so the figure is labelled as the
               highest observed, with its source, and the retrieval date is stated

@@ -32,7 +32,8 @@ test.describe('server-rendered HTML', () => {
     expect(res.headers()['location']).toMatch(/\/research$/)
     const html = await (await request.get('/research')).text()
     expect(html).toContain('id="papers"')
-    expect(html).toContain('Papers, and how to cite them')
+    expect(html).toContain('Papers, newest first')
+    expect(html).toContain('BibTeX for all')
   })
 
   test('CV impact numbers are the real values, not zeros', async ({ request }) => {

@@ -24,7 +24,7 @@ export function ShortVersion() {
   return (
     <section className="short-version mt-14" aria-label="The short version">
       <div className="hl-board hl-statement">
-        <p className="hl-lead">I&apos;m Thabang, from Soshanguve.</p>
+        <p className="hl-lead">Hi, I&apos;m Thabang, from Soshanguve, South Africa.</p>
         <p className="hl-sub">
           For over nine years, I&apos;ve spent my time learning how things work: physics, mathematics,
           AI, software, hardware engineering, data, and people, and then asking what those ideas mean
