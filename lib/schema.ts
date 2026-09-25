@@ -179,8 +179,8 @@ export function personSchema() {
     image: absoluteUrl('/avatar.svg'),
     jobTitle: 'Lead Data Scientist, AI Engineer and Applied Researcher',
     description:
-      'Builds production AI and data systems, reusable open source infrastructure and applied research. Nine years across insurance, telecommunications, applied research and higher education. Author of Ubunye Engine and founder of Ubunye AI Ecosystems.',
-    worksFor: orgRef('absa-insurance'),
+      'Builds production AI and data systems, reusable open source infrastructure and applied research. Nine years across banking, telecommunications, applied research and higher education. Author of Ubunye Engine and founder of Ubunye AI Ecosystems.',
+    worksFor: orgRef('absa-group'),
     affiliation: [orgRef('ubunye-ai-ecosystems')],
     alumniOf: orgRef('wits'),
     homeLocation: { '@type': 'Place', name: 'Johannesburg, South Africa' },

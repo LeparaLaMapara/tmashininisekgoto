@@ -42,7 +42,8 @@ test.describe('server-rendered HTML', () => {
 
     // The real figures from IMPACT_NUMBERS in lib/data.ts.
     expect(text).toContain('R1B')
-    expect(text).toContain('230K+')
+    expect(text).toContain('100M+')
+    expect(text).not.toContain('230K')
     expect(text).toContain('R2M+')
     // Figures the CV does not state must not come back.
     expect(text).not.toContain('80-90%')

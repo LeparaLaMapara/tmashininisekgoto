@@ -9,7 +9,7 @@ import { CareerRoute } from '@/components/home/taxi-route'
  * Figures come from IMPACT_NUMBERS, which only holds what the public CV states,
  * printed as they are with no counting animation.
  */
-const SELECTED = ['ABSA Insurance', 'Vodacom', 'IBM Research']
+const SELECTED = ['Absa Group', 'Vodacom', 'IBM Research']
   .map((org) => CAREER_TIMELINE.find((m) => m.org === org && m.kind === 'work'))
   .filter((m): m is NonNullable<typeof m> => Boolean(m))
 

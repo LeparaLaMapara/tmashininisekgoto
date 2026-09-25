@@ -12,7 +12,7 @@ import { TheRecord } from '@/components/resume/the-record'
 export const metadata: Metadata = {
   title: 'Resume: Data Science, AI Engineering & Research',
   description:
-    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research and Wits, with an MSc from the University of the Witwatersrand.',
+    'Full career history of Thabang Mashinini-Sekgoto: Lead Data Scientist at Absa Group, previously Vodacom, IBM Research and Wits, with an MSc from the University of the Witwatersrand.',
   alternates: { canonical: '/resume' },
   openGraph: profileOpenGraph('/resume'),
 }
@@ -44,7 +44,7 @@ export default function ResumePage() {
             path: '/resume',
             name: 'Curriculum Vitae of Thabang Mashinini-Sekgoto',
             description:
-              'Career history: Lead Data Scientist at ABSA Insurance, previously Vodacom, IBM Research, Wits and the CSIR. MSc from the University of the Witwatersrand.',
+              'Career history: Lead Data Scientist at Absa Group, previously Vodacom, IBM Research, Wits and the CSIR. MSc from the University of the Witwatersrand.',
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },

@@ -118,7 +118,7 @@ export function GET() {
     '',
     'Thabang Mashinini-Sekgoto builds production AI and data systems, reusable open',
     'source infrastructure and applied research. He is based in Johannesburg, South',
-    'Africa, and is from Soshanguve. Lead Data Scientist at ABSA Insurance, previously',
+    'Africa, and is from Soshanguve. Lead Data Scientist at Absa Group, previously',
     'Vodacom and IBM Research. He holds an MSc from the University of the',
     'Witwatersrand and is preparing a doctoral research proposal there; he is not a',
     'PhD candidate. He is the founder of Ubunye AI Ecosystems and the author of Ubunye',

@@ -197,9 +197,9 @@ export const TOPICS: TopicDef[] = [
     wikidata: 'Q3433166',
     heading: 'Climate risk and geospatial machine learning',
     intro:
-      'Climate work here runs from research into production. At IBM Research, machine learning models for long range seasonal forecasting of 2m temperature and precipitation were published at NeurIPS and EGU and deployed into IBM PAIRS Geoscope, a petabyte scale geospatial platform. In insurance, the same kind of thinking became geospatial flood and natural catastrophe risk models across more than 230,000 insured properties. The proposed doctoral research, not yet registered, continues the thread with physics informed self supervised learning for flood mapping from radar imagery.',
+      'Climate work here runs from research into production. At IBM Research, machine learning models for long range seasonal forecasting of 2m temperature and precipitation were published at NeurIPS and EGU and deployed into IBM PAIRS Geoscope, a petabyte scale geospatial platform. At a bank, the same kind of thinking became flood forecasting used by underwriting teams. The proposed doctoral research, not yet registered, continues the thread with physics informed self supervised learning for flood mapping from radar imagery.',
     description:
-      'Climate risk and geospatial ML: seasonal forecasting research, models in a petabyte scale platform, and flood risk across 230,000+ properties.',
+      'Climate risk and geospatial ML: seasonal forecasting research, models in a petabyte scale platform, and flood forecasting for underwriting.',
   },
   { slug: 'geospatial-ml', name: 'Geospatial machine learning', kind: 'domain', wikidata: 'Q2901148', broader: ['machine-learning'] },
   { slug: 'remote-sensing', name: 'Remote sensing', kind: 'domain', wikidata: 'Q199687' },

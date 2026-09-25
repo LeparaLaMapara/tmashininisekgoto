@@ -192,7 +192,7 @@ export const IMPACT_NUMBERS: ImpactNumber[] = [
   // Every figure here is stated in the public CV (public/resume.pdf). Nothing
   // goes on this list that the CV does not also say.
   { label: 'Approx. Annual Savings', value: 'R1B', suffix: '', context: 'Vodacom Smart Generator Optimisation' },
-  { label: 'Insured Properties Risk Modelled', value: '230K', suffix: '+', context: 'ABSA flood and natural catastrophe risk' },
+  { label: 'Events a Day', value: '100M', suffix: '+', context: 'Ubunye Engine, powering 10+ products at a bank' },
   { label: 'Annual Subsidy Impact', value: 'R2M', suffix: '+', context: 'Wits recommendation system' },
   { label: 'Audience Reached', value: '300K', suffix: '+', context: 'FabAcademic Unfiltered' },
 ]
@@ -215,7 +215,7 @@ export const PROJECTS: Project[] = [
     technologies: ['python', 'apache-spark', 'databricks', 'kubernetes', 'docker'],
     lineage: [
       { relation: 'before', name: 'Network intelligence at Vodacom', href: '/work/vodacom-network-intelligence', note: 'One of the environments where the same pipeline plumbing problem kept appearing.' },
-      { relation: 'before', name: 'Insurance data science at ABSA', href: '/work/insurance-data-science-capability', note: 'The enterprise ML setting the engine was designed against.' },
+      { relation: 'before', name: 'Data science platform at Absa', href: '/work/insurance-data-science-capability', note: 'The enterprise ML setting the engine was designed against.' },
     ],
     title: 'Ubunye Engine',
     category: 'open-source',
@@ -241,7 +241,7 @@ export const PROJECTS: Project[] = [
       why:
         'A lot of the intelligence an organisation builds, and most research that has to become a working system, is gated by engineering rather than by the idea. The individual tools are good at their own layer. The difficulty is that people work on laptops, on on-prem clusters and on different clouds, and connecting all of it is where the time goes. Engineering sits underneath everything else, so it is worth solving once rather than per team.',
       context:
-        'The pattern showed up in every environment I worked in: real-time analytics on national telecoms infrastructure at Vodacom, enterprise ML at ABSA, geospatial models going into a product at IBM Research. The specifics changed, the pattern did not. Ubunye Engine is one artifact inside Ubunye AI Ecosystems, a broader open-source effort built on the idea that we should also build tools from the problems we keep hitting, not only consume them. Ubunye is isiZulu for unity, and the goal was never to add another tool to the stack, it was to agree on how the pieces fit.',
+        'The pattern showed up in every environment I worked in: real-time analytics on national telecoms infrastructure at Vodacom, enterprise ML at Absa, geospatial models going into a product at IBM Research. The specifics changed, the pattern did not. Ubunye Engine is one artifact inside Ubunye AI Ecosystems, a broader open-source effort built on the idea that we should also build tools from the problems we keep hitting, not only consume them. Ubunye is isiZulu for unity, and the goal was never to add another tool to the stack, it was to agree on how the pieces fit.',
       contribution:
         'I built the Engine around three ideas. Config over code: a pipeline is a YAML file declaring inputs, outputs and settings, not a program. Plugins for everything: a connector is a small class registered from outside, so a new data source needs no engine edits. Folders as architecture: every project is laid out as use case, pipeline, task, and the CLI uses that structure to scaffold, validate, plan and run. You write a transform() method; the engine handles connections, the Spark session, the read and write loop, model versioning and lineage.',
       changed:
@@ -389,55 +389,55 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'insurance-data-science-capability',
-    headline: 'Insurance data science: telematics, flood risk and MLOps',
+    headline: 'Data science platform at a bank: telematics and MLOps',
     summary:
-      'Leading insurance data science at ABSA Insurance: telematics processing cut from months to under a day, flood risk across 230,000+ properties, MLOps.',
+      'At Absa Group: architected the data engineering capability data science runs on, with Ubunye Engine at 100M+ events a day for 10+ products.',
     kind: 'programme',
     status: 'active',
     period: 'March 2024 to present',
-    organization: 'absa-insurance',
-    role: 'Lead Data Scientist, leading the Insurance Data Science capability',
+    organization: 'absa-group',
+    role: 'Lead Data Scientist, leading a data science capability and team',
     graphTopics: ['mlops', 'telematics', 'climate-risk', 'geospatial-ml', 'insurance', 'data-engineering', 'technical-leadership'],
     technologies: ['databricks', 'apache-spark', 'mlflow', 'python'],
-    title: 'Building the capability around insurance data science',
-    category: 'insurance',
+    title: 'Building the platform data science runs on at a bank',
+    category: 'banking',
     order: 3,
-    cardTitle: 'Building the capability around insurance data science',
+    cardTitle: 'Building the platform data science runs on at a bank',
     oneLiner:
       'Good models are only one part of a working data-science function. The data, engineering, governance, tooling and team around them decide whether anything survives in production.',
     why:
-      'Moving an insurance analytics function from a mostly BI and analysis way of working toward a cloud-first, engineering-oriented capability is what lets analytical products be built, deployed, governed and improved repeatedly rather than once.',
+      'Moving analytics from infrastructure not built for big data toward a cloud first, engineering oriented capability is what lets analytical products be built, deployed, governed and improved repeatedly rather than once.',
     outcome:
-      'Long-running telematics processing cycles cut from months to under a day, and a capability moving toward a reproducible, governed path from experiment to production.',
+      'Telematics processing cut from months to under a day, and a data engineering capability, running on Ubunye Engine, that 10+ products now sit on.',
     topics: ['Production ML', 'MLOps', 'Technical Leadership', 'AI Governance', 'Geospatial AI', 'Telematics'],
     artifacts: [],
     caseStudy: {
       problem:
-        'The function had capable people building good models, but the path from an idea to a governed production system depended on individual knowledge and one-off effort. Historically it leaned more toward BI and analysis than a production data-science engineering operating model, which is a common and reasonable place for an insurance analytics team to start. The question was how to move it toward something that could reliably build, deploy, govern and improve analytical products.',
+        'When I joined, much of the analytics ran on application infrastructure that was not built for big data, with little documentation, no shared team strategy and little collaboration. Capable people were building good models, but the path from an idea to a governed production system depended on individual knowledge and one off effort.',
       why:
         'A data-science capability is more than a collection of models. Underwriting, retention, fraud, telematics and climate risk all need work that can be reproduced, operated and improved by someone other than its author. Without the surrounding engineering and governance, a good model is a one-off.',
       context:
-        'A large, regulated enterprise, mid-migration from on-premise data and workflows toward cloud. Databricks is the enabling platform rather than the point. Confidentiality limits what can be said about specific systems, so what follows is scope and consequence, not internals.',
+        'A large, regulated bank, mid migration from on premises data and workflows to the cloud (AWS and Databricks). Confidentiality limits what can be said about specific systems, so what follows is scope and consequence, not internals.',
       contribution:
-        'I lead the Insurance Data Science capability across four connected layers.\n\nStrategy and modernisation: I help define the technical and analytical direction, moving toward cloud-first ways of working, scalable data and ML systems, and governed analytical products.\n\nData and ML engineering: I have been helping introduce hands-on practice across the whole lifecycle, from data engineering and experimentation through deployment, monitoring, governance and maintenance, including CI/CD, model lifecycle management, testing and reproducibility.\n\nPeople and ways of working: team development is much of the job, and most of it is structure rather than technology: Agile ways of working, technical standards, documentation, mentoring, Show and Tell sessions and knowledge transfer across data science and data engineering, so capability is built beyond individual models.\n\nApplied systems: alongside that I remain hands-on. Telematics and behavioural analytics supporting products such as Activate; geospatial flood and natural-catastrophe risk models across more than 230,000 insured properties, so physical exposure can be understood at property and portfolio level and support underwriting and portfolio risk decisions; and customer intelligence and hyper-personalisation work that gives the business a richer view of behaviour, value, needs and risk rather than a single recommendation model.',
+        'I led the modernisation strategy for the data science products and architected, from scratch, the data engineering capability that the data science capability now sits on.\n\nPlatform: Databricks brought into the bank, CI/CD pipelines, and integration with legacy systems. The pipelines run on Ubunye Engine, which processes at least 100 million events a day and is the engineering layer for 10+ products.\n\nPeople and ways of working: I lead a team of three data scientists, set the best practices, teach them, and document everything in Confluence. We introduced AI and model governance aligned to the bank’s standards.\n\nApplied systems: telematics for products such as Activate, about 7 to 10 million trip records a day; flood forecasting used by underwriting teams, now on the same platform; and the hyper personalisation strategy, building customer lifetime value and segmentation models.',
       changed:
-        'Telematics processing and analytical workflows handling millions of daily signals were modernised, reducing long-running processing cycles from months to under a day while improving data availability, operational visibility and reproducibility. Reusable data and ML engineering patterns, built on Spark, MLflow, Unity Catalog, Databricks Asset Bundles, automated orchestration, testing and deployment controls, improved reliability and shortened the path from experimentation to production. The effect is less manual intervention, more consistent processing and clearer ownership, which is what lets several analytical products run at once.',
+        'Telematics processing, about 7 to 10 million trip records a day, was modernised from cycles of months to under a day. Databricks, CI/CD and Ubunye Engine gave a reproducible path from experiment to production, so several analytical products can run at once with less manual intervention and clearer ownership.',
       benefited:
-        'Insurance operations and underwriting, through earlier visibility of physical risk and better behavioural understanding; the data scientists on the team, who can ship more reliably and depend less on any one person; and ultimately customers, through more relevant decisions and interactions.',
+        'Underwriting and business teams, through earlier visibility of physical risk and better behavioural understanding; the data scientists on the team, who can ship more reliably and depend less on any one person; and ultimately customers, through more relevant decisions and interactions.',
       remained:
-        'Reusable data and ML engineering patterns with testing and deployment controls, modernised telematics processing, geospatial flood and natural-catastrophe risk models across 230,000+ insured properties, and a team that depends less on any one person.',
+        'A data engineering capability on Databricks and Ubunye Engine that 10+ products sit on, modernised telematics and flood forecasting, AI and model governance, and a team that depends less on any one person.',
       technicalContext:
-        'Databricks, Spark and PySpark, Databricks Asset Bundles, MLflow, Unity Catalog, automated orchestration, CI/CD, testing and deployment controls, monitoring, geospatial modelling, MLOps and model lifecycle management, AI governance, cloud migration from on-premise.',
+        'Databricks, Spark and PySpark, Ubunye Engine, Databricks Asset Bundles, MLflow, Unity Catalog, CI/CD, AWS, legacy system integration, geospatial modelling, MLOps and model lifecycle management, AI governance, cloud migration from on premises.',
     },
     problem:
-      'Getting analytical products into production reliably depended on individual knowledge and one-off effort, in a function historically oriented more toward BI and analysis than production data-science engineering.',
+      'Analytics ran on infrastructure not built for big data, and getting products into production depended on individual knowledge and one off effort.',
     solution:
-      'Leading the Insurance Data Science capability across strategy and modernisation, data and ML engineering, people and ways of working, and applied systems in telematics, natural-catastrophe risk and customer intelligence.',
+      'Architected the data engineering capability from scratch on Databricks and Ubunye Engine, with CI/CD, governance and a team that works from shared practice.',
     impact:
-      'Telematics processing cycles reduced from months to under a day, reusable data and ML engineering patterns on Databricks, and flood and natural-catastrophe risk models across 230,000+ insured properties.',
+      'Telematics processing cut from months to under a day, Ubunye Engine processing 100M+ events a day for 10+ products, and flood forecasting modernised for underwriting.',
     skills: ['Databricks', 'PySpark', 'MLflow', 'Unity Catalog', 'Geospatial ML', 'MLOps', 'AI Governance'],
     image: '/projects/absa-activate.jpg',
-    resume: { org: 'ABSA Insurance', period: 'Mar 2024 - Present' },
+    resume: { org: 'Absa Group', period: 'Mar 2024 - Present' },
   },
   {
     slug: 'vodacom-network-intelligence',
@@ -1426,7 +1426,7 @@ export const COURSES: Course[] = [
     slug: 'production-ml-systems',
     title: 'Production ML Systems',
     subtitle: 'From notebooks to production. The engineering you need',
-    description: 'The course I wish existed when I moved from research to industry. How to build ML systems that survive real data, real users, and real organizational constraints. Based on lessons from Vodacom, ABSA, and IBM.',
+    description: 'The course I wish existed when I moved from research to industry. How to build ML systems that survive real data, real users, and real organizational constraints. Based on lessons from Vodacom, Absa, and IBM.',
     tier: 'specialized',
     level: 'Advanced',
     duration: '6 weeks',
@@ -1463,7 +1463,7 @@ export const PROJECT_CATEGORIES: Partial<Record<Project['category'], string>> = 
 export const BIO = {
   name: 'Thabang Mashinini-Sekgoto',
   location: 'Johannesburg, South Africa',
-  title: 'Lead Data Scientist, ABSA Insurance',
+  title: 'Lead Data Scientist, Absa Group',
   /**
    * The one line that says what the work is, used wherever the site has to
    * introduce the discipline rather than the employer. Kept as one string so
@@ -1569,13 +1569,13 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
   {
     period: 'Mar 2024 - Present',
     role: 'Lead Data Scientist',
-    org: 'ABSA Insurance',
-    shortOrg: 'ABSA',
-    description: 'Lead the Insurance Data Science capability across analytical strategy, technical direction, delivery standards and team development, working across business, technology, risk, architecture and governance stakeholders. Modernising the capability from fragmented analytical workflows toward a cloud-first operating model on Databricks, bringing data engineering, data science, MLOps, CI/CD, monitoring, documentation and governance into a more reproducible production lifecycle. Designed reusable data and ML engineering patterns using Spark, MLflow, Unity Catalog, Databricks Asset Bundles, automated orchestration, testing and deployment controls. Modernised telematics processing and analytical workflows handling millions of daily signals, reducing long-running processing cycles from months to under a day. Remain hands-on across telematics and behavioural analytics, customer intelligence and hyper-personalisation, fraud, underwriting, and geospatial flood and natural-catastrophe risk models across more than 230,000 insured properties.',
+    org: 'Absa Group',
+    shortOrg: 'Absa',
+    description: 'Took data science from infrastructure not built for big data to a modern platform: led the modernisation strategy and architected the data engineering capability from scratch, bringing Databricks into the bank with CI/CD and integration with legacy systems, as part of the move from on premises to cloud (AWS and Databricks). That capability runs on Ubunye Engine, which processes 100M+ events a day and is the engineering layer for 10+ products. Modernised telematics, about 7 to 10 million trip records a day, from months to under a day, and the flood forecasting used by underwriting. Leading the hyper personalisation strategy with customer lifetime value and segmentation models. Lead a team of three data scientists and introduced AI and model governance aligned to the bank’s standards.',
     kind: 'work',
     accent: 'synapse',
     era: 'Leading the Fleet',
-    highlight: 'Telematics processing cycles from months to under a day · flood and natural-catastrophe risk across 230,000+ insured properties',
+    highlight: 'Ubunye Engine at 100M+ events a day for 10+ products · telematics from months to under a day',
     skills: ['Databricks', 'MLOps', 'Geospatial ML', 'AI Governance', 'Telematics', 'Technical Leadership'],
   },
   {
