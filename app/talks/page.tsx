@@ -65,11 +65,32 @@ export default function TalksPage() {
           <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4">
             Talks, Teaching &amp; <span className="text-synapse">Media</span>
           </h1>
-          <p className="mb-16 max-w-2xl text-lg text-muted leading-relaxed">
+          <p className="mb-10 max-w-2xl text-lg text-muted leading-relaxed">
             Conversations, demonstrations and interviews about AI, research and
             learning. I like explaining things, so most of what I have understood
             properly ends up here in one form or another.
           </p>
+
+          {/* Why, in Thabang's words (2026-09-25). */}
+          <div className="mb-16 max-w-2xl border-l-4 border-synapse pl-5">
+            <h2 className="font-display text-xl font-bold text-ivory mb-3">Why I do it</h2>
+            <div className="space-y-4 text-lg text-ivory/85 leading-relaxed">
+              <p>
+                I believe in access to information. Most of the gap between people
+                is not talent. It is who was handed the knowledge, and who was not.
+              </p>
+              <p>
+                So I share, and I try not to stop at theory. I want people to leave
+                with something practical they can use on a real problem in their own
+                life, whether that is with AI tools, with AI itself, or just with
+                scientific thinking.
+              </p>
+              <p>
+                When I get the chance, I show it working live, and I leave something
+                behind: the code, the slides, a kit people can run on their own.
+              </p>
+            </div>
+          </div>
         </ScrollReveal>
 
         {/* Featured: chosen to show range, not ranking. */}
