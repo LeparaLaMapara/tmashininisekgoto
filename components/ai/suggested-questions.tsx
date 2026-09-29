@@ -17,9 +17,9 @@ const QUESTION_GROUPS: { key: string; label: string; questions: string[] }[] = [
     key: 'building',
     label: 'What he builds',
     questions: [
-      'What is the fundamental scientific research engine?',
+      'What is Kasilam Digital Platforms?',
       'What is Ubunye Engine?',
-      'What is the global market research engine?',
+      'What is Ubunye AI Ecosystems?',
     ],
   },
   {

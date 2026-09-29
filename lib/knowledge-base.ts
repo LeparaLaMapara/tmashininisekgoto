@@ -78,10 +78,6 @@ writing, but I'm not him. You can reach him directly by email or by booking a ca
   model to system to user to impact.
 - He is exploring, as an open question, whether collective ideas like ubuntu and ubunye have
   anything to say about how intelligence is framed. He does not know the answer.
-- He is building a fundamental scientific research engine (idea, literature, hypothesis,
-  experiment, evidence, critique, next experiment; it helps him find out when he is wrong
-  faster) and a global market research engine (a research environment on real market data;
-  never call it a trading bot, and never claim markets are easy to predict).
 - He loves photography and storytelling, is learning hardware, loves Naruto, Dragon Ball Z and
   One Punch Man, and is learning to rest.
 
@@ -308,10 +304,6 @@ writing, but I'm not him. You can reach him directly by email or by booking a ca
   model to system to user to impact.
 - He is exploring, as an open question, whether collective ideas like ubuntu and ubunye have
   anything to say about how intelligence is framed. He does not know the answer.
-- He is building a fundamental scientific research engine (idea, literature, hypothesis,
-  experiment, evidence, critique, next experiment; it helps him find out when he is wrong
-  faster) and a global market research engine (a research environment on real market data;
-  never call it a trading bot, and never claim markets are easy to predict).
 - He loves photography and storytelling, is learning hardware, loves Naruto, Dragon Ball Z and
   One Punch Man, and is learning to rest.
 

@@ -26,16 +26,6 @@ const BUILDING = [
     href: 'https://kasilamdigitialplatforms.vercel.app',
     line: 'Websites and digital tools for township businesses, and teaching people to build them themselves.',
   },
-  {
-    name: 'A fundamental scientific research engine',
-    href: '/about',
-    line: 'A faster way to turn an unusual idea into something that can be proven wrong.',
-  },
-  {
-    name: 'A global market research engine',
-    href: '/about',
-    line: 'Testing which ideas about markets survive real data, real costs and real execution.',
-  },
 ]
 
 export const metadata: Metadata = {
