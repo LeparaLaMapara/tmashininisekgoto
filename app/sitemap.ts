@@ -23,7 +23,6 @@ const STATIC_ROUTES: { route: string; source: string }[] = [
   { route: '/talks', source: 'app/talks/page.tsx' },
   { route: '/talks/fabacademic-unfiltered', source: 'app/talks/fabacademic-unfiltered/page.tsx' },
   { route: '/ai', source: 'app/ai/page.tsx' },
-  { route: '/courses', source: 'app/courses/page.tsx' },
   { route: '/topics', source: 'app/topics/page.tsx' },
   { route: '/research', source: 'lib/graph/research.ts' },
   { route: '/now', source: 'app/now/page.tsx' },

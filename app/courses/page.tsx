@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   description:
     'Practitioner-first AI and data science courses: from zero-code AI agents to agentic engineering with Claude Code, MCP, and Codex.',
   alternates: { canonical: '/courses' },
+  // Hidden 2026-09-29 until a course actually exists: unlinked, out of the
+  // sitemap and search, and noindex. The page stays up for existing waitlists.
+  robots: { index: false, follow: true },
 
   openGraph: pageOpenGraph('/courses', 'Courses by Thabang Mashinini-Sekgoto'),
 }

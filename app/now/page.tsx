@@ -3,22 +3,40 @@ import { JsonLd } from '@/components/seo/json-ld'
 import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import Link from 'next/link'
-import { BIO, COURSES, PROJECTS } from '@/lib/data'
-import { getAllPosts } from '@/lib/blog'
-import { formatDate } from '@/lib/utils'
+import { BIO } from '@/lib/data'
 
 /**
  * A /now page: what Thabang is working on at the moment.
  *
- * Deliberately data-driven. The lists below read from lib/data.ts and the blog,
- * so this page stays current when those change instead of quietly going stale,
- * which is the usual fate of a hand-written now page.
- *
- * TODO(thabang): two things here cannot be derived from this repo, so they are
- * stated only as far as the repo supports them:
- *   1. There is no "last reviewed" date. If you would rather show one, add a
- *      constant and I will render it.
+ * Rewritten 2026-09-29. The courses list, the latest posts (already on the
+ * homepage) and the emoji hobby list came off. What stays is hand written and
+ * dated, because a now page without a date cannot say when "now" was.
+ * Update LAST_UPDATED whenever the text changes.
  */
+const LAST_UPDATED = '2026-09-29'
+
+const BUILDING = [
+  {
+    name: 'Ubunye Engine',
+    href: '/work/ubunye-engine',
+    line: 'Proving that the same pipeline runs unchanged on a laptop and on the big clouds, on real data, not demos.',
+  },
+  {
+    name: 'Kasilam Digital Platforms',
+    href: 'https://kasilamdigitialplatforms.vercel.app',
+    line: 'Websites and digital tools for township businesses, and teaching people to build them themselves.',
+  },
+  {
+    name: 'A fundamental scientific research engine',
+    href: '/about',
+    line: 'A faster way to turn an unusual idea into something that can be proven wrong.',
+  },
+  {
+    name: 'A global market research engine',
+    href: '/about',
+    line: 'Testing which ideas about markets survive real data, real costs and real execution.',
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Now: What I’m Working On',
@@ -29,12 +47,6 @@ export const metadata: Metadata = {
 }
 
 export default function NowPage() {
-  const buildingNow = PROJECTS.filter(
-    (project) => project.building || project.category === 'building-now',
-  )
-  const upcomingCourses = COURSES.filter((course) => course.status === 'coming-soon')
-  const latestPosts = getAllPosts().slice(0, 3)
-
   return (
     <section className="mx-auto max-w-3xl px-6 py-24">
 
@@ -69,6 +81,9 @@ export default function NowPage() {
         </Link>{' '}
         pages go deeper.
       </p>
+      <p className="mt-3 font-mono text-sm text-muted">
+        Last updated <time dateTime={LAST_UPDATED}>29 September 2026</time>
+      </p>
 
       {/* Day job */}
       <div className="mt-14">
@@ -94,87 +109,29 @@ export default function NowPage() {
       </div>
 
       {/* Building */}
-      {buildingNow.length > 0 && (
-        <div className="mt-12">
-          <h2 className="font-display text-2xl font-semibold text-ivory">Building</h2>
-          <ul className="mt-4 space-y-5">
-            {buildingNow.map((project) => (
-              <li key={project.slug}>
-                <span className="font-medium text-ivory">{project.title}</span>
-                <p className="mt-1 text-muted text-[0.9375rem] leading-relaxed">
-                  {project.problem}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="mt-12">
+        <h2 className="font-display text-2xl font-semibold text-ivory">Building</h2>
+        <ul className="mt-4 space-y-5">
+          {BUILDING.map((item) => (
+            <li key={item.name}>
+              <Link href={item.href} className="font-medium text-ivory underline-offset-2 hover:text-synapse hover:underline">
+                {item.name}
+              </Link>
+              <p className="mt-1 text-muted text-[0.9375rem] leading-relaxed">{item.line}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      {/* Teaching */}
-      {upcomingCourses.length > 0 && (
-        <div className="mt-12">
-          <h2 className="font-display text-2xl font-semibold text-ivory">Teaching</h2>
-          <p className="mt-3 text-muted leading-relaxed">
-            {upcomingCourses.length} courses in preparation, from zero-code AI agents
-            through to agentic engineering and production ML. Details and waitlists on
-            the{' '}
-            <Link href="/courses" className="text-synapse underline underline-offset-2 hover:no-underline">
-              courses
-            </Link>{' '}
-            page.
-          </p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {upcomingCourses.map((course) => (
-              <li
-                key={course.slug}
-                className="rounded-sm border border-border bg-surface px-3.5 py-1.5 text-sm font-mono text-muted"
-              >
-                {course.title}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Writing */}
-      {latestPosts.length > 0 && (
-        <div className="mt-12">
-          <h2 className="font-display text-2xl font-semibold text-ivory">Writing</h2>
-          <ul className="mt-4 space-y-4">
-            {latestPosts.map((post) => (
-              <li key={post.slug}>
-                <Link href={`/blog/${post.slug}`} className="group block">
-                  <span className="font-medium text-ivory transition-colors group-hover:text-synapse">
-                    {post.title}
-                  </span>
-                  <time
-                    dateTime={post.date}
-                    className="ml-2 text-sm font-mono text-muted"
-                  >
-                    {formatDate(post.date)}
-                  </time>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Away from the screen */}
+      {/* Away from the screen, in his words from the about page. */}
       <div className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-ivory">
           Away from the screen
         </h2>
-        <ul className="mt-4 flex flex-wrap gap-3">
-          {BIO.hobbies.map((hobby) => (
-            <li
-              key={hobby.label}
-              className="rounded-sm border border-border bg-surface px-3.5 py-1.5 text-sm text-muted"
-            >
-              <span aria-hidden="true">{hobby.emoji}</span> {hobby.label}
-            </li>
-          ))}
-        </ul>
+        <p className="mt-3 text-muted leading-relaxed">
+          Learning to rest. Sleeping, travelling, taking photographs, watching anime,
+          spending time with people. Occasionally doing nothing at all.
+        </p>
       </div>
 
       <p className="mt-16 border-t border-border pt-8 text-muted">

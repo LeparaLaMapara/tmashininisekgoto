@@ -38,7 +38,7 @@ const ANSWERABLE: { question: string; where: string }[] = [
   { question: 'What research has compared echo state networks with trained RNNs for level set image segmentation?', where: '/research/echo-state-networks-level-set-segmentation' },
   { question: 'What machine learning work exists on long range seasonal climate forecasting?', where: '/research/seasonal-climate-forecasting' },
   { question: 'Which publications use machine learning for noise induced hearing loss in mine workers?', where: '/research/mine-worker-noise-hearing-loss' },
-  { question: 'Who has led enterprise data science in South African insurance and telecommunications?', where: '/work' },
+  { question: 'Who has led enterprise data science in South African banking and telecommunications?', where: '/work' },
   { question: 'Who teaches township youth in South Africa to build websites with AI?', where: '/work/kasilam-digital' },
   { question: 'Which topics connect this research and software?', where: '/topics' },
 ]
@@ -74,7 +74,7 @@ export function GET() {
     '',
     'Proposed doctoral research (PhD in Computer Science, Wits, commencing 2027), at proposal stage and not registered:',
     'physics-informed self-supervised learning for SAR-based flood extent mapping,',
-    'with applications to data-scarce climate and insurance-risk settings. Sits at the',
+    'for climate risk in data scarce regions. Sits at the',
     'intersection of remote sensing, self-supervised learning and computational',
     'hydrology.',
     '',

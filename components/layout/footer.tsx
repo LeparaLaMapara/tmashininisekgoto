@@ -21,8 +21,7 @@ export function Footer() {
               Thabang<span className="text-synapse">.</span>
             </p>
             <p className="text-muted text-sm mt-1">
-              AI systems that work in the real world. Built in South Africa, shared with
-              everyone.
+              I build things, try them, see what breaks, and share what I find.
             </p>
           </div>
 
@@ -40,7 +39,6 @@ export function Footer() {
                 { href: '/blog', label: 'Writing' },
                 { href: '/topics', label: 'Topics' },
                 { href: '/talks', label: 'Talks' },
-                { href: '/courses', label: 'Teaching' },
                 { href: '/career', label: 'Journey' },
                 { href: '/now', label: 'Now' },
                 { href: '/resume', label: 'CV' },
@@ -59,12 +57,12 @@ export function Footer() {
           {/* Column 3: Get in Touch */}
           <div>
             <h2 className="text-xs uppercase tracking-wider text-muted mb-3">Get in Touch</h2>
-            <Link
-              href="/ai"
+            <a
+              href={`mailto:${SOCIAL_LINKS.email}`}
               className="inline-flex items-center px-4 py-2 bg-sign-board text-sign-ink text-sm font-semibold border-[3px] border-sign-ink transition-transform hover:translate-x-px hover:translate-y-px"
             >
-              Talk to LeparaLaMapara
-            </Link>
+              Say hello by email
+            </a>
           </div>
         </div>
 
