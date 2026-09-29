@@ -20,9 +20,6 @@ export function Footer() {
             <p className="font-sign text-xl">
               Thabang<span className="text-synapse">.</span>
             </p>
-            <p className="text-muted text-sm mt-1">
-              I build things, try them, see what breaks, and share what I find.
-            </p>
           </div>
 
           {/* Column 2: Quick Links */}
