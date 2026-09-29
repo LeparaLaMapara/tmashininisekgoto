@@ -288,45 +288,6 @@ export default function AboutPage() {
               wherever they come from. Learn them properly. Then ask what we should build for ourselves.
             </p>
           </Sub>
-
-          <Sub title="A fundamental scientific research engine">
-            <p>
-              This one grew straight out of the questions about intelligence. If I have an unusual idea
-              about learning, collective systems or computation, I need a faster way to turn it into
-              something that can be proven wrong.
-            </p>
-            <Chain
-              label="How the research engine moves"
-              steps={['idea', 'literature', 'hypothesis', 'experiment', 'evidence', 'critique', 'next experiment']}
-            />
-            <p>
-              It helps find prior work, design experiments, implement them, run benchmarks, challenge
-              assumptions and turn what survives into working code. The experiment matters more than the
-              paper.
-            </p>
-          </Sub>
-
-          <PullQuote>
-            I don&apos;t want a machine that agrees with me faster. I want one that helps me discover
-            when I&apos;m wrong faster.
-          </PullQuote>
-
-          <Sub title="A global market research engine">
-            <p>
-              Markets pull together economics, companies, currencies, commodities, geopolitics, interest
-              rates, supply chains, information, psychology and incentives, all moving at once. That
-              makes them one of the hardest real world laboratories I know, where ideas meet reality
-              very quickly.
-            </p>
-            <p>
-              The engine is a research environment on real data: how markets interact, how information
-              spreads, which strategy hypotheses hold up, how execution and uncertainty change the
-              answer. I am also experimenting with intelligent systems that observe, run parts of the
-              research, test strategies and act for me under strict controls. The point is not that
-              markets are easy to predict. It is the opposite. And I like sharing what I learn so other
-              people can experiment too.
-            </p>
-          </Sub>
         </Section>
 
         {/* 16. Hardware */}
