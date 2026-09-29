@@ -35,7 +35,6 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 
 export default function TalksPage() {
   const sorted = [...TALKS].sort(byNewest)
-  const featured = sorted.filter((t) => t.featured)
   const series = sorted.filter((t) => t.series === 'FabAcademic Unfiltered')
   const interviews = sorted.filter((t) => t.kind === 'interview')
   const archive = sorted.filter((t) => t.kind === 'archive')
@@ -92,25 +91,6 @@ export default function TalksPage() {
             </div>
           </div>
         </ScrollReveal>
-
-        {/* Featured: chosen to show range, not ranking. */}
-        {featured.length > 0 && (
-          <section className="mb-24">
-            <ScrollReveal>
-              <SectionHeading
-                title="Featured"
-                subtitle="A few that show the range, from teaching people to build with AI to talking about galaxies on the news."
-              />
-            </ScrollReveal>
-            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featured.map((talk, i) => (
-                <ScrollReveal key={talk.id} delay={i * 0.06}>
-                  <TalkCard talk={talk} />
-                </ScrollReveal>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* The series, as one body of work rather than fourteen loose cards. */}
         {series.length > 0 && (

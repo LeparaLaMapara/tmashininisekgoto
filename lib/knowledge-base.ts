@@ -91,7 +91,7 @@ Name: Thabang Mashinini-Sekgoto
 Location: Johannesburg, South Africa
 Title: Lead Data Scientist · Applied AI, Data Science, AI Engineering, Research
 Current role: Lead Data Scientist at a bank. Founder of Ubunye AI Ecosystems and author of Ubunye Engine. PhD in Computer Science at the University of the Witwatersrand commencing in 2027; the proposal is in preparation and he is NOT yet registered, so he is not a PhD candidate. Do not describe him as one.
-Short bio: 9+ years building and deploying data and AI systems inside real organisations, across insurance, telecommunications, applied research and higher education. Work now spans data science, AI engineering, applied research and reusable open source infrastructure.
+Short bio: 9+ years building and deploying data and AI systems inside real organisations, across banking, telecommunications, applied research and higher education. Work now spans data science, AI engineering, applied research and reusable open source infrastructure.
 Philosophy: "Strive to build things that make a difference."
 GitHub: LeparaLaMapara
 
@@ -142,7 +142,7 @@ PyPI: pip install ubunye-engine
 ### 2. TFiltersPy: Bayesian Filtering Library [Open Source]
 Problem: IoT and telematics pipelines required robust filtering for noisy sensor data and real-time state estimation. The mathematics is well established, but each method has its own implementation shape, so changing method usually means rebuilding the code around it.
 Solution: An open-source library of FIVE Bayesian filters — Kalman, Extended Kalman, Unscented Kalman, Ensemble Kalman and Particle — behind one estimator interface that follows the scikit-learn convention (fit, predict, score, get_params, set_params) rather than depending on scikit-learn. Every filter supports online updates through filter_step; the linear and extended filters add RTS smoothing; the linear filter forecasts ahead. Dask-parallel variants exist for the Kalman and particle filters, and the ensemble filter propagates its members through Dask.
-Impact: Built for the noisy telemetry and time-series problems met across telecommunications and insurance, published on PyPI with a documentation site, a decision guide for choosing between the filters, worked examples for GPS tracking, radar tracking (a direct EKF against UKF comparison) and robot localisation, and 41 tests run on a Python 3.9 to 3.12 matrix. This was Thabang's first published Python library.
+Impact: Built for the noisy telemetry and time-series problems met across telecommunications and banking, published on PyPI with a documentation site, a decision guide for choosing between the filters, worked examples for GPS tracking, radar tracking (a direct EKF against UKF comparison) and robot localisation, and 41 tests run on a Python 3.9 to 3.12 matrix. This was Thabang's first published Python library.
 Tech: Python, NumPy, SciPy, Dask, PyPI, CI/CD
 GitHub: [TFiltersPy](https://github.com/ubunye-ai-ecosystems/tfilterspy)
 

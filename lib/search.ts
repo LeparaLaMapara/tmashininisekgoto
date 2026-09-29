@@ -1,4 +1,4 @@
-import { COURSES, PROJECTS, PUBLICATIONS, TALKS, WRITINGS } from '@/lib/data'
+import { PROJECTS, PUBLICATIONS, TALKS, WRITINGS } from '@/lib/data'
 import { getAllPosts, getSeries } from '@/lib/blog'
 import { getSeriesCopy } from '@/lib/series'
 import { RESEARCH } from '@/lib/graph/research'
@@ -101,13 +101,6 @@ const PAGES: Indexed[] = [
   },
   {
     kind: 'Page',
-    title: 'Courses',
-    description: 'Practitioner-first AI and data science teaching.',
-    href: '/courses',
-    keywords: 'teaching training learn course workshop',
-  },
-  {
-    kind: 'Page',
     title: 'LeparaLaMapara',
     description: 'An AI assistant grounded on Thabang’s real work, with citations.',
     href: '/ai',
@@ -193,14 +186,6 @@ function buildIndex(): Indexed[] {
     keywords: `${talk.event} ${talk.date} ${talk.topics.join(' ')} ${talk.kind} ${talk.role} ${talk.series ?? ''}`,
   }))
 
-  const courses: Indexed[] = COURSES.map((course) => ({
-    kind: 'Course',
-    title: course.title,
-    description: course.description,
-    href: '/courses',
-    keywords: `${course.subtitle} ${course.level} ${course.duration} ${course.format} ${course.modules.join(' ')}`,
-  }))
-
   const writings: Indexed[] = WRITINGS.map((writing) => ({
     kind: 'Writing',
     title: writing.title,
@@ -218,7 +203,6 @@ function buildIndex(): Indexed[] {
     ...topics,
     ...publications,
     ...talks,
-    ...courses,
     ...writings,
   ]
 }

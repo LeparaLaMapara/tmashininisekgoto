@@ -51,7 +51,7 @@ test.describe('universal search', () => {
 
     await input.fill('Databricks')
     // A result item from the live engine appears (grouped headings render).
-    await expect(page.getByText('Production ML Systems', { exact: false }).first())
+    await expect(page.getByText('Data science platform at a bank', { exact: false }).first())
       .toBeVisible({ timeout: 5000 })
   })
 })

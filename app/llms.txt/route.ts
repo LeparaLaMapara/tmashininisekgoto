@@ -95,7 +95,6 @@ export function GET() {
     `- [About](${SITE_URL}/about): who Thabang is`,
     `- [CV](${SITE_URL}/resume): full career history`,
     `- [Talks](${SITE_URL}/talks): talks, sessions and media`,
-    `- [Teaching](${SITE_URL}/courses): courses and sessions`,
     `- [Career journey](${SITE_URL}/career): the path from a BSc at Wits to leading a data science capability`,
     `- [Now](${SITE_URL}/now): what he is working on at the moment`,
     `- [Topics](${SITE_URL}/topics): every subject the work is about`,

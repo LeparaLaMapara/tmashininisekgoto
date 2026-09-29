@@ -60,7 +60,7 @@ export const TOPICS: TopicDef[] = [
     intro:
       'Data science here means the whole path from a question to a decision someone acts on, inside real organisations: a university deciding where students need support, a municipality seeing where service delivery breaks, a national network deciding which of 15,000 sites needs attention first, and an insurer understanding physical risk across its portfolio. The writing covers the other half of the job, which is building the capability around the models: the roadmap from analyst to someone trusted with production systems, and what a modern data scientist now needs beyond modelling.',
     description:
-      'Applied data science in insurance, telecoms, research and higher education, and writing on building the capability around the models.',
+      'Applied data science in banking, telecoms, research and higher education, and writing on building the capability around the models.',
   },
   {
     slug: 'data-engineering',
@@ -80,7 +80,7 @@ export const TOPICS: TopicDef[] = [
     broader: ['machine-learning', 'software-engineering'],
     heading: 'MLOps and production machine learning',
     intro:
-      'Getting a model into production and keeping it there is a different problem from building it. The work here covers that problem from three sides: modernising an insurance data science function toward a governed path from experiment to production on Databricks, running optimisation and streaming systems for a national telecoms network, and Ubunye Engine, an open source framework whose model registry, lineage and run anywhere guarantee are tested rather than promised.',
+      'Getting a model into production and keeping it there is a different problem from building it. The work here covers that problem from three sides: modernising a data science function at a bank toward a governed path from experiment to production on Databricks, running optimisation and streaming systems for a national telecoms network, and Ubunye Engine, an open source framework whose model registry, lineage and run anywhere guarantee are tested rather than promised.',
     description:
       'Production machine learning from practice: governed ML on Databricks, real time systems at telecoms scale, and the open source Ubunye Engine.',
   },
@@ -242,9 +242,9 @@ export const TOPICS: TopicDef[] = [
     kind: 'technology',
     wikidata: 'Q7573619',
     intro:
-      'Spark sits under the largest systems described here: streaming and batch processing of network telemetry at Vodacom, telematics and risk workloads on Databricks in insurance, and Ubunye Engine, an open source framework that runs the same Spark pipeline folder on a laptop, Docker, Kubernetes, object storage, spark-submit and Databricks.',
+      'Spark sits under the largest systems described here: streaming and batch processing of network telemetry at Vodacom, telematics and risk workloads on Databricks at a bank, and Ubunye Engine, an open source framework that runs the same Spark pipeline folder on a laptop, Docker, Kubernetes, object storage, spark-submit and Databricks.',
     description:
-      'Apache Spark in production and open source: telecoms telemetry, insurance workloads on Databricks, and portable pipelines with Ubunye Engine.',
+      'Apache Spark in production and open source: telecoms telemetry, banking workloads on Databricks, and portable pipelines with Ubunye Engine.',
   },
   { slug: 'databricks', name: 'Databricks', kind: 'technology', wikidata: 'Q18350420' },
   { slug: 'kubernetes', name: 'Kubernetes', kind: 'technology', wikidata: 'Q22661306' },

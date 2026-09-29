@@ -305,13 +305,13 @@ export const PROJECTS: Project[] = [
       why:
         'Bayesian filtering solves this and the mathematics is well established, but re-deriving Kalman, Particle or Ensemble filters from papers on each new project is slow and error prone. The bigger problem was that existing implementations tended to assume a state-estimation background, so a practitioner who simply needed a clean signal had to become a specialist first, or find one.',
       context:
-        'The recurring context was telemetry: the same class of noisy time-series problem appearing across telecommunications and insurance, in telematics and IoT. The methods themselves are not specific to vehicles, which shaped the scope. The same five filters serve radar tracking, robot localisation, high-dimensional weather and ocean models, EEG, image denoising, and even smoothing signals in text.',
+        'The recurring context was telemetry: the same class of noisy time-series problem appearing across telecommunications and banking, in telematics and IoT. The methods themselves are not specific to vehicles, which shaped the scope. The same five filters serve radar tracking, robot localisation, high-dimensional weather and ocean models, EEG, image denoising, and even smoothing signals in text.',
       contribution:
         'I built TFiltersPy as an open-source Python library. The design decision that mattered was familiarity: every filter follows the scikit-learn convention, so fit, predict, score, get_params and set_params behave the way a practitioner already expects, and switching methods does not mean rewriting the code around them. It follows that convention rather than depending on scikit-learn, so the package installs with numpy, scipy and dask and nothing else. I also wrote the part people actually get stuck on, a decision guide for choosing among the five: a Kalman filter for linear systems, an Extended Kalman filter where you can supply Jacobians, an Unscented Kalman filter where you cannot, an Ensemble Kalman filter for very high-dimensional states, and a Particle filter for non-Gaussian or multimodal problems. It is built to scale beyond one machine: there are Dask-parallel variants of the Kalman and particle filters, and the ensemble filter propagates its members through Dask by default.',
       changed:
         'Filtering stopped being a re-derivation exercise and became fitting a familiar estimator. Beyond the forward pass, every filter has a filter_step call for online use against a live stream, the linear and extended filters add RTS smoothing, and the linear one forecasts a number of steps ahead. Particle degeneracy is visible rather than silent, recorded per step as an effective sample size, and the Kalman filter can drop its stored covariances for very long series, which trades the ability to smooth for the memory to keep going.',
       benefited:
-        'Engineers and scientists working with noisy time series who are not filtering specialists, starting with the telemetry problems across telecommunications and insurance that it was built from.',
+        'Engineers and scientists working with noisy time series who are not filtering specialists, starting with the telemetry problems across telecommunications and banking that it was built from.',
       remained:
         'A published, documented library on PyPI: five filters behind one API, worked examples for GPS vehicle tracking, radar tracking as a direct EKF against UKF comparison, and robot localisation, notebooks covering EEG, image denoising and benchmarks across all five, a decision guide for choosing between them, and a test suite of forty one tests run on Python 3.9 through 3.12.',
       technicalContext:
@@ -322,7 +322,7 @@ export const PROJECTS: Project[] = [
     solution:
       'An open-source Python library of five Bayesian filters, Kalman, Extended, Unscented, Ensemble and Particle, behind one estimator API following the scikit-learn convention, with streaming updates on every filter, smoothing on the linear and extended ones, forecasting on the linear one, and Dask-parallel variants.',
     impact:
-      'Published on PyPI with documentation and worked examples across GPS, radar and robotics, built for the noisy telemetry problems met across telecommunications and insurance.',
+      'Published on PyPI with documentation and worked examples across GPS, radar and robotics, built for the noisy telemetry problems met across telecommunications and banking.',
     skills: ['Python', 'NumPy', 'SciPy', 'Dask', 'PyPI', 'CI/CD'],
     image: '/projects/tfilterspy.png',
     ghLink: 'https://github.com/ubunye-ai-ecosystems/tfilterspy',
@@ -800,7 +800,7 @@ export const TALKS: Talk[] = [
   {
     id: 17,
     title: "Session 6.7: How to get AI to teach you writing & research",
-    description: "Co-hosting with Prof Phakeng on a different way to think about AI — using it to strengthen your own thinking rather than replace it. We explore how AI can challenge your assumptions, improve your writing, and deepen your understanding of a research problem.",
+    description: "Co-hosting with Prof Phakeng on a different way to think about AI: using it to strengthen your own thinking rather than replace it. We explore how AI can challenge your assumptions, improve your writing, and deepen your understanding of a research problem.",
     date: "2026-06-14",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/ovSJuLqfgf4",
@@ -811,8 +811,8 @@ export const TALKS: Talk[] = [
   },
   {
     id: 16,
-    title: "Session 6.5: You describe it. AI builds it — the Extern AI journey",
-    description: "Joining Prof Phakeng in conversation with Luncedo Simelane, a 21-year-old entrepreneur who built Extern AI, a platform that lets people create software and AI solutions without coding — with a live demonstration of how it works.",
+    title: "Session 6.5: You describe it. AI builds it. The Extern AI journey",
+    description: "Joining Prof Phakeng in conversation with Luncedo Simelane, a 21-year-old entrepreneur who built Extern AI, a platform that lets people create software and AI solutions without coding, with a live demonstration of how it works.",
     date: "2026-06-01",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/QOarIoj9AA0",
@@ -824,7 +824,7 @@ export const TALKS: Talk[] = [
   {
     id: 15,
     title: "Session 6.3: A 20-year-old builds an AI tender system",
-    description: "Co-hosting with Prof Phakeng alongside Sange Zwane, a 20-year-old student entrepreneur who built an AI-powered tender system. A conversation about possibility — what happens when exposure meets talent and young Africans start building with AI.",
+    description: "Co-hosting with Prof Phakeng alongside Sange Zwane, a 20-year-old student entrepreneur who built an AI-powered tender system. A conversation about possibility: what happens when exposure meets talent and young Africans start building with AI.",
     date: "2026-05-18",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/5SL_KRfMBAQ",
@@ -836,7 +836,7 @@ export const TALKS: Talk[] = [
   {
     id: 14,
     title: "Session 6.2: Building AI accounting software for informal traders",
-    description: "A conversation with Karabo, an award-winning AI champion, professional accountant, and founder of AEGL, who used AI to build a platform for informal traders — people often overlooked, yet who form the backbone of our economies.",
+    description: "A conversation with Karabo, an award-winning AI champion, professional accountant, and founder of AEGL, who used AI to build a platform for informal traders, people often overlooked, yet who form the backbone of our economies.",
     date: "2026-05-04",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/1QrY6ViPnlU",
@@ -848,7 +848,7 @@ export const TALKS: Talk[] = [
   {
     id: 13,
     title: "Session 6 Launch: From learning AI to building with it",
-    description: "Launching Season 6 with Prof Phakeng — a season focused on real case studies of people building meaningful things with AI. We reconnect with Tshepo from Lebowakgomo, who returns to share the progress of his platform STACU.",
+    description: "Launching Season 6 with Prof Phakeng, a season focused on real case studies of people building meaningful things with AI. We reconnect with Tshepo from Lebowakgomo, who returns to share the progress of his platform STACU.",
     date: "2026-04-27",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/o8E8JX-uzos",
@@ -873,7 +873,7 @@ export const TALKS: Talk[] = [
   {
     id: 11,
     title: "Session 5.12: Your free digital assistant",
-    description: "A live, practical demonstration of using AI as your digital assistant — no theory, no jargon. I show how Claude Cowork can handle your admin for you, freeing up time to focus on high-value work.",
+    description: "A live, practical demonstration of using AI as your digital assistant. No theory, no jargon. I show how Claude Cowork can handle your admin for you, freeing up time to focus on high-value work.",
     date: "2026-04-13",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/c1pWhJKn0jg",
@@ -885,7 +885,7 @@ export const TALKS: Talk[] = [
   {
     id: 10,
     title: "Session 5.11: AI as a knowledge equaliser",
-    description: "A real case study on how ordinary people from marginalised communities are already using AI to learn new skills, create opportunities, and transform their lives — no theory, no hype, just evidence.",
+    description: "A real case study on how ordinary people from marginalised communities are already using AI to learn new skills, create opportunities, and transform their lives. No theory, no hype, just evidence.",
     date: "2026-03-30",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/uls_eef97ds",
@@ -898,7 +898,7 @@ export const TALKS: Talk[] = [
   {
     id: 9,
     title: "Session 5.10: Learning a new skill with AI 2.0",
-    description: "Continuing the series on using AI to accelerate learning — this session explores advanced techniques for acquiring new skills with AI tools.",
+    description: "Continuing the series on using AI to accelerate learning. This session explores advanced techniques for acquiring new skills with AI tools.",
     date: "2026-03-22",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/U9ZtGwCjlDU",
@@ -910,7 +910,7 @@ export const TALKS: Talk[] = [
   {
     id: 8,
     title: "Session 5.8: How to use AI to learn a new skill - data analytics",
-    description: "A hands-on session showing how to use AI to learn data analytics from scratch — breaking down the learning process into practical, AI-assisted steps.",
+    description: "A hands-on session showing how to use AI to learn data analytics from scratch, breaking down the learning process into practical, AI-assisted steps.",
     date: "2026-03-08",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/njv5ZVhvSUM",
@@ -922,7 +922,7 @@ export const TALKS: Talk[] = [
   {
     id: 7,
     title: "Session 5.7: Your AI Skill Coach - Building Agents to Accelerate Your Career",
-    description: "Building AI agents that act as personal skill coaches — helping you identify gaps, create learning plans, and accelerate your career development.",
+    description: "Building AI agents that act as personal skill coaches, helping you identify gaps, create learning plans, and accelerate your career development.",
     date: "2026-03-01",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/k2iKehY8Zq0",
@@ -946,7 +946,7 @@ export const TALKS: Talk[] = [
   {
     id: 5,
     title: "Building AI Agents for township businesses with no coding knowledge",
-    description: "AI doesn't need to be complicated to be powerful. In this session I'm joined by Thabang, an AI & Data Scientist who is making AI simple, practical, and accessible for all.",
+    description: "AI does not need to be complicated to be powerful. I show how someone with no coding background can build AI agents for a township business, step by step.",
     date: "2026-02-15",
     event: "FabAcademic Unfiltered [Prof Mamokgethi Phakeng]",
     videoUrl: "https://www.youtube.com/embed/jnklbzfZjNw",
@@ -1451,7 +1451,7 @@ export const COURSES: Course[] = [
 
 export const PROJECT_CATEGORIES: Partial<Record<Project['category'], string>> = {
   'open-source': 'Open Source',
-  'insurance': 'Insurance',
+  'banking': 'Banking',
   'telecoms': 'Telecoms',
   'research': 'Research',
   'education': 'Education',
@@ -1471,7 +1471,7 @@ export const BIO = {
    * apart from each other.
    */
   disciplines: 'Applied AI · Data Science · AI Engineering · Research',
-  shortBio: `I have spent nine years building and deploying data and AI systems inside real organisations, across insurance, telecommunications, applied research and higher education. That work kept surfacing the same problem: moving data science out of experimentation and into systems that run reliably. My work now spans data science, AI engineering, applied research and reusable open source infrastructure.`,
+  shortBio: `I have spent nine years building and deploying data and AI systems inside real organisations, across banking, telecommunications, applied research and higher education. That work kept surfacing the same problem: moving data science out of experimentation and into systems that run reliably. My work now spans data science, AI engineering, applied research and reusable open source infrastructure.`,
   philosophy: 'Strive to build things that make a difference.',
   hobbies: [
     { emoji: '📷', label: 'Photography' },
@@ -1559,7 +1559,7 @@ export const CAREER_TIMELINE: CareerMilestone[] = [
     role: 'PhD in Computer Science',
     org: 'University of the Witwatersrand',
     shortOrg: 'Research',
-    description: 'Commencing in 2027; the proposal is in preparation and not yet registered. The proposed research explores physics-informed self-supervised learning for SAR-based flood extent mapping, with applications to data-scarce climate and insurance-risk settings. It follows on from the MSc work on echo state networks for level set segmentation, and from the geospatial and climate risk systems built at IBM Research and in insurance.',
+    description: 'Commencing in 2027; the proposal is in preparation and not yet registered. The proposed research explores physics-informed self-supervised learning for SAR-based flood extent mapping, for climate risk in data scarce regions. It follows on from the MSc work on echo state networks for level set segmentation, and from the geospatial and climate risk systems built at IBM Research and at the bank.',
     kind: 'research',
     accent: 'signal',
     era: 'The Next Question',

@@ -1,4 +1,4 @@
-import { CAREER_TIMELINE, IMPACT_NUMBERS } from '@/lib/data'
+import { IMPACT_NUMBERS } from '@/lib/data'
 import { CareerRoute } from '@/components/home/taxi-route'
 
 /**
@@ -7,12 +7,9 @@ import { CareerRoute } from '@/components/home/taxi-route'
  * The homepage is now about Thabang, not a case for him; the figures, the three
  * roles and the career route live on the CV, where people who want them look.
  * Figures come from IMPACT_NUMBERS, which only holds what the public CV states,
- * printed as they are with no counting animation.
+ * printed as they are with no counting animation. The three role summaries
+ * that sat here were dropped 2026-09-29: the full timeline below repeats them.
  */
-const SELECTED = ['Absa Group', 'Vodacom', 'IBM Research']
-  .map((org) => CAREER_TIMELINE.find((m) => m.org === org && m.kind === 'work'))
-  .filter((m): m is NonNullable<typeof m> => Boolean(m))
-
 export function TheRecord() {
   return (
     <section className="mb-16">
@@ -36,23 +33,6 @@ export function TheRecord() {
           </div>
         ))}
       </div>
-
-      <ol className="mt-10 border-t-2 border-border">
-        {SELECTED.map((role) => (
-          <li key={role.org} className="grid gap-2 md:grid-cols-[12rem_1fr] md:gap-8 py-5 border-b border-border">
-            <div>
-              <p className="font-sign text-sm text-synapse-ink">{role.shortOrg}</p>
-              <p className="font-mono text-xs text-muted mt-1">{role.period}</p>
-            </div>
-            <div>
-              <h3 className="font-display text-lg font-bold text-ivory">
-                {role.role}, {role.org}
-              </h3>
-              <p className="mt-2 text-ivory/80 leading-relaxed">{role.highlight}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
 
       <h2 className="mt-16 font-display text-2xl sm:text-3xl font-bold tracking-tight text-ivory mb-3">
         The route so far

@@ -9,7 +9,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Work: Problems, Systems & Open Source',
   description:
-    'Problems Thabang Mashinini-Sekgoto has worked on: open source infrastructure, production systems in telecoms and insurance, research and community work.',
+    'Problems Thabang Mashinini-Sekgoto has worked on: open source infrastructure, production systems in telecoms and banking, research and community work.',
   alternates: { canonical: '/work' },
   openGraph: pageOpenGraph('/work', 'Projects by Thabang Mashinini-Sekgoto'),
 }

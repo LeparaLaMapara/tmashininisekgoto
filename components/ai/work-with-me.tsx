@@ -26,7 +26,7 @@ type Card = {
 const CARDS: Card[] = [
   { icon: Mic, title: 'AI talks & workshops', blurb: 'Invite me to speak or run practical, no-hype AI training for your team.', interest: 'workshop' },
   { icon: Handshake, title: 'Collaborate on applied AI', blurb: 'Research-to-product work, open source, and applied AI projects.', interest: 'collaboration' },
-  { icon: GraduationCap, title: 'AI learning & career resources', blurb: 'Courses and guidance to start or level up in AI and data science.', href: '/courses' },
+  { icon: GraduationCap, title: 'Learn to build with AI', blurb: 'A free six part series and a kit you can run on your own machine.', href: '/work/agent-roadmap-kit' },
 ]
 
 export function WorkWithMe() {

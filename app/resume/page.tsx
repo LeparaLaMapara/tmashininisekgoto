@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { Testimonials } from '@/components/about/testimonials'
-import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, MessageCircle, Gamepad2, ArrowRight, ExternalLink } from 'lucide-react'
+import { Download, MapPin, GraduationCap, Briefcase, Code, Sparkles, Gamepad2, ArrowRight, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { CAREER_TIMELINE, getProjectForRole, type MilestoneKind } from '@/lib/data'
 import { profileOpenGraph } from '@/lib/site'
@@ -79,30 +79,9 @@ export default function ResumePage() {
         <ScrollReveal delay={0.1}>
           <p className="text-lg text-ivory/80 leading-relaxed mb-8 max-w-2xl">
             Applied AI, data science, AI engineering and research. Nine years building and operating
-            production machine learning and data systems across insurance, telecommunications, applied research
+            production machine learning and data systems across banking, telecommunications, applied research
             and higher education, and increasingly turning those lessons into reusable open source infrastructure.
           </p>
-        </ScrollReveal>
-
-        {/* Talk to AI CTA */}
-        <ScrollReveal delay={0.15}>
-          <Link
-            href="/ai"
-            className="mb-16 flex items-center gap-4 rounded-2xl border border-synapse/20 bg-synapse/5 p-5 transition-all hover:bg-synapse/10 hover:border-synapse/30 group"
-          >
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-synapse/10 group-hover:bg-synapse/20 transition-colors">
-              <Sparkles className="w-5 h-5 text-synapse" />
-            </div>
-            <div className="flex-1">
-              <p className="font-display font-bold text-ivory text-[0.9375rem]">
-                Want to know more? Talk to LeparaLaMapara
-              </p>
-              <p className="text-sm text-muted mt-0.5">
-                Ask about my experience, projects, or download my latest CV, all through a conversation.
-              </p>
-            </div>
-            <MessageCircle className="w-5 h-5 text-synapse/50 group-hover:text-synapse transition-colors shrink-0" />
-          </Link>
         </ScrollReveal>
 
         <TheRecord />
