@@ -48,7 +48,7 @@ export default function Home() {
           <p className="font-mono text-sm text-muted mb-4">Thabang Mashinini-Sekgoto · Soshanguve</p>
           <div className="sign-board px-6 py-7 sm:px-8 sm:py-8">
             <h1 className="font-sign uppercase text-[1.9rem] leading-[1] sm:text-5xl text-balance">
-              I build AI systems that work in the real world.
+              From Soshanguve. I build AI that works, then I show people how.
             </h1>
           </div>
 
