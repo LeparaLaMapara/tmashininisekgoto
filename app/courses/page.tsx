@@ -3,6 +3,7 @@ import { JsonLd } from '@/components/seo/json-ld'
 import { coursesSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import { createClient } from '@supabase/supabase-js'
+import { DB_OPTIONS } from '@/lib/db-schema'
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { COURSES } from '@/lib/data'
 import { CourseCard } from '@/components/courses/course-card'
@@ -28,7 +29,7 @@ async function getWaitlistCounts(): Promise<Record<string, number>> {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     if (!supabaseUrl || !supabaseServiceKey) return {}
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, DB_OPTIONS)
     const { data, error } = await supabase
       .from('course_registrations')
       .select('course_slug')

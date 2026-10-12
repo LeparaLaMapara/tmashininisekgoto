@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { DB_OPTIONS } from '@/lib/db-schema'
 
 const ALLOWED_INTERESTS = new Set([
   'recruitment',
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, DB_OPTIONS)
 
     const { error } = await supabase.from('contact_submissions').insert({
       app: 'tmashininisekgoto',

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { DB_OPTIONS } from '@/lib/db-schema'
 import { createHash } from 'crypto'
 import { clientIp } from '@/lib/request-ip'
 
@@ -14,7 +15,7 @@ function db() {
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY
   if (!url || !key) return null
-  return createClient(url, key)
+  return createClient(url, key, DB_OPTIONS)
 }
 
 function ipHash(request: Request): string {

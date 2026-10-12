@@ -1,7 +1,7 @@
 // ============================================================
 // lib/rag/indexer.ts — chunk → embed → idempotent upsert into kb_*
 // ============================================================
-import type { SupabaseClient } from '@supabase/supabase-js'
+import type { KbClient } from './db'
 import { collectCorpus, type KbSource } from './documents'
 import { chunkText } from './chunk'
 import { embedText } from './embeddings'
@@ -22,7 +22,7 @@ const CHUNK_INSERT_BATCH = 50
 
 /** Index one source: skip if unchanged, else replace its chunks. */
 export async function indexDocument(
-  client: SupabaseClient,
+  client: KbClient,
   source: KbSource
 ): Promise<{ status: 'indexed' | 'skipped'; chunks: number }> {
   const hash = contentHash(source.text)
@@ -92,7 +92,7 @@ export async function indexDocument(
 }
 
 /** Index the full in-repo corpus. Continue-on-error per document. */
-export async function reindexAll(client: SupabaseClient): Promise<ReindexResult> {
+export async function reindexAll(client: KbClient): Promise<ReindexResult> {
   const sources = collectCorpus()
   const result: ReindexResult = {
     documents: sources.length,
@@ -142,7 +142,7 @@ export async function reindexAll(client: SupabaseClient): Promise<ReindexResult>
  * misconfigured; wiping the whole index on an empty read would be a far worse
  * outcome than leaving it stale.
  */
-async function pruneRemoved(client: SupabaseClient, sources: KbSource[]): Promise<number> {
+async function pruneRemoved(client: KbClient, sources: KbSource[]): Promise<number> {
   if (sources.length === 0) return 0
 
   const keep = new Set(sources.map((s) => `${s.sourceType}:${s.sourceKey}`))

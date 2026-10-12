@@ -1,7 +1,7 @@
 // ============================================================
 // lib/rag/retrieval.ts — query embedding + app-scoped similarity search
 // ============================================================
-import type { SupabaseClient } from '@supabase/supabase-js'
+import type { KbClient } from './db'
 import { embedText } from './embeddings'
 import { APP, MATCH_COUNT, SIMILARITY_THRESHOLD } from './config'
 
@@ -31,7 +31,7 @@ export interface SearchOptions {
 
 /** Embed the query and return app-scoped, published chunk matches. */
 export async function searchKb(
-  client: SupabaseClient,
+  client: KbClient,
   query: string,
   opts: SearchOptions = {}
 ): Promise<KbHit[]> {

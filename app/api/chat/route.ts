@@ -3,6 +3,7 @@ import { google } from '@ai-sdk/google'
 import { buildSystemPrompt, buildGroundedPrompt } from '@/lib/knowledge-base'
 import { headers } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
+import { DB_OPTIONS } from '@/lib/db-schema'
 import { isRagEnabled } from '@/lib/rag/config'
 import { searchKb, formatRetrievalContext, toSources, type SourceRef } from '@/lib/rag/retrieval'
 import { kbReadClient } from '@/lib/rag/db'
@@ -38,7 +39,7 @@ function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) return null
-  return createClient(url, key)
+  return createClient(url, key, DB_OPTIONS)
 }
 
 async function getRateLimitInfo(ip: string): Promise<{ allowed: boolean; remaining: number }> {

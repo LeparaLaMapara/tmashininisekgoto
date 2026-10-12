@@ -1,21 +1,26 @@
 // ============================================================
 // lib/rag/db.ts — Supabase clients for the RAG knowledge base
 //
-// The KB (apps/kb_documents/kb_chunks/match_kb_chunks) lives in the
-// `zbdsqvpxpsygbuqnuekm` project. We pin to it explicitly because the site's
-// NEXT_PUBLIC_SUPABASE_URL may point at a different project — retrieval must
-// always talk to where the KB data actually is. Both values are overridable
-// via env so they can be moved/rotated without a code change.
+// The KB (apps/kb_documents/kb_chunks/match_kb_chunks) lives in the `personal`
+// schema of the thabangvision-dev project `bprargrqppufeuewryze`, next to the
+// site's other tables (moved off thabangvision-prod 2026-10-12). It is pinned
+// explicitly so retrieval never follows a stray NEXT_PUBLIC_SUPABASE_URL. Both
+// values are overridable via env so they can be moved/rotated without a code change.
 // ============================================================
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { DB_OPTIONS } from '@/lib/db-schema'
+
+// A client bound to the `personal` schema.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type KbClient = SupabaseClient<any, any, any>
 
 // Public project URL (not a secret).
-const KB_URL = process.env.KB_SUPABASE_URL || 'https://zbdsqvpxpsygbuqnuekm.supabase.co'
+const KB_URL = process.env.KB_SUPABASE_URL || 'https://bprargrqppufeuewryze.supabase.co'
 
 // Publishable (anon) key — public by design, RLS-gated. The KB tables only
 // expose published rows to `anon` (grant + RLS), so this is safe to ship.
 const KB_ANON_KEY =
-  process.env.KB_SUPABASE_ANON_KEY || 'sb_publishable_ydBRJBRhPI0j9PoFh6NBHw_iPB4JYJJ'
+  process.env.KB_SUPABASE_ANON_KEY || 'sb_publishable_ZZLo21P9hL3MzL4mSu3oCA_rrZbQ-uS'
 
 function serviceKey(): string | undefined {
   // Support both env-var names (project was renamed SERVICE_KEY -> SERVICE_ROLE_KEY).
@@ -26,10 +31,10 @@ function serviceKey(): string | undefined {
  * Service-role client against the KB project, for WRITES (indexing).
  * Returns null when no service key is configured.
  */
-export function serviceClient(): SupabaseClient | null {
+export function serviceClient(): KbClient | null {
   const key = serviceKey()
   if (!key) return null
-  return createClient(KB_URL, key, { auth: { persistSession: false } })
+  return createClient(KB_URL, key, { ...DB_OPTIONS, auth: { persistSession: false } })
 }
 
 /**
@@ -39,7 +44,7 @@ export function serviceClient(): SupabaseClient | null {
  * invalid key. The publishable anon key is sufficient: match_kb_chunks is
  * granted to anon and only returns published rows (RLS).
  */
-export function kbReadClient(): SupabaseClient {
+export function kbReadClient(): KbClient {
   const key = process.env.KB_SUPABASE_SERVICE_KEY || KB_ANON_KEY
-  return createClient(KB_URL, key, { auth: { persistSession: false } })
+  return createClient(KB_URL, key, { ...DB_OPTIONS, auth: { persistSession: false } })
 }
