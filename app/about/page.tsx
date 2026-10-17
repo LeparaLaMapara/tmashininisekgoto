@@ -5,6 +5,13 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
+import { WhyButton } from '@/components/about/play/why-button'
+import { RouteChain } from '@/components/about/play/route-chain'
+import { LevelSetPlay } from '@/components/about/play/level-set'
+import { ShutterPlay } from '@/components/about/play/shutter'
+import { RepoRoute } from '@/components/about/play/repo-route'
+import { OnePunch } from '@/components/about/play/one-punch'
+import { DoNothing } from '@/components/about/play/do-nothing'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -23,6 +30,12 @@ export const metadata: Metadata = {
  * page says so as a question, never as a conclusion.
  *
  * Nothing on this page waits for a scroll animation: it paints at rest.
+ *
+ * 2026-10-17: he asked for the page to feel alive and to have fun with it, so
+ * it carries small toys in components/about/play (a Why button, his MSc running
+ * live on his photos, a camera that drops his prints, a dig through his GitHub,
+ * One Punch, ten seconds of doing nothing). They are client islands next to the
+ * text; none of them hides or replaces any words.
  */
 
 const INSTAGRAM = 'https://www.instagram.com/thabanglukhetho/'
@@ -32,8 +45,14 @@ const PHOTOS = [
   { n: '01', alt: 'Clouds and land seen from a plane window' },
   { n: '05', alt: 'The Union Buildings under a deep blue sky' },
   { n: '07', alt: 'Johannesburg against an orange sunset' },
+  { n: '13', alt: 'A tower block with yellow balconies' },
+  { n: '15', alt: 'A white lighthouse under clouds' },
+  { n: '21', alt: 'Curved black arches against a white sky' },
   { n: '31', alt: 'Green hills in the Drakensberg' },
+  { n: '34', alt: 'An empty city street with a white centre line' },
+  { n: '36', alt: 'A silhouette on a wall against bright yellow' },
   { n: '38', alt: 'A road at golden hour' },
+  { n: '42', alt: 'A palm tree under a stormy sky' },
   { n: '46', alt: 'The Wits Great Hall in the snow' },
 ]
 
@@ -67,22 +86,8 @@ function Sub({ title, children }: { title: string; children: React.ReactNode }) 
 function PullQuote({ children }: { children: React.ReactNode }) {
   return (
     <blockquote className="about-pull my-12 border-l-[6px] border-synapse pl-6 font-display text-2xl sm:text-3xl font-bold leading-snug text-ivory text-balance">
-      {children}
+      <span className="about-marker">{children}</span>
     </blockquote>
-  )
-}
-
-/** A small chain of steps, read left to right. */
-function Chain({ steps, label }: { steps: string[]; label: string }) {
-  return (
-    <ol aria-label={label} className="flex flex-wrap items-center gap-x-2 gap-y-2 not-prose">
-      {steps.map((s, i) => (
-        <li key={s} className="flex items-center gap-2">
-          <span className="about-chip rounded-sm border-2 border-ivory px-2.5 py-0.5 font-mono text-sm text-ivory">{s}</span>
-          {i < steps.length - 1 && <span aria-hidden="true" className="text-muted">→</span>}
-        </li>
-      ))}
-    </ol>
   )
 }
 
@@ -115,6 +120,7 @@ export default function AboutPage() {
               The most accurate thing anyone could say about me is probably this: I am curious.
             </p>
           </div>
+          <WhyButton />
         </header>
 
         {/* 2 and 3. Curiosity, and building rather than only using */}
@@ -128,7 +134,7 @@ export default function AboutPage() {
             physics, astrophysics, machine learning, distributed systems, hardware, psychology,
             markets, cameras, storytelling. The pattern underneath is the same every time.
           </p>
-          <Chain
+          <RouteChain
             label="How I get into something"
             steps={['understand how it works', 'take it apart', 'build my own version', 'ask if it could work differently']}
           />
@@ -235,7 +241,7 @@ export default function AboutPage() {
             Can it scale? Does it survive failure, real data, and someone else maintaining it? Does it
             actually improve a decision?
           </p>
-          <Chain label="The full path I care about" steps={['idea', 'model', 'system', 'user', 'impact']} />
+          <RouteChain label="The full path I care about" steps={['idea', 'model', 'system', 'user', 'impact']} />
         </Section>
 
         {/* 10. Intelligence */}
@@ -259,6 +265,8 @@ export default function AboutPage() {
             interesting.
           </p>
         </Section>
+
+        <LevelSetPlay />
 
         {/* 11 to 15. What I build */}
         <Section id="builds" title="What I build">
@@ -288,6 +296,7 @@ export default function AboutPage() {
               wherever they come from. Learn them properly. Then ask what we should build for ourselves.
             </p>
           </Sub>
+          <RepoRoute />
         </Section>
 
         {/* 16. Hardware */}
@@ -325,11 +334,11 @@ export default function AboutPage() {
             href={INSTAGRAM}
             target="_blank"
             rel="noopener noreferrer"
-            className="about-photos group mt-2 grid grid-cols-3 sm:grid-cols-6 gap-2"
+            className="about-photos contact-sheet group mt-2 grid grid-cols-4 sm:grid-cols-6 gap-2"
             aria-label="See my photography on Instagram"
           >
             {PHOTOS.map((p) => (
-              <span key={p.n} className="relative aspect-square overflow-hidden border-2 border-ivory">
+              <span key={p.n} className="contact-frame relative aspect-square overflow-hidden border-2 border-ivory">
                 <Image src={`/vision/v${p.n}.jpg`} alt={p.alt} fill sizes="120px" className="object-cover" />
               </span>
             ))}
@@ -340,6 +349,7 @@ export default function AboutPage() {
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </p>
+          <ShutterPlay />
         </Section>
 
         {/* 18. Anime and psychology */}
@@ -356,6 +366,7 @@ export default function AboutPage() {
             different stories? Also, sometimes a man just punches things very hard, and that is
             enough.
           </p>
+          <OnePunch />
         </Section>
 
         {/* 19. How I work */}
@@ -384,6 +395,7 @@ export default function AboutPage() {
             Spending time with people. Occasionally doing nothing at all. It turns out constant
             productivity is not a requirement. I am still getting used to that.
           </p>
+          <DoNothing />
         </Section>
 
         {/* 22. The thread */}

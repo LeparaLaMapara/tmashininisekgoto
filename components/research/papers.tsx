@@ -70,7 +70,7 @@ export function Papers() {
               <div key={pub.title}>
                 <article
                   id={pub.key}
-                  className={`relative scroll-mt-28 rounded-2xl border p-6 sm:p-8 transition-colors ${
+                  className={`paper-card relative scroll-mt-28 rounded-2xl border p-6 sm:p-8 transition-colors ${
                     isThesis
                       ? 'border-signal/30 bg-signal/[0.03]'
                       : 'border-border bg-surface/50 hover:border-synapse/20'

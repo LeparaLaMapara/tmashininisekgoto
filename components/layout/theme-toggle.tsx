@@ -4,6 +4,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { Camera, Signpost } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ThemeCurtain } from '@/components/layout/theme-curtain'
 
 /**
  * The two themes, laid over the same site. Only the look changes, never the words.
@@ -19,6 +20,7 @@ export const THEME_NAMES = { light: 'Sosha Plata Jo', dark: 'ThabangVision' } as
 export function ThemeToggle({ withLabel = false }: { withLabel?: boolean }) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [curtain, setCurtain] = useState<{ to: 'light' | 'dark'; phase: 'cover' | 'reveal' } | null>(null)
 
   useEffect(() => setMounted(true), [])
 
@@ -29,14 +31,32 @@ export function ThemeToggle({ withLabel = false }: { withLabel?: boolean }) {
   const isVision = theme === 'dark'
   const next = isVision ? THEME_NAMES.light : THEME_NAMES.dark
 
+  const to = isVision ? 'light' : 'dark'
+
   const toggle = () => {
-    const root = document.documentElement
-    root.classList.add('theme-fade')
-    setTheme(isVision ? 'light' : 'dark')
-    window.setTimeout(() => root.classList.remove('theme-fade'), 600)
+    if (curtain) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTheme(to)
+      return
+    }
+    // The aperture or the livery covers the screen, the theme switches behind
+    // it, then it opens again (components/layout/theme-curtain.tsx).
+    setCurtain({ to, phase: 'cover' })
   }
 
   return (
+    <>
+    {curtain && (
+      <ThemeCurtain
+        to={curtain.to}
+        phase={curtain.phase}
+        onCovered={() => {
+          setTheme(curtain.to)
+          window.setTimeout(() => setCurtain({ ...curtain, phase: 'reveal' }), 90)
+        }}
+        onDone={() => setCurtain(null)}
+      />
+    )}
     <button
       onClick={toggle}
       title={`Switch to ${next}`}
@@ -52,5 +72,6 @@ export function ThemeToggle({ withLabel = false }: { withLabel?: boolean }) {
       {isVision ? <Signpost className="h-4 w-4" /> : <Camera className="h-4 w-4" />}
       {withLabel && <span className="text-sm font-medium">{next}</span>}
     </button>
+    </>
   )
 }

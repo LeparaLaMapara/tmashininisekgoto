@@ -67,12 +67,13 @@ export function SuggestedQuestions({ onSelect }: SuggestedQuestionsProps) {
 
       {/* Questions for the active audience */}
       <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {group.questions.map((question) => (
+        {group.questions.map((question, i) => (
           <button
             key={question}
             onClick={() => onSelect(question)}
+            style={{ '--i': i } as React.CSSProperties}
             className={cn(
-              'rounded-xl border border-border bg-surface p-4',
+              'q-card rounded-xl border border-border bg-surface p-4',
               'text-left text-sm text-muted',
               'hover:text-ivory hover:border-synapse/30',
               'transition-all duration-200',

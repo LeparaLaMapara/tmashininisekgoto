@@ -4,6 +4,7 @@ import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import { ChatInterface } from '@/components/ai/chat-interface'
 import { WorkWithMe } from '@/components/ai/work-with-me'
+import { NameRoll } from '@/components/ai/name-roll'
 
 export const metadata: Metadata = {
   title: 'LeparaLaMapara: my AI assistant, ask about my work',
@@ -32,7 +33,7 @@ export default function AIPage() {
           <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
             Talk to{' '}
             <span className="text-synapse">
-              LeparaLaMapara
+              <NameRoll />
             </span>
           </h1>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">

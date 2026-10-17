@@ -8,6 +8,7 @@ import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
 import { TheRecord } from '@/components/resume/the-record'
+import { TimelineRoute } from '@/components/resume/timeline-route'
 
 export const metadata: Metadata = {
   title: 'Resume: Data Science, AI Engineering & Research',
@@ -87,9 +88,8 @@ export default function ResumePage() {
         <TheRecord />
 
         {/* Timeline */}
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-[19px] top-0 bottom-0 w-px bg-border" />
+        {/* The vertical line is a road now: a taxi drives it as you scroll. */}
+        <TimelineRoute>
 
           <div className="space-y-8">
             {CAREER_TIMELINE.map((item, i) => {
@@ -98,7 +98,7 @@ export default function ResumePage() {
               <ScrollReveal key={i} delay={i * 0.08}>
                 <div className="relative flex gap-6">
                   {/* Dot */}
-                  <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border flex items-center justify-center ${DOT_STYLES[item.accent] ?? 'bg-surface border-border'}`}>
+                  <div data-stop className={`timeline-stop relative z-10 flex-shrink-0 w-10 h-10 rounded-full border flex items-center justify-center ${DOT_STYLES[item.accent] ?? 'bg-surface border-border'}`}>
                     <Icon className={`w-4 h-4 ${ACCENT_TEXT[item.accent]}`} />
                   </div>
 
@@ -154,7 +154,7 @@ export default function ResumePage() {
               )
             })}
           </div>
-        </div>
+        </TimelineRoute>
 
         {/* Colleague references. These moved off /about, which is about the
             person rather than the professional record; endorsements from people

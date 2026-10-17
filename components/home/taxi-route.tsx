@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import { CAREER_TIMELINE } from '@/lib/data'
+import { BoardDestination } from '@/components/home/board-text'
 
 /**
  * The taxi rank pieces of the signwriter homepage: the amber dot matrix
  * destination board, the livery stripes, and the career drawn as a route.
  *
  * Years are read from CAREER_TIMELINE so the route cannot drift from the CV.
- * Server rendered, no client JavaScript.
+ * Server rendered; only the changing destination on the board is a client island.
  */
 
 const firstYear = (period: string) => period.match(/\d{4}/)?.[0] ?? ''
@@ -32,7 +33,7 @@ const STOPS = [
 export function DestinationBoard() {
   return (
     <div
-      className="bg-[#0c0c0c] border-[6px] border-[#2b2b2b] px-4 py-4 sm:px-6 sm:py-5"
+      className="dest-board relative overflow-hidden bg-[#0c0c0c] border-[6px] border-[#2b2b2b] px-4 py-4 sm:px-6 sm:py-5"
       role="img"
       aria-label="Destination board: Soshanguve to production, via research and open source"
     >
@@ -40,7 +41,7 @@ export function DestinationBoard() {
         aria-hidden="true"
         className="font-dot font-black text-[#ffb000] text-[1.55rem] leading-none tracking-wider sm:text-5xl lg:text-6xl [text-shadow:0_0_6px_rgba(255,176,0,0.45)]"
       >
-        SOSHANGUVE <span className="whitespace-nowrap">⇄ PRODUCTION</span>
+        SOSHANGUVE <span className="whitespace-nowrap">⇄ <BoardDestination /></span>
       </p>
       <p aria-hidden="true" className="font-dot font-bold text-[#ffb000]/80 text-xs sm:text-lg tracking-widest mt-2">
         VIA RESEARCH · VIA OPEN SOURCE · ALL STOPS
