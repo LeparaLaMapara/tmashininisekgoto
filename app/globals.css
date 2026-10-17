@@ -397,8 +397,48 @@ html.dark .kasi-street {
   72% { transform: translateX(1340px); }
   100% { transform: translateX(1340px); }
 }
+/* Everything in the street runs on the taxi's 26 second loop, so the birds and
+   the passenger stay in step with it. */
+.kasi-taxi-body { animation: kasi-idle 0.5s ease-in-out infinite; }
+@keyframes kasi-idle { 50% { transform: translateY(-1px); } }
+.kasi-puff { animation: kasi-puff 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.kasi-puff-2 { animation-delay: 0.7s; }
+@keyframes kasi-puff {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0.9; }
+  100% { transform: translate(-22px, -10px) scale(2.2); opacity: 0; }
+}
+.kasi-passenger { animation: kasi-passenger 26s linear infinite; }
+@keyframes kasi-passenger {
+  0%, 31% { opacity: 1; transform: translateX(0); }
+  34% { opacity: 0; transform: translateX(-14px); }
+  80% { opacity: 0; transform: translateX(14px); }
+  86%, 100% { opacity: 1; transform: translateX(0); }
+}
+.kasi-bird { transform-box: fill-box; }
+.kasi-bird-a { animation: kasi-bird-a 26s ease-in infinite; }
+.kasi-bird-b { animation: kasi-bird-b 26s ease-in infinite; }
+@keyframes kasi-bird-a {
+  0%, 20% { transform: translate(0, 0); opacity: 1; }
+  30% { transform: translate(90px, -70px); opacity: 0; }
+  84% { transform: translate(-60px, -50px); opacity: 0; }
+  92%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+@keyframes kasi-bird-b {
+  0%, 57% { transform: translate(0, 0); opacity: 1; }
+  66% { transform: translate(110px, -70px); opacity: 0; }
+  90% { transform: translate(-60px, -50px); opacity: 0; }
+  97%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+.kasi-cloud { animation: kasi-cloud 120s linear infinite; }
+.kasi-cloud-2 { animation-duration: 160s; animation-delay: -60s; }
+@keyframes kasi-cloud {
+  0% { transform: translateX(-200px); }
+  100% { transform: translateX(1400px); }
+}
 @media (prefers-reduced-motion: reduce) {
   .kasi-taxi { animation: none; transform: translateX(640px); }
+  .kasi-taxi-body, .kasi-puff, .kasi-passenger, .kasi-bird, .kasi-cloud { animation: none; }
+  .kasi-puff { opacity: 0; }
 }
 
 /* === The short version on the homepage: small boards, little text === */
@@ -426,7 +466,6 @@ html:not(.dark) .hl-stats .hl-board:first-child .hl-caption { color: var(--color
 
 /* ThabangVision: quiet boards with his banner orange as the shadow. */
 html.dark .hl-board { border-color: var(--color-border); box-shadow: 6px 6px 0 var(--color-synapse); background: rgba(11, 11, 12, 0.92); }
-html.dark 
 /* "PhD loading..." on the MSc board: the dots load, then start again. */
 .hl-loading { font-family: var(--font-mono); font-size: 0.74rem; color: var(--color-ivory); margin-top: 0.15rem; }
 .hl-dots i { font-style: normal; animation: hl-dot 1.8s infinite; opacity: 0; }
@@ -434,3 +473,370 @@ html.dark
 .hl-dots i:nth-child(3) { animation-delay: 0.6s; }
 @keyframes hl-dot { 0%, 15% { opacity: 0; } 30%, 80% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .hl-dots i { animation: none; opacity: 1; } }
+
+/* === The theme change (components/layout/theme-curtain.tsx) === */
+.theme-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Each blade is a half plane whose inner edge sits x from the centre; six of
+   them leave a hexagonal hole that closes as x reaches zero. */
+.aperture-blade {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160vmax;
+  height: 160vmax;
+  margin-top: -80vmax;
+  transform-origin: 0 50%;
+  background: #0b0b0c;
+  border-left: 3px solid #2a2a2c;
+  box-shadow: inset 6px 0 0 #18181a;
+}
+.livery-band {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 36%;
+  transform-origin: center;
+  rotate: -4deg;
+  border-top: 5px solid #111;
+  border-bottom: 5px solid #111;
+}
+
+/* === Signs that feel painted and hung (2026-10-17) ===
+ * The text is always there at rest; these only add light and a little swing. */
+.sign-board,
+html:not(.dark) main h1:not(.sign-board h1) {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: 50% -20px;
+}
+/* Fresh paint: one shine across the board when the page opens. */
+.sign-board::after,
+html:not(.dark) main h1:not(.sign-board h1)::after {
+  content: "";
+  position: absolute;
+  inset: -20% auto -20% -40%;
+  width: 30%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-18deg) translateX(-120%);
+  animation: sign-shine 1.3s 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+  pointer-events: none;
+}
+@keyframes sign-shine {
+  to { transform: skewX(-18deg) translateX(620%); }
+}
+/* Touch it and it swings on its bolts. */
+.sign-board:hover,
+html:not(.dark) main h1:not(.sign-board h1):hover {
+  transform: rotate(-1.2deg);
+}
+
+/* The dot board hums: faint scan lines and a slow flicker, like a real one. */
+.dest-board::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.35) 0 1px, transparent 1px 3px);
+  animation: dest-flicker 5s steps(1) infinite;
+  pointer-events: none;
+}
+@keyframes dest-flicker {
+  0%, 92%, 100% { opacity: 0.55; }
+  93% { opacity: 0.8; }
+  95% { opacity: 0.5; }
+}
+.board-dest { display: inline-block; min-width: 10ch; text-align: left; }
+
+/* The homepage stat boards: press one and it moves like a real board would. */
+.hl-stats .hl-board { transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease; }
+.hl-stats .hl-board:hover { transform: translate(3px, 3px) rotate(0deg); box-shadow: 3px 3px 0 var(--color-ivory); }
+html.dark .hl-stats .hl-board:hover { box-shadow: 3px 3px 0 var(--color-synapse); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sign-board::after,
+  html:not(.dark) main h1:not(.sign-board h1)::after,
+  .dest-board::after { animation: none; }
+  .sign-board::after,
+  html:not(.dark) main h1:not(.sign-board h1)::after { display: none; }
+  .sign-board, html:not(.dark) main h1:not(.sign-board h1), .hl-stats .hl-board { transition: none; }
+  .sign-board:hover, html:not(.dark) main h1:not(.sign-board h1):hover { transform: none; }
+}
+
+/* === About page toys (components/about/play) === */
+.play-card {
+  margin-top: 2.5rem;
+  padding: 1.25rem 1.25rem 1.4rem;
+  border: 3px solid var(--color-ivory);
+  box-shadow: 6px 6px 0 var(--color-ivory);
+  background: var(--color-void);
+  /* The flash and the falling prints stay inside the card on small screens. */
+  overflow: clip;
+}
+html.dark .play-card { border-color: var(--color-border); box-shadow: 6px 6px 0 var(--color-synapse); background: rgba(11, 11, 12, 0.92); }
+.play-kicker {
+  font-family: var(--font-sign);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-synapse-ink);
+  margin-bottom: 0.9rem;
+}
+html.dark .play-kicker { color: var(--color-synapse); }
+.play-chip {
+  display: inline-block;
+  border: 2px solid var(--color-ivory);
+  padding: 0.15rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-ivory);
+  background: var(--color-void);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+button.play-chip:hover { transform: translateY(-2px); }
+.play-chip.is-on { background: var(--color-sign-board); color: var(--color-sign-ink); }
+
+/* Why? */
+.why-bubble {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  font-family: var(--font-sign);
+  font-size: 0.95rem;
+  color: var(--color-synapse-ink);
+  white-space: nowrap;
+  animation: why-float 1.6s ease-out forwards;
+}
+html.dark .why-bubble { color: var(--color-synapse); }
+@keyframes why-float {
+  0% { transform: translate(-50%, 0) rotate(0deg) scale(0.6); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--x)), -90px) rotate(var(--r)) scale(1.15); opacity: 0; }
+}
+
+/* The steps light up one after another, like stops on a route. */
+.route-chain { cursor: pointer; }
+.route-chain.is-running .about-chip {
+  animation: route-stop 0.5s calc(var(--i) * 0.35s) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.route-chain.is-running .route-arrow {
+  animation: route-arrow 0.35s calc(var(--i) * 0.35s + 0.2s) ease-out both;
+}
+@keyframes route-stop {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-6px); background: var(--color-sign-board); color: var(--color-sign-ink); }
+  100% { transform: translateY(0); background: var(--color-sign-board); color: var(--color-sign-ink); }
+}
+@keyframes route-arrow {
+  0% { transform: translateX(-4px); opacity: 0.3; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+/* Pull quotes: a marker sweeps behind the words as they come up the screen.
+   Without scroll timelines the marker is simply there. */
+.about-marker {
+  background-image: linear-gradient(transparent 58%, var(--color-sign-board) 58% 92%, transparent 92%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+html.dark .about-marker { background-image: linear-gradient(transparent 62%, rgba(255, 122, 26, 0.55) 62% 92%, transparent 92%); }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .about-marker {
+      animation: marker-sweep linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+
+    /* The livery stripe under each section heading paints itself in. */
+    html:not(.dark) main h2:not(article h2)::after {
+      animation: stripe-paint linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+
+    /* The contact sheet develops from black and white as it comes into view. */
+    .contact-frame img {
+      animation: develop linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
+  }
+}
+@keyframes marker-sweep { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+@keyframes stripe-paint { from { transform: skewX(-20deg) scaleX(0); } to { transform: skewX(-20deg) scaleX(1); } }
+@keyframes develop { from { filter: grayscale(1) contrast(1.3) brightness(0.7); } to { filter: none; } }
+.contact-frame img { transition: transform 0.4s ease; }
+.contact-frame:hover img { transform: scale(1.12); }
+.contact-frame:nth-child(odd) { rotate: -1deg; }
+.contact-frame:nth-child(even) { rotate: 0.8deg; }
+
+/* The camera */
+.shutter-cam {
+  position: relative;
+  width: min(260px, 100%);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.shutter-cam:hover { transform: rotate(-2deg) translateY(-2px); }
+.shutter-cam:active { transform: scale(0.97); }
+.shutter-cam svg { display: block; width: 100%; height: auto; }
+.shutter-btn { transition: transform 0.1s ease; transform-box: fill-box; }
+.shutter-cam.is-firing .shutter-btn { transform: translateY(4px); }
+.shutter-iris { transform-box: view-box; transform-origin: 122px 88px; opacity: 0; }
+.shutter-cam.is-firing .shutter-iris { animation: iris 0.26s ease-in-out; }
+@keyframes iris {
+  0% { opacity: 1; transform: rotate(0deg) scale(1.6); }
+  50% { opacity: 1; transform: rotate(40deg) scale(1); }
+  100% { opacity: 0; transform: rotate(80deg) scale(1.6); }
+}
+.shutter-flash {
+  position: absolute;
+  inset: -30%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 65%);
+  opacity: 0;
+  pointer-events: none;
+}
+.shutter-cam.is-firing .shutter-flash { animation: flash 0.32s ease-out; }
+@keyframes flash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
+
+.print-pile {
+  position: relative;
+  height: 220px;
+  display: grid;
+  place-items: center;
+}
+.print-empty { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-muted); border: 2px dashed var(--color-border); padding: 3.5rem 1.5rem; }
+.print {
+  position: absolute;
+  width: 150px;
+  padding: 8px 8px 26px;
+  background: #fbfaf6;
+  border: 1px solid #111;
+  box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.25);
+  transform: translate(var(--x), var(--y)) rotate(var(--r));
+  animation: print-drop 0.55s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+.print img { display: block; width: 100%; height: auto; animation: print-develop 2.4s ease-out both; }
+@keyframes print-drop {
+  from { transform: translate(var(--x), -160px) rotate(calc(var(--r) * -2)) scale(1.15); opacity: 0; }
+  to { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 1; }
+}
+@keyframes print-develop {
+  from { filter: brightness(2.2) grayscale(1) contrast(0.4); }
+  to { filter: none; }
+}
+
+/* GitHub route */
+.repo-road { position: relative; }
+.repo-strip {
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 0.25rem 0.25rem 0.75rem;
+  scrollbar-width: thin;
+}
+.repo-strip:focus-visible { outline: 3px solid var(--color-synapse); outline-offset: 2px; }
+.repo-stops { display: flex; gap: 0.85rem; width: max-content; }
+.repo-ticket {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 190px;
+  min-height: 150px;
+  padding: 0.8rem 0.9rem;
+  background: #0c0c0c;
+  border: 4px solid #2b2b2b;
+  color: #ffb000;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.repo-ticket:hover { transform: translateY(-4px) rotate(-1deg); }
+.repo-year { font-family: var(--font-dot); font-weight: 900; font-size: 2rem; line-height: 1; text-shadow: 0 0 6px rgba(255, 176, 0, 0.45); }
+.repo-what { font-family: var(--font-display); font-size: 0.9rem; line-height: 1.3; color: #f2efe6; }
+.repo-name { margin-top: auto; font-family: var(--font-mono); font-size: 0.7rem; color: #ffb000; opacity: 0.8; overflow-wrap: anywhere; }
+.repo-lane {
+  position: relative;
+  height: 34px;
+  background-color: #2b2b2b;
+  background-image: linear-gradient(90deg, #ffd23f 0 22px, transparent 22px 40px);
+  background-size: 40px 2px;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+.repo-taxi {
+  position: absolute;
+  top: 4px;
+  left: calc(var(--p, 0) * (100% - 56px));
+  transition: left 0.15s linear;
+}
+
+/* One punch */
+.punch-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  pointer-events: none;
+  animation: punch-burst 0.5s ease-out forwards;
+}
+@keyframes punch-burst {
+  0% { transform: scale(0.2) rotate(0deg); opacity: 1; }
+  60% { transform: scale(1.3) rotate(12deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(18deg); opacity: 0; }
+}
+section.is-punched { animation: punch-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+@keyframes punch-shake {
+  10%, 90% { transform: translate(-2px, 1px); }
+  20%, 80% { transform: translate(5px, -2px); }
+  30%, 50%, 70% { transform: translate(-9px, 3px); }
+  40%, 60% { transform: translate(9px, -3px); }
+}
+
+/* Ten seconds of nothing */
+.rest-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(10, 10, 12, 0.94);
+  color: #f2efe6;
+  animation: rest-in 0.6s ease both;
+}
+@keyframes rest-in { from { opacity: 0; } to { opacity: 1; } }
+.rest-breath {
+  width: 140px;
+  height: 140px;
+  border-radius: 9999px;
+  border: 3px solid #ffd23f;
+  background: radial-gradient(circle, rgba(255, 210, 63, 0.35), rgba(255, 210, 63, 0) 70%);
+}
+.rest-breath.is-on { animation: breathe 5s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { transform: scale(0.7); } 50% { transform: scale(1.15); } }
+.rest-count { font-family: var(--font-dot); font-weight: 900; font-size: 3rem; line-height: 1; color: #ffb000; min-height: 3rem; }
+.rest-msg { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; max-width: 26rem; }
+.rest-btn { border: 2px solid #f2efe6; padding: 0.5rem 1rem; font-weight: 600; }
+.rest-btn:hover { background: #f2efe6; color: #111; }
+
+@media (prefers-reduced-motion: reduce) {
+  .why-bubble, .print, .print img, .punch-burst, .rest-overlay, .rest-breath.is-on,
+  .shutter-cam.is-firing .shutter-iris, .shutter-cam.is-firing .shutter-flash,
+  .route-chain.is-running .about-chip, .route-chain.is-running .route-arrow, section.is-punched { animation: none; }
+  .print { transform: translate(var(--x), var(--y)) rotate(var(--r)); }
+  .repo-taxi, .shutter-cam, .play-chip, .repo-ticket, .contact-frame img { transition: none; }
+}

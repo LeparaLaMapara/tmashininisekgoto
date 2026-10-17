@@ -5,7 +5,9 @@
  * spaza with its painted board, street lamps, power lines with birds on them,
  * and a minibus taxi in the site's livery driving past. It sits above the footer
  * on every page, holds no words, and is hidden in ThabangVision (the dark theme).
- * The taxi respects prefers-reduced-motion and simply parks.
+ * The taxi stops at the spaza for the person waiting there, the birds lift off
+ * the wire as it passes, and the clouds drift. Every piece of motion respects
+ * prefers-reduced-motion: the taxi simply parks and nothing else moves.
  */
 const HOUSES = [
   { x: 0, w: 120, h: 58, c: '#e9c46a' },
@@ -57,8 +59,19 @@ export function KasiStreet() {
         {/* power lines, sagging from pole to pole, with a few birds */}
         <path d="M0,40 Q220,62 440,40 T880,40 T1320,40" fill="none" stroke="#111" strokeWidth="1.4" />
         <path d="M0,50 Q220,72 440,50 T880,50 T1320,50" fill="none" stroke="#111" strokeWidth="1.1" />
-        {[300, 318, 334, 972, 990].map((bx) => (
-          <path key={bx} d={`M${bx},${bx < 600 ? 55 : 57} q4,-5 8,0 q4,-5 8,0`} fill="none" stroke="#111" strokeWidth="1.6" />
+        {/* clouds, drifting very slowly */}
+        <g className="kasi-cloud" fill="#fff" stroke="#111" strokeWidth="1.6">
+          <path d="M60,24 q6,-14 20,-8 q8,-12 22,-2 q14,-2 12,10 z" />
+        </g>
+        <g className="kasi-cloud kasi-cloud-2" fill="#fff" stroke="#111" strokeWidth="1.6">
+          <path d="M700,18 q5,-11 16,-6 q7,-10 18,-2 q11,-1 10,8 z" />
+        </g>
+
+        {/* birds on the wire; they lift off when the taxi comes past */}
+        {[300, 318, 334, 972, 990].map((bx, i) => (
+          <g key={bx} className={`kasi-bird ${bx < 600 ? 'kasi-bird-a' : 'kasi-bird-b'}`} style={{ animationDelay: `${i * 0.12}s` }}>
+            <path d={`M${bx},${bx < 600 ? 55 : 57} q4,-5 8,0 q4,-5 8,0`} fill="none" stroke="#111" strokeWidth="1.6" />
+          </g>
         ))}
 
         {HOUSES.map((h) => <House key={h.x} {...h} />)}
@@ -85,12 +98,24 @@ export function KasiStreet() {
         <Lamp x={380} />
         <Lamp x={940} />
 
+        {/* someone waiting at the spaza, who gets on when the taxi stops */}
+        <g className="kasi-passenger">
+          <circle cx="420" cy="122" r="5" fill="#5a3a26" stroke="#111" strokeWidth="1.5" />
+          <path d="M414,129 h12 l2,14 h-16 z" fill="#1b7f3b" stroke="#111" strokeWidth="1.5" />
+          <path d="M416,143 v7 M424,143 v7" stroke="#111" strokeWidth="2.5" />
+          <rect x="427" y="132" width="7" height="8" fill="#d62828" stroke="#111" strokeWidth="1" />
+        </g>
+
         {/* the road */}
         <rect x="0" y="150" width="1300" height="20" fill="#2b2b2b" />
         <line x1="0" y1="160" x2="1300" y2="160" stroke="#ffd23f" strokeWidth="2" strokeDasharray="22 18" />
 
         {/* the taxi, in the site's livery */}
         <g className="kasi-taxi">
+          {/* exhaust, puffing out the back */}
+          <circle className="kasi-puff" cx="-4" cy="142" r="4" fill="#cfcfcf" />
+          <circle className="kasi-puff kasi-puff-2" cx="-4" cy="142" r="4" fill="#cfcfcf" />
+          <g className="kasi-taxi-body">
           <path d="M0,146 L0,118 Q2,108 14,106 L78,104 Q96,104 104,120 L110,134 L110,146 Z" fill="#f7f7f2" stroke="#111" strokeWidth="2.5" />
           <path d="M18,110 L64,109 L64,122 L16,123 Z" fill="#1d2a36" />
           <path d="M70,109 L84,109 Q94,110 98,122 L70,122 Z" fill="#1d2a36" />
@@ -100,6 +125,7 @@ export function KasiStreet() {
           <circle cx="24" cy="148" r="8" fill="#111" /><circle cx="24" cy="148" r="3" fill="#9aa3a8" />
           <circle cx="88" cy="148" r="8" fill="#111" /><circle cx="88" cy="148" r="3" fill="#9aa3a8" />
           <rect x="104" y="124" width="6" height="5" fill="#ffd23f" />
+          </g>
         </g>
       </svg>
     </div>
