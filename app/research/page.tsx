@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Papers } from '@/components/research/papers'
+import { LevelLines } from '@/components/research/level-lines'
 import { RESEARCH } from '@/lib/graph/research'
 import { JsonLd } from '@/components/seo/json-ld'
 import { researchIndexSchema, breadcrumbSchema } from '@/lib/schema'
@@ -28,6 +29,10 @@ export default function ResearchIndex() {
           ]),
         ]}
       />
+      <figure className="level-banner not-prose mb-8" aria-hidden="true">
+        <LevelLines />
+        <figcaption className="font-mono text-xs text-muted mt-2">Level sets of a moving surface.</figcaption>
+      </figure>
       <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">Research</h1>
       <p className="mt-4 text-lg leading-relaxed text-muted">
         Everything I have published, newest first. The production work that grew out of some of it is

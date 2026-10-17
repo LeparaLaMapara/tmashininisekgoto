@@ -7,6 +7,7 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { JsonLd } from '@/components/seo/json-ld'
 import { talksSchema, breadcrumbSchema } from '@/lib/schema'
 import { TalkCard, formatTalkDate } from '@/components/talks/talk-card'
+import { OnAirLamp, VoiceMeter } from '@/components/talks/on-air'
 
 const SERIES = 'FabAcademic Unfiltered'
 const CHANNEL = 'https://www.youtube.com/@Fabacademic'
@@ -61,6 +62,10 @@ export default function FabAcademicSeriesPage() {
               FabAcademic <span className="text-synapse">Unfiltered</span>
             </h1>
             <p className="mt-2 text-muted">With Prof. Mamokgethi Phakeng</p>
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <OnAirLamp />
+              <VoiceMeter />
+            </div>
             <p className="mt-6 text-lg text-ivory/85 leading-relaxed">
               A continuing series of practical conversations about AI, learning,
               research and building things. Less about what the technology might do

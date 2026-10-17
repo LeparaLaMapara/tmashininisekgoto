@@ -7,6 +7,7 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 import { JsonLd } from '@/components/seo/json-ld'
 import { talksSchema, breadcrumbSchema } from '@/lib/schema'
 import { TalkCard, formatTalkDate } from '@/components/talks/talk-card'
+import { OnAirLamp, VoiceMeter } from '@/components/talks/on-air'
 
 export const metadata: Metadata = {
   title: 'Talks, Teaching & Media',
@@ -97,13 +98,17 @@ export default function TalksPage() {
           <section className="mb-24">
             <ScrollReveal>
               <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-synapse-ink">
-                  Series · {series.length} episodes
-                </span>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-synapse-ink">
+                    Series · {series.length} episodes
+                  </span>
+                  <OnAirLamp />
+                </div>
                 <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold text-ivory">
                   FabAcademic Unfiltered
                 </h2>
                 <p className="mt-1 text-muted">With Prof. Mamokgethi Phakeng</p>
+                <VoiceMeter />
                 <p className="mt-4 max-w-2xl text-lg text-ivory/85 leading-relaxed">
                   A continuing series of practical conversations about AI, learning,
                   research and building things. Less about what the technology might
@@ -261,7 +266,7 @@ export default function TalksPage() {
                 <Link
                   key={topic}
                   href={`/search?q=${encodeURIComponent(topic)}`}
-                  className="rounded-sm border border-border bg-surface px-3.5 py-1.5 font-mono text-sm text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
+                  className="topic-chip rounded-sm border border-border bg-surface px-3.5 py-1.5 font-mono text-sm text-muted transition-colors hover:border-synapse/30 hover:text-ivory"
                 >
                   {topic}
                 </Link>

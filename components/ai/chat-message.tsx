@@ -37,7 +37,7 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
 
   if (isUser) {
     return (
-      <div className="flex justify-end">
+      <div className="chat-in chat-in-user flex justify-end">
         <div
           className={cn(
             'max-w-[80%] rounded-2xl rounded-tr-sm',
@@ -52,7 +52,7 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
   }
 
   return (
-    <div className="flex items-start gap-3 group">
+    <div className="chat-in flex items-start gap-3 group">
       {/* Avatar */}
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-synapse/20">
         <Sparkles className="h-4 w-4 text-synapse" />

@@ -39,7 +39,7 @@ export function TalkCard({ talk, compact = false }: { talk: Talk; compact?: bool
   const { watch, thumb } = youtube(talk.videoUrl)
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-colors hover:border-synapse/30">
+    <article className="talk-card group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-colors hover:border-synapse/30">
       <a
         href={watch}
         target="_blank"
@@ -59,7 +59,7 @@ export function TalkCard({ talk, compact = false }: { talk: Talk; compact?: bool
           <div className="h-full w-full bg-void/40" />
         )}
         <span className="absolute inset-0 flex items-center justify-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-void/70 backdrop-blur-sm transition-transform group-hover:scale-110">
+          <span className="talk-play flex h-12 w-12 items-center justify-center rounded-full bg-void/70 backdrop-blur-sm transition-transform group-hover:scale-110">
             <Play className="h-5 w-5 translate-x-[1px] text-ivory" fill="currentColor" />
           </span>
         </span>

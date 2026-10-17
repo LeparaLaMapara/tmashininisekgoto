@@ -36,6 +36,9 @@ export function ChatInterface() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    // Only follow the conversation once there is one. On an empty chat this
+    // used to scroll a phone straight past the heading to the input bar.
+    if (messages.length === 0) return
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
@@ -66,10 +69,11 @@ export function ChatInterface() {
               <div className="h-3 w-3 rounded-full bg-synapse" />
             </div>
             <div className="rounded-2xl rounded-tl-sm bg-surface border border-border px-4 py-3">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-synapse/60 animate-pulse" />
-                <span className="h-2 w-2 rounded-full bg-synapse/60 animate-pulse [animation-delay:150ms]" />
-                <span className="h-2 w-2 rounded-full bg-synapse/60 animate-pulse [animation-delay:300ms]" />
+              {/* Amber lamps chasing along, like the dot board warming up. */}
+              <div className="think-lamps" role="status" aria-label="Thinking">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <span key={i} style={{ '--i': i } as React.CSSProperties} />
+                ))}
               </div>
             </div>
           </div>
