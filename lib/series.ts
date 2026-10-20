@@ -36,6 +36,13 @@ export const SERIES: Record<string, SeriesCopy> = {
     description:
       'A six part practical roadmap to building with AI agents: tools, retrieval, permissions, reliability and orchestration, from a site built that way.',
   },
+  'career-development-in-data-and-ai': {
+    slug: 'career-development',
+    intro:
+      'A career in data and AI has stops, like a route. First you become one: what to learn, in what order, and what has changed now that AI agents can write code. Later you build one: a team and a capability inside a real organisation, with a small budget and no map. Each part is written from where I have actually been, for wherever you are on the road.',
+    description:
+      'Career development in data science and AI: becoming a data scientist, then building and leading a team. Practical, from real experience in South Africa.',
+  },
   'our-version': {
     intro:
       'The rich world builds something big: computers in space, giant data centres, networks that cost billions. Each post in this series asks one simple question. What is our version? It starts from what our communities already have, uses methods from work I have actually done, says the hard parts out loud, does the sums in the open, and ends with a small first step that could prove the idea wrong.',
