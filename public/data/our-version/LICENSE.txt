@@ -1,0 +1,7 @@
+The files in this folder (sa.json, africa.json, countries.json) are derived from
+OpenCelliD (https://opencellid.org) data, downloaded 20 October 2026, and are shared
+under the Creative Commons Attribution-ShareAlike 4.0 licence:
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Country outlines: Natural Earth (public domain), via world-atlas 2.0.2.
+Made by scripts/our-version/cells.py in https://github.com/LeparaLaMapara/tmashininisekgoto
