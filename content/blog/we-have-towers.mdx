@@ -1,0 +1,190 @@
+---
+title: "We Don't Have Rockets. We Have Towers."
+seoTitle: "Distributed AI Compute on Africa's Cell Towers"
+date: 2026-10-20
+published: true
+tags: [ai, architecture]
+topics: [telecommunications, mathematical-optimisation, decision-support]
+projects: [vodacom-network-intelligence]
+summary: "Google, SpaceX and others are putting computers in orbit because power and cooling on Earth have run out of room. Africa has no space programme, but it has tens of thousands of cell towers that already have power, batteries, cooling, a fence and a link to the network. This post asks whether those towers can be a data centre spread across the land, and answers with the same graph and scoring method I used to send generators to towers during load shedding."
+seoDescription: "Space data centres explained, and a practical African alternative: small unified memory AI computers inside existing cell towers, placed and scheduled by power, safety and network position."
+---
+
+# We Don't Have Rockets. We Have Towers.
+
+Something strange is happening in tech right now. The biggest companies in the world are putting computers into space.
+
+On 1 October 2026 Google launched the first test satellite for [Project Suncatcher](https://blog.google/innovation-and-ai/technology/research/google-project-suncatcher), its plan for AI computers in orbit. A startup called Starcloud flew an NVIDIA H100, the same chip that runs big AI models on Earth, [in November 2025](https://www.datacenterdynamics.com/en/news/starcloud-1-satellite-reaches-space-with-nvidia-h100-gpu-now-operating-in-orbit/). SpaceX [asked the American regulator](https://www.datacenterdynamics.com/en/news/spacex-files-for-million-satellite-orbital-ai-data-center-megaconstellation) for permission to launch up to a million satellites for computing. China [launched twelve computing satellites](https://www.livescience.com/space/space-exploration/china-is-building-a-constellation-of-ai-supercomputers-in-space-and-just-launched-the-first-pieces) in May 2025, the first of a planned 2,800.
+
+When I read this, my first thought was not "wow". It was: we don't have a space programme. So what is the African version of this?
+
+My answer is the thing you can see from almost any road in South Africa. The cell tower.
+
+<UpThereOutHere />
+
+## Why they are going to space
+
+A data centre is a building full of computers. Those computers need two things more than anything: electricity, and a way to get rid of heat.
+
+On Earth, both are running out. The International Energy Agency [estimates](https://www.iea.org/reports/energy-and-ai/executive-summary) that data centres used about 415 terawatt hours of electricity in 2024, around 1.5% of all the electricity in the world, and that this will more than double to about 945 by 2030. In Virginia, the busiest data centre region on the planet, the power company told builders they could wait [four to seven years](https://datacenterknowledge.com/energy-power-supply/data-centers-face-seven-year-wait-for-power-hookups-in-virginia) for a grid connection. Dublin has had a [near stop](https://www.capacitymedia.com/articles/3828810/new-data-centres-in-dublin-face-power-connection-delay) on new connections since 2022.
+
+So the idea is simple. In the right orbit the sun almost never sets. Google says solar panels up there can produce [up to eight times](https://blog.google/innovation-and-ai/technology/research/google-project-suncatcher) what they produce on Earth. No grid queue. No neighbours complaining. Unlimited power, more or less.
+
+## What space actually costs them
+
+It is not free, and the people building it are honest about that.
+
+**Heat.** On Earth you cool a computer by blowing air or pumping water over it. In space there is no air. The only way to lose heat is to glow it away as light, through big flat panels called radiators. A single 700 watt AI chip needs [about 1.4 square metres](https://spectrum.ieee.org/orbital-data-centers-heat) of radiator. Google's own project lead called radiators "one of the heaviest components", and the first Suncatcher satellite runs its AI model for only [fifteen minutes at a time](https://www.wunc.org/2026-10-01/google-launches-project-suncatcher-a-step-towards-ai-data-centers-in-space) because of heat.
+
+**Launch.** Google's paper says it starts to make economic sense when launch costs fall to about [200 US dollars a kilogram](https://arxiv.org/abs/2511.19468), which they expect in the mid 2030s. Not today.
+
+**Radiation.** Space particles flip bits in memory. Google tested its chips in a particle beam and found the memory was the weak part.
+
+**Repairs.** If something breaks, nobody drives out to fix it.
+
+None of this means it will fail. These are serious people with serious money. But look at the list. Power, cooling, physical safety, repairs, and the link back to Earth. Keep that list in your head, because every item on it has an answer on the ground here that we have already paid for.
+
+## What we already have
+
+South Africa has roughly [26,000 cell towers](https://towerxchange.com/article/2blg3ddo08rqs34gzm3uo/what-ihs-towers-mtn-deal-means-for-south-africa). 4G reaches about [99% of the population](https://www.engineeringnews.co.za/print-version/south-africas-telecommunications-sector-grows-amid-fibre-network-coverage-2025-04-02). Each tower is, if you squint, a tiny data centre that somebody forgot to put computers in:
+
+- **Power.** A grid connection, and at many sites solar panels.
+- **Backup power.** Battery banks that carry a site for [6 to 12 hours](https://www.sdxcentral.com/news/vodacom-has-spent-more-than-200m-on-backup-power-in-south-africa-since-2020/), and generators that can be brought in.
+- **Cooling.** The equipment cabinet is already cooled, because the radios inside get hot.
+- **A link to the network.** Fibre or a microwave dish that carries traffic back to the core.
+- **Security.** A fence, a locked cabinet, and alarms that report to a control room.
+- **Sensors.** Every site reports power, battery, temperature and door alarms, almost in real time.
+- **People.** Technicians who already visit sites to maintain them.
+
+Compare that with the space list. Power: yes. Cooling: yes. Physical safety: partly, and we will come back to it. Repairs: a bakkie and a technician. Link: already there.
+
+Now compare it with how much Africa actually has in data centres. The whole continent holds about [0.6% of the world's capacity](https://www.bakermckenzie.com/en/insight/publications/2026/06/south-africa-the-megawatt-and-the-token-africas-compute-equation). South Africa, which has the most, has about [56 data centres and 350 megawatts](https://www.engineeringnews.co.za/article/sas-largest-data-centres-2025-12-05), mostly in Johannesburg and Cape Town. If you live in Polokwane, Mthatha or Soshanguve, your AI answer travels a long way.
+
+## The generator problem that taught me this
+
+I did not come to this idea from reading about satellites. I came to it from load shedding.
+
+At Vodacom I worked on what we called Smart Generator Optimisation, across more than 15,000 sites. The problem was this. When the power goes out, towers run on batteries. When the batteries run out, the tower dies, and everyone it serves loses signal. You have a small number of mobile generators on trucks. Where do you send them?
+
+The obvious answer is the closest tower, or the one that makes the most money. Both are wrong, and the reason is the thing that most people outside telecoms do not know.
+
+**Towers carry other towers.** Many towers do not have their own fibre. They pass their traffic by microwave to a neighbour, which passes it to another, until it reaches a tower that is connected to the core network. It works like old Christmas lights in series. If the tower at the top of the chain dies, every tower below it goes silent too, even though they still have power.
+
+So if you send the generator to a tower at the bottom of a chain while the one above it is dead, the generator runs all night and nothing comes back. Send it to the right tower and four, five, seven towers light up at once.
+
+Try it yourself. You have one generator.
+
+<TowerChain />
+
+What I built did this in two steps.
+
+**First, treat the network as a graph.** Every tower is a node, and every link that carries traffic from one tower to the next is an edge. Once the whole country is a graph, you can see which towers are heads, the ones that carry many others because of that dependency.
+
+**Then simulate.** For every tower with a power alarm, ask: if this tower comes back, how many towers come back with it? That is a simple walk down the tree from that tower, a breadth first search, counting as you go. You get a number for every scenario. Then you ask what those towers are worth: how many customers, what kind of customers (a hospital, a business park, a township with no other way to call for help), and how much revenue.
+
+**Second, decide with more than one number.** Now you know, for every dead tower, how much it restores. You also know where every generator is, because each one has a device reporting its location and fuel level almost in real time. And you know where each tower is from its coordinates. So you combine them: towers restored, people restored, value, distance for the truck, fuel left. That is multi criteria decision making, which sounds fancy but mostly means writing down how much each thing matters and adding it up honestly.
+
+That work contributed approximately R1 billion a year in operational savings. But the lesson I kept was bigger than the money. **A national network is not a list of sites. It is a graph, and the graph tells you where to put scarce things.**
+
+A generator is a scarce thing. So is a computer.
+
+## The idea: a data centre spread across the land
+
+Here is the proposal in one sentence. **Put small AI computers inside selected cell towers, and run them together as one data centre spread across the country.**
+
+Not big server racks. A new kind of computer has appeared in the last two years that makes this realistic. Apple made it famous with chips where the main processor, the graphics processor and the AI processor all sit together and share one pool of memory. Apple calls it unified memory. Now others make them too:
+
+| Machine | Shared memory | Power | Price at launch |
+|---|---|---|---|
+| [NVIDIA DGX Spark](https://theregister.com/2025/10/13/nvidia_gb10_spark) | 128 GB | about 240 W | 3,999 US dollars |
+| [AMD Ryzen AI Max+ 395](https://www.notebookcheck.net/Framework-Desktop-official-with-AMD-Strix-Halo-CPUs-affordable-price-tag-and-plenty-of-customization-options.967568.0.html) | up to 128 GB | 45 to 120 W | from 1,999 US dollars |
+| [Apple Mac Studio](https://www.techradar.com/pro/apple-mac-studio-m3-ultra-workstation-can-run-deepseek-r1-671b-ai-model-entirely-in-memory-using-less-than-200w-reviewer-finds) | 128 GB to 512 GB | under 200 W in one test | from 2,499 US dollars |
+
+Why does shared memory matter? Because an AI model has to sit in memory to run. A big open model compressed to 4 bit needs around 40 GB. On a normal computer the graphics card has maybe 8 or 16 GB, so it does not fit. On these machines the whole 128 GB is available. One reviewer ran a 671 billion parameter model on the Apple machine using under 200 watts, about what two old light bulbs use.
+
+And look at the power. A macro tower draws roughly [1 to 4 kilowatts](https://research.dial.uclouvain.be/handle/2078.5/255329). One of these boxes adds a few percent.
+
+<CabinetBudget />
+
+The telecom industry is already moving in this direction from the other side. SoftBank and NVIDIA ran a [trial](https://www.abiresearch.com/market-research/insight/7785216-exciting-results-from-softbank-and-nvidias) where AI work and the radio software shared the same servers at the tower, and NVIDIA [invested a billion dollars in Nokia](https://www.datacenterdynamics.com/en/news/nvidia-to-invest-1bn-into-nokia/) to build AI into the radio network itself. That is the expensive version, built for rich networks. I am asking what the cheap, careful version looks like for ours.
+
+## Which towers get a box
+
+Not every tower should get one. Choosing is the same kind of problem as the generator, just turned around. Before, the question was which tower needs the scarce thing most. Now it is which tower can carry the scarce thing best.
+
+The things that matter:
+
+- **Spare power.** Solar panels with room to spare, a steady grid, a big battery bank.
+- **The link.** A tower with fibre can move a model and its answers easily. A tower on a single microwave link can still answer questions, but slowly.
+- **Theft risk.** This is South Africa. MTN said vandalism and theft cost it about [R450 million in 2024](https://www.dailymaverick.co.za/article/2025-10-30-cellphone-tower-battery-bandits-jailed-for-20-years-while-vandalism-costs-mtn-r450m). Vodacom says it loses around [R100 million a year](https://dailyinvestor.com/telecommunications/70117/vodacoms-r100-million-a-year-crime-battle/). Some sites are hit again and again. Those sites do not get a computer. The alarm history already tells you which ones they are.
+- **Whether it carries other towers.** Here the generator lesson flips. A head tower is the last place you want any extra load on the batteries, because if it dies, its whole chain dies. A tower that carries nobody is a safer home.
+
+Play with the weights and watch the answer move.
+
+<SiteScore />
+
+Notice what this does. Nobody argues about the answer anymore. They argue about the weights, which is a better argument, because the weights are where the real values live.
+
+## How the boxes work together
+
+A box on its own is just a computer in a cabinet. The interesting part is making a thousand of them behave like one system. A few rules make that possible.
+
+**Calls always come first.** The tower exists to keep people connected. The compute box is a guest. Every box watches its own tower: grid on or off, sun on the panels, battery level, cabinet temperature. Part of the battery is the reserve, and the reserve belongs to the radios. If the grid is on, or the sun is covering the load, the box may work. If the battery is above the reserve, it may work. Otherwise it stops, and the tower is exactly as safe as it was before the box arrived.
+
+**The work moves to the power.** During load shedding we drove power to the towers. Here we do the opposite. When one tower has to stop, its jobs move to a tower that has power to spare. A tower on the farm road with big solar panels works hard at noon. A tower in town with a steady grid works at night. Over a day, the work follows the sun and the grid around the network.
+
+<FollowThePower />
+
+**Every box tells the others how it is doing.** Every few seconds each box sends a small heartbeat: battery, grid, temperature, link speed, how busy it is. A scheduler, the same kind of software that already runs cloud computers (Kubernetes, Nomad or Ray), reads those heartbeats and places work. If a box goes quiet, its work goes somewhere else. Nobody needs to touch it. This is what people mean by self organising.
+
+**The graph decides the neighbourhoods.** Remember the tree of towers carrying towers? Each head tower and the towers below it is a natural neighbourhood. They already share a link. So a question asked in that area is answered inside that neighbourhood, close to the person who asked it. The same graph that told us where to send a generator now tells us how to group the computers.
+
+**Big things travel at night, small things all day.** A model is big, tens of gigabytes, so it is copied out to the boxes at night when the network is quiet. A question and its answer are tiny, a few kilobytes, about the size of a WhatsApp message. They can travel any time without anybody noticing, as long as they ride in the lowest priority lane on the link, behind the calls.
+
+## The hard parts, honestly
+
+I want this to be practical, so here is what worries me.
+
+**It cannot train the next giant model.** Training needs thousands of chips talking to each other very fast. Google tested the laser links for its satellites at [800 gigabits per second](https://www.satellitetoday.com/technology/2025/11/06/google-targets-in-space-computing-with-project-suncatcher-moonshot/) in each direction. A microwave link to a rural tower may carry a few hundred megabits, shared with calls. So this is not a place to train. It is a place to *use* models: answering questions, reading documents, transcribing speech, translating, checking images. That is most of what people actually need from AI every day.
+
+**Theft.** A computer is worth more than a battery, and batteries already get stolen. So the box has to be worthless outside its tower. It sits inside the alarmed battery cabinet, never outside. Its disk is encrypted and the key lives with the network, not in the box. If the box starts up anywhere other than its own tower, it refuses to work and reports itself. Every box is registered by serial number. A thief should get a brick.
+
+**Heat.** Cabinets are cooled for radios, and a box of 120 to 240 watts is small next to them. But a cabinet in Musina in January is a different place from one in Cape Town in July. The box watches the cabinet temperature and slows itself down long before the radios are at risk.
+
+**Power is better now, and that does not change the design.** Eskom's own outlook for winter 2026 [expected no load shedding at all](https://www.sanews.gov.za/south-africa/load-shedding-free-winter-cards-sa), and I hope it stays that way. But the network was built for the bad days, with batteries, solar and generators, and the design here assumes the bad days can come back. That is the point of the reserve rule.
+
+**Upgrades.** These machines get better every year. Because a technician visits each site anyway, swapping a box is a planned visit, like swapping a radio. Software updates go out region by region, the way network updates already do, so one bad update never touches the whole country.
+
+**Who owns it.** Many towers belong to tower companies that rent space to the networks. That makes this easier, not harder. A compute box is just another tenant paying for space, power and a link.
+
+## A rough sense of scale
+
+Let me do the sums in the open, so you can check me.
+
+Say we start with 1,000 towers, about 4% of the country's sites. At 240 watts each, that is 240 kilowatts in total. That is less than a tenth of one percent of South Africa's data centre power. Tiny.
+
+But that is 1,000 machines with 128 GB of memory each: 128 terabytes of memory for AI models, spread across the country, sitting one tower away from millions of people. At about 4,000 US dollars a box, the hardware is around four million dollars. That is less than what theft costs one network in a year.
+
+It will not replace Teraco in Johannesburg, and it is not meant to. The big data centres stay where the heavy work is. This is a layer underneath them, close to people, that keeps working when the backbone is busy, and that keeps data in the country.
+
+## What I would do first
+
+Not 1,000 towers. Ten.
+
+Pick one head tower with fibre and the towers it carries, in an area with good solar and a low theft history. Put boxes in a handful of them. Run one useful thing on them: a Sepedi, isiZulu and English assistant for the clinics and schools in that area, or speech to text for a local radio station. Then measure:
+
+1. **Calls dropped because of the boxes.** This must be zero. If it is not zero, stop.
+2. **Hours of compute lost to the reserve rule.** This tells you how much power is really spare.
+3. **Cabinet temperature on the hottest day.**
+4. **Every attempt to open the cabinet.**
+5. **The cost of one answer** compared with sending the same question to a cloud data centre overseas.
+
+If those five numbers look good for six months, you have earned the right to try a hundred towers.
+
+## Up there, and out here
+
+I am not saying the space people are wrong. They are solving their problem with what they have: money, rockets, and a power grid that is full.
+
+We should solve ours with what we have. And what we have is a network that already reaches almost everyone, with power, cooling, security and a link at every site, built and paid for over thirty years. We spent years learning how to keep it alive during load shedding, and that knowledge, the graph, the scoring, the sensors, is exactly what you need to run computers on it.
+
+They are going up. We can go across.
