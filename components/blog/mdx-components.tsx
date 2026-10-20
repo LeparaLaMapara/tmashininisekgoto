@@ -8,6 +8,7 @@ import { CabinetBudget } from './figures/cabinet-budget'
 import { SiteScore } from './figures/site-score'
 import { FollowThePower } from './figures/follow-the-power'
 import { TowerCosts } from './figures/tower-costs'
+import { CellMap, CountryCells, LandVsPeople } from './figures/cell-map'
 import type { MDXComponents } from 'mdx/types'
 import type { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes, AnchorHTMLAttributes, BlockquoteHTMLAttributes } from 'react'
 
@@ -199,4 +200,7 @@ export const mdxComponents: MDXComponents = {
   SiteScore,
   FollowThePower,
   TowerCosts,
+  CellMap,
+  CountryCells,
+  LandVsPeople,
 }

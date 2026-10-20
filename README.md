@@ -71,3 +71,5 @@ The source code is under the [MIT licence](LICENSE): use it, change it, learn fr
 The writing and media are not. Blog posts in `content/`, the CV, photographs, audio
 narrations and other files in `public/` are © Thabang Mashinini-Sekgoto, all rights
 reserved. Quoting with a link back is welcome; republishing is not without permission.
+The one exception is `public/data/our-version/`, which is derived from OpenCelliD and
+shared under CC BY-SA 4.0 (see the LICENSE.txt in that folder).

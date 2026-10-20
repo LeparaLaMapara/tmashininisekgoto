@@ -1,0 +1,108 @@
+---
+title: "Where the Towers Are. A Map of What Africa Already Has"
+seoTitle: "Where Africa's Cell Towers Are: An Open Data Map"
+date: 2026-10-20
+published: true
+tags: [ai, architecture, data science]
+series: "Our Version"
+seriesPart: 2
+topics: [telecommunications]
+summary: "Part one argued that Africa's cell towers could be a data centre spread across the land. This part asks the obvious next question: where are they? Using open, crowdsourced data on 565,000 mobile cells, it maps South Africa and the continent, finds that the towers follow the people and the roads, and shows why a map of people and a map of land tell two very different stories."
+seoDescription: "Open data maps of mobile cells in South Africa and Africa: towers follow people and highways, 99% of people but a small share of land. What that means for computing on towers."
+---
+
+# Where the Towers Are. A Map of What Africa Already Has
+
+*Part two of [Our Version](/blog/series/our-version). [Part one](/blog/we-have-towers) argued that the cell towers we already have could become a data centre spread across the land.*
+
+When I shared part one, the first question was simple. Fine, but where are these towers? Are they everywhere, or only in the cities?
+
+The networks and the tower companies know exactly where every site is. That list is not public. But there is an open alternative, and anyone can use it for free.
+
+## The data, and what it can and cannot tell you
+
+[OpenCelliD](https://opencellid.org) is a public database of mobile cells. When people run certain apps on their phones, the phone notes which cell it is connected to and where it is standing, and sends that in. Millions of those reports, averaged together, give an estimated position for each cell. A cell is one antenna pointing one way. A tower usually carries three or more of them.
+
+I downloaded the whole database today. Across Africa it holds **565,492 cells in 51 countries and territories**, and **87,170 in South Africa**. It is free under an open licence, CC BY-SA 4.0, which means you can use it as long as you credit it and share what you make from it the same way.
+
+Before any map, the honest part. This data is collected by volunteers' phones, so it has blind spots, and you have to know them before you read it:
+
+- **It cannot compare networks.** In South Africa it holds about 77,000 Vodacom cells and about 6,000 MTN cells. That does not mean Vodacom's network is twelve times bigger. It means more of the phones sending reports were on Vodacom.
+- **Quiet places are undercounted.** A cell only gets reported if a phone that sends reports passes near it. A tower on a farm road that few people drive past may never appear.
+- **Newer generations are undercounted.** Many of the apps report older 2G cells more readily. In the whole of Africa the database holds only twelve 5G cells, while ICASA says 5G already reaches [about 47% of South Africans](https://www.engineeringnews.co.za/print-version/south-africas-telecommunications-sector-grows-amid-fibre-network-coverage-2025-04-02).
+
+So read every map below as "where phones have seen cells". That is still a lot, as you are about to see.
+
+## South Africa
+
+I cut the country into squares about 11 kilometres across, and put a dot in every square where at least one cell has been reported. The colour is the newest generation seen in that square. The map steps through 2G, then 3G, then 4G, so you can watch it thin out.
+
+<CellMap which="sa" figure="1" />
+
+Three things jump out.
+
+**The towers follow the people.** Gauteng is one solid block, and it spreads north towards Polokwane and east towards Mpumalanga. The coast from Cape Town around to Durban is a string of dots.
+
+**The towers follow the roads.** Look at the lines. Cape Town to Johannesburg through the Karoo. Johannesburg to Durban. The road up the west coast. The road to Upington. Those are not random. Towers are built along highways because that is where people travel, and because a tower on a highway can pass its traffic to the next one down the road. These are the chains of towers carrying towers from part one, drawn by the data itself.
+
+**Most of the land is empty.** Only about **21% of the squares have any reported cell at all, and about 4% have a 4G one.** The whole Northern Cape interior is nearly blank.
+
+## People are not land
+
+That 4% sounds alarming next to what the regulator says: 4G reaches [about 99% of South Africans](https://www.engineeringnews.co.za/print-version/south-africas-telecommunications-sector-grows-amid-fibre-network-coverage-2025-04-02). Both can be true at the same time.
+
+<LandVsPeople />
+
+People live close together, in cities, towns and along roads. Towers are built where the people are. A tower reaches several kilometres, so a square without a reported cell can still have signal from a tower next door, and the open data misses many rural towers anyway. The real share of land with signal is much higher than 4%.
+
+But for the idea in this series, the thing that matters is not where the signal reaches. It is **where the towers stand**, because that is where a compute box can live. And the towers stand where the people are.
+
+That is good news. Part one argued that the point of putting computers in towers is to answer people's questions close to them. The map says the towers are already exactly there.
+
+It also shows the two kinds of site from part one's scoring, side by side. **City towers**: fibre nearby, a steady grid, many people to serve, and a higher risk of theft. **Road and farm towers**: in the Northern Cape and the Karoo, where many of South Africa's big solar farms are built, with sun and space to spare, few people nearby, and often only a microwave link. A city tower is a good place to answer questions. A road tower is a good place to do work that can wait, like transcribing a day of recordings, while the sun is up.
+
+## Africa
+
+Same method, bigger squares, about 33 kilometres across.
+
+<CellMap which="africa" figure="3" />
+
+The same three patterns, at continental scale.
+
+**People.** West Africa's coast from Ghana to Lagos, the Lake Victoria region around Nairobi and Kampala, parts of the Nile valley, and South Africa's Gauteng.
+
+**Roads.** The clearest lines on the map are the long trade routes: through Zambia up to Tanzania, across Namibia and Botswana, and down into South Africa. Towers run along the roads that trucks drive, the same trucks that carry goods, fuel and, in part one's world, generators and technicians.
+
+**Empty land.** The Sahara, much of the Congo basin, the Horn. Only about **14% of the squares have any reported cell, and about 3% a 4G one.**
+
+And here is how the reports are spread between countries.
+
+<CountryCells />
+
+Kenya has the most reports, ahead of Nigeria and South Africa. Read that as a map of where data exists, not a ranking of networks. Notice the colours too: South Africa's cells are mostly 3G and 4G in this data, while most of the continent's are still reported as 2G. Whatever the true numbers, the gap between South Africa and most of its neighbours is real, and it matters. The countries that most need computing close to people are the ones where the towers, and the links between them, are oldest.
+
+## What the map changes about the idea
+
+Part one was an argument. The map makes it concrete in three ways.
+
+**The sites exist where they are needed.** Towers already sit in the cities, towns and corridors where people are. Nobody needs to guess where to build. The first job is choosing among towers that are already there, which is exactly the scoring problem from part one.
+
+**The roads are the network.** A chain of towers along a highway, each passing traffic to the next, is the same shape as a chain of compute boxes passing work to each other. The neighbourhoods I described in part one, one head tower and the towers it carries, are visible on this map as lines between cities.
+
+**The open data gets you the shape, not the decision.** To actually choose ten towers for a pilot you need what only the networks and tower companies have: the real site list, power at each site, the type of link, the alarm and theft history. That is the data I used for generator dispatch, and it is the data the scoring needs. If you work at a network or a tower company and want to try a ten tower pilot on one region, I would like to talk.
+
+## Do it yourself
+
+Everything here comes from open data and one short script. The script is [in this site's repository](https://github.com/LeparaLaMapara/tmashininisekgoto/blob/main/scripts/our-version/cells.py). Get a free key from [OpenCelliD](https://opencellid.org), download the full file, and run it:
+
+```bash
+python -I scripts/our-version/cells.py /path/to/your/downloads
+```
+
+It cuts the map into squares, counts the cells in each, and writes the small files these maps read. Change the box size, pick your own country, or draw your own province. The maps it makes are shared under the same open licence as the data.
+
+## The map is already drawn
+
+In part one I said the space companies are going up, and we can go across. This is what across looks like. Lines of towers along the roads between our cities, built over thirty years, already powered, already cooled, already joined together.
+
+Nobody has to draw this network. It is already there. The question is only what we put inside it.
