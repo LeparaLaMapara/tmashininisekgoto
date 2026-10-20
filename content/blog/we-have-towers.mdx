@@ -16,6 +16,10 @@ seoDescription: "Space data centres explained, and a practical African alternati
 
 *Part one of [Our Version](/blog/series/our-version), a series that takes a big idea from the rich world and asks what our version of it looks like, built from what our communities already have.*
 
+Picture a Grade 11 learner in a village outside Mthatha. It is eight at night, there is a maths test tomorrow, and she types a question into her phone in isiXhosa. If an AI answers her at all, the answer is worked out on a computer in another country, priced in dollars, by a model built mostly for English. This post is about working out that answer much closer to her, on something that already stands near her village.
+
+> **The idea in one minute.** The rich world is putting computers in space because power on Earth is running out. We have no rockets, but South Africa alone has about 26,000 cell towers, and each one already has power, batteries, cooling, a fence and a link to the network. Put a small AI computer in some of them. Let it work only when there is power to spare, so calls always come first. Choose the towers with the same maths that once decided where to send generators during load shedding. Start with ten towers, measure honestly, and grow only if it works.
+
 Something strange is happening in tech right now. The biggest companies in the world are putting computers into space.
 
 On 1 October 2026 Google launched the first test satellite for [Project Suncatcher](https://blog.google/innovation-and-ai/technology/research/google-project-suncatcher), its plan for AI computers in orbit. A startup called Starcloud flew an NVIDIA H100, the same chip that runs big AI models on Earth, [in November 2025](https://www.datacenterdynamics.com/en/news/starcloud-1-satellite-reaches-space-with-nvidia-h100-gpu-now-operating-in-orbit/). SpaceX [asked the American regulator](https://www.datacenterdynamics.com/en/news/spacex-files-for-million-satellite-orbital-ai-data-center-megaconstellation) for permission to launch up to a million satellites for computing. China [launched twelve computing satellites](https://www.livescience.com/space/space-exploration/china-is-building-a-constellation-of-ai-supercomputers-in-space-and-just-launched-the-first-pieces) in May 2025, the first of a planned 2,800.
@@ -62,7 +66,7 @@ South Africa has roughly [26,000 cell towers](https://towerxchange.com/article/2
 
 Compare that with the space list. Power: yes. Cooling: yes. Physical safety: partly, and we will come back to it. Repairs: a bakkie and a technician. Link: already there.
 
-Now compare it with how much Africa actually has in data centres. The whole continent holds about [0.6% of the world's capacity](https://www.bakermckenzie.com/en/insight/publications/2026/06/south-africa-the-megawatt-and-the-token-africas-compute-equation). South Africa, which has the most, has about [56 data centres and 350 megawatts](https://www.engineeringnews.co.za/article/sas-largest-data-centres-2025-12-05), mostly in Johannesburg and Cape Town. If you live in Polokwane, Mthatha or Soshanguve, your AI answer travels a long way.
+Now compare it with how much Africa actually has in data centres. The whole continent holds about [0.6% of the world's capacity](https://www.bakermckenzie.com/en/insight/publications/2026/06/south-africa-the-megawatt-and-the-token-africas-compute-equation). South Africa, which has the most, has about [56 data centres and 350 megawatts](https://www.engineeringnews.co.za/article/sas-largest-data-centres-2025-12-05), mostly in Johannesburg and Cape Town. Amazon, Microsoft and Google all run [cloud data centres](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/) in South Africa now, but most of the AI models people actually use are served from Europe or America, priced in dollars, and built mostly for English. For someone in Polokwane, Mthatha or Soshanguve, distance is the smallest part of that problem. Cost, language, and where your data ends up are the bigger ones.
 
 ## The generator problem that taught me this
 
@@ -145,6 +149,14 @@ A box on its own is just a computer in a cabinet. The interesting part is making
 
 **Big things travel at night, small things all day.** A model is big, tens of gigabytes, so it is copied out to the boxes at night when the network is quiet. A question and its answer are tiny, a few kilobytes, about the size of a WhatsApp message. They can travel any time without anybody noticing, as long as they ride in the lowest priority lane on the link, behind the calls.
 
+## Why towers, and not a room in town
+
+This is the first thing an engineer will ask, and it is a fair question. The networks already own buildings in towns: exchanges and switching centres with fibre, steady power, air conditioning and guards. A small room at a school or a municipal office is safer than a cabinet at the bottom of a tower. Why not start there?
+
+My honest answer is: start there. The first boxes belong where the fibre and the guards already are, in the networks' own buildings and the bigger fibre sites. That is where you prove the rules: calls first, work follows the power, a stolen box is a brick. The towers come next, in the neighbourhoods around those buildings.
+
+So why bother with towers at all? Because a building in town serves the town. The towers are the only thing that already reaches the villages, the farm roads and the small places in between, with power and a link at every one. The building is where you start. The towers are how you reach everyone.
+
 ## The hard parts, honestly
 
 I want this to be practical, so here is what worries me.
@@ -201,6 +213,13 @@ With a 4,000 dollar box, that comes to **about R48,000 a year for one tower, aro
 Is R4,000 a month a lot? Put it next to the R38,000 a month a network already pays to rent space on one tower. The box adds about a tenth. And if one box answers a thousand questions a day, which is a modest load, each answer costs about 13 cents.
 
 The biggest line is not electricity. It is rent and the box itself. That is good news, because both of those get cheaper as the idea grows: the boxes get better every year, and a tower company with an empty shelf would rather earn something than nothing.
+
+**So who pays?** Nobody builds this for free, so here is who could buy the answers:
+
+- **The networks themselves, first.** A network already needs AI for its own work: spotting faults before they happen, planning where generators go, reading thousands of alarms. That is the work I did. The first customer for computers in towers is the company that owns the towers.
+- **Government services.** Education and health need help in local languages, and they need some data to stay inside the country.
+- **Businesses that already pay for AI.** Banks, insurers and retailers send their AI work to the cloud today and pay in dollars. Some of it could be answered closer to home and paid for in rand.
+- **People, through the bundles they already buy.** The way you buy a WhatsApp bundle today, you could buy a homework helper or a clinic assistant in your language.
 
 ## What I would do first
 
