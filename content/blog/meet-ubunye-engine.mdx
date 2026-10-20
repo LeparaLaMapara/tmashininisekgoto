@@ -1,0 +1,104 @@
+---
+title: "Meet Ubunye Engine"
+seoTitle: "Meet Ubunye Engine: Data Pipelines Made Simple"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 1
+seriesTotal: 10
+summary: "Ubunye Engine is a free tool that gives a small data team one shared way to move and shape data, so anyone can pick up anyone else's work. This first part explains what it is, why I built it, and who it is for."
+seoDescription: "What Ubunye Engine is, why I built it, who it is for, and why one shared way of working beats gluing many data tools together."
+---
+
+# Meet Ubunye Engine
+
+*Part 1 of [Ubunye Engine](/blog/series/ubunye-engine), a plain language introduction to the open source tool I built for data teams.*
+
+Ubunye Engine is a free tool that gives a data team one shared way to take data from somewhere, change it, and put it somewhere else, so that anyone on the team can pick up anyone else's work.
+
+That is the whole idea. The rest of this series explains how it does that, why it does it that way, and where it is used today.
+
+## First, what is a data pipeline?
+
+Most of the work a data team does looks like this. Data arrives from somewhere: a spreadsheet, a database, a website. Somebody cleans it, joins it with other data, and works something out. Then the answer goes somewhere a person or a website can use it.
+
+That chain, from the place data comes from to the place the answer lands, is called a **pipeline**. Think of the water pipe to your house. Water is collected, cleaned, and delivered to your tap. Nobody at home thinks about it until it stops working.
+
+Data pipelines are the same. When they work, nobody notices. When they break, usually at night, everyone notices.
+
+## The problem I kept seeing
+
+I have worked on data teams for close to ten years. The same pattern showed up on almost every small team.
+
+Every person built pipelines their own way. One person kept settings inside the code. Another kept them in a separate file. One person checked the data before saving it. Another trusted it. One person kept a record of every run. Another kept nothing.
+
+Each of these people was good at their job. That was not the problem. The problem was that nobody could take over anybody else's work.
+
+When someone went on leave, their pipelines became a mystery. When something broke at two in the morning, the person on call had to read code they had never seen, written in a style they did not know, to find out what it was even supposed to do. When someone left the company, a part of the team's knowledge left with them.
+
+It is like a taxi rank where every driver keeps their own route in their head and no two drivers write it down the same way. It works until a driver is sick. Then nobody knows where the passengers were supposed to go.
+
+## Why not just use the tools that already exist?
+
+There are many good data tools. There are tools that run jobs on a schedule, tools that keep track of trained models, tools that check data quality, tools that store data. Big companies glue ten of them together and hire a whole team to keep the glue working.
+
+A team of three to eight people cannot do that. They do not have the time to learn ten tools, connect them, and keep them all up to date. And even when they manage it, every person still writes their part in their own way, because the tools do not agree on one way.
+
+So the gap is not another tool. The gap is **one agreed way of working**, written down in a form the computer can check.
+
+## What Ubunye Engine gives a team
+
+With Ubunye Engine, every piece of work has the same shape. It is a folder with two files:
+
+- a short **settings file** that says where the data comes from and where the answer goes
+- a small **Python file** that holds the actual thinking: the filtering, matching, and working out
+
+The engine does the rest. It reads the data, checks it, runs your logic, checks the result, writes it, and keeps a record of what happened.
+
+Because every task has the same shape, a new person opens any folder and already knows where to look. The settings are always in the settings file. The logic is always in the Python file. The record of every run is always in the same place.
+
+The next part of this series shows exactly what those two files look like.
+
+## Who it is for
+
+Ubunye Engine is for:
+
+- **Small data teams**, roughly two to eight people, who want to work the same way without building their own platform.
+- **One person teams** who want their future self to understand what their past self did.
+- **Learners** who want to build real, tidy pipelines from day one, on a normal laptop.
+
+It is not trying to replace the big platforms. It can send work to them. It is trying to make sure that whatever platform you use, your work has a shape other people can read.
+
+## Does it work in real life?
+
+Yes. It started as something I built for my own work, and it has grown from there. At a large enterprise it now carries more than 100 million events a day across more than ten products. It also runs [Masepala](https://masepala.vercel.app), a free public website about every South African municipality and ward, built from public data and updating its live news every hour.
+
+It is free and open source, which means anyone can read the code, use it, and change it. You install it with one line:
+
+```bash
+pip install ubunye-engine
+```
+
+The code is on [GitHub](https://github.com/ubunye-ai-ecosystems/ubunye_engine) and the guide is on the [documentation site](https://ubunye-ai-ecosystems.github.io/ubunye_engine). The latest version, 0.8.0, came out on 30 September 2026.
+
+## What the name means
+
+**Ubunye** is an isiZulu word. It means unity, being one.
+
+That is what the engine is for. Not one clever person, but one team working in one way, so that the work belongs to everyone and survives anyone leaving.
+
+## What this series covers
+
+1. **Meet Ubunye Engine.** What it is and why it exists. You are here.
+2. [How it works](/blog/ubunye-engine-how-it-works). A task is a folder with two files, and why it was built that way.
+3. [What it can do](/blog/ubunye-engine-what-it-can-do). Every feature, in plain words.
+4. [How long it takes to learn](/blog/ubunye-engine-learning-curve). Your first task, and what strangers struggled with.
+5. [Can you trust it](/blog/ubunye-engine-can-you-trust-it). The tests, and the same answer in seven places.
+6. [How far it scales](/blog/ubunye-engine-how-far-it-scales). The honest numbers, including where it is slower.
+7. [What it took to build](/blog/ubunye-engine-what-it-took-to-build). Time, cost, and building with an AI helper.
+8. [At a large enterprise](/blog/ubunye-engine-at-a-large-enterprise). How it is used inside a big company.
+9. [Masepala](/blog/ubunye-engine-masepala). A public website about every municipality, run by the engine.
+10. [Worked examples](/blog/ubunye-engine-worked-examples). Real public data you can run yourself.
+
+Next: [How Ubunye Engine works](/blog/ubunye-engine-how-it-works).

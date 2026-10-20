@@ -1,0 +1,157 @@
+---
+title: "How Ubunye Engine Works"
+seoTitle: "How Ubunye Engine Works: A Task Is a Folder"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 2
+seriesTotal: 10
+summary: "In Ubunye Engine every piece of work is a folder with two small files: one says where the data comes from and goes to, the other holds the logic. This part walks through a real example line by line and explains why keeping those two things apart lets the same folder run on a laptop or a big cloud cluster."
+seoDescription: "A Ubunye Engine task is a folder with a settings file and a Python file. A real example, line by line, and why the design keeps the what apart from the where."
+---
+
+# How Ubunye Engine Works
+
+*Part 2 of [Ubunye Engine](/blog/series/ubunye-engine), a plain language introduction to the open source tool I built for data teams.*
+
+In [part one](/blog/meet-ubunye-engine) I said that every piece of work in Ubunye Engine has the same shape. This part shows that shape, using the very first example the engine makes for you, and then explains why it is built that way.
+
+## A task is a folder
+
+In Ubunye Engine, one piece of work is called a **task**. A task is just a folder on your computer. When you ask the engine to make your first one, the folder looks like this:
+
+```text
+filter_adults/
+    config.yaml          where the data comes from and where it goes
+    transformations.py   what to do with the data
+    data/people.csv      eight people, some of them children
+```
+
+The job of this example is simple: take a list of people and keep only the adults.
+
+There are only two files that matter. Let us read them.
+
+## The settings file
+
+The first file is called `config.yaml`. It is a settings file, written in a format called YAML that is meant to be easy for people to read. Here is the important part:
+
+```yaml
+CONFIG:
+  inputs:
+    people:
+      format: s3
+      path: "{{ task_dir }}/data/people.csv"
+      file_format: csv
+  outputs:
+    adults:
+      format: s3
+      path: "{{ task_dir }}/output/adults"
+      file_format: parquet
+      mode: overwrite
+```
+
+In everyday words, line by line:
+
+- **inputs** means "here is what to read".
+- **people** is the name we give that data. We will use this name in the Python file.
+- **format: s3** means "read it as a file". The name comes from a popular way of storing files in the cloud, but it also works for files on your own computer.
+- **path** says where the file is. `{{ task_dir }}` means "this folder", so the example works wherever you put it.
+- **file_format: csv** means it is a CSV file, the plain table format that any spreadsheet can save.
+- **outputs** means "here is what to write".
+- **adults** is the name of the answer.
+- **file_format: parquet** means save the answer as Parquet, a compact format built for tables.
+- **mode: overwrite** means "if an old answer is there, replace it".
+
+Notice what is not in this file. There is no logic. It does not say who counts as an adult. It only says where things come from and where they go.
+
+## The logic file
+
+The second file is called `transformations.py`. This is where the thinking lives:
+
+```python
+class FilterAdults(Task):
+    def transform(self, sources):
+        people = sources["people"]
+        return {"adults": people[people["age"] >= 18]}
+```
+
+Line by line:
+
+- `class FilterAdults(Task)` gives this piece of work a name and tells the engine it is a task.
+- `def transform(self, sources)` is the one step every task must have. The engine hands it the data it read, in `sources`.
+- `people = sources["people"]` picks up the data we called `people` in the settings file.
+- `people[people["age"] >= 18]` keeps the rows where the age is 18 or more.
+- `return {"adults": ...}` hands the answer back under the name `adults`, the same name the settings file uses for the output.
+
+That is the whole task. Four lines of logic.
+
+## What the engine does around it
+
+You run it with one command:
+
+```bash
+ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas
+```
+
+Then the engine does all the work nobody wants to write again and again:
+
+1. It reads the settings and checks them. If you made a typo, it tells you, and even suggests what you meant.
+2. It reads the CSV file.
+3. It runs your four lines.
+4. It writes the answer as Parquet.
+5. It keeps a record of the run: when it ran, how it went, how many rows came out.
+
+Think of a recipe card and a kitchen. Your Python file is the recipe: what to do with the ingredients. The settings file is the shopping list and the serving plan: where the ingredients come from and which table the food goes to. The engine is the kitchen staff who fetch, cook, plate, and write in the logbook.
+
+<OneFolder />
+
+## Why it is built this way
+
+The most important design choice in Ubunye Engine is this: **the "what" is kept apart from the "where".**
+
+The Python file says *what* to do with the data. The settings file says *where* the data lives. The engine itself decides *how* to do the heavy lifting.
+
+That one choice gives you three things.
+
+**The same folder runs on a laptop or on a big cluster.** There is more than one way to crunch a table of data. On a laptop, a tool called **pandas** works in plain Python and is perfect for small and medium data. For very large data, a tool called **Spark** spreads the work over many computers. These are like two different kitchens: a home kitchen and a hotel kitchen.
+
+Ubunye Engine can use either kitchen. The line `people[people["age"] >= 18]` means the same thing to both. So the same folder, without changing a single line, runs on pandas on your laptop:
+
+```bash
+ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas
+```
+
+and on Spark, on your laptop or in the cloud:
+
+```bash
+ubunye run -d pipelines -u demo -p starter -t filter_adults
+```
+
+and gives the same answer. Not roughly the same. The engine keeps a fingerprint of every row it writes, so you can check that two runs produced exactly the same data. [Part five](/blog/ubunye-engine-can-you-trust-it) shows that check passing in seven different places.
+
+**Moving data is a settings change, not a code change.** When the people list moves from your laptop to cloud storage, you change one path in the settings file. Your logic does not move, so it cannot break.
+
+**The engine never gets locked to one tool.** The centre of the engine, the part that knows what a task is, never depends on pandas, Spark, or any one cloud. Everything else plugs in around it, the way you plug a kettle or a phone charger into the same wall socket. Readers, writers, places to store models, ways to keep secrets: all of them are plug ins. A test fails the build if anyone ever makes the centre depend on one of them directly.
+
+This is why new kitchens can be added later without rewriting anyone's tasks. Today the engine can run tasks with pandas, with Spark, and on Databricks, a popular cloud platform built on Spark. If a better tool comes along, it plugs in. Your folders stay the same.
+
+## The honest limits
+
+Keeping things apart has a price. Your logic must be written in a way both kitchens understand if you want it to run on both. Simple steps like the one above work on both. Some advanced Spark tricks only work on Spark, and then that task only runs on Spark. The engine checks this before it runs and tells you, instead of failing halfway.
+
+And pandas runs on one computer. For data bigger than your laptop's memory, you want Spark. [Part six](/blog/ubunye-engine-how-far-it-scales) is about exactly where that line is.
+
+## Try it
+
+If you have Python, this is enough to make and run your first task:
+
+```bash
+pip install "ubunye-engine[pandas]"
+ubunye init -d pipelines -u demo -p starter -t filter_adults
+ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas
+```
+
+No Java, no cloud account. The full walk through is in the [quickstart](https://ubunye-ai-ecosystems.github.io/ubunye_engine/getting_started/quickstart/).
+
+Next: [What Ubunye Engine can do](/blog/ubunye-engine-what-it-can-do).

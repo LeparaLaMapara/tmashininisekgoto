@@ -36,6 +36,12 @@ export const SERIES: Record<string, SeriesCopy> = {
     description:
       'A six part practical roadmap to building with AI agents: tools, retrieval, permissions, reliability and orchestration, from a site built that way.',
   },
+  'ubunye-engine': {
+    intro:
+      'Ubunye Engine is an open source tool I built so that a small data team can build data and machine learning pipelines one shared way, and run the same work on a laptop or in the cloud. This series introduces it in plain words: why it exists, how it works, what it can do, how long it takes to learn, how far you can trust it and how far it scales, what it took to build, and where it is used today.',
+    description:
+      'Ubunye Engine in plain words: what it is, why it exists, how it works, how reliable it is, how far it scales and where it is used.',
+  },
   'career-development-in-data-and-ai': {
     slug: 'career-development',
     intro:

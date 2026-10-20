@@ -1,0 +1,99 @@
+---
+title: "What It Took to Build Ubunye Engine"
+seoTitle: "What It Took to Build Ubunye Engine"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 7
+seriesTotal: 10
+summary: "Seven months, thirteen public releases, an AI coding agent that did most of the typing, and a long stretch of testing where strangers tried to break it. The lesson is simple: writing the code was the easy part, finishing and checking it was the real work."
+seoDescription: "Seven months and thirteen releases: how Ubunye Engine was built with an AI coding agent, then hardened by strangers, fire tests and a findings ledger."
+---
+
+# What It Took to Build Ubunye Engine
+
+*Part 7 of [Ubunye Engine](/blog/series/ubunye-engine), the honest story of how it was made.*
+
+People ask me how long Ubunye Engine took to build. The honest answer has two halves, and they are very different sizes.
+
+Writing the first version took days. Finishing it took months.
+
+This post is about why.
+
+## The timeline
+
+The first version went onto PyPI, the public shelf where Python tools live, on 4 March 2026. Version 0.8.0 went up on 30 September 2026. Counting both, there are thirteen releases on PyPI.
+
+| When | Version | What changed, in plain words |
+|---|---|---|
+| March 2026 | 0.1.1 | The first public version: a folder, a config file, one command |
+| April to May 2026 | 0.1.3 to 0.2.0 | Many small additions and fixes from using it on real work |
+| July 2026 | 0.3.0 to 0.5.0 | The heart was reshaped so other data tools could plug in later |
+| 25 September 2026 | 0.7.0 | It runs on a laptop with no big data tool at all, and on most clouds |
+| 28 September 2026 | 0.7.1 | Fixes from the first strangers who tried it |
+| 30 September 2026 | 0.8.0 | The hardening release: reruns, time zones, proof in seven places |
+
+Look at the dates. Four months to get to 0.5.0. Then the last week of September produced three releases. That is not because I suddenly worked faster. It is because I stopped trusting my own testing and started letting other people, and real data, check everything.
+
+## Building with an AI coding agent
+
+I built the first version in March 2026 with an AI coding agent. An agent is a program that writes code when you describe what you want, the way a very fast junior colleague might.
+
+I kept count. My own estimate was that building it alone would take five to eight weeks of full time work. With the agent, my own hours came to about 23 to 31. The agent's bill for that first build was about R1,520.
+
+Those numbers are real, and they are also a trap.
+
+Here is what the agent did well. It typed fast. It knew the patterns of many tools. It wrote tests without getting bored. It never minded when I said "do that again, differently".
+
+Here is what it could not do. It could not understand the code for me. When it finished a session, it forgot everything. If something broke at night, the agent was not the one who knew why. I was.
+
+In that first build, while writing an example, it confidently called a piece of the engine that did not exist. It had read the real code earlier, then invented a simpler version that felt right. The example looked fine and failed the moment it ran. It knew the shape of the answer, not the answer.
+
+So the real lesson from the agent is this: **the agent can do the typing, but it cannot do the understanding.** If I accept code I do not understand, I have not built a tool. I have collected a debt that someone pays later, usually at the worst moment.
+
+A team of three people building the same thing would have cost far more money. But that team would also leave behind three people who understand it. An agent leaves behind one: me. That is the part the cheap number hides.
+
+## The hardening: letting strangers break it
+
+By July the engine worked for me. That is the most dangerous moment for any tool, because the person who built it knows every trap and walks around them without noticing.
+
+So in late September I ran what I called a hardening programme. Hardening means making something stronger by testing it against real life, not against your own expectations.
+
+**Strangers.** I gave two newcomers, with no inside knowledge, only the public install command and the public docs. Then I watched where they got stuck. One built an order report from nine tables of real shop data. The other used an AI model to label 300 product reviews. Both finished. Between them they hit 2 problems that stopped them cold, 4 big ones and 8 small ones, and they both had to read the engine's own code twice to get unstuck. A newcomer reading your code to understand your tool is a failure of the docs, not of the newcomer.
+
+**Fire tests.** I killed runs halfway through writing, on purpose. I started two copies of the same job at the same moment. I fed it strange data: odd quotes, odd characters, odd dates. Each of these is something that happens in real life, usually on a Friday afternoon.
+
+**A findings ledger.** Every problem found got a number, a short write up, and a test that failed before the fix and passed after it. At the time of 0.8.0 the ledger says 62 problems fixed, 13 still open, and 1 that turned out to be a bug in someone else's tool.
+
+That ledger is the most valuable thing in the repository. It is a written memory of every way the engine has been wrong.
+
+## What the fire tests found
+
+One example shows why this matters.
+
+When a run crashed halfway through adding new rows to a table, and you ran it again, the rows could land twice. In the first test, killing runs on purpose, the data doubled 16 times out of 16. Every single time.
+
+Nobody had reported it. Nobody would have, until a finance number was quietly twice as big as it should be.
+
+After the fix, a crashed run can be run again safely, and the rows land once. The same ledger has the before and after numbers, so this is not a promise. It is a measurement.
+
+## What I would do differently
+
+**Bring the strangers in earlier.** In March, not September. Every one of their problems was cheap to fix and expensive to find.
+
+**Write down the problems from day one.** The ledger started late. Earlier problems were fixed and forgotten, and some came back.
+
+**Prove it everywhere before saying it works everywhere.** For months I said the engine runs anywhere. It was true for the places I had tried. Saying it before proving it was a story, not a fact. Part 5 of this series is about how it became a fact.
+
+**Spend less time adding, more time finishing.** Most of the 0.8.0 release notes are fixes, not new features. It is mostly the same engine, made to work when someone else uses it, on a bad day, with messy data.
+
+## The real work
+
+If you build tools, here is the one thing I would pass on.
+
+Writing code has become cheap. An agent will write you a thousand lines before lunch. What has not become cheap is knowing that those lines are right, that a stranger can use them, and that they survive a crash, a rerun and bad data.
+
+That checking is the real work. It is slow, it is boring, and it is the only part that makes a tool worth trusting.
+
+*Next: [Ubunye Engine at a large enterprise](/blog/ubunye-engine-at-a-large-enterprise), what changes when a whole team uses one way of working.*

@@ -1,0 +1,62 @@
+---
+title: "Ubunye Engine at a Large Enterprise"
+seoTitle: "Ubunye Engine at a Large Enterprise"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 8
+seriesTotal: 10
+summary: "Ubunye Engine runs data and machine learning work at a large enterprise, at more than 100 million events a day across more than ten products. The details stay private; the lessons about one shared way of working do not."
+seoDescription: "What changes when a whole data team at a large enterprise works one way: easier handover, faster starts, simpler reviews and safer releases."
+---
+
+# Ubunye Engine at a Large Enterprise
+
+*Part 8 of [Ubunye Engine](/blog/series/ubunye-engine), what one shared way of working changes inside a big organisation.*
+
+Ubunye Engine started inside a real job, not as a weekend idea. It runs data and machine learning work at a large enterprise, on a big cloud data platform, at more than 100 million events a day across more than ten products.
+
+Before anything else, a clear line. **The details of that work stay private.** I will not name the company, the products, the data or the people, and I will not show any of the code. That work belongs to the company.
+
+What I can share are the lessons. They are about people more than about code, and they would be the same in any organisation.
+
+## The problem it was built for
+
+Picture a small data team. Each person is good. Each person also builds things their own way.
+
+One keeps settings inside the code. Another keeps them in a separate file. One names folders by date, another by project. One tests everything, another tests nothing because the deadline was yesterday.
+
+Every one of those choices is fine on its own. Together they become a problem the day someone goes on leave, changes teams or resigns. Their work is still running, but nobody else can safely touch it.
+
+Ubunye Engine gives the whole team one shape. Every piece of work is a folder. Every folder has a settings file that says what goes in and what comes out, and a small code file that says what happens in between. That is it.
+
+## What changed
+
+**Handing work over got easier.** When everything has the same shape, picking up someone else's work is like walking into a house with the same floor plan as yours. You know where the kitchen is. You do not need the owner to give you a tour.
+
+**New people started faster.** A newcomer learns one shape once, then every piece of work in the team looks familiar. Instead of learning ten personal styles, they learn one.
+
+**Reviews got simpler.** When a colleague checks your work before it goes live, they are checking one familiar shape. They spend their attention on the part that matters, the logic in the middle, not on figuring out how you arranged things.
+
+**Every piece of work knows which version of the engine it uses.** Each one says exactly which version it was built and tested with. Upgrading the engine is then a choice you make for each piece of work, on purpose, after testing. It never happens to you by surprise overnight.
+
+**Nothing goes straight to the real thing.** Work goes to a practice copy of the platform first, automatically, where mistakes are cheap. Moving it to the real one, the one the business depends on, is a step a person takes by hand, on purpose. That small bit of friction is worth it.
+
+**The same checks run on everything.** Because every piece of work has the same shape, one set of automatic checks can look at all of it. Every proposed change is checked the same way, the settings are read and tested before anything runs, and a mistake in the settings is caught in seconds instead of in the middle of the night. Nobody has to remember to check. The checking is built into the way of working.
+
+**Growing the team stopped being scary.** Adding a person to a team where everyone works differently adds one more style to learn. Adding a person to a team with one shape adds one more pair of hands. That difference is what lets a small team look after many products at once.
+
+## What did not change
+
+A shared shape does not make anyone a better analyst. It does not choose the right question, and it does not fix bad data on its own.
+
+What it does is remove a whole class of avoidable problems, the ones that come from everybody doing the same thing differently. That frees the team to spend its energy on the hard part: the actual problem.
+
+## Why this matters for you
+
+You do not need to work at a big company to have this problem. Two people sharing work is enough.
+
+The test is simple. If the person who built something disappeared tomorrow, could someone else safely change it on Monday? If the answer is "not really", a shared way of working will help you more than any new tool.
+
+*Next: [Ubunye Engine in Masepala](/blog/ubunye-engine-masepala), a public app you can open right now, running on the engine every hour.*

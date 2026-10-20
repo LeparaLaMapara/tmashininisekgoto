@@ -1,0 +1,127 @@
+---
+title: "What Ubunye Engine Can Do"
+seoTitle: "What Ubunye Engine Can Do: Every Feature, Plainly"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 3
+seriesTotal: 10
+summary: "A tour of everything Ubunye Engine can do today, grouped by what a person actually wants to get done: read and write data, check it, keep a record, look after trained models, use AI language models safely, rerun after a crash, send work to the cloud and prove it gives the same answer everywhere. It ends with what the engine does not do."
+seoDescription: "Every Ubunye Engine feature in plain words: data checks, run records, model tracking, safe AI steps, safe reruns, one command cloud deploys, and its limits."
+---
+
+# What Ubunye Engine Can Do
+
+*Part 3 of [Ubunye Engine](/blog/series/ubunye-engine), a plain language introduction to the open source tool I built for data teams.*
+
+In [part two](/blog/ubunye-engine-how-it-works) we saw that a task is a folder with two files, and that the engine does the work around your logic. This part is a tour of that work. I have grouped it by what you actually want to get done, not by how the code is organised.
+
+Everything here exists in version 0.8.0, released on 30 September 2026.
+
+## Read and write data from many places
+
+Data lives in many places. The engine can read from and write to:
+
+- **files**, on your computer or in cloud storage, as CSV, Parquet and other common formats
+- **databases** you reach with a username and password, like Postgres
+- **Delta tables**, a popular format for big tables that keeps old versions
+- **catalogues** of tables on platforms like Databricks
+- **websites that hand out data**, which programmers call APIs. You give the address and the engine collects the pages.
+
+You choose the place in the settings file. Your logic does not change when the place changes.
+
+Passwords never go in the settings file. You write a reference like `secret://` instead, and the engine fetches the real password from a safe place when it runs. That way you can share your folder without sharing your keys.
+
+## Check the data before saving it
+
+Bad data is worse than no data, because people trust it. So the engine lets you write down what good data looks like, and it checks every answer **before anything is saved**.
+
+You write rules in plain words in the settings file, like:
+
+- this column must never be empty
+- no two rows may have the same ID
+- quantity must be between 1 and 1,000
+- payment method must be one of visa, mastercard or amex
+
+For each rule you choose what happens when a row breaks it. The run can stop. The row can be put aside in a separate **quarantine** table, the way a shop puts a damaged tin on a separate shelf instead of selling it. Or the engine can just warn you. You can also say "if more than 5% of rows are bad, stop everything", because at that point something upstream is broken.
+
+You can write the same kind of rules for what comes **in**, so a supplier who changes their file without telling you is caught at the door.
+
+## Remember what happened in every run
+
+Every run leaves a **run record**. Think of the stock book in a spaza shop: what came in, what went out, when, and who signed. The run record says when the task ran, whether it worked, what it read, what it wrote, and how many rows came out.
+
+It also keeps a **fingerprint** of every row it wrote. A fingerprint here is a short code worked out from the data itself. Change one letter in one row and the fingerprint changes. So you can compare two runs and know, for certain, whether they produced the same data.
+
+The engine can share these records in two standard formats that other tools already understand, called OpenLineage and OpenTelemetry. You do not need to know them. It just means the records can show up in tools your company may already use. It can also show what each run cost, in a standard layout for cloud bills.
+
+You can ask the engine questions about past runs: list them, compare two of them, or trace where a table's data came from.
+
+## Look after trained models
+
+Many data teams train **models**: programs that learn from past data to predict something, like next month's sales. Models need looking after. Which version is live? Which one was better? Can we go back?
+
+The engine keeps a **model registry**, a numbered shelf of every version of every model. You can list them, compare two, promote one to live use, take one out of use, or roll back to an older one.
+
+Promotion has a gate. You write a test in plain numbers, for example "the new model must be at least as accurate as the live one", and a model that fails the test cannot be promoted. Every registered model also remembers which run trained it, so you can always find its data.
+
+## Use AI language models safely
+
+More and more tasks ask an AI language model to do something, like reading a customer review and labelling it positive or negative. That is useful, but it brings three new problems. The answers can change from one day to the next. The bill can surprise you. And you cannot easily test a step whose answer keeps changing.
+
+The engine handles all three:
+
+- **Record once, replay exactly.** In record mode, every question and answer is saved to a file. In replay mode, the engine answers from that file instead of calling the model. If a question has no saved answer, the run stops instead of guessing. That means you can test an AI step for free, as many times as you like, and get the same result.
+- **Spending limits.** You can set a maximum in dollars, a maximum number of calls, and a maximum number of seconds. The engine stops before it crosses the line, not after.
+- **Every call is written down.** Each call goes into the run record, so an AI step is as visible as reading a file.
+
+## Rerun safely after a crash
+
+Jobs crash. Power goes. A cloud machine is taken away halfway through. The worst thing that can happen next is that someone reruns the job and the data gets written twice, so every number is doubled and nobody notices.
+
+The engine guards against this. Each batch of work can only have one live run at a time, like a single key to a storeroom. If a run dies, the next one takes over the key. Files the dead run had started adding are cleaned up, and only files the engine itself had claimed, so it never deletes something it did not write.
+
+There is one honest gap here, which I come back to in [part five](/blog/ubunye-engine-can-you-trust-it): for some kinds of database the engine can tell you a dead run added rows, but cannot take them back for you yet.
+
+## Send a task to the cloud with one command
+
+When a task works on your laptop, you can send the same folder to the cloud with one command. Today the engine can deploy to:
+
+- **Databricks**
+- **AWS**, Amazon's cloud, using its Glue and EMR Serverless services
+- **Google Cloud**, using Dataproc
+- **Azure**, Microsoft's cloud, using Container Apps
+- **Kubernetes**, a common way to run programs on your own servers
+- a **Docker** container, a sealed box that holds the program and everything it needs
+
+If your company already uses a scheduler like Airflow to run jobs at set times, the engine can write the Airflow job for you instead of asking you to switch.
+
+## Prove the same result in many places
+
+This is the feature I am proudest of. The `ubunye prove` command collects the run records from different places and compares them. Did the run finish? Did it read the same inputs? Did it write the same rows, with the same fingerprints?
+
+If a place has no evidence, the report says **NOT RUN**. It never quietly counts a missing result as a pass. [Part five](/blog/ubunye-engine-can-you-trust-it) shows the report for seven places.
+
+## Small helpers
+
+A few smaller things make daily life easier:
+
+- **plan** checks a task without moving any data, and tells you what would stop it.
+- **validate** checks the settings file and suggests fixes for typos.
+- **doctor** checks that your computer has what the engine needs.
+- **gate** compares a run with the last good one and fails if a table suddenly grew or shrank too much.
+
+## What it does not do
+
+It is just as important to know what a tool does not do.
+
+- **No streaming.** The engine works in batches: read, work, write. It does not handle data that flows in nonstop, second by second.
+- **It does not serve models.** It trains, checks and tracks models, but it does not run a website that answers predictions live.
+- **It is not a scheduler.** It does not wake up at 4am by itself. You use something like GitHub Actions, Databricks jobs or Airflow to start it on time.
+- **Some cleanup is still missing.** As mentioned above, after a crash it cannot yet remove rows a dead run added to some databases.
+- **Keeping fingerprints costs time.** On large data, the run record can make a task noticeably slower. [Part six](/blog/ubunye-engine-how-far-it-scales) gives the real numbers.
+
+All of it is on the [documentation site](https://ubunye-ai-ecosystems.github.io/ubunye_engine), and the code is on [GitHub](https://github.com/ubunye-ai-ecosystems/ubunye_engine).
+
+Next: [How long it takes to learn](/blog/ubunye-engine-learning-curve).

@@ -1,0 +1,93 @@
+---
+title: "Ubunye Engine in Masepala"
+seoTitle: "Ubunye Engine in Masepala: A Public App on the Engine"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 9
+seriesTotal: 10
+summary: "Masepala is a free, plain language website about every South African municipality and ward, and its data runs on Ubunye Engine. This post walks through how about 25 public sources become a site you can trust, and what stops bad data from ever reaching it."
+seoDescription: "How Masepala, a free site about every South African municipality and ward, uses Ubunye Engine to turn about 25 public sources into data you can trust."
+---
+
+# Ubunye Engine in Masepala
+
+*Part 9 of [Ubunye Engine](/blog/series/ubunye-engine), a public app running on the engine that you can open right now.*
+
+The last post was about work I cannot show you. This one is the opposite. Everything here is public: the site, the code and the data.
+
+[Masepala](https://masepala.vercel.app) is a free website about every municipality and every ward in South Africa. "Masepala" is how many of us say "municipality". The site tells you, in plain words, what your municipality is supposed to do, what it did with the money, how people live there, how safe it is, and what is happening right now. Its line is simple: "You are the government. This is your information."
+
+Behind that site is Ubunye Engine. Here is how.
+
+## The problem: 25 sources, none of them friendly
+
+The information already exists. It is just scattered.
+
+National Treasury publishes the budgets and spending. Stats SA publishes the Census. The police publish crime per station. The Municipal Demarcation Board publishes the ward boundaries. Eskom publishes the load shedding stage. The City of Tshwane publishes its electricity faults. Schools, matric results, elections, water quality and more each live somewhere else.
+
+That is about 25 public sources. Each one has its own format, its own habits and its own bad days. Some go offline. Some quietly change a column. Two of them only answer computers that are inside South Africa.
+
+Turning that into one trustworthy website is exactly the kind of work Ubunye Engine was made for.
+
+## Each source is a plug
+
+In Ubunye Engine, the part that reads data in is called a reader. Think of it as a plug adapter. Your appliance does not care what the wall socket looks like, as long as there is an adapter in between.
+
+In Masepala, every public source has its own reader. So a step in the pipeline does not need to know how Treasury's website works. It just says "give me the Treasury budget data", and the right reader fetches it.
+
+There is also one writer at the end, the part that sends data out. It writes the small files the website reads.
+
+## Two pipelines, two rhythms
+
+A pipeline is a list of steps that run in order, like a recipe. Masepala has two.
+
+**The quarterly pipeline** runs four times a year, at 6 in the morning South African time on the 20th of February, May, August and November. It has six steps:
+
+1. **Money.** Treasury budgets, spending, wasted money and audit results.
+2. **People.** Census 2022, youth data, police crime per station, the labour force survey.
+3. **Places.** Municipal and ward boundaries, ward profiles, government projects.
+4. **Fresh sources.** 18 newer sources: this year's Treasury figures, schools, matric results, elections, water quality, the Special Investigating Unit and more.
+5. **Analyse.** Scores, comparisons, the plain story at the top of every page, and everything placed on the map.
+6. **Publish.** The files the website reads.
+
+**The live pipeline** runs about every hour. It has one step that collects what is happening now: Eskom's load shedding stage, Tshwane's open electricity faults, and local news headlines. On the day I wrote this, it had last run at 13:28 South African time, like every hour before it.
+
+Nothing runs in between. There is no server waiting and no database to pay for. The whole thing costs nothing to run.
+
+## Nothing bad gets published
+
+This is the part I am proudest of, and it is where the engine earns its place.
+
+**Before the run,** two checks look at the machine and at every step, to catch a broken setup early. The same checks run on every proposed change to the code.
+
+**Before anything is written,** each step states what good data must look like. For example: there must be at least 4,000 wards, there must be exactly one row per ward, and shares must sit between 0 and 1. If a hard rule breaks, the run stops and nothing is written. Think of it as a quality inspector at the end of a factory line who can stop the whole line.
+
+**Odd rows are set aside, not thrown away.** An audit result the system does not recognise goes into a separate table called a quarantine, a holding area, with the rule it broke. The rest of the data carries on. Someone can look at the odd rows later.
+
+**After the run,** every step leaves a run record, a receipt of what it read, what it wrote, how many rows, and which checks passed. Then this run is compared with the last one. If any table changed by more than 25 percent, the refresh fails. When that happens the site simply keeps showing the old data, and an issue is opened so a person looks at it.
+
+That last check matters more than it sounds. A source that suddenly returns half its usual data is usually broken, not news. Without the check, a broken download would become a public headline. With it, residents keep seeing the last good numbers.
+
+## One small, honest model
+
+Masepala uses one prediction: next year's audit outcome for each municipality. Everything else on the site is counting, comparing and fixed rules. The plain sentences at the top of each page are written by rules from the numbers, never by AI.
+
+The audit model lives in the engine's model registry, a filing cabinet for models where every version is kept with its test scores. Each quarter's new version is only put live if it passes two tests: it must beat the simple guess "same as last year", and it must do no worse than the version already live. If it cannot beat a simple guess, it does not deserve to be on the site.
+
+## When a source has a bad day
+
+Every download goes through one door. If a website stops answering three times, it is marked as down, and its data falls back to the last good copy in seconds. A download that brings back less than half the rows of the last good copy also counts as a failure.
+
+Two sources, SASSA and the Department of Water and Sanitation, only answer computers in South Africa. The free machines that run the pipelines live in the United States and Europe, so they cannot reach them. The fix was a small machine in South Africa that joins in once a week, every Monday morning, fetches just those two, and hands them over. No cloud account involved.
+
+## What this shows about the engine
+
+Masepala is not a demo. It is a public service that runs on a schedule, with nobody watching, against sources that break.
+
+It uses the parts of the engine that matter most when nobody is watching: plug in readers, checks before writing, quarantine, run records, a gate between runs, and a model that has to earn its place. It runs on the engine's lightweight laptop mode, with no big data tools at all.
+
+You can read all of it in the [Masepala repository](https://github.com/ubunye-ai-ecosystems/masepala), and you can use the site at [masepala.vercel.app](https://masepala.vercel.app).
+
+*Next: [Ubunye Engine worked examples](/blog/ubunye-engine-worked-examples), real problems you can run on your own laptop today.*

@@ -9,6 +9,7 @@ import { SiteScore } from './figures/site-score'
 import { FollowThePower } from './figures/follow-the-power'
 import { TowerCosts } from './figures/tower-costs'
 import { CellMap, CountryCells, LandVsPeople } from './figures/cell-map'
+import { OneFolder, SameSeal } from './figures/ubunye-figures'
 import type { MDXComponents } from 'mdx/types'
 import type { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes, AnchorHTMLAttributes, BlockquoteHTMLAttributes } from 'react'
 
@@ -203,4 +204,6 @@ export const mdxComponents: MDXComponents = {
   CellMap,
   CountryCells,
   LandVsPeople,
+  OneFolder,
+  SameSeal,
 }

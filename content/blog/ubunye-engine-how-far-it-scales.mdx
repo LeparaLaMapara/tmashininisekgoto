@@ -1,0 +1,99 @@
+---
+title: "How Far Does Ubunye Engine Scale"
+seoTitle: "How Far Ubunye Engine Scales: Honest Numbers"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 6
+seriesTotal: 10
+summary: "From a few rows on a laptop to fifty million rows, and more than 100 million events a day at a large enterprise. This part gives the measured cost of using Ubunye, including the part that is still too slow."
+seoDescription: "Ubunye Engine from a laptop to 50 million rows: almost no cost without the receipt, the measured cost with it, and what is still too slow."
+---
+
+# How Far Does Ubunye Engine Scale
+
+*Part 6 of [Ubunye Engine](/blog/series/ubunye-engine), from a laptop to a large enterprise, with the honest numbers.*
+
+"Does it scale?" is the first question every engineer asks about a tool. It usually gets the vaguest answer. I want to give you numbers instead, including the ones that do not flatter me.
+
+## Small and big, same folder
+
+Scaling means: when your data grows ten times or a thousand times, does the tool keep up, and do you have to rewrite your work?
+
+In Ubunye, a task is a folder with a settings file and one Python file. The folder does not say which machine it runs on. That choice is made when you run it.
+
+- **Small data:** run it with pandas, on one laptop. No Java, no setup. This is perfect for a few thousand or a few million rows, and for testing.
+- **Big data:** run the same folder with Spark. Spark splits the work across many computers, like a big kitchen where each cook takes part of the order, so it can handle far more than one machine can.
+
+You do not rewrite the task to move from one to the other. Part 5 showed that the same task gives the same fingerprint on both.
+
+At a large enterprise, Ubunye carries more than 100 million events a day across more than ten products. That is the real world test of "big".
+
+## The question that matters: what does Ubunye itself cost
+
+Every tool that sits between you and your data adds some cost. A tool that makes a ten minute job take an hour is not worth it, however nice it is.
+
+So I measured it. On 29 September 2026 I ran one job three ways, at four sizes, on both pandas and Spark:
+
+1. **Plain:** the job written directly, with nothing of Ubunye involved at all.
+2. **Ubunye:** the same job run through Ubunye.
+3. **Ubunye with the receipt:** the same, with the receipt switched on, so every row gets a fingerprint.
+
+The job was a normal piece of work: read a big table, keep some rows, work out new columns, match it with a second table, write the detail and a summary. It ran on a standard cloud computer with 4 processors and 16 GB of memory, three times for each setting, and I took the middle result. The data went up to 50 million rows.
+
+## Without the receipt, Ubunye costs almost nothing
+
+| Rows | Spark, Ubunye compared to plain | pandas, Ubunye compared to plain |
+|---|---|---|
+| 1 million | 1.02 times | 1.36 times |
+| 5 million | 1.01 times | 1.25 times |
+| 20 million | 1.01 times | 1.15 times |
+| 50 million | 1.01 times | 1.04 times |
+
+"1.01 times" means Ubunye added about 1% to the time. On Spark it never added more than 2%. On pandas the extra time is a small fixed start up cost, so it shrinks as the data grows: 36% on one million rows, only 4% on fifty million.
+
+The experiment also checked something more important than speed. When work is spread across many computers, a careless tool can quietly pull all the data back onto one machine, which is like asking every cook to bring their pot to one tiny table. That breaks the moment the data is bigger than one machine. The experiment watched for this, and nothing pulled the data to one machine.
+
+## With the receipt, it costs more
+
+The receipt is where the honest part starts.
+
+To fingerprint every row, the engine has to read every row once more and do some arithmetic on it. Imagine a cashier who, after ringing up a trolley, scans every item a second time to print an itemised, tamper proof slip. The slip is valuable. It also takes time, and the bigger the trolley, the longer it takes.
+
+Here is what the receipt cost in that first experiment:
+
+| Rows | Spark, with receipt compared to plain | pandas, with receipt compared to plain |
+|---|---|---|
+| 1 million | 1.7 times | 5.4 times |
+| 5 million | 2.2 times | 9.7 times |
+| 20 million | 3.5 times | 11.5 times |
+| 50 million | 4.4 times | 10.7 times |
+
+That was too slow, so I set a target of 1.5 times and went after it. In version 0.8.0 the pandas side now fingerprints on several processors at once instead of one, and the Spark side was made faster too. At 5 million rows the cost dropped:
+
+- **Spark:** from 2.5 times down to **1.9 times**
+- **pandas:** from 9.8 times down to **6.4 times**
+
+Both are better. Neither meets the 1.5 times target yet. I would rather tell you that than round it down. The remaining cost is mostly that each row's fingerprint is still worked out one at a time in Python, and the next step is to move that into faster code.
+
+## So when should you switch the receipt on
+
+Think of it like an audit. You do not need one for every shopping trip, but you want one when money or trust is on the line.
+
+| Situation | Receipt on? |
+|---|---|
+| Trying ideas on a laptop | Off. Go fast. |
+| A daily job feeding a report people make decisions with | On. You want to prove what changed and when. |
+| Checking that a new machine or cloud gives the same answer | On. That is what the fingerprint is for. |
+| A huge job where every minute costs money and nothing is in question | Off, or on for a sample day, until the speed target is met. |
+
+Most of the time, the protection is worth a few extra minutes. When it is not, you can leave it off and still get everything else Ubunye does at almost no cost.
+
+## One more honest note
+
+All of these numbers come from one machine. They prove Ubunye does not get in the way and does not pull data into one place, but they do not yet measure a run spread across a whole cluster of computers. That experiment, laptop to cluster, is planned and not yet done. When it is, I will add the numbers.
+
+The full measurements, including the timings in seconds for every run, are in the project's scoreboard at [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine). The guides are at [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine).
+
+Next: [Part 7, What It Took to Build Ubunye Engine](/blog/ubunye-engine-what-it-took-to-build).

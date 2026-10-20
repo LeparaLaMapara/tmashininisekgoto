@@ -1,0 +1,129 @@
+---
+title: "How Long Does Ubunye Engine Take to Learn"
+seoTitle: "How Long Ubunye Engine Takes to Learn"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 4
+seriesTotal: 10
+summary: "What you need to know before you start, how long your first task takes on a laptop, and what happened when two newcomers tried to use Ubunye Engine with nothing but the public instructions. All ten places where they got stuck were fixed."
+seoDescription: "What you need before you start, your first Ubunye Engine task on a laptop in minutes, and the ten places two newcomers got stuck, all fixed in 0.8.0."
+---
+
+# How Long Does Ubunye Engine Take to Learn
+
+*Part 4 of [Ubunye Engine](/blog/series/ubunye-engine), the first hour and what gets in the way.*
+
+Every tool says it is easy. So instead of telling you it is easy, I want to show you what the first hour actually looks like, and then tell you what happened when people who had never seen it tried to use it.
+
+## What you need before you start
+
+You need a little Python. If you can write a few lines that read a table and keep the rows you want, you are ready.
+
+You do not need Spark. You do not need Java. You do not need a cloud account. Spark is the tool big companies use to spread work across many computers, and it is powerful, but it is heavy to set up. Ubunye lets you start without it, on your own laptop, with pandas, which is the everyday Python tool for tables. Later, when your data grows, the same work moves to Spark without being rewritten. Part 6 covers that.
+
+Ubunye runs on Python 3.10 to 3.13, on Windows, Mac and Linux.
+
+## Your first task
+
+One line installs it:
+
+```bash
+pip install "ubunye-engine[pandas]"
+```
+
+Then four short commands make a task, check it, run it, and show you what happened:
+
+```bash
+ubunye init -d pipelines -u demo -p starter -t filter_adults
+ubunye plan -d pipelines -u demo -p starter -t filter_adults --backend pandas
+ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas --lineage
+ubunye lineage list -d pipelines -u demo -p starter -t filter_adults
+```
+
+Here is what each one does, in plain words:
+
+1. **init** makes a folder for you. The folder is the whole task: a settings file that says where the data comes from and where it goes, a Python file with the one thing the task does (keep the people aged 18 and over), and a small sample file of eight people so you have something to work with.
+2. **plan** checks everything it can without touching any data. Is the input file there? Does your Python file load? Can this computer do everything the task asks? If something would fail, it tells you now, not halfway through.
+3. **run** does the work and writes the result.
+4. **lineage list** shows the receipt the run left behind: when it ran, whether it worked, how many rows came out. I explain the receipt properly in Part 5.
+
+The Python part is short. This is the whole thing:
+
+```python
+class FilterAdults(Task):
+    def transform(self, sources):
+        people = sources["people"]
+        return {"adults": people[people["age"] >= 18]}
+```
+
+It takes the table of people and gives back only the adults. Change 18 to 21, run it again, and the receipts show you that the answer changed.
+
+One detail I care about: the commands in the quickstart guide are run by the test suite exactly as written, on every change. If the guide ever stops working, the build fails before anyone else finds out.
+
+## Roughly how long each step takes
+
+| Step | Roughly how long (my estimate) |
+|---|---|
+| Install | A minute or two, depending on your internet |
+| Make, check and run your first task | About five minutes |
+| Change the rule and see the difference | A few minutes |
+| Run the same task on pandas and on Spark and compare them (Tutorial 1) | About ten minutes, plus installing Java for the Spark half |
+| Build a real pipeline from messy data of your own | An afternoon to a few days, mostly spent understanding your data |
+
+That last row is the honest one. The tool is quick to learn. Your data is where the time goes, and that is true of every tool.
+
+## The stranger test
+
+Here is the problem with judging your own tool. I built it, so I know where every trap is, and I step around them without noticing. My opinion of how easy it is to learn is worth very little.
+
+So on 28 September 2026 I tried something else. I gave two newcomers a real problem each and nothing else: the install command, the public instructions, and a real dataset from Kaggle, a website where people share data. The newcomers were AI agents that started with no knowledge of the project and no access to me. They were told to solve the problem and to write down every single place they got stuck.
+
+The two problems:
+
+- **An online shop's sales:** build one clean table of orders out of nine messy tables from a Brazilian shop, called Olist.
+- **Food reviews:** read 300 Amazon food reviews and label each one as positive or negative, using a small AI model running on the same computer.
+
+Both finished. That was the good news. The useful news was the list of everything that slowed them down.
+
+## Where they got stuck
+
+They found ten problems. Two of them were serious enough that I call them blockers.
+
+1. **The same question got the same answer when it should not have.** Ubunye can save the answers an AI model gives and play them back later, so a rerun gives the same result without asking the model again. When two reviews were word for word the same, the playback gave both the first answer, even though the model had answered them differently. Two of 300 rows changed and nothing warned anyone. **This was a blocker.**
+2. **Quotes inside a spreadsheet file split rows in the wrong place.** Files saved by Excel or pandas write a quote mark inside text by doubling it. Spark expects a different style by default. So rows broke in the wrong place and a column of numbers quietly became text. Both newcomers lost the most time here. **The second blocker.** The fix is a clear warning that names the problem and the setting that solves it.
+3. **An invisible character at the start of a file** broke the step that matches two tables together. Some files begin with a hidden marker, and the laptop version kept it as part of the first column's name, so the column could not be found.
+4. **A data check on the wrong kind of column** crashed with an error message about 20,000 characters long that never named the column.
+5. **Short run numbers were refused.** The list showed the first eight characters of each run's number, but the next command would not accept those eight characters.
+6. **The instructions for passing a setting into your Python code were missing.** I had removed them by accident in the previous release.
+7. **A spending limit blocked a free model.** The limit on how much the AI may cost refused every call to a model running on the laptop, because a free model has no price.
+8. **A long AI step showed no progress.** About six minutes of silence between "starting" and "done".
+9. **Reading a structured answer from the model was hard,** and 20 of 300 answers came back in the wrong shape.
+10. **Guessed links to the instructions led nowhere.** There was no map from the install page to the guides.
+
+All ten are fixed in version 0.8.0, released on 30 September 2026. Each fix came with a test that failed before the fix and passes after it, so none of them can quietly come back.
+
+## A command for the first bad hour
+
+Many of these troubles start before any data moves: Java is the wrong version, a setting is missing, a plugin will not load. So there is a command just for that:
+
+```bash
+ubunye doctor
+```
+
+It looks at your computer and tells you what is installed, what will fail, and why, before you run anything. It knows the difference between a real problem and one that does not matter for you. Spark without Java is fine if you only ever use pandas, so that is a warning, not a failure.
+
+## What is still hard
+
+I would be lying if I said there is nothing left to learn.
+
+- **Spark itself still takes effort** when you get there. Ubunye keeps your task the same, but installing Java and understanding how Spark behaves on a big cluster is real work.
+- **Messy files are messy.** Ubunye now warns you about the quote problem, but it cannot know what a file was supposed to say.
+- **The newcomer test has run once.** The plan is to run it again with new strangers on the fixed version and count whether they get stuck less. Until that rerun happens, "easier" is my belief, not a measurement.
+
+The honest summary: an hour gets you a working task and a feel for how it thinks. The rest of the time goes where it always goes, into understanding your own data.
+
+The guides are at [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine), and the code is at [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine).
+
+Next: [Part 5, Can You Trust Ubunye Engine](/blog/ubunye-engine-can-you-trust-it).

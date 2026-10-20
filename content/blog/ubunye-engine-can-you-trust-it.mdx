@@ -1,0 +1,112 @@
+---
+title: "Can You Trust Ubunye Engine"
+seoTitle: "Can You Trust Ubunye Engine: Tests and Proof"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 5
+seriesTotal: 10
+summary: "Trust is not a feeling, it is evidence. This part shows the tests, the same results in seven different places, what happens when a run crashes halfway, and the honest list of what is still not fixed."
+seoDescription: "1,940 tests, identical results on seven environments, safe reruns after a crash, data checks, and the honest list of what Ubunye Engine still gets wrong."
+---
+
+# Can You Trust Ubunye Engine
+
+*Part 5 of [Ubunye Engine](/blog/series/ubunye-engine), the evidence, not the promise.*
+
+When you hand your data to a tool, you are trusting it with something that matters. A wrong number in a report can mean a wrong decision about money, people or a whole town. So "trust me" is not good enough, and that includes trusting me.
+
+This part is about evidence. What has been checked, how, and what is still not right.
+
+## The receipt
+
+Every run can leave a receipt. You switch it on with one word, `--lineage`, and the run writes down what it read, what it wrote, how many rows, what shape the tables had, and a fingerprint of every single row.
+
+A fingerprint here means a short code worked out from the contents of the data. Change one letter in one row of a million rows and the fingerprint changes completely. Keep everything the same and you get the same fingerprint every time, on any computer. It works like the wax seal on an old letter: if the seal matches, nobody has changed what is inside.
+
+That one idea is what makes everything else in this part possible. Two runs can be compared exactly, not by eye.
+
+## The tests
+
+A test is a small program that checks one thing the engine promises, like "a file with a hidden marker at the start still has the right column names". If the promise breaks, the test fails, and the change that broke it cannot go in.
+
+Ubunye has 1,940 of these tests. They run on every change, on Windows, Mac and Linux, on four versions of Python (3.10 to 3.13). Spark has its own set of tests on top of that.
+
+Tests catch a lot. But tests are written by the same person who wrote the code, and they share the same blind spots. So I needed something stronger.
+
+## Seven kitchens, one recipe
+
+Think of a recipe. If it only works in your own kitchen, with your own stove and your own pots, it is not really a recipe. It is a habit. A real recipe gives the same dish in any kitchen.
+
+The big promise of Ubunye is that a task gives the same answer wherever it runs. So I tested exactly that. I took real workloads and ran each one, without changing a single line, in seven different places:
+
+1. My laptop, using pandas
+2. My laptop, using Spark
+3. Kubernetes, a system that runs programs in sealed boxes called containers
+4. AWS Glue, Amazon's cloud service for this kind of work
+5. Google Cloud Dataproc, Google's version
+6. Azure Container Apps, Microsoft's cloud
+7. Databricks, a popular data platform
+
+The workloads were not toy examples. One is a set of tricky table matching and dates built to catch mistakes. One is real food price data from the World Food Programme for markets in Africa, which works out prices per kilogram and raises an alert when a staple food gets much more expensive. One builds a clean table of orders out of nine messy shop tables. Counting each step on its own, that is six workloads.
+
+On 30 September 2026 every one of the six gave the same fingerprint in all seven places. Six workloads times seven places is 42 checks. All 42 matched.
+
+The same dish, in seven kitchens, with the same seal.
+
+<SameSeal />
+
+## Not run is not a pass
+
+There is a small rule in the checking tool that I am proud of. If a place was supposed to run a workload and left no evidence, the report says NOT RUN. It never says pass.
+
+That sounds obvious. It is not how most dashboards behave. A missing result often shows up as a blank, and a blank next to a row of green ticks looks like green. In Ubunye, a claim with no evidence behind it is reported as exactly that.
+
+## When a run crashes halfway
+
+Power cuts, killed jobs and full disks happen. The question is what the next run does.
+
+I tested it on purpose. I killed runs in the middle of writing, and I started two copies of the same run at the same time. Before the fixes, the results were bad:
+
+- When a run was killed right after adding new rows to a table, the rerun added them again. The batch landed twice, silently, in 16 out of 16 tries.
+- When two copies of the same run started together, both added their rows in 7 out of 10 tries.
+
+Imagine a till that rings up the same sale twice when the power flickers. That is what double writing means.
+
+The fix works like a booking at a clinic. Before a run starts, it takes a booking for its batch. A second run of the same batch is turned away and told who holds the booking. If a run dies, the next one can take over its booking, clean up only what the dead run wrote, and finish. After the fix, the crash test passed 20 out of 20 times, and the two at once test landed twice 0 out of 10 times.
+
+## One clock for everyone
+
+A date depends on where you stand. When it is just past midnight in Johannesburg, it is still the day before in London. Spark normally takes its time zone from the computer it runs on, so the same data could be cut into different days on a laptop in Pretoria and on a cloud computer in Ireland. Ubunye now uses one time zone everywhere, UTC, unless the task asks for another. The same data gives the same days, everywhere.
+
+## Checking the data before it is written
+
+You can tell Ubunye what good data looks like: this column is never empty, that number is between 0 and 100, every order has one row. If a rule breaks, you choose what happens:
+
+- **Stop:** the run stops and nothing is written at all.
+- **Quarantine:** the bad rows are moved to a separate table, each one labelled with the rule it broke, and the good rows carry on. Like a supermarket putting dented tins on a separate shelf instead of throwing away the whole delivery.
+- **Warn:** the run continues and tells you.
+
+You can also say "if more than 5% of rows are bad, stop anyway", so a quarantine never quietly swallows half your data.
+
+## What is still not right
+
+Trust also means telling you what is broken. At the time of writing, 13 known problems are still open. The main ones in plain words:
+
+- **The receipt is slow on big data.** Fingerprinting every row takes time. Part 6 gives the numbers.
+- **Some kinds of rerun cannot be undone yet.** If a dead run had already added rows to a database or to certain table formats, Ubunye names what was written but cannot take it back by itself.
+- **Some awkward file and date edge cases** are still being fixed.
+- **Streaming is not supported.** Ubunye works on batches of data, not on a constant flow of events as they arrive.
+- **Not every cloud has been proven.** Amazon's EMR Serverless option is built but has not run yet, because the free tier blocks it. Old style Hadoop clusters have not been tested.
+- **The cost of each cloud run was not collected,** so the proving reports say "unknown" in the cost column rather than guess.
+
+Every one of these is written down with its evidence in the project's own scoreboard, in the open.
+
+## So, can you trust it
+
+You should not trust any tool on its word, including this one. What I can give you is what I would want myself: tests that run on every change, the same answer proven in seven places, crashes tested on purpose, and a public list of what is still wrong.
+
+The proof report and the scoreboard live with the code at [github.com/ubunye-ai-ecosystems/ubunye_engine](https://github.com/ubunye-ai-ecosystems/ubunye_engine), and the guides are at [ubunye-ai-ecosystems.github.io/ubunye_engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine).
+
+Next: [Part 6, How Far Does Ubunye Engine Scale](/blog/ubunye-engine-how-far-it-scales).

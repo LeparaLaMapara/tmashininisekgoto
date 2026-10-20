@@ -1,0 +1,109 @@
+---
+title: "Ubunye Engine Worked Examples"
+seoTitle: "Ubunye Engine Worked Examples You Can Run Today"
+date: 2026-10-20
+published: false
+tags: [open source, mlops, data engineering]
+series: "Ubunye Engine"
+seriesPart: 10
+seriesTotal: 10
+summary: "Real problems you can run on your own laptop today, from food prices in African markets to a nine table online shop. Each one is public, each one has been run, and the main ones give exactly the same answer in seven different places."
+seoDescription: "Run Ubunye Engine on real problems today: African food prices, a nine table online shop, AI labels you can replay, and eleven more worked examples."
+---
+
+# Ubunye Engine Worked Examples
+
+*Part 10 of [Ubunye Engine](/blog/series/ubunye-engine), real problems you can run yourself.*
+
+This series has been a lot of talking. This last part is about doing.
+
+Everything below is public. You can read the code, download the data and run it yourself. None of it is a made up "hello world". Each example is a real problem that a real data team would recognise.
+
+## Food prices in African markets
+
+**The question:** where are the prices of staple foods jumping, and by how much?
+
+The World Food Programme publishes market prices for food: about 4 million prices from markets in 71 countries. This example keeps the retail prices from African markets, puts every price on the same footing (local money per kilogram), and flags every staple food whose monthly price rose by half or more compared with the same month a year before. It only raises a flag when at least three markets agree, so one strange market cannot cause a false alarm.
+
+On the full data for 2025 and 2026, it flags, among others:
+
+| Country | Food | A year before (per kg) | Now (per kg) | Change |
+|---|---|---|---|---|
+| Mali | Rice (paddy), February 2026 | 254 CFA francs | 620 CFA francs | +144% |
+| Ethiopia | Groundnuts, March 2026 | 184 birr | 408 birr | +122% |
+| Chad | Wheat flour, January 2026 | 432 CFA francs | 768 CFA francs | +78% |
+
+That is what someone working on food security watches for: a price rise people feel in their pockets, backed by many markets, not one.
+
+## A nine table online shop
+
+**The question:** for every order, what was bought, what was paid, how long delivery took and what the customer said. Then, per seller and per month, how much they sold and how much arrived on time.
+
+The data is from Olist, a Brazilian online marketplace: about 100,000 real orders from 2016 to 2018, spread across nine separate files that must be put together. It is the first job almost every data team builds for an online shop.
+
+This example is really about what goes wrong on the way, and how the engine stops it:
+
+- **A file arrives with a column renamed or missing.** The run stops before doing anything, and names the column.
+- **A few bad rows**, like a review score of 7 out of 5. They are set aside with the rule they broke, and the rest carries on.
+- **Putting tables together quietly loses orders, or money goes missing between tables.** The engine checks that rows in equal rows out and that payment totals match, or nothing is written.
+- **An order delivered before it was bought.** Set aside.
+
+Real data is messy in exactly these ways. The example shows each problem being caught.
+
+## Both give the same answer in seven places
+
+These two examples, and a small starter example, were run in seven different places: a laptop using the lightweight mode, a laptop using Spark (a tool for very large data), and five more setups: cloud services from Amazon, Google, Microsoft and Databricks, and a Kubernetes cluster (a way of running software on a group of machines).
+
+Every run leaves a fingerprint of its results, a short code that changes if even one value changes. All seven places produced the same fingerprints, for all six steps. That is 42 checks, and 42 matched. [Part 5](/blog/ubunye-engine-can-you-trust-it) explains why that matters.
+
+## Run one on your laptop
+
+The food prices example ships with a small sample (Chad and Mozambique, staple cereals, 2025 and 2026), so the first run needs nothing but Python. No Java, no account, about a minute:
+
+```bash
+git clone https://github.com/ubunye-ai-ecosystems/ubunye_engine
+cd ubunye_engine/examples/real-world/food_prices_africa
+pip install "ubunye-engine[pandas]" "narwhals>=2.9"
+ubunye run -d pipelines -u food -p prices -t clean   --backend pandas --lineage
+ubunye run -d pipelines -u food -p prices -t monitor --backend pandas --lineage
+```
+
+What those lines do, in order: copy the code to your machine, step into the example's folder, install the engine, then run the two steps. The first cleans the prices. The second looks for the jumps.
+
+You should see two alerts in Chad for January 2026: imported rice up 59 percent and wheat flour up 78 percent, each across 54 markets.
+
+## The starter: one task, two engines
+
+If you want the smallest possible example, start with the one called C01. It is twelve made up orders and one small task. You run it once in the lightweight mode and once on Spark, without changing a single line, and then ask the engine to compare the two. They match. The [first tutorial](https://ubunye-ai-ecosystems.github.io/ubunye_engine/tutorials/01-local-parity/) walks you through it.
+
+## AI labels you can replay
+
+One example asks an AI model to label six product reviews as positive or negative. The model's answers are saved next to the task, so when you run it, the engine replays the saved answers instead of calling the model.
+
+That means it runs with no key, no internet and no cost, and gives exactly the same rows every time, on Linux, Windows and Mac. To be honest about it: the saved answers come from a tiny stand in program, not a real model. The point of the example is the replay, not the model's judgement. When AI is one step in your data work, being able to get the exact same answers again is what lets you test it, check it and trust it.
+
+## Eleven more in the examples repository
+
+There is a separate [examples repository](https://github.com/ubunye-ai-ecosystems/ubunye-examples) with eleven more, each solving one everyday problem. All eleven run on a laptop, and most have also run on Databricks.
+
+| Example | The problem it solves |
+|---|---|
+| 01 Tables and SQL | Customer revenue from tables, safe to rerun |
+| 02 Weather from a website | Turn a weather service's data into 168 hourly rows |
+| 03 Unstructured | Cut text files and reviews into pieces ready for search |
+| 04 Taxi fares | Predict taxi fares, from features to a tested, registered model |
+| 05 Answers from your own documents | Answer questions using only the pieces from example 03 |
+| 06 Fine tune | An AI labels reviews, then a small model learns from the labels |
+| 07 Data quality | Check transactions against a contract, set bad rows aside |
+| 08 Monitoring | Tell drifting data from a decaying model, and roll back only when that is the right fix |
+| 09 A huge database table | Read a very large database table in many slices at once |
+| 10 Three ways to train | Train the same model three ways and pick the winner honestly |
+| 11 Run anywhere | Show one task gives the identical result everywhere |
+
+## The end of the series
+
+That is Ubunye Engine. A folder, a settings file and a small piece of code. One way of working that a whole team can share. Checks that stop bad data before it lands. Proof, not promises, that it gives the same answer wherever it runs.
+
+I built it because I needed it, and because I believe good tools should not belong only to teams with big budgets. It is free and open source. If you try it and something confuses you, that is a problem with the engine or its docs, not with you, and I want to hear about it.
+
+Start at the [docs](https://ubunye-ai-ecosystems.github.io/ubunye_engine), or the code on [GitHub](https://github.com/ubunye-ai-ecosystems/ubunye_engine).
