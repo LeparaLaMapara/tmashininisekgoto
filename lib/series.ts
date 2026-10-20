@@ -36,6 +36,12 @@ export const SERIES: Record<string, SeriesCopy> = {
     description:
       'A six part practical roadmap to building with AI agents: tools, retrieval, permissions, reliability and orchestration, from a site built that way.',
   },
+  'our-version': {
+    intro:
+      'The rich world builds something big: computers in space, giant data centres, networks that cost billions. Each post in this series asks one simple question. What is our version? It starts from what our communities already have, uses methods from work I have actually done, says the hard parts out loud, does the sums in the open, and ends with a small first step that could prove the idea wrong.',
+    description:
+      'Big ideas from the rich world, rebuilt from what our communities already have. Plain words, honest limits, sums in the open, a small first step.',
+  },
 }
 
 /**

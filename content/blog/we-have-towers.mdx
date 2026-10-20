@@ -4,6 +4,8 @@ seoTitle: "Distributed AI Compute on Africa's Cell Towers"
 date: 2026-10-20
 published: true
 tags: [ai, architecture]
+series: "Our Version"
+seriesPart: 1
 topics: [telecommunications, mathematical-optimisation, decision-support]
 projects: [vodacom-network-intelligence]
 summary: "Google, SpaceX and others are putting computers in orbit because power and cooling on Earth have run out of room. Africa has no space programme, but it has tens of thousands of cell towers that already have power, batteries, cooling, a fence and a link to the network. This post asks whether those towers can be a data centre spread across the land, and answers with the same graph and scoring method I used to send generators to towers during load shedding."
@@ -11,6 +13,8 @@ seoDescription: "Space data centres explained, and a practical African alternati
 ---
 
 # We Don't Have Rockets. We Have Towers.
+
+*Part one of [Our Version](/blog/series/our-version), a series that takes a big idea from the rich world and asks what our version of it looks like, built from what our communities already have.*
 
 Something strange is happening in tech right now. The biggest companies in the world are putting computers into space.
 
@@ -163,9 +167,40 @@ Let me do the sums in the open, so you can check me.
 
 Say we start with 1,000 towers, about 4% of the country's sites. At 240 watts each, that is 240 kilowatts in total. That is less than a tenth of one percent of South Africa's data centre power. Tiny.
 
-But that is 1,000 machines with 128 GB of memory each: 128 terabytes of memory for AI models, spread across the country, sitting one tower away from millions of people. At about 4,000 US dollars a box, the hardware is around four million dollars. That is less than what theft costs one network in a year.
+But that is 1,000 machines with 128 GB of memory each: 128 terabytes of memory for AI models, spread across the country, sitting one tower away from millions of people. At about 4,000 US dollars a box, the hardware is around four million dollars, roughly R66 million. That is less than what theft and vandalism cost one network in a year.
 
 It will not replace Teraco in Johannesburg, and it is not meant to. The big data centres stay where the heavy work is. This is a layer underneath them, close to people, that keeps working when the backbone is busy, and that keeps data in the country.
+
+## What it costs, roughly
+
+People always ask this first, so here are rough numbers. Rough means I would bet on the size of the number, not on the last digit. Every assumption is written down so you can change the ones you disagree with.
+
+**What we know.** A rand is about [R16.45 to the dollar](https://www.exchangerates.org.uk/Dollars-to-South-African-Rands-currency-conversion-page.html) this week. Eskom's [2026/27 business tariff](https://www.eskom.co.za/distribution/wp-content/uploads/2026/07/Eskom-Tariff-booklet_Final.pdf) works out to around R4 a kilowatt hour once all the charges are added. Diesel costs about [R33 a litre](https://www.carmag.co.za/news/confirmed-sa-fuel-price-for-october-2026/) inland at wholesale. A small generator running a light load burns roughly half a litre for every kilowatt hour it makes, so **power from diesel costs about R15 to R22 a kilowatt hour, four or five times the grid.**
+
+That one number settles a design question. **The compute box never runs on diesel.** When the generator is on, the box sleeps. Diesel is for keeping people connected, not for answering questions.
+
+**What a tower already costs.** Tower companies charge each network that hangs radios on a tower. Helios Towers, which runs about 14,700 towers in Africa and the Middle East, earned [about 2,300 dollars per tenant a month](https://www.heliostowers.com/media/pk3lowr4/ht-fy-25-rns-front-half-vfinal.pdf) in 2025, power included. That is around R38,000 a month. Restoring a vandalised site costs Vodacom [up to R100,000](https://techcentral.co.za/?p=255662). In 2023, during the worst load shedding, the networks expected to spend about [R1.1 billion on diesel](https://www.w24.co.za/news24/tech-and-trends/news/load-shedding-telecommunications-companies-expect-to-spend-r11-billion-on-diesel-in-2023-20230926) in one year, and MTN alone was burning [about 450,000 litres a month](https://www.engineeringnews.co.za/article/telcos-feeling-pressure-of-sustained-levels-of-loadshedding-2023-02-24).
+
+**What I am guessing.** These are my assumptions, not quotes:
+
+- the box lasts four years
+- it runs about 60% of the day, because the reserve rule puts it to sleep the rest of the time
+- half its running hours are paid from the grid, the other half come from solar that is already paid for
+- the tower company charges R1,500 a month for the shelf space and power connection, because a box is far smaller than a set of radios
+- technicians spend some extra time on two visits a year, at R2,500 a time
+- 10% of the box's price is set aside every year for theft and breakage
+
+<TowerCosts />
+
+With a 4,000 dollar box, that comes to **about R48,000 a year for one tower, around R4,000 a month.**
+
+- **A pilot of 10 towers** costs about R660,000 to start and about R490,000 a year to run.
+- **A region of 100 towers**, say one district, costs about R6.6 million to start and R4.9 million a year to run.
+- **1,000 towers across the country** costs about R66 million to start and R49 million a year.
+
+Is R4,000 a month a lot? Put it next to the R38,000 a month a network already pays to rent space on one tower. The box adds about a tenth. And if one box answers a thousand questions a day, which is a modest load, each answer costs about 13 cents.
+
+The biggest line is not electricity. It is rent and the box itself. That is good news, because both of those get cheaper as the idea grows: the boxes get better every year, and a tower company with an empty shelf would rather earn something than nothing.
 
 ## What I would do first
 

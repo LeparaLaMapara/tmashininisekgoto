@@ -7,6 +7,7 @@ import { TowerChain } from './figures/tower-chain'
 import { CabinetBudget } from './figures/cabinet-budget'
 import { SiteScore } from './figures/site-score'
 import { FollowThePower } from './figures/follow-the-power'
+import { TowerCosts } from './figures/tower-costs'
 import type { MDXComponents } from 'mdx/types'
 import type { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes, AnchorHTMLAttributes, BlockquoteHTMLAttributes } from 'react'
 
@@ -197,4 +198,5 @@ export const mdxComponents: MDXComponents = {
   CabinetBudget,
   SiteScore,
   FollowThePower,
+  TowerCosts,
 }
