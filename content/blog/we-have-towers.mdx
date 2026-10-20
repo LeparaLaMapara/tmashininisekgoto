@@ -34,7 +34,7 @@ So the idea is simple. In the right orbit the sun almost never sets. Google says
 
 It is not free, and the people building it are honest about that.
 
-**Heat.** On Earth you cool a computer by blowing air or pumping water over it. In space there is no air. The only way to lose heat is to glow it away as light, through big flat panels called radiators. A single 700 watt AI chip needs [about 1.4 square metres](https://spectrum.ieee.org/orbital-data-centers-heat) of radiator. Google's own project lead called radiators "one of the heaviest components", and the first Suncatcher satellite runs its AI model for only [fifteen minutes at a time](https://www.wunc.org/2026-10-01/google-launches-project-suncatcher-a-step-towards-ai-data-centers-in-space) because of heat.
+**Heat.** On Earth you cool a computer by blowing air or pumping water over it. In space there is no air. The only way to lose heat is to glow it away as light, through big flat panels called radiators. A single 700 watt AI chip needs [about 1.4 square metres](https://spectrum.ieee.org/orbital-data-centers-heat) of radiator. Google's project lead, Travis Beals, says the radiators are among the heaviest parts of the satellite, and the first Suncatcher satellite is planned to run its AI model in [fifteen minute stretches](https://www.wunc.org/2026-10-01/google-launches-project-suncatcher-a-step-towards-ai-data-centers-in-space) because of heat.
 
 **Launch.** Google's paper says it starts to make economic sense when launch costs fall to about [200 US dollars a kilogram](https://arxiv.org/abs/2511.19468), which they expect in the mid 2030s. Not today.
 
@@ -49,7 +49,7 @@ None of this means it will fail. These are serious people with serious money. Bu
 South Africa has roughly [26,000 cell towers](https://towerxchange.com/article/2blg3ddo08rqs34gzm3uo/what-ihs-towers-mtn-deal-means-for-south-africa). 4G reaches about [99% of the population](https://www.engineeringnews.co.za/print-version/south-africas-telecommunications-sector-grows-amid-fibre-network-coverage-2025-04-02). Each tower is, if you squint, a tiny data centre that somebody forgot to put computers in:
 
 - **Power.** A grid connection, and at many sites solar panels.
-- **Backup power.** Battery banks that carry a site for [6 to 12 hours](https://www.sdxcentral.com/news/vodacom-has-spent-more-than-200m-on-backup-power-in-south-africa-since-2020/), and generators that can be brought in.
+- **Backup power.** Battery banks that carry a site for roughly [6 to 12 hours](https://www.sowetan.co.za/news/2022-09-21-mobile-network-firms-battle-rising-costs-to-combat-load-shedding-impact-on-cellphone-towers), according to MTN, and generators that can be brought in.
 - **Cooling.** The equipment cabinet is already cooled, because the radios inside get hot.
 - **A link to the network.** Fibre or a microwave dish that carries traffic back to the core.
 - **Security.** A fence, a locked cabinet, and alarms that report to a control room.
@@ -98,15 +98,15 @@ Not big server racks. A new kind of computer has appeared in the last two years 
 |---|---|---|---|
 | [NVIDIA DGX Spark](https://theregister.com/2025/10/13/nvidia_gb10_spark) | 128 GB | about 240 W | 3,999 US dollars |
 | [AMD Ryzen AI Max+ 395](https://www.notebookcheck.net/Framework-Desktop-official-with-AMD-Strix-Halo-CPUs-affordable-price-tag-and-plenty-of-customization-options.967568.0.html) | up to 128 GB | 45 to 120 W | from 1,999 US dollars |
-| [Apple Mac Studio](https://www.techradar.com/pro/apple-mac-studio-m3-ultra-workstation-can-run-deepseek-r1-671b-ai-model-entirely-in-memory-using-less-than-200w-reviewer-finds) | 128 GB to 512 GB | under 200 W in one test | from 2,499 US dollars |
+| [Apple Mac Studio](https://www.techradar.com/pro/apple-mac-studio-m3-ultra-workstation-can-run-deepseek-r1-671b-ai-model-entirely-in-memory-using-less-than-200w-reviewer-finds) | 128 GB to 512 GB | under 200 W in one test | more, and it rises with the memory |
 
-Why does shared memory matter? Because an AI model has to sit in memory to run. A big open model compressed to 4 bit needs around 40 GB. On a normal computer the graphics card has maybe 8 or 16 GB, so it does not fit. On these machines the whole 128 GB is available. One reviewer ran a 671 billion parameter model on the Apple machine using under 200 watts, about what two old light bulbs use.
+Why does shared memory matter? Because an AI model has to sit in memory to run. A big open model compressed to 4 bit needs around 40 GB. On a normal computer the graphics card has maybe 8 or 16 GB, so it does not fit. On these machines the whole 128 GB is available. One reviewer ran a 671 billion parameter model on the 512 GB Apple machine using under 200 watts, about what two old light bulbs use.
 
-And look at the power. A macro tower draws roughly [1 to 4 kilowatts](https://research.dial.uclouvain.be/handle/2078.5/255329). One of these boxes adds a few percent.
+And look at the power. A macro tower draws roughly [1 to 4 kilowatts](https://research.dial.uclouvain.be/handle/2078.5/255329). One of these boxes adds roughly 5 to 25 percent, about 8 percent on a typical 3 kilowatt site.
 
 <CabinetBudget />
 
-The telecom industry is already moving in this direction from the other side. SoftBank and NVIDIA ran a [trial](https://www.abiresearch.com/market-research/insight/7785216-exciting-results-from-softbank-and-nvidias) where AI work and the radio software shared the same servers at the tower, and NVIDIA [invested a billion dollars in Nokia](https://www.datacenterdynamics.com/en/news/nvidia-to-invest-1bn-into-nokia/) to build AI into the radio network itself. That is the expensive version, built for rich networks. I am asking what the cheap, careful version looks like for ours.
+The telecom industry is already moving in this direction from the other side. SoftBank and NVIDIA ran an outdoor [trial](https://www.abiresearch.com/market-research/insight/7785216-exciting-results-from-softbank-and-nvidias) where AI work and the radio software shared the same servers, and NVIDIA [invested a billion dollars in Nokia](https://www.datacenterdynamics.com/en/news/nvidia-to-invest-1bn-into-nokia/) to build AI into the radio network itself. That is the expensive version, built for rich networks. I am asking what the cheap, careful version looks like for ours.
 
 ## Which towers get a box
 
@@ -145,7 +145,7 @@ A box on its own is just a computer in a cabinet. The interesting part is making
 
 I want this to be practical, so here is what worries me.
 
-**It cannot train the next giant model.** Training needs thousands of chips talking to each other very fast. Google tested the laser links for its satellites at [800 gigabits per second](https://www.satellitetoday.com/technology/2025/11/06/google-targets-in-space-computing-with-project-suncatcher-moonshot/) in each direction. A microwave link to a rural tower may carry a few hundred megabits, shared with calls. So this is not a place to train. It is a place to *use* models: answering questions, reading documents, transcribing speech, translating, checking images. That is most of what people actually need from AI every day.
+**It cannot train the next giant model.** Training needs thousands of chips talking to each other very fast. In a lab bench test, Google's laser links for its satellites reached [800 gigabits per second](https://research.google/blog/exploring-a-space-based-scalable-ai-infrastructure-system-design/) in each direction. A microwave link to a rural tower may carry a few hundred megabits, shared with calls. So this is not a place to train. It is a place to *use* models: answering questions, reading documents, transcribing speech, translating, checking images. That is most of what people actually need from AI every day.
 
 **Theft.** A computer is worth more than a battery, and batteries already get stolen. So the box has to be worthless outside its tower. It sits inside the alarmed battery cabinet, never outside. Its disk is encrypted and the key lives with the network, not in the box. If the box starts up anywhere other than its own tower, it refuses to work and reports itself. Every box is registered by serial number. A thief should get a brick.
 

@@ -6,7 +6,7 @@ import { FigButton, Figure, useInView, useReducedMotion } from './towers-shared'
 
 /**
  * How big is one compute box next to the tower it lives in? An illustrative
- * 3 kW macro site (measured sites sit between about 1 and 4 kW) against the
+ * 3 kW macro site (modelled sites sit between about 1 and 4 kW) against the
  * two unified memory machines named in the post.
  */
 const SITE = [
@@ -45,7 +45,7 @@ export function CabinetBudget() {
   return (
     <Figure
       label="Figure 3 · one box next to one tower"
-      caption="An illustrative 3 kW site. Measured macro sites draw roughly 1 to 4 kW, and newer 5G sites more. The compute box adds a few percent to the load, and it is the first thing switched off when the batteries are needed for calls."
+      caption="An illustrative 3 kW site. Modelled macro sites draw roughly 1 to 4 kW, and newer 5G sites more. The compute box adds around a tenth to the load, and it is the first thing switched off when the batteries are needed for calls."
     >
       <div ref={ref} className="space-y-4">
         <div className="flex flex-wrap gap-2">
