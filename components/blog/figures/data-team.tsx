@@ -291,3 +291,35 @@ export function OneFoundation() {
     </Figure>
   )
 }
+
+/* Who You Need: where each role came from. */
+const ROLES: [string, 'Hire' | 'Move' | 'Borrow' | 'Grow'][] = [
+  ['Specialist data scientists', 'Hire'],
+  ['Senior engineers', 'Hire'],
+  ['Data engineers from inside the company', 'Move'],
+  ['AI engineers', 'Borrow'],
+  ['Platform engineers', 'Borrow'],
+  ['Graduates', 'Grow'],
+]
+
+export function WhoYouNeed() {
+  const ref = useRef<HTMLDivElement>(null)
+  const tick = useTicker(ref, 900, ROLES.length - 1)
+  const at = tick % (ROLES.length + 1)
+  return (
+    <Figure label="Figure 1 · Hire, move, borrow, grow" caption="You do not have to hire every role. Hire what the budget allows, move people who know the business, borrow in exchange for help, and grow the rest.">
+      <div ref={ref}><ul className="space-y-2">
+        {ROLES.map(([role, how], i) => (
+          <li
+            key={role}
+            className="flex min-h-10 items-center justify-between gap-3 rounded-sm border px-3 py-2 transition-all duration-500"
+            style={{ borderColor: i <= at ? OK : C.border, opacity: i <= at ? 1 : 0.35 }}
+          >
+            <span className="text-sm text-ivory">{role}</span>
+            <span className="font-mono text-[11px] uppercase tracking-wider" style={{ color: OK }}>{how}</span>
+          </li>
+        ))}
+      </ul></div>
+    </Figure>
+  )
+}

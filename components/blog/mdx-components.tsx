@@ -9,7 +9,7 @@ import { SiteScore } from './figures/site-score'
 import { FollowThePower } from './figures/follow-the-power'
 import { TowerCosts } from './figures/tower-costs'
 import { CellMap, CountryCells, LandVsPeople } from './figures/cell-map'
-import { TeamRoute, KnowledgeInHeads, DataHome, PathToProduction, BacklogTank, ReactiveProactive, OneFoundation } from './figures/data-team'
+import { TeamRoute, KnowledgeInHeads, DataHome, PathToProduction, BacklogTank, ReactiveProactive, OneFoundation, WhoYouNeed } from './figures/data-team'
 import type { MDXComponents } from 'mdx/types'
 import type { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes, AnchorHTMLAttributes, BlockquoteHTMLAttributes } from 'react'
 
@@ -211,4 +211,5 @@ export const mdxComponents: MDXComponents = {
   BacklogTank,
   ReactiveProactive,
   OneFoundation,
+  WhoYouNeed,
 }

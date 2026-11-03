@@ -45,7 +45,7 @@ export const SERIES: Record<string, SeriesCopy> = {
   },
   'building-a-data-team': {
     intro:
-      'A roadmap for building a data science, data engineering or AI function when you start with no handover and no map. Five stages in plain language, from building one in less than two years inside a heavily regulated company. Each stage says what you will usually find, what to do, what pushback to expect, and how to know you are ready to move on. The last part shows what it all makes possible for a business.',
+      'A roadmap for building a data science, data engineering or AI function when you start with no handover and no map. Who you need, then five stages, in plain language, from building one in less than two years inside a heavily regulated company. Each stage says what you will usually find, what to do, what pushback to expect, and how to know you are ready to move on. The last part shows what it all makes possible for a business.',
     description:
       'A five stage roadmap for building a data science, data engineering or AI function from scratch, in plain language, from real experience.',
   },
