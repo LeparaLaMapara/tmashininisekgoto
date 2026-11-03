@@ -22,6 +22,8 @@ function cleanForNarration(raw) {
 
   // The intro already speaks the title; drop the post's own H1.
   text = text.trimStart().replace(/^# .*\r?\n/, '')
+  // Live figures (<TowerChain />, <CellMap ... />) are for eyes, not ears.
+  text = text.replace(/^\s*<[A-Z][^>]*\/>\s*$/gm, '')
   // Code blocks are for eyes, not ears.
   text = text.replace(/```[\s\S]*?```/g, '')
   // Series navigation lines are noise when spoken.

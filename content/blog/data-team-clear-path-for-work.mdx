@@ -1,0 +1,123 @@
+---
+title: "Stage 3: Give the Work a Clear Path"
+seoTitle: "Building a Data Team: From a Year to Two Weeks"
+date: 2026-11-03
+published: true
+tags: [leadership, data science, mlops]
+series: "Building a Data Team"
+seriesPart: 4
+topics: [technical-leadership, mlops, reproducibility]
+projects: [insurance-data-science-capability, ubunye-engine]
+summary: "It used to take about a year to get a model into use. Now it fits in a two week sprint. The change came from a shared workspace and one agreed path, not from cleverer people."
+---
+
+# Stage 3: Give the Work a Clear Path
+
+*Part four of [Building a Data Team](/blog/series/building-a-data-team). [Part three](/blog/data-team-safe-home-for-data) gave the data a safe home.*
+
+> **The principle.** Patterns beat heroics. Take what one person worked out the hard way, and make it the way the whole team works by default.
+
+**You are at this stage if** work lives on personal computers, every project starts from nothing, and only the author can run it.
+
+When I arrived, getting a model into real use took about a year. The people were not slow. Every project had to work out everything again, from the beginning.
+
+Work happened on personal computers and private virtual machines, which are computers rented out of a bigger one. Nobody else could see or run what was on them. When someone took leave, things could stop working.
+
+<PathToProduction />
+
+## Look before you build
+
+You need one shared place to work. Your first step is not to design one. It is to look around.
+
+Large companies are full of things one team built and nobody else knows about. I found another team in the group already running Databricks, a shared workspace where many computers work together on large amounts of data. I went to them, asked how they had set it up, and learned from what they had already worked out.
+
+Rebuilding something that already exists two floors away is an expensive way to look busy.
+
+Getting it working technically is only part of the job. We also needed funding, contracts, access, support and people from architecture and networking. The code can be running perfectly while the team still cannot log in. Expect that part to take longer than the technology.
+
+## Make the easy way the right way
+
+A shared workspace gives people room to try things quickly. Then build one clear path that every piece of work follows. Ours has six steps.
+
+1. **Idea.** What decision will this help, and how will we know it worked?
+2. **Try it.** Data scientists explore quickly in notebooks, using governed data.
+3. **Save it.** The work goes into version control, so that others can see it and run it.
+4. **Check it.** Automated tests run on every change. This is called continuous integration.
+5. **Release it.** The same automatic process releases it every time, instead of someone doing it by hand.
+6. **Look after it.** We watch it, and somebody owns it for as long as it runs.
+
+We wrote this down as patterns: this is how we bring data in, this is how we build a model, this is how we release it. A pattern is one person's hard won knowledge, turned into the team's default.
+
+We also built our own tools where we needed them, so that the same work gives the same result every time and anyone on the team can run it again.
+
+## Put the safety checks on the path
+
+People used to train a model on their own machine and work out the rest later. A clear path replaces that with checks nobody has to remember:
+
+- **A model registry.** One record of every model version and which one is in use.
+- **Automatic promotion gates.** A model only moves towards real use when it passes agreed tests.
+- **Tests and alerts.** Tests catch mistakes before release, and alerts tell us when something goes wrong afterwards.
+- **An AI gateway.** Calls to AI models go through one door, so that we can see usage and cost.
+- **Written standards.** Everyone knows what good looks like before they start.
+
+## Let the tools carry the pattern
+
+A written pattern helps. A pattern built into a tool is stronger, because following the standard becomes the easy way. Nobody has to remember the rules, and a new person gets them on day one.
+
+[Ubunye Engine](https://ubunye-ai-ecosystems.github.io/ubunye_engine/) is one example you can try for yourself. It is an open source project I started in my own research and have kept developing independently, and its ideas helped shape the patterns we adopted as a team. It now gives my team a standard to follow, and together with our AI gateways it lets us track AI usage and cost. Here is how it supports this roadmap:
+
+| What the roadmap asks for | How Ubunye Engine helps |
+|---|---|
+| **One standard way to start** | `ubunye init` creates the same small folder every time: one settings file and one code file |
+| **Catch mistakes early** | `ubunye validate` checks the settings before anything runs |
+| **The same work gives the same result** | One task runs unchanged on a laptop or in the cloud, and the results were compared across seven environments |
+| **Bad data stops at the door** | Rules written in the settings can stop a run when the data breaks them |
+| **Trace any number** | Each run can write a record of what it read, what it wrote and whether its checks passed |
+| **Automatic gates** | `ubunye gate` compares a run with an earlier one, and fails if a check broke or the data changed without a new version number |
+| **A model registry** | Each model version moves from development to staging to production, can be rolled back, and is kept for audit when retired |
+| **Automatic releases** | It can set a task up to run on Databricks, GitHub Actions or Airflow |
+| **Visible AI use and cost** | Calls to a language model go through one door, get written into the run record with their cost, and can stop at a budget you set |
+
+You do not need this particular tool to follow the roadmap. What matters is that your standards live in something people use every day, not only in a document.
+
+## Teach it until it stops being yours
+
+You will probably not be allowed to hire your way out. Most of my team had been hired for a different technical world, and the training budget was tight. So the training programme was us.
+
+I would work something out, prove it on a real problem, write it down and teach it. Then somebody else would use it, until nobody remembered it had ever been a special skill.
+
+People do not adopt a new tool because an email told them to. They adopt it when they watch their own problem get smaller.
+
+Sometimes the person you need is already in the building, too. One of the most valuable people in this story already worked there. They knew where the data lived and how the business used it. With opportunity and real responsibility, they grew into the data engineering skills we badly needed.
+
+## The tool is not the team
+
+I want to be clear about one thing. Databricks mattered, but buying a tool does not give you a capability. A capability is several layers, and each one rests on the layer below it.
+
+![A stack of five layers from the bottom up: platform for compute, storage and catalog; data engineering for ingestion, ETL and quality; data science for experiments, models and deployment; practices for documentation, standards, testing and CI/CD; and people for skills, trust and ownership. Take any layer out and the ones above it wobble.](/posts/ds_capability_stack.png)
+
+## What this made possible
+
+A model that used to take about a year can now go from idea to real use within a two week sprint. We got faster because we got safer: every change is tested, recorded and easy to undo.
+
+With these foundations in place, we could build further. We moved from machine learning models to AI tools that support the business, and we have connected our AI agents to the data lake, so that leaders can ask questions of data the company can trust. We have also started connecting AI agents to our development pipeline.
+
+None of that would have been safe without the steps before it. An AI agent connected to bad data just gives wrong answers faster.
+
+## What to do on Monday
+
+1. Before you build or buy anything, ask around. Someone in your company may already have it.
+2. Follow one recent project from idea to release. Write down every step and every wait.
+3. Remove the longest wait first.
+4. Turn your next finished project into a written pattern that someone else can copy.
+5. Ask a colleague to run your work without your help. Fix whatever stops them.
+
+## You are ready for Stage 4 when
+
+- There is one shared place to work.
+- Every piece of work follows the same written path.
+- Models reach real use through automatic gates, and a release can be undone.
+- Someone else can run your work without your help.
+- You can say how long an idea takes to reach real use.
+
+So far this may sound smooth. It will not be. Next: [Stage 4, when people push back, show them.](/blog/data-team-when-they-push-back)
