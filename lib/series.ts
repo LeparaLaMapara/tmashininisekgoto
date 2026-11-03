@@ -39,9 +39,15 @@ export const SERIES: Record<string, SeriesCopy> = {
   'career-development-in-data-and-ai': {
     slug: 'career-development',
     intro:
-      'A career in data and AI has stops, like a route. First you become one: what to learn, in what order, and what has changed now that AI agents can write code. Later you build one: a team and a capability inside a real organisation, with a small budget and no map. Each part is written from where I have actually been, for wherever you are on the road.',
+      'A career in data and AI has stops, like a route. First you become one: what to learn, in what order, and what has changed now that AI agents can write code. Later you build one, and that has its own series, Building a Data Team. Each part is written from where I have actually been, for wherever you are on the road.',
     description:
       'Career development in data science and AI: becoming a data scientist, then building and leading a team. Practical, from real experience in South Africa.',
+  },
+  'building-a-data-team': {
+    intro:
+      'A roadmap for building a data science, data engineering or AI function when you start with no handover and no map. Five stages in plain language, from building one in less than two years inside a heavily regulated company. Each stage says what you will usually find, what to do, what pushback to expect, and how to know you are ready to move on. The last part shows what it all makes possible for a business.',
+    description:
+      'A five stage roadmap for building a data science, data engineering or AI function from scratch, in plain language, from real experience.',
   },
   'our-version': {
     intro:

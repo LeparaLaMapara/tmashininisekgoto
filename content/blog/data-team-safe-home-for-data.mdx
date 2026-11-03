@@ -1,0 +1,101 @@
+---
+title: "Stage 2: Give Your Data One Safe Home"
+seoTitle: "Building a Data Team: A Governed Home for Your Data"
+date: 2026-11-03
+published: true
+tags: [leadership, data engineering]
+series: "Building a Data Team"
+seriesPart: 3
+topics: [technical-leadership, data-engineering, etl]
+projects: [insurance-data-science-capability]
+summary: "A model can only be as good as the data it learns from. How we brought scattered data into one checked and controlled home, and made security part of normal work."
+---
+
+# Stage 2: Give Your Data One Safe Home
+
+*Part three of [Building a Data Team](/blog/series/building-a-data-team). [Part two](/blog/data-team-find-out-what-is-true) was about finding out what is true.*
+
+> **The principle.** At scale, data science is only as reliable as the data underneath it. Fix the foundation before you try to build better models.
+
+Imagine a business that keeps its records in many different filing cabinets, in many different rooms. Some cabinets have no lock. Nobody notices when a page goes missing. Now imagine asking that business for one reliable number.
+
+**You are at this stage if** the same question gets different answers from different people, or you cannot say who changed a number.
+
+That was close to our situation. Data sat in many separate databases on the company's own computers. It was hard to control who could reach it, and hard to know who had changed what. Code had no proper history either, so one change could break something with no easy way back.
+
+The data also arrived damaged. The way it was collected in daily operations caused gaps and errors. Those errors then had real costs, including money and unhappy customers.
+
+Here is the lesson that took me longest to learn. I could have spent those months improving our models and it would not have helped. The models were not the weakest part.
+
+## One home, with a door and a checkpoint
+
+The move is to bring data into one place. We used a data lake in the cloud. A data lake is one very large, shared store for all of a company's data. Ours runs on Amazon's cloud, AWS, but the idea matters more than the supplier.
+
+The important part is not the storage. It is what happens on the way in.
+
+<DataHome />
+
+Data now comes in from databases and outside services through a controlled process. We load only what is new each time, instead of copying everything again. On the way in, we record:
+
+- **Where it came from**, so that we can trace any number back to its source.
+- **Whether it is complete**, so that we notice when something is missing.
+- **Whether it passes basic checks**, so that a bad value is caught before it spreads.
+
+The data scientists then read that data through a catalog, which works like a library's index. It shows what exists, what it means and where it came from. It also controls who may read or change it, and it keeps a record.
+
+Three controls do much of the work here:
+
+- **Central permissions.** One place decides who can see what. We use AWS Lake Formation.
+- **Lineage.** A record of where a number came from and what happened to it on the way.
+- **Schema validation.** An automatic check that data still has the shape we expect, so a missing or changed column gets caught instead of quietly breaking things.
+
+## Give everything a history
+
+We also put all our code under version control. Version control keeps every change, with who made it and why. If a change breaks something, you can see exactly what happened and go back.
+
+This sounds like a small thing, and it changes how a team feels. People stop being afraid to touch things, because a mistake is no longer a disaster.
+
+## Make security part of normal work
+
+We worked in a highly regulated business, so we could not treat security as somebody else's problem. Our models and data were connected to other services through APIs, which are the doors software uses to talk to other software. Each door had to be accounted for, including doors to outside suppliers.
+
+So we went to our central security team and asked a simple question: what do we need to do to get this right? Together with them, we made these checks part of how we work:
+
+- **Audits**, where someone independent checks our controls.
+- **Penetration testing**, where a security expert tries to break in, so that we find the holes before anyone else does.
+- **Supplier checks**, before we connect to anything outside the company.
+
+Do not wait for security to come to you. Go to them early and ask. Most security teams would much rather help you at the start than stop you at the end.
+
+## The pushback to expect
+
+Moving data and adding controls slows some people down at first. Those who could once change anything may now need to ask, and they will feel it. Expect complaints about access and about the time this takes. Move your most important data first, and let the time saved make your case.
+
+## What scale really means
+
+I used to think scale meant processing more data. In a regulated business, that is only half of it. You also need to answer four questions:
+
+- Who can reach this data?
+- Where did this number come from?
+- Did the checks pass?
+- If we run this again tomorrow, do we get the same answer?
+
+Scale means processing more data without losing control of it.
+
+## What to do on Monday
+
+1. Pick your single most important dataset, and find out where it comes from.
+2. Find out who can change or delete it. If you cannot tell, that is your first job.
+3. Add one check that would catch your most common data problem.
+4. Put your team's code under version control, starting today.
+5. Book a coffee with your security team before you need them.
+
+## You are ready for Stage 3 when
+
+- Your most important data has one home, and people read it from there.
+- You can trace a number back to where it came from.
+- Bad data gets caught before anyone uses it.
+- All code has a history, and you know who can change what.
+- Your security team knows what you are connected to.
+
+Next: [Stage 3, give the work a clear path.](/blog/data-team-clear-path-for-work)
