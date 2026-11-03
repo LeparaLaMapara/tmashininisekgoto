@@ -293,13 +293,13 @@ export function OneFoundation() {
 }
 
 /* Who You Need: where each role came from. */
-const ROLES: [string, 'Hire' | 'Borrow' | 'Grow'][] = [
+const ROLES: [string, 'Hire' | 'Move' | 'Borrow' | 'Grow'][] = [
   ['Specialist data scientists', 'Hire'],
-  ['A senior data engineer', 'Hire'],
+  ['Senior engineers', 'Hire'],
+  ['Data engineers from inside the company', 'Move'],
   ['AI engineers', 'Borrow'],
   ['Platform engineers', 'Borrow'],
   ['Graduates', 'Grow'],
-  ['People already in the building', 'Grow'],
 ]
 
 export function WhoYouNeed() {
@@ -307,7 +307,7 @@ export function WhoYouNeed() {
   const tick = useTicker(ref, 900, ROLES.length - 1)
   const at = tick % (ROLES.length + 1)
   return (
-    <Figure label="Figure 1 · Hire, borrow, grow" caption="You do not have to hire every role. Hire what the budget allows, borrow what it does not, and grow the rest.">
+    <Figure label="Figure 1 · Hire, move, borrow, grow" caption="You do not have to hire every role. Hire what the budget allows, move people who know the business, borrow in exchange for help, and grow the rest.">
       <div ref={ref}><ul className="space-y-2">
         {ROLES.map(([role, how], i) => (
           <li
