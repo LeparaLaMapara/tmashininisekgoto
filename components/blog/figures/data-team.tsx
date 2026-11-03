@@ -189,14 +189,17 @@ export function PathToProduction() {
 /* Part 5: a backlog you can drain. Sums only: start plus arrivals minus processed. */
 const START_M = 100
 const IN_M = 1
+// Stops rather than an even scale, so a thumb can land on 1 and reach the real result.
+const RATES = [0.5, 1, 2, 3, 5, 10, 20, 50, 101]
 
 export function BacklogTank() {
-  const [rate, setRate] = useState(3)
+  const [stop, setStop] = useState(3)
+  const rate = RATES[stop]
   const net = rate - IN_M
   const days = net > 0 ? Math.ceil(START_M / net) : null
   const level = net > 0 ? 45 : net === 0 ? 70 : 95
   const verdict =
-    net < 0 ? 'The backlog keeps growing.' : net === 0 ? 'The backlog stops growing, but it never shrinks.' : `The backlog clears in about ${days} days.`
+    net < 0 ? 'The backlog keeps growing.' : net === 0 ? 'The backlog stops growing, but it never shrinks.' : `The backlog clears in about ${days} ${days === 1 ? 'day' : 'days'}.`
   return (
     <Figure
       label="Figure 1 · Try it: how fast must you go?"
@@ -213,11 +216,12 @@ export function BacklogTank() {
           <input
             id="backlog-rate"
             type="range"
-            min={0.5}
-            max={20}
-            step={0.5}
-            value={rate}
-            onChange={(e) => setRate(Number(e.target.value))}
+            min={0}
+            max={RATES.length - 1}
+            step={1}
+            value={stop}
+            aria-valuetext={`${rate} million a day`}
+            onChange={(e) => setStop(Number(e.target.value))}
             className="h-11 w-full accent-[var(--color-signal)]"
           />
           <p className="text-base font-semibold" style={{ color: net > 0 ? OK : BAD }} aria-live="polite">{verdict}</p>
