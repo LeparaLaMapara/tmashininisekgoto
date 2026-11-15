@@ -37,7 +37,7 @@ const STATUS: Record<Phase, string> = {
   idle: 'Ready when you are',
   greeting: 'Connected',
   listening: 'Listening',
-  paused: 'Tap the mic to talk',
+  paused: 'Your turn',
   thinking: 'Thinking',
   speaking: 'Speaking',
   ended: 'Call ended',
@@ -167,6 +167,7 @@ export function CallMode() {
   const streamDoneRef = useRef(true)
   const silentRestartsRef = useRef(0)
   const endingRef = useRef(false)
+  const micBlockedRef = useRef(false)
   const interruptedRef = useRef(false)
   const endRef = useRef<HTMLDivElement>(null)
 
@@ -234,6 +235,10 @@ export function CallMode() {
 
   function listen() {
     if (phaseRef.current === 'ended') return
+    if (micBlockedRef.current) {
+      go('paused')
+      return
+    }
     stopListening()
     const rec = makeRecognition()
     if (!rec) {
@@ -256,6 +261,7 @@ export function CallMode() {
     }
     rec.onerror = (e) => {
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        micBlockedRef.current = true
         setCanListen(false)
         setNotice('The microphone is blocked, so type your question below.')
       }
@@ -263,6 +269,10 @@ export function CallMode() {
     rec.onend = () => {
       recRef.current = null
       if (phaseRef.current !== 'listening') return
+      if (micBlockedRef.current) {
+        go('paused')
+        return
+      }
       const text = final.trim()
       if (text) {
         silentRestartsRef.current = 0
@@ -494,7 +504,7 @@ export function CallMode() {
         </p>
       )}
 
-      {!canListen && (
+      {!canListen && !notice && (
         <p className="mt-4 max-w-md text-center text-sm text-muted">
           This browser cannot listen. You will still hear the answers. Type your questions below.
         </p>

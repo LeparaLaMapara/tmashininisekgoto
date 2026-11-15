@@ -55,7 +55,7 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+            value: 'camera=(), microphone=(self), geolocation=(), interest-cohort=()',
           },
           { key: 'Content-Security-Policy-Report-Only', value: csp },
         ],
