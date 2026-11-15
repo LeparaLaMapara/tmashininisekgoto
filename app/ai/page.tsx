@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import { JsonLd } from '@/components/seo/json-ld'
 import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
-import { ChatInterface } from '@/components/ai/chat-interface'
+import { AssistantModes } from '@/components/ai/assistant-modes'
 import { WorkWithMe } from '@/components/ai/work-with-me'
 import { NameRoll } from '@/components/ai/name-roll'
 
 export const metadata: Metadata = {
   title: 'LeparaLaMapara: my AI assistant, ask about my work',
   description:
-    'Ask an AI assistant grounded on the real work, writing, talks, and projects of Thabang Mashinini-Sekgoto. Every answer cites its sources.',
+    'Call or type to an AI assistant grounded on the real work, writing, talks, and projects of Thabang Mashinini-Sekgoto. Every answer cites its sources.',
   alternates: { canonical: '/ai' },
 
   openGraph: pageOpenGraph('/ai', 'Ask the AI assistant about the work of Thabang Mashinini-Sekgoto'),
@@ -37,12 +37,13 @@ export default function AIPage() {
             </span>
           </h1>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">
-            My AI assistant. It knows my public work and writing, and it will
-            tell you when it does not know something. It is not me.
+            Call my AI assistant, or type to it. It knows my public work and
+            writing, and it will tell you when it does not know something. It is
+            not me.
           </p>
         </div>
 
-        <ChatInterface />
+        <AssistantModes />
 
         {/* Trust & boundary note */}
         <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-muted">

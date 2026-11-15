@@ -180,11 +180,22 @@ export async function POST(req: Request) {
 
   const data = new StreamData()
 
+  // Voice calls get answers made to be heard: conversational spoken English, no
+  // markdown or links. Sources still reach the transcript as annotations.
+  const voice = (parsed as { mode?: unknown })?.mode === 'voice'
+  if (voice) {
+    system += `\n\nVOICE CALL MODE: the visitor is on a voice call with you and will HEAR your reply, not read it. Talk like a warm, friendly assistant on a phone call: natural, conversational, with some personality, the way a helpful person speaks. Explain properly in about three to six spoken sentences, and use a concrete example when it helps. Speak about Thabang in the third person, as his assistant. Often end with a short, natural follow-up question that invites the visitor to keep talking, such as what they are working on or which part they want to hear more about. Plain spoken English only: no markdown, no lists, no headings, no URLs, no emoji, and do not read out source names or links.`
+  }
+
   const result = streamText({
     model: google('gemini-2.5-flash'),
     system,
     messages,
-    maxTokens: 2048,
+    maxTokens: voice ? 1024 : 2048,
+    // Gemini 2.5 spends output tokens on thinking first. On a call that cut
+    // answers off after a few words and delayed the first spoken word, so
+    // calls answer without the thinking step.
+    ...(voice ? { providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } } } : {}),
     onFinish: async () => {
       // Attach cited sources to this assistant message for the UI.
       if (sources.length) {
