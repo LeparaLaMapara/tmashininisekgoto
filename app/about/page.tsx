@@ -83,7 +83,7 @@ const BUILDS = [
 const QUESTIONS = [
   'How much of what once needed a large institution can a small team, or one person, now build with open source and cheap compute?',
   'What does AI mean when your main computer is a phone and data costs real money?',
-  'What can free satellite data tell Africa about where to farm, build, insure and plan? This is the direction of my PhD work: computer vision on satellite and multispectral imagery for agriculture.',
+  'What can free satellite data tell Africa about where to farm, build, insure and plan? It is the direction of the PhD I plan to begin at Wits in 2027; the proposal is still in preparation.',
   'Is the current way of framing intelligence the only useful one? I am curious whether African collective philosophies, ubuntu and ubunye especially, have anything to say about how agents could coordinate. This is a question I am exploring, not a claim I can defend.',
 ]
 
