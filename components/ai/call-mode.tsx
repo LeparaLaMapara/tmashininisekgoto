@@ -11,9 +11,10 @@
  * soon as Kokoro is ready. A visitor can pick the standard voice instead.
  *
  * Answers come from the same grounded /api/chat route as the text chat, in a
- * voice mode that keeps replies short and speakable. The transcript keeps the
- * cited sources. Typing still works inside a call, for browsers with no
- * microphone support and for visitors who would rather not speak.
+ * voice mode that keeps replies conversational and speakable. A call is voice
+ * only: no on-screen transcript (owner's choice, 2026-11-15). Typing still
+ * works inside a call, for browsers with no microphone and for visitors who
+ * would rather not speak; the answer is spoken.
  */
 
 import { useChat } from 'ai/react'
@@ -21,7 +22,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Phone, PhoneOff, Mic, Square, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { ChatMessage } from '@/components/ai/chat-message'
 
 type Phase = 'idle' | 'greeting' | 'listening' | 'paused' | 'thinking' | 'speaking' | 'ended'
 type VoiceKind = 'standard' | 'natural'
@@ -169,7 +169,6 @@ export function CallMode() {
   const endingRef = useRef(false)
   const micBlockedRef = useRef(false)
   const interruptedRef = useRef(false)
-  const endRef = useRef<HTMLDivElement>(null)
 
   const go = useCallback((p: Phase) => {
     phaseRef.current = p
@@ -215,10 +214,6 @@ export function CallMode() {
     const t = setInterval(() => setSeconds((s) => s + 1), 1000)
     return () => clearInterval(t)
   }, [phase])
-
-  useEffect(() => {
-    if (messages.length) endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }, [messages])
 
   function speaker(): Speaker {
     return (voiceKind === 'natural' && naturalRef.current) || speakerRef.current || browserSpeaker()
@@ -556,18 +551,6 @@ export function CallMode() {
         </button>
       </form>
 
-      {/* Transcript, with sources */}
-      {messages.length > 0 && (
-        <div className="mt-10 w-full">
-          <p className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">Transcript</p>
-          <div className="space-y-4">
-            {messages.map((m, i) => (
-              <ChatMessage key={m.id} message={m} isLast={i === messages.length - 1} />
-            ))}
-          </div>
-          <div ref={endRef} />
-        </div>
-      )}
     </div>
   )
 }
