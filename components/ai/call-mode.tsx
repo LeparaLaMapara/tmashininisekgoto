@@ -325,7 +325,9 @@ export function CallMode() {
       return
     }
     const rest = last.content.slice(spokenRef.current)
-    const re = /[^.!?]*[.!?]+["')\]]*(\s+|$)/g
+    // Lazy, so dots inside a sentence (0.9.3, web addresses) stay in it; a
+    // sentence only ends at punctuation followed by a space or the end.
+    const re = /[\s\S]*?[.!?]+["')\]]*(\s+|$)/g
     let m: RegExpExecArray | null
     let used = 0
     while ((m = re.exec(rest)) && m[0].length) {
