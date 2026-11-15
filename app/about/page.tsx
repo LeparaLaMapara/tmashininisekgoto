@@ -12,19 +12,17 @@ import { RepoRoute } from '@/components/about/play/repo-route'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Thabang Mashinini-Sekgoto, from Soshanguve. Chief Research Scientist at Ubunye AI Ecosystems. What he values, what he builds, what he researches, and what he does outside work.',
+    'Thabang Mashinini-Sekgoto: data scientist and AI engineer, founder of Ubunye AI Ecosystems. What he values, what he builds, and what he researches.',
   alternates: { canonical: '/about' },
   openGraph: profileOpenGraph('/about'),
 }
 
 /**
- * The about page, reorganised on 2026-11-15 from Thabang's brief: keep the
- * signwriter look, make it professional, and say in order who he is, what he
- * values, what he builds, what he researches, and what he does outside work.
- *
- * It is still not a CV. Employers, figures and dates live on /work and
- * /resume. The earlier memoir chapters (grandfather, anime, doing nothing)
- * are folded into short values and an outside-work section.
+ * The about page, made strictly professional on 2026-11-15 at Thabang's
+ * request: who he is, what he values, what he builds, his research, his
+ * interests, and how he works. No family stories or personal asides; those
+ * belong in his writing, not here. Employers, figures and dates live on /work
+ * and /resume. His title for Ubunye AI Ecosystems is Founder.
  */
 
 const UBUNYE = 'https://uaie.vercel.app'
@@ -49,19 +47,19 @@ const PHOTOS = [
 const VALUES = [
   {
     title: 'Access',
-    text: 'Knowledge, technology and opportunity are not spread evenly, and most of the gap is not talent. Capability should not belong only to people who already have resources. The practical question I work on is whether technology can give more people a comparable starting point.',
+    text: 'Knowledge, technology and opportunity are not spread evenly, and most of the gap is not talent. I work on whether software, data and AI can give more people a comparable starting point.',
   },
   {
     title: 'Evidence over claims',
-    text: 'A model sitting in a notebook is not impact. The interesting problem is everything after: can people reach it, does it scale, does it survive real data and someone else maintaining it, and does it improve a decision. I write the test down before the result.',
+    text: 'A model in a notebook is not impact. What matters is whether people can reach it, whether it scales and survives real data, and whether it improves a decision. I define the test before I see the result.',
   },
   {
-    title: 'The mother test',
-    text: 'If I cannot explain something to my mother, my father or anyone outside my field without breaking the idea, I do not understand it well enough yet. The second half matters more: can I help them use it? That is why I teach, and why some of it is free on purpose.',
+    title: 'Clarity',
+    text: 'If an idea cannot be explained plainly to someone outside the field, it is not yet understood well enough. I teach, write and give talks so that others can use what I build.',
   },
   {
-    title: 'Build it, then share it',
-    text: 'I would rather build a thing than only use it. Using something tells me what it does. Building it tells me why it was made that way, and whether it had to be. Then I share it, so the next person has less distance to cover.',
+    title: 'Build, then share',
+    text: 'I build systems to understand them, then release what I can as open source so the next team starts further ahead.',
   },
 ]
 
@@ -70,13 +68,13 @@ const BUILDS = [
     title: 'Ubunye AI Ecosystems',
     href: UBUNYE,
     external: true,
-    text: 'An open source research lab I founded and lead as Chief Research Scientist. We build software, data platforms and AI for businesses, government and creatives, and we release the tools we make. Ubunye Engine, our data engine, runs the same work identically on a laptop or any cloud and powers production work at a large financial services company. TFiltersPy recovers the real signal from noisy measurements.',
+    text: 'An open source research lab I founded. We build software, data platforms and AI for businesses, government and creatives, and we release the tools we make. Ubunye Engine, our data engine, runs the same work identically on a laptop or any cloud and powers production work at a large financial services company. TFiltersPy recovers the real signal from noisy measurements.',
   },
   {
     title: 'Kasilam Digital Platforms',
     href: '/work',
     external: false,
-    text: 'A community programme that gets township businesses online. We teach owners to build their own websites with AI tools, ready-made templates, talks and hands-on training. The website is not the interesting part. The interesting part is the moment someone realises technology is something they can build with.',
+    text: 'A community programme that gets township businesses online. We teach owners to build their own websites with AI tools, ready-made templates, talks and hands-on training.',
   },
 ]
 
@@ -89,24 +87,16 @@ const QUESTIONS = [
 
 const OUTSIDE = [
   {
-    title: 'Photography and storytelling',
-    text: 'Cameras, old cameras, lenses, drones, lighting, street photography, architecture, landscapes, documentary work. A camera is an extremely technical machine built to do something deeply human: remember this. Stories are how ideas travel.',
+    title: 'Photography and film',
+    text: 'Street, architecture, landscape and documentary photography, and short films. Cameras are where optics, electronics and computation meet.',
   },
   {
     title: 'Hardware',
-    text: 'Software eventually reaches physics. The cloud is someone else’s machines and AI depends on chips, so I am learning GPUs, local compute, networking, electronics, sensors and embedded systems. I dislike the point where my understanding stops at “someone else handles that”.',
+    text: 'GPUs, local compute, networking, electronics, sensors and embedded systems: the layer where software meets physics.',
   },
   {
     title: 'Sport',
-    text: 'Muay Thai, sprinting, running and cycling, and drag racing when I can get to a track. Rock climbing is the one I am still learning.',
-  },
-  {
-    title: 'Anime and psychology',
-    text: 'Naruto, Dragon Ball Z and One Punch Man. The appeal is living inside someone else’s model of the world for a while, which is also what I find fascinating about psychology: why people think the way they do, and why groups behave differently from the people in them.',
-  },
-  {
-    title: 'Learning for no reason',
-    text: 'Astrophysics, dynamical systems, optics, strange algorithms, music production. Not every interest has to become a startup. I am also learning to rest.',
+    text: 'Muay Thai, running and cycling.',
   },
 ]
 
@@ -159,7 +149,7 @@ export default function AboutPage() {
             path: '/about',
             name: 'About Thabang Mashinini-Sekgoto',
             description:
-              'Thabang Mashinini-Sekgoto, Chief Research Scientist at Ubunye AI Ecosystems: what he values, what he builds, what he researches, and what he does outside work.',
+              'Thabang Mashinini-Sekgoto, data scientist, AI engineer and founder of Ubunye AI Ecosystems: what he values, what he builds, and what he researches.',
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -175,22 +165,18 @@ export default function AboutPage() {
           <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-ivory mb-8">About</h1>
           <div className="space-y-5 text-lg text-ivory/85 leading-relaxed">
             <p>
-              I&apos;m Thabang Mashinini-Sekgoto, from Soshanguve, South Africa. I am the Chief
-              Research Scientist at{' '}
+              I&apos;m Thabang Mashinini-Sekgoto, a data scientist and AI engineer from Soshanguve,
+              South Africa, and the founder of{' '}
               <a href={UBUNYE} target="_blank" rel="noopener noreferrer" className="font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline">
                 Ubunye AI Ecosystems
               </a>
-              , an open source research lab I founded, and I lead data science in banking in my day job.
+              , an open source research lab.
             </p>
             <p>
-              Over nine years I have built and run data and AI systems in banking, telecommunications,
-              applied research and higher education. The work keeps surfacing the same problem: getting
-              data science out of experiments and into systems that run reliably for real people. So my
-              work spans data science, AI engineering, applied research and open source infrastructure.
-            </p>
-            <p>
-              The most accurate thing anyone could say about me is that I am curious. My grandfather
-              called me Why.
+              For nine years I have built and run data and AI systems in banking, telecommunications,
+              applied research and higher education. My focus is getting data science out of
+              experiments and into systems that run reliably, across data science, AI engineering,
+              applied research and open source infrastructure.
             </p>
           </div>
         </header>
@@ -219,12 +205,12 @@ export default function AboutPage() {
         </Section>
 
         {/* 4. Research */}
-        <Section id="research" label="Research" title="The questions I keep carrying home.">
+        <Section id="research" label="Research" title="The questions I work on.">
           <p>
-            I have been lucky to study and work around powerful ideas: mathematics, physics, machine
+            I have studied and worked across mathematics, physics, machine
             learning, computer vision, distributed computing, large production systems. Most of them
-            live inside universities, laboratories and big companies. I keep asking what they mean in
-            Soshanguve.
+            live inside universities, laboratories and big companies. My research asks what they make
+            possible where resources are scarce.
           </p>
           <ul className="list-none space-y-3 border-l-2 border-border pl-5">
             {QUESTIONS.map((q) => <li key={q}>{q}</li>)}
@@ -234,7 +220,7 @@ export default function AboutPage() {
         </Section>
 
         {/* 5. Outside work */}
-        <Section id="outside" label="Outside work" title="What I do when I am not building.">
+        <Section id="outside" label="Interests" title="Outside the day job.">
           <Items items={OUTSIDE} />
           <a
             href={INSTAGRAM}
@@ -258,11 +244,11 @@ export default function AboutPage() {
         </Section>
 
         {/* 6. How I work */}
-        <Section id="how" label="How I work" title="Build the team, then get out of the way.">
+        <Section id="how" label="How I work" title="Build the team, then trust it.">
           <p>
-            I like to share, teach, build, and work alongside people who know things I do not. I would
-            rather build a team, or a system, where people can run on their own than hover over anyone.
-            I prefer useful work and useful conversations over process for its own sake.
+            I build teams and systems that can run without me: clear goals, trust, and room for
+            people to do their best work. I collaborate widely, especially with people who know things
+            I do not, and I prefer useful work over process for its own sake.
           </p>
         </Section>
 
