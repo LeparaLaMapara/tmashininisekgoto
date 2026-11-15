@@ -207,10 +207,10 @@ export default function AboutPage() {
         {/* 4. Research */}
         <Section id="research" label="Research" title="The questions I work on.">
           <p>
-            I have studied and worked across mathematics, physics, machine
-            learning, computer vision, distributed computing, large production systems. Most of them
-            live inside universities, laboratories and big companies. My research asks what they make
-            possible where resources are scarce.
+            I have studied and worked across mathematics, physics, machine learning, computer vision,
+            distributed computing and large production systems. Most of that capability lives inside
+            universities, laboratories and big companies. My research asks what it makes possible where
+            resources are scarce.
           </p>
           <ul className="list-none space-y-3 border-l-2 border-border pl-5">
             {QUESTIONS.map((q) => <li key={q}>{q}</li>)}
