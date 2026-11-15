@@ -30,11 +30,15 @@ const nextConfig = {
       "default-src 'self'",
       // Next injects inline bootstrap scripts, and the analytics scripts are
       // served from Vercel.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://cdn.jsdelivr.net",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self' https://*.supabase.co https://api.github.com https://va.vercel-scripts.com",
+      // The call screen plays generated speech, and its optional natural voice
+      // runs in a web worker from a blob.
+      "media-src 'self' blob:",
+      "worker-src 'self' blob:",
+      "connect-src 'self' https://*.supabase.co https://api.github.com https://va.vercel-scripts.com https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co",
       "frame-src https://www.youtube.com https://youtube.com",
       "object-src 'none'",
       "base-uri 'self'",

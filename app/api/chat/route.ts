@@ -180,11 +180,18 @@ export async function POST(req: Request) {
 
   const data = new StreamData()
 
+  // Voice calls get answers made to be heard: short, plain sentences, no
+  // markdown or links. Sources still reach the transcript as annotations.
+  const voice = (parsed as { mode?: unknown })?.mode === 'voice'
+  if (voice) {
+    system += `\n\nVOICE CALL MODE: the visitor is speaking with you on a voice call and will HEAR your reply. Answer in at most three short spoken sentences of plain English. No markdown, no lists, no headings, no URLs, no emoji. Speak about Thabang in the third person, as his assistant. If the question needs a long answer, give the short version and offer to go deeper.`
+  }
+
   const result = streamText({
     model: google('gemini-2.5-flash'),
     system,
     messages,
-    maxTokens: 2048,
+    maxTokens: voice ? 400 : 2048,
     onFinish: async () => {
       // Attach cited sources to this assistant message for the UI.
       if (sources.length) {
