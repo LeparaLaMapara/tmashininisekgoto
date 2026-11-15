@@ -5,8 +5,10 @@
  *
  * The visitor taps Call, hears a greeting, speaks, and hears the answer. It
  * runs on the browser's own speech recognition and speech output, so it costs
- * nothing extra. A visitor can switch to a natural open source voice (Kokoro,
- * Apache 2.0), which downloads once (about 90 MB) and then runs in the browser.
+ * nothing extra. The natural open source voice (Kokoro, Apache 2.0) is the
+ * default: it starts downloading (about 90 MB, once) when the call starts, the
+ * browser voice covers the greeting meanwhile, and the call switches over as
+ * soon as Kokoro is ready. A visitor can pick the standard voice instead.
  *
  * Answers come from the same grounded /api/chat route as the text chat, in a
  * voice mode that keeps replies short and speakable. The transcript keeps the
@@ -147,7 +149,7 @@ function makeRecognition(): Recognition | null {
 
 export function CallMode() {
   const [phase, setPhase] = useState<Phase>('idle')
-  const [voiceKind, setVoiceKind] = useState<VoiceKind>('standard')
+  const [voiceKind, setVoiceKind] = useState<VoiceKind>('natural')
   const [natural, setNatural] = useState<{ state: 'off' | 'loading' | 'ready' | 'failed'; pct: number }>({ state: 'off', pct: 0 })
   const [heard, setHeard] = useState('')
   const [notice, setNotice] = useState<string | null>(null)
@@ -359,6 +361,7 @@ export function CallMode() {
   }
 
   function start() {
+    if (voiceKind === 'natural') void chooseNatural()
     endingRef.current = false
     interruptedRef.current = false
     setNotice(null)
@@ -516,7 +519,9 @@ export function CallMode() {
             ? `Natural voice: downloading ${natural.pct}%`
             : natural.state === 'failed'
               ? 'Natural voice failed to load'
-              : 'Natural (open source, about 90 MB once, best on Wi-Fi)'}
+              : natural.state === 'ready'
+                ? 'Natural (open source)'
+                : 'Natural (open source, downloads about 90 MB once)'}
         </button>
       </div>
 
