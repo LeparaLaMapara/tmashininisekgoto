@@ -5,39 +5,29 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
-import { WhyButton } from '@/components/about/play/why-button'
 import { RouteChain } from '@/components/about/play/route-chain'
 import { LevelSetPlay } from '@/components/about/play/level-set'
-import { ShutterPlay } from '@/components/about/play/shutter'
 import { RepoRoute } from '@/components/about/play/repo-route'
-import { OnePunch } from '@/components/about/play/one-punch'
-import { DoNothing } from '@/components/about/play/do-nothing'
 
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Thabang Mashinini-Sekgoto, from Soshanguve. A curious person who builds things to understand them, cares about access to capability, teaches so knowledge becomes transferable, and is still asking what intelligence is.',
+    'Thabang Mashinini-Sekgoto, from Soshanguve. Chief Research Scientist at Ubunye AI Ecosystems. What he values, what he builds, what he researches, and what he does outside work.',
   alternates: { canonical: '/about' },
   openGraph: profileOpenGraph('/about'),
 }
 
 /**
- * The about page, rewritten on 2026-09-25 from Thabang's own brief.
+ * The about page, reorganised on 2026-11-15 from Thabang's brief: keep the
+ * signwriter look, make it professional, and say in order who he is, what he
+ * values, what he builds, what he researches, and what he does outside work.
  *
- * This page is not a CV. It explains how he thinks, what he cares about, why he
- * builds, and how the parts connect. Employers, metrics and chronology live on
- * /work and /resume; keep them out of here. Where he is exploring an idea, the
- * page says so as a question, never as a conclusion.
- *
- * Nothing on this page waits for a scroll animation: it paints at rest.
- *
- * 2026-10-17: he asked for the page to feel alive and to have fun with it, so
- * it carries small toys in components/about/play (a Why button, his MSc running
- * live on his photos, a camera that drops his prints, a dig through his GitHub,
- * One Punch, ten seconds of doing nothing). They are client islands next to the
- * text; none of them hides or replaces any words.
+ * It is still not a CV. Employers, figures and dates live on /work and
+ * /resume. The earlier memoir chapters (grandfather, anime, doing nothing)
+ * are folded into short values and an outside-work section.
  */
 
+const UBUNYE = 'https://uaie.vercel.app'
 const INSTAGRAM = 'https://www.instagram.com/thabanglukhetho/'
 
 /** A few of his own photographs, from the ThabangVision tiles in /public/vision. */
@@ -56,30 +46,99 @@ const PHOTOS = [
   { n: '46', alt: 'The Wits Great Hall in the snow' },
 ]
 
+const VALUES = [
+  {
+    title: 'Access',
+    text: 'Knowledge, technology and opportunity are not spread evenly, and most of the gap is not talent. Capability should not belong only to people who already have resources. The practical question I work on is whether technology can give more people a comparable starting point.',
+  },
+  {
+    title: 'Evidence over claims',
+    text: 'A model sitting in a notebook is not impact. The interesting problem is everything after: can people reach it, does it scale, does it survive real data and someone else maintaining it, and does it improve a decision. I write the test down before the result.',
+  },
+  {
+    title: 'The mother test',
+    text: 'If I cannot explain something to my mother, my father or anyone outside my field without breaking the idea, I do not understand it well enough yet. The second half matters more: can I help them use it? That is why I teach, and why some of it is free on purpose.',
+  },
+  {
+    title: 'Build it, then share it',
+    text: 'I would rather build a thing than only use it. Using something tells me what it does. Building it tells me why it was made that way, and whether it had to be. Then I share it, so the next person has less distance to cover.',
+  },
+]
+
+const BUILDS = [
+  {
+    title: 'Ubunye AI Ecosystems',
+    href: UBUNYE,
+    external: true,
+    text: 'An open source research lab I founded and lead as Chief Research Scientist. We build software, data platforms and AI for businesses, government and creatives, and we release the tools we make. Ubunye Engine, our data engine, runs the same work identically on a laptop or any cloud and powers production work at a large financial services company. TFiltersPy recovers the real signal from noisy measurements.',
+  },
+  {
+    title: 'Kasilam Digital Platforms',
+    href: '/work',
+    external: false,
+    text: 'A community programme that gets township businesses online. We teach owners to build their own websites with AI tools, ready-made templates, talks and hands-on training. The website is not the interesting part. The interesting part is the moment someone realises technology is something they can build with.',
+  },
+]
+
+const QUESTIONS = [
+  'How much of what once needed a large institution can a small team, or one person, now build with open source and cheap compute?',
+  'What does AI mean when your main computer is a phone and data costs real money?',
+  'What can free satellite data tell Africa about where to farm, build, insure and plan? This is the direction of my PhD work: computer vision on satellite and multispectral imagery for agriculture.',
+  'Is the current way of framing intelligence the only useful one? I am curious whether African collective philosophies, ubuntu and ubunye especially, have anything to say about how agents could coordinate. This is a question I am exploring, not a claim I can defend.',
+]
+
+const OUTSIDE = [
+  {
+    title: 'Photography and storytelling',
+    text: 'Cameras, old cameras, lenses, drones, lighting, street photography, architecture, landscapes, documentary work. A camera is an extremely technical machine built to do something deeply human: remember this. Stories are how ideas travel.',
+  },
+  {
+    title: 'Hardware',
+    text: 'Software eventually reaches physics. The cloud is someone else’s machines and AI depends on chips, so I am learning GPUs, local compute, networking, electronics, sensors and embedded systems. I dislike the point where my understanding stops at “someone else handles that”.',
+  },
+  {
+    title: 'Sport',
+    text: 'Muay Thai, sprinting, running and cycling, and drag racing when I can get to a track. Rock climbing is the one I am still learning.',
+  },
+  {
+    title: 'Anime and psychology',
+    text: 'Naruto, Dragon Ball Z and One Punch Man. The appeal is living inside someone else’s model of the world for a while, which is also what I find fascinating about psychology: why people think the way they do, and why groups behave differently from the people in them.',
+  },
+  {
+    title: 'Learning for no reason',
+    text: 'Astrophysics, dynamical systems, optics, strange algorithms, music production. Not every interest has to become a startup. I am also learning to rest.',
+  },
+]
+
 const ROUTES = [
   { ask: 'Want the professional version?', label: 'Work and CV', href: '/work', also: { label: 'CV', href: '/resume' } },
   { ask: 'Interested in the questions?', label: 'Research', href: '/research' },
-  { ask: 'Want to see what I am building?', label: 'Builds', href: '/work' },
+  { ask: 'Want the lab?', label: 'Ubunye AI Ecosystems', href: UBUNYE, external: true },
   { ask: 'Want the opinionated version?', label: 'Writing', href: '/blog' },
   { ask: 'Want tutorials and conversations?', label: 'Talks', href: '/talks' },
   { ask: 'Want cameras and stories?', label: 'Photography', href: INSTAGRAM, external: true },
 ]
 
-function Section({ id, title, children }: { id?: string; title: string; children: React.ReactNode }) {
+function Section({ id, label, title, children }: { id?: string; label: string; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="mt-16 sm:mt-20 scroll-mt-28">
-      <h2 className="font-display text-2xl sm:text-3xl font-semibold text-ivory mb-5 text-balance">{title}</h2>
+      <p className="font-mono text-sm text-synapse tracking-widest uppercase mb-3">{label}</p>
+      <h2 className="font-display text-2xl sm:text-3xl font-semibold text-ivory mb-6 text-balance">{title}</h2>
       <div className="space-y-5 text-lg text-ivory/85 leading-relaxed">{children}</div>
     </section>
   )
 }
 
-function Sub({ title, children }: { title: string; children: React.ReactNode }) {
+function Items({ items }: { items: { title: string; text: string }[] }) {
   return (
-    <div className="mt-10">
-      <h3 className="font-display text-xl font-bold text-ivory mb-3">{title}</h3>
-      <div className="space-y-4 text-lg text-ivory/85 leading-relaxed">{children}</div>
-    </div>
+    <dl className="divide-y-2 divide-border border-y-2 border-border">
+      {items.map((it) => (
+        <div key={it.title} className="py-5">
+          <dt className="font-display text-xl font-bold text-ivory mb-2">{it.title}</dt>
+          <dd className="text-lg text-ivory/85 leading-relaxed">{it.text}</dd>
+        </div>
+      ))}
+    </dl>
   )
 }
 
@@ -100,7 +159,7 @@ export default function AboutPage() {
             path: '/about',
             name: 'About Thabang Mashinini-Sekgoto',
             description:
-              'How Thabang Mashinini-Sekgoto thinks: curiosity, access, teaching, the move from models to systems, open questions about intelligence, and the things he builds and photographs.',
+              'Thabang Mashinini-Sekgoto, Chief Research Scientist at Ubunye AI Ecosystems: what he values, what he builds, what he researches, and what he does outside work.',
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -115,221 +174,68 @@ export default function AboutPage() {
           <p className="font-mono text-sm text-synapse tracking-widest uppercase mb-4">Who I am</p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-ivory mb-8">About</h1>
           <div className="space-y-5 text-lg text-ivory/85 leading-relaxed">
-            <p>I&apos;m Thabang Mashinini-Sekgoto, and I&apos;m from Soshanguve, South Africa.</p>
             <p>
-              The most accurate thing anyone could say about me is probably this: I am curious.
+              I&apos;m Thabang Mashinini-Sekgoto, from Soshanguve, South Africa. I am the Chief
+              Research Scientist at{' '}
+              <a href={UBUNYE} target="_blank" rel="noopener noreferrer" className="font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline">
+                Ubunye AI Ecosystems
+              </a>
+              , an open source research lab I founded, and I lead data science in banking in my day job.
+            </p>
+            <p>
+              Over nine years I have built and run data and AI systems in banking, telecommunications,
+              applied research and higher education. The work keeps surfacing the same problem: getting
+              data science out of experiments and into systems that run reliably for real people. So my
+              work spans data science, AI engineering, applied research and open source infrastructure.
+            </p>
+            <p>
+              The most accurate thing anyone could say about me is that I am curious. My grandfather
+              called me Why.
             </p>
           </div>
-          <WhyButton />
         </header>
 
-        {/* 2 and 3. Curiosity, and building rather than only using */}
-        <Section title="My grandfather called me Why">
-          <p>
-            I have been asking &ldquo;why?&rdquo; for as long as I can remember. I asked it so often
-            that my grandfather started calling me Why.
-          </p>
-          <p>
-            These days the question just has more places to go: computer science, mathematics,
-            physics, astrophysics, machine learning, distributed systems, hardware, psychology,
-            markets, cameras, storytelling. The pattern underneath is the same every time.
-          </p>
+        {/* 2. What I value */}
+        <Section id="values" label="What I value" title="Four things I hold to.">
+          <Items items={VALUES} />
           <RouteChain
-            label="How I get into something"
-            steps={['understand how it works', 'take it apart', 'build my own version', 'ask if it could work differently']}
+            label="The thread through all of it"
+            steps={['understand how it works', 'take it apart', 'build my own version', 'share it']}
           />
-          <p>
-            I would rather build a thing than only use it. Using something tells me what it does.
-            Building it tells me why it was made that way, and whether it had to be.
-          </p>
-        </Section>
-
-        <PullQuote>Why does the world work this way, and could we build it differently?</PullQuote>
-
-        {/* 4. Where I come from */}
-        <Section title="What does this mean where I come from?">
-          <p>
-            I have been lucky to study and work around a lot of powerful ideas: pure and applied
-            mathematics, physics, machine learning, computer vision, distributed and high performance
-            computing, cloud infrastructure, large production systems. Most of them live inside
-            universities, laboratories and big companies.
-          </p>
-          <p>So the question I keep carrying home is what these ideas mean in Soshanguve.</p>
-          <ul className="list-none space-y-3 border-l-2 border-border pl-5">
-            <li>What does distributed computing mean to someone in a township who wants to start a farm but does not have the capital?</li>
-            <li>What is a directed acyclic graph when the nodes are people, suppliers, taxis, money, land, skills and information?</li>
-            <li>What does optimisation mean when someone only has R500?</li>
-            <li>What does AI mean when your main computer is a phone, and data costs real money?</li>
-            <li>How much of what a bank or a telecoms company can do could a small community rebuild with open source and cheap compute?</li>
-          </ul>
-          <p>
-            I have not answered these. They are not rhetorical. They are the questions that drive
-            most of my work.
-          </p>
-        </Section>
-
-        {/* 5. Access */}
-        <Section title="Access">
-          <p>
-            Knowledge, technology, networks and opportunity are not spread evenly, and most of the
-            gap is not talent. It is who had internet early. Who knew the words. Who knew the right
-            person, went to the right school, could afford the software, or happened to be near the
-            opportunity.
-          </p>
-          <p>
-            Technology will not fix inequality on its own, and I do not believe anyone who says it
-            will. My interest is narrower and more practical: can technology give more people a
-            comparable starting point?
-          </p>
-          <p>
-            Sometimes that looks like education that opens on a phone, free learning material, an AI
-            tutor, open source software, a website for a small township business, or a system that
-            runs on ordinary hardware. Sometimes it is just an explanation written for someone who was
-            never handed the background.
-          </p>
         </Section>
 
         <PullQuote>Capability should not belong only to people who already have resources.</PullQuote>
 
-        {/* 6 and 7. The mother test, and teaching */}
-        <Section title="Can I explain it to my mother?">
+        {/* 3. What I build */}
+        <Section id="builds" label="What I build" title="Laboratories for those questions.">
+          <Items items={BUILDS} />
           <p>
-            This is one of my most important tests. If I cannot explain something to my mother, my
-            father, my grandfather, or anyone outside my field without breaking the idea, I probably do
-            not understand it well enough yet. That is not about dumbing things down. It is
-            translation.
+            <a href={UBUNYE} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline">
+              Everything the lab works on, and where each piece stands
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </a>
           </p>
-          <p>
-            The second half of the test matters more: can I help them use it? I care about the moment
-            someone goes from &ldquo;I don&apos;t understand this&rdquo; to &ldquo;I can actually do
-            this myself.&rdquo;
-          </p>
-          <p>
-            That is why I teach: talks, tutorials, workshops, practical sessions, online
-            conversations, projects, informal lessons with family and friends, and collaborations with
-            academics and other practitioners. Some of it is free, on purpose. Not as charity. I just
-            enjoy sharing what I learn, and not every exchange of knowledge needs to become a
-            transaction.
-          </p>
-          <p>
-            I do not want to be the person who builds everything for everybody forever. I would rather
-            help someone understand enough to build the next thing without me.
-          </p>
-        </Section>
-
-        {/* 8 and 9. Large organisations, and models to systems */}
-        <Section title="What big organisations taught me">
-          <p>
-            My day job has shown me how large organisations solve problems: big datasets, cloud
-            infrastructure, specialised teams, production platforms, governance, vendors, distributed
-            systems moving millions of events, and real money behind all of it. I value that
-            education.
-          </p>
-          <p>
-            It also left me with a question I cannot put down: what does the same capability look like
-            when almost none of those resources are there? That is a big part of why open source pulls
-            at me. Learn from the well resourced systems, then ask which principles survive the move to
-            something smaller, cheaper and easier to reach.
-          </p>
-          <p>
-            Professionally I am a Lead Data Scientist, but the work has kept pulling me deeper, into
-            engineering, infrastructure, architecture and systems. The lesson that did it:
-          </p>
-          <p className="font-display text-2xl font-bold text-ivory">A model sitting in a notebook is not impact.</p>
-          <p>
-            Anyone can train a model. The interesting problem is everything after. Can people reach it?
-            Can it scale? Does it survive failure, real data, and someone else maintaining it? Does it
-            actually improve a decision?
-          </p>
-          <RouteChain label="The full path I care about" steps={['idea', 'model', 'system', 'user', 'impact']} />
-        </Section>
-
-        {/* 10. Intelligence */}
-        <Section title="What is intelligence, actually?">
-          <p>
-            I love modern AI. I build with agents and intelligent systems every week. But I keep
-            wondering whether the current way of framing intelligence is the only useful one, or just
-            the one we happened to arrive at.
-          </p>
-          <p>
-            People coordinated, survived, passed on knowledge and managed uncertainty for generations
-            before computers existed. I am curious whether African collective philosophies, ubuntu and
-            ubunye especially, have anything to say about how intelligent systems could work. Could
-            agents coordinate differently? Are there useful models of intelligence we ignored? What
-            would a system look like if some of its design principles came from communities, not only
-            from corporations and computer architecture?
-          </p>
-          <p>
-            I want to be careful here. This is a question I am exploring, not a theory I have
-            developed or a claim I can defend. I do not know the answer. That is why I find it
-            interesting.
-          </p>
-        </Section>
-
-        <LevelSetPlay />
-
-        {/* 11 to 15. What I build */}
-        <Section id="builds" title="What I build">
-          <p>
-            My projects are laboratories for these questions. They are not a portfolio of startups.
-          </p>
-
-          <Sub title="Kasilam Digital Platforms">
-            <p>
-              Helping people digitise their lives and small businesses: simple websites, digital
-              tools, a bit of AI and automation, an online presence, and teaching people how to use all
-              of it. Some of it is free. The website is not the interesting part. The interesting part
-              is the moment someone realises technology is something they can build with, not only
-              something other people make for them.
-            </p>
-          </Sub>
-
-          <Sub title="Ubunye AI Ecosystems">
-            <p>
-              Tools for people with small budgets and big problems: open source infrastructure,
-              distributed systems, reusable software, research infrastructure, and systems that can
-              move between a laptop, a cluster and the cloud. The question behind it is how much of what
-              once needed a large institution a small team, or even one person, can now build.
-            </p>
-            <p>
-              This is not about rejecting the rest of the world&apos;s technology. Take the best ideas
-              wherever they come from. Learn them properly. Then ask what we should build for ourselves.
-            </p>
-          </Sub>
           <RepoRoute />
         </Section>
 
-        {/* 16. Hardware */}
-        <Section title="Where software reaches physics">
+        {/* 4. Research */}
+        <Section id="research" label="Research" title="The questions I keep carrying home.">
           <p>
-            Lately I am learning hardware, and it is the same curiosity going one layer down. Software
-            eventually reaches physics. The cloud is someone&apos;s machines. AI depends on chips.
-            Memory, networks, energy, latency and heat all have limits, and cameras depend on sensors
-            and glass.
+            I have been lucky to study and work around powerful ideas: mathematics, physics, machine
+            learning, computer vision, distributed computing, large production systems. Most of them
+            live inside universities, laboratories and big companies. I keep asking what they mean in
+            Soshanguve.
           </p>
-          <p>
-            So I am learning GPUs, local compute, clusters, networking, electronics, sensors and
-            embedded systems. Mostly because I dislike the point where my understanding stops at
-            &ldquo;someone else handles that.&rdquo;
-          </p>
+          <ul className="list-none space-y-3 border-l-2 border-border pl-5">
+            {QUESTIONS.map((q) => <li key={q}>{q}</li>)}
+          </ul>
+          <RouteChain label="The full path I care about" steps={['idea', 'model', 'system', 'user', 'impact']} />
+          <LevelSetPlay />
         </Section>
 
-        {/* 17. Photography */}
-        <Section id="photography" title="Photography and storytelling">
-          <p>
-            Photography is not a side note for me. Cameras, old cameras, lenses, drones, lighting,
-            film, street photography, architecture, landscapes, people, documentary work, music
-            production, and travelling to document places. Cameras are where physics, optics,
-            electronics, computation, art and memory all meet in one object.
-          </p>
-          <p className="font-display text-2xl font-bold text-ivory">
-            A camera is an extremely technical machine built to do something deeply human: remember
-            this.
-          </p>
-          <p>
-            Storytelling matters to me more every year. Technology can create capability, but stories
-            are how ideas travel.
-          </p>
+        {/* 5. Outside work */}
+        <Section id="outside" label="Outside work" title="What I do when I am not building.">
+          <Items items={OUTSIDE} />
           <a
             href={INSTAGRAM}
             target="_blank"
@@ -349,65 +255,18 @@ export default function AboutPage() {
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </p>
-          <ShutterPlay />
         </Section>
 
-        {/* 18. Anime and psychology */}
-        <Section title="Anime, and other people's heads">
+        {/* 6. How I work */}
+        <Section id="how" label="How I work" title="Build the team, then get out of the way.">
           <p>
-            I love Naruto, Dragon Ball Z and One Punch Man. Part of the appeal is getting to live inside
-            someone else&apos;s model of the world for a while: what drives them, what they are afraid
-            of, what they do when they lose.
-          </p>
-          <p>
-            That is the same thing I find fascinating about psychology. Why do people think the way they
-            do? Why do groups behave differently from the people in them? How do incentives change
-            behaviour? How can two people live through the same thing and come away with completely
-            different stories? Also, sometimes a man just punches things very hard, and that is
-            enough.
-          </p>
-          <OnePunch />
-        </Section>
-
-        {/* 19. How I work */}
-        <Section title="How I work">
-          <p>
-            I like to share, teach, build, and work alongside people, especially people who know things
-            I do not. I would rather build a team, or a system, where people can run on their own than
-            hover over anyone. I do not micromanage.
-          </p>
-          <p>
-            Meetings are not my favourite part of any job. I show up, I contribute, and I collaborate
-            a lot. I just prefer useful work and useful conversations over process for its own sake.
+            I like to share, teach, build, and work alongside people who know things I do not. I would
+            rather build a team, or a system, where people can run on their own than hover over anyone.
+            I prefer useful work and useful conversations over process for its own sake.
           </p>
         </Section>
 
-        {/* 20 and 21. Learning for no reason, and rest */}
-        <Section title="Learning for no reason">
-          <p>
-            Not everything I do fits the story above, and I am fine with that. Not every project needs
-            a business case. Not every interest has to become a startup or make money. I read about
-            astrophysics, dynamical systems, optics, strange algorithms, music production, and whatever
-            catches my attention next, simply because I want to know.
-          </p>
-          <p>
-            I am also learning to rest. Sleeping. Travelling. Taking photographs. Watching anime.
-            Spending time with people. Occasionally doing nothing at all. It turns out constant
-            productivity is not a requirement. I am still getting used to that.
-          </p>
-          <DoNothing />
-        </Section>
-
-        {/* 22. The thread */}
-        <Section title="The thread through all of it">
-          <p>
-            Understand how something works. Take it apart. Build my own version. Ask whether it could
-            work differently. Then share it, so the next person has less distance to cover.
-          </p>
-          <p>I am still figuring most of it out. That is the fun part.</p>
-        </Section>
-
-        {/* 23. Routes deeper into the site */}
+        {/* 7. Routes deeper into the site */}
         <nav aria-label="Where to go next" className="mt-20 border-t-2 border-border pt-10">
           <ul className="grid gap-3 sm:grid-cols-2">
             {ROUTES.map((r) => (
