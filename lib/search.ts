@@ -101,7 +101,7 @@ const PAGES: Indexed[] = [
   },
   {
     kind: 'Page',
-    title: 'LeparaLaMapara',
+    title: 'My AI assistant',
     description: 'An AI assistant grounded on Thabang’s real work, with citations.',
     href: '/ai',
     keywords: 'ai assistant chat ask rag grounded',

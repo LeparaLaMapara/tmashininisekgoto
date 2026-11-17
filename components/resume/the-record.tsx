@@ -38,7 +38,7 @@ export function TheRecord() {
         The route so far
       </h2>
       <p className="text-lg text-muted max-w-2xl mb-8">
-        From a stock exchange in 2017 to a PhD in 2027. Tap a stop to see the work done there.
+        From a stock exchange in 2017 to today. Tap a stop to see the work done there.
       </p>
       <CareerRoute />
     </section>

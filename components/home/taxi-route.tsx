@@ -27,7 +27,6 @@ const STOPS = [
   // Ubunye Engine is a project, not a timeline milestone; its repository
   // was created in 2025 (PROJECTS in lib/data.ts).
   { name: 'Ubunye Engine', href: '/work/ubunye-engine', state: 'now' as const, year: '2025' },
-  stop('Research', 'PhD', '/research', 'next'),
 ]
 
 export function DestinationBoard() {
@@ -62,7 +61,7 @@ export function LiveryStripes() {
 
 export function CareerRoute() {
   return (
-    <ol className="relative grid gap-0 md:grid-cols-8" aria-label="Career route, from 2017 to the PhD">
+    <ol className="relative grid gap-0 md:grid-cols-7" aria-label="Career route, from 2017 to today">
       {/* The road: vertical on phones, horizontal from md up. */}
       <span aria-hidden="true" className="absolute left-[11px] top-3 bottom-3 w-[5px] bg-ivory md:left-[6%] md:right-[6%] md:top-[11px] md:bottom-auto md:w-auto md:h-[5px]" />
       {STOPS.map((s) => (

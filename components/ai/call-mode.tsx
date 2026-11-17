@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * A voice call with LeparaLaMapara, Thabang's AI assistant.
+ * A voice call with Thabang's AI assistant.
  *
  * The visitor taps Call, hears a greeting, speaks, and hears the answer. It
  * runs on the browser's own speech recognition and speech output, so it costs
@@ -27,7 +27,7 @@ type Phase = 'idle' | 'greeting' | 'listening' | 'paused' | 'thinking' | 'speaki
 type VoiceKind = 'standard' | 'natural'
 
 const GREETING =
-  "Hi, I'm LeparaLaMapara, Thabang's AI assistant. I know his public work and writing, and I'll tell you when I don't know something. What would you like to know?"
+  "Hi, I'm Thabang's AI assistant. I know his public work and writing, and I'll tell you when I don't know something. What would you like to know?"
 
 const KOKORO_URL = 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm'
 const KOKORO_MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX'
@@ -436,7 +436,7 @@ export function CallMode() {
           )}
         />
         <span className="relative h-36 w-36 overflow-hidden rounded-full border-4 border-ivory bg-surface">
-          <Image src="/avatar.svg" alt="LeparaLaMapara, Thabang's AI assistant" fill sizes="144px" className="object-cover" />
+          <Image src="/avatar.svg" alt="Thabang's AI assistant" fill sizes="144px" className="object-cover" />
         </span>
       </div>
 

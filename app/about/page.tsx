@@ -1,28 +1,26 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { profileOpenGraph } from '@/lib/site'
 import { JsonLd } from '@/components/seo/json-ld'
 import { profilePageSchema, breadcrumbSchema } from '@/lib/schema'
-import { RouteChain } from '@/components/about/play/route-chain'
 import { LevelSetPlay } from '@/components/about/play/level-set'
-import { RepoRoute } from '@/components/about/play/repo-route'
+import { SOCIAL_LINKS } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Thabang Mashinini-Sekgoto: data scientist and AI engineer, founder of Ubunye AI Ecosystems. What he values, what he builds, and what he researches.',
+    'Thabang Mashinini-Sekgoto: a scientist at heart who goes towards hard problems and makes them simple. How he learned, what each place taught him, and what he does when nobody is paying.',
   alternates: { canonical: '/about' },
   openGraph: profileOpenGraph('/about'),
 }
 
 /**
- * The about page, made strictly professional on 2026-11-15 at Thabang's
- * request: who he is, what he values, what he builds, his research, his
- * interests, and how he works. No family stories or personal asides; those
- * belong in his writing, not here. Employers, figures and dates live on /work
- * and /resume. His title for Ubunye AI Ecosystems is Founder.
+ * The about page, rewritten on 2026-11-17 in Thabang's own words, when he asked
+ * the site to stop trying to prove a point. It tells what each place taught
+ * him, in order, with no figures: the numbers and dates live on /resume.
+ * Do not name his current employer until he says so.
  */
 
 const UBUNYE = 'https://uaie.vercel.app'
@@ -44,99 +42,57 @@ const PHOTOS = [
   { n: '46', alt: 'The Wits Great Hall in the snow' },
 ]
 
-const VALUES = [
+
+const LINKCLS = 'inline-flex items-center gap-1.5 font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline'
+
+/** What each place taught him, oldest first. His words, set on 2026-11-17. */
+const PLACES: { place: string; text: string[] }[] = [
   {
-    title: 'Access',
-    text: 'Knowledge, technology and opportunity are not spread evenly, and most of the gap is not talent. I work on whether software, data and AI can give more people a comparable starting point.',
+    place: 'My Honours and Masters at Wits',
+    text: [
+      'I finished Honours without really knowing how to program. My Masters changed that. I chose my own topic: how do you teach a computer to understand how a shape moves? It meant teaching a machine to see and to understand time, all at once. It pulled in the mathematics of change (differential equations), computer vision, and the memory networks of the time (LSTMs and GRUs). This was before transformers. I built everything from scratch, with nothing but basic NumPy. That is where I learned to think like a programmer, and to think in systems.',
+    ],
   },
   {
-    title: 'Evidence over claims',
-    text: 'A model in a notebook is not impact. What matters is whether people can reach it, whether it scales and survives real data, and whether it improves a decision. I define the test before I see the result.',
+    place: 'CSIR',
+    text: [
+      'I arrived as a vacation student and left knowing what data science was for. We used data to help municipalities understand youth unemployment and service delivery: what drives it, what to look for, what to fix. That is when I saw that numbers and algorithms can help people directly.',
+    ],
   },
   {
-    title: 'Clarity',
-    text: 'If an idea cannot be explained plainly to someone outside the field, it is not yet understood well enough. I teach, write and give talks so that others can use what I build.',
+    place: 'Wits',
+    text: [
+      'In the university’s planning office I used data to show faculties where students needed support. I learned that when more students pass, the university earns more subsidy, so helping one struggling student helps everyone. It was the first time something I built touched a whole university. I also trained vacation students and institutional researchers in AI and machine learning, and found out how much I love explaining things.',
+    ],
   },
   {
-    title: 'Build, then share',
-    text: 'I build systems to understand them, then release what I can as open source so the next team starts further ahead.',
+    place: 'IBM Research',
+    text: [
+      'I worked with scientists in the USA, Brazil, China and Japan, on petabytes of satellite and climate data: mixing images with tables, and classic models with neural networks. I watched a research idea become a paper, then become part of IBM PAIRS, a platform that lets anyone ask questions of data tied to a place and a time (satellites, weather, sensors). Insurers and food security teams around the world used it. When COVID hit, I helped build the Gauteng risk dashboard the health department planned with. That is where I learned how everything connects.',
+    ],
+  },
+  {
+    place: 'Vodacom',
+    text: [
+      'Here I learned that a cell tower is not just a tower. Each one has a profile: the customers it serves, the money it makes, whether it needs backup power, and who depends on it, from families to hospitals to banks. The data arrived live and noisy, with no answer key, so ordinary machine learning was not enough. I needed filters and probability to measure the uncertainty, mathematical optimisation, and streaming systems I built myself (Kafka and PyFlink) to join live feeds with the data we already had.',
+      'At the same time I led more than ten graduates: giving them the right work, teaching them machine learning and software, and helping them present their ideas. No leadership course. I learned it on the job.',
+    ],
+  },
+  {
+    place: 'Absa',
+    text: [
+      'I arrived knowing how to lead and how to engineer, and saw that the biggest gap was not data science. It was how the team worked. So first came the habits: write things down so knowledge does not live in one person’s head, plan in the open, check progress. Then the engineering underneath: automated tests, code reviews, shared standards for building and running models, and pipelines that check the work every time it changes. Ubunye Engine, which grew out of my own research, became the base all of it ran on. I trained and onboarded the team until everyone worked that way.',
+      'The hardest lesson there was not technical. It was people: difficult conversations, resistance to change, and politics.',
+    ],
   },
 ]
 
-const BUILDS = [
-  {
-    title: 'Ubunye AI Ecosystems',
-    href: UBUNYE,
-    external: true,
-    text: 'An open source research lab I founded. We build software, data platforms and AI for businesses, government and creatives, and we release the tools we make. Ubunye Engine, our data engine, runs the same work identically on a laptop or any cloud and powers production work at a large financial services company. TFiltersPy recovers the real signal from noisy measurements.',
-  },
-  {
-    title: 'Kasilam Digital Platforms',
-    href: '/work',
-    external: false,
-    text: 'A community programme that gets township businesses online. We teach owners to build their own websites with AI tools, ready-made templates, talks and hands-on training.',
-  },
-]
-
-const QUESTIONS = [
-  'How much of what once needed a large institution can a small team, or one person, now build with open source and cheap compute?',
-  'What does AI mean when your main computer is a phone and data costs real money?',
-  'What can free satellite data tell Africa about where to farm, build, insure and plan? It is the direction of the PhD I plan to begin at Wits in 2027; the proposal is still in preparation.',
-  'Is the current way of framing intelligence the only useful one? I am curious whether African collective philosophies, ubuntu and ubunye especially, have anything to say about how agents could coordinate. This is a question I am exploring, not a claim I can defend.',
-]
-
-const OUTSIDE = [
-  {
-    title: 'Photography and film',
-    text: 'Street, architecture, landscape and documentary photography, and short films. Cameras are where optics, electronics and computation meet.',
-  },
-  {
-    title: 'Hardware',
-    text: 'GPUs, local compute, networking, electronics, sensors and embedded systems: the layer where software meets physics.',
-  },
-  {
-    title: 'Sport',
-    text: 'Muay Thai, running and cycling.',
-  },
-]
-
-const ROUTES = [
-  { ask: 'Want the professional version?', label: 'Work and CV', href: '/work', also: { label: 'CV', href: '/resume' } },
-  { ask: 'Interested in the questions?', label: 'Research', href: '/research' },
-  { ask: 'Want the lab?', label: 'Ubunye AI Ecosystems', href: UBUNYE, external: true },
-  { ask: 'Want the opinionated version?', label: 'Writing', href: '/blog' },
-  { ask: 'Want tutorials and conversations?', label: 'Talks', href: '/talks' },
-  { ask: 'Want cameras and stories?', label: 'Photography', href: INSTAGRAM, external: true },
-]
-
-function Section({ id, label, title, children }: { id?: string; label: string; title: string; children: React.ReactNode }) {
+function Section({ id, label, children }: { id?: string; label: string; children: React.ReactNode }) {
   return (
     <section id={id} className="mt-16 sm:mt-20 scroll-mt-28">
-      <p className="font-mono text-sm text-synapse tracking-widest uppercase mb-3">{label}</p>
-      <h2 className="font-display text-2xl sm:text-3xl font-semibold text-ivory mb-6 text-balance">{title}</h2>
+      <h2 className="font-mono text-sm text-synapse-ink tracking-widest uppercase mb-5">{label}</h2>
       <div className="space-y-5 text-lg text-ivory/85 leading-relaxed">{children}</div>
     </section>
-  )
-}
-
-function Items({ items }: { items: { title: string; text: string }[] }) {
-  return (
-    <dl className="divide-y-2 divide-border border-y-2 border-border">
-      {items.map((it) => (
-        <div key={it.title} className="py-5">
-          <dt className="font-display text-xl font-bold text-ivory mb-2">{it.title}</dt>
-          <dd className="text-lg text-ivory/85 leading-relaxed">{it.text}</dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
-
-function PullQuote({ children }: { children: React.ReactNode }) {
-  return (
-    <blockquote className="about-pull my-12 border-l-[6px] border-synapse pl-6 font-display text-2xl sm:text-3xl font-bold leading-snug text-ivory text-balance">
-      <span className="about-marker">{children}</span>
-    </blockquote>
   )
 }
 
@@ -149,7 +105,7 @@ export default function AboutPage() {
             path: '/about',
             name: 'About Thabang Mashinini-Sekgoto',
             description:
-              'Thabang Mashinini-Sekgoto, data scientist, AI engineer and founder of Ubunye AI Ecosystems: what he values, what he builds, and what he researches.',
+              'Thabang Mashinini-Sekgoto: a scientist at heart who goes towards hard problems and makes them simple.',
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -159,69 +115,67 @@ export default function AboutPage() {
       />
 
       <div className="mx-auto max-w-2xl">
-        {/* 1. Who I am */}
         <header>
-          <p className="font-mono text-sm text-synapse tracking-widest uppercase mb-4">Who I am</p>
-          <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-ivory mb-8">About</h1>
-          <div className="space-y-5 text-lg text-ivory/85 leading-relaxed">
-            <p>
-              I&apos;m Thabang Mashinini-Sekgoto, a data scientist and AI engineer from Soshanguve,
-              South Africa, and the founder of{' '}
-              <a href={UBUNYE} target="_blank" rel="noopener noreferrer" className="font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline">
-                Ubunye AI Ecosystems
-              </a>
-              , an open source research lab.
-            </p>
-            <p>
-              For nine years I have built and run data and AI systems in banking, telecommunications,
-              applied research and higher education. My focus is getting data science out of
-              experiments and into systems that run reliably, across data science, AI engineering,
-              applied research and open source infrastructure.
-            </p>
+          <p className="font-mono text-sm text-muted mb-4">About</p>
+          <div className="sign-board px-6 py-7 sm:px-8 sm:py-8">
+            <h1 className="font-sign uppercase text-[1.9rem] leading-[1.05] sm:text-5xl text-balance">
+              I&apos;ve always wanted to be a scientist.
+            </h1>
           </div>
+          <p className="mt-10 text-lg sm:text-xl text-ivory/90 leading-relaxed">
+            I go towards the hardest problem in the room. I work it out. Then I make it simple enough for
+            anyone to use. That&apos;s most of who I am.
+          </p>
         </header>
 
-        {/* 2. What I value */}
-        <Section id="values" label="What I value" title="Four things I hold to.">
-          <Items items={VALUES} />
-          <RouteChain
-            label="The thread through all of it"
-            steps={['understand how it works', 'take it apart', 'build my own version', 'share it']}
-          />
-        </Section>
-
-        <PullQuote>Capability should not belong only to people who already have resources.</PullQuote>
-
-        {/* 3. What I build */}
-        <Section id="builds" label="What I build" title="Laboratories for those questions.">
-          <Items items={BUILDS} />
+        <Section id="learned" label="How I learned">
           <p>
-            <a href={UBUNYE} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline">
-              Everything the lab works on, and where each piece stands
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </a>
+            I studied physics, chemistry, astronomy, and pure and applied mathematics, then found my way into
+            data, machine learning and big computers. My degrees are from Wits. Most of what I know, I taught
+            myself. I believe anyone can learn anything if they want to.
           </p>
-          <RepoRoute />
         </Section>
 
-        {/* 4. Research */}
-        <Section id="research" label="Research" title="The questions I work on.">
+        <Section id="places" label="What each place taught me">
+          <dl className="divide-y-2 divide-border border-y-2 border-border">
+            {PLACES.map((p) => (
+              <div key={p.place} className="py-6">
+                <dt className="font-display text-xl font-bold text-ivory mb-3">{p.place}</dt>
+                <dd className="space-y-4">
+                  {p.text.map((t) => <p key={t.slice(0, 24)}>{t}</p>)}
+                  {p.place.startsWith('My Honours') && <LevelSetPlay />}
+                </dd>
+              </div>
+            ))}
+          </dl>
           <p>
-            I have studied and worked across mathematics, physics, machine learning, computer vision,
-            distributed computing and large production systems. Most of that capability lives inside
-            universities, laboratories and big companies. My research asks what it makes possible where
-            resources are scarce.
+            Through all of it, one habit has stayed with me since the CSIR: sit with the people who have the
+            problem, understand what they really need, and solve it as well as I can. Nobody handed me a
+            programme for any of this. I taught myself as I went.
           </p>
-          <ul className="list-none space-y-3 border-l-2 border-border pl-5">
-            {QUESTIONS.map((q) => <li key={q}>{q}</li>)}
-          </ul>
-          <RouteChain label="The full path I care about" steps={['idea', 'model', 'system', 'user', 'impact']} />
-          <LevelSetPlay />
         </Section>
 
-        {/* 5. Outside work */}
-        <Section id="outside" label="Interests" title="Outside the day job.">
-          <Items items={OUTSIDE} />
+        <Section id="explain" label="Why I explain things">
+          <p>
+            I don&apos;t talk much. I&apos;d rather do the thing. But when I understand something difficult, I
+            want to share it, simply enough that even my own mother could follow it. Seeing someone understand an
+            idea and realise what it could mean for their life is my favourite part of the work. That is what my{' '}
+            <Link href="/blog" className={LINKCLS}>writing</Link> and{' '}
+            <Link href="/talks" className={LINKCLS}>talks</Link> are for.
+          </p>
+        </Section>
+
+        <Section id="outside" label="When nobody is paying">
+          <p>
+            On weekends I build engines for fun: data, maps, whatever question has caught me. What I can share,
+            I release through{' '}
+            <a href={UBUNYE} target="_blank" rel="noopener noreferrer" className={LINKCLS}>Ubunye AI Ecosystems</a>,
+            the open source lab I started.
+          </p>
+          <p>
+            Outside of that I take photos of buildings, people, clouds and anything unfamiliar. And I watch a lot
+            of anime, then think too hard about what it says about real life.
+          </p>
           <a
             href={INSTAGRAM}
             target="_blank"
@@ -236,52 +190,24 @@ export default function AboutPage() {
             ))}
           </a>
           <p>
-            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-synapse-ink underline underline-offset-4 hover:no-underline">
-              More of my photographs on Instagram
+            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className={LINKCLS}>
+              More of my photographs
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </p>
         </Section>
 
-        {/* 6. How I work */}
-        <Section id="how" label="How I work" title="Build the team, then trust it.">
-          <p>
-            I build teams and systems that can run without me: clear goals, trust, and room for
-            people to do their best work. I collaborate widely, especially with people who know things
-            I do not, and I prefer useful work over process for its own sake.
+        <section className="mt-24 border-t-2 border-border pt-10">
+          <p className="text-xl sm:text-2xl leading-relaxed text-ivory">
+            Got a difficult question?{' '}
+            <a href={`mailto:${SOCIAL_LINKS.email}`} className="inline-block bg-[#ffd23f] px-2 font-semibold text-[#111111] hover:underline">
+              Email me.
+            </a>
           </p>
-        </Section>
-
-        {/* 7. Routes deeper into the site */}
-        <nav aria-label="Where to go next" className="mt-20 border-t-2 border-border pt-10">
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {ROUTES.map((r) => (
-              <li key={r.ask} className="about-route border-2 border-border p-4">
-                <p className="text-sm text-muted mb-1">{r.ask}</p>
-                {r.external ? (
-                  <a href={r.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-display font-bold text-ivory hover:text-synapse-ink">
-                    {r.label}
-                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                ) : r.also ? (
-                  <span className="inline-flex flex-wrap items-center gap-x-4 font-display font-bold text-ivory">
-                    <Link href={r.href} className="inline-flex items-center gap-1.5 hover:text-synapse-ink">
-                      Work <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
-                    <Link href={r.also.href} className="inline-flex items-center gap-1.5 hover:text-synapse-ink">
-                      {r.also.label} <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
-                  </span>
-                ) : (
-                  <Link href={r.href} className="inline-flex items-center gap-1.5 font-display font-bold text-ivory hover:text-synapse-ink">
-                    {r.label}
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <p className="mt-4 text-muted">
+            The dates and details are on my <Link href="/resume" className={LINKCLS}>CV</Link>.
+          </p>
+        </section>
       </div>
     </div>
   )

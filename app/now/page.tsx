@@ -87,10 +87,8 @@ export default function NowPage() {
       <div className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-ivory">Research</h2>
         <p className="mt-3 text-muted leading-relaxed">
-          A doctoral research proposal is in preparation at the University of the
-          Witwatersrand, building on the MSc work on learning the level set method
-          with echo state networks for image segmentation. It is at proposal stage
-          and not yet registered. The published papers are on the{' '}
+          My published research started with the MSc work on learning the level set method
+          with echo state networks for image segmentation. The published papers are on the{' '}
           <Link href="/research#papers" className="text-synapse underline underline-offset-2 hover:no-underline">
             research
           </Link>{' '}
@@ -127,7 +125,7 @@ export default function NowPage() {
       <p className="mt-16 border-t border-border pt-8 text-muted">
         Want to work together?{' '}
         <Link href="/ai" className="text-synapse underline underline-offset-2 hover:no-underline">
-          Ask LeparaLaMapara
+          Ask my AI assistant
         </Link>{' '}
         or reach out from there.
       </p>

@@ -35,7 +35,7 @@ export default function ResearchIndex() {
       </figure>
       <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">Research</h1>
       <p className="mt-4 text-lg leading-relaxed text-muted">
-        Everything I have published, newest first. The production work that grew out of some of it is
+        The hard questions I have worked on, and the papers that came out of them, newest first. The production work that grew out of some of it is
         under <Link href="/work" className="text-synapse underline underline-offset-2 hover:no-underline">Work</Link>.
       </p>
 

@@ -98,7 +98,7 @@ export function GET() {
     `- [Career journey](${SITE_URL}/career): the path from a BSc at Wits to leading a data science capability`,
     `- [Now](${SITE_URL}/now): what he is working on at the moment`,
     `- [Topics](${SITE_URL}/topics): every subject the work is about`,
-    `- [LeparaLaMapara](${SITE_URL}/ai): Thabang's AI assistant, grounded on this site (it is an assistant, not him)`,
+    `- [AI assistant](${SITE_URL}/ai): Thabang's AI assistant, grounded on this site (it is an assistant, not him)`,
     '',
     '## Machine-readable files',
     '',
