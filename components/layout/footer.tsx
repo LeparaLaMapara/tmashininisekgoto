@@ -34,9 +34,7 @@ export function Footer() {
                 { href: '/work', label: 'Work' },
                 { href: '/research', label: 'Research' },
                 { href: '/blog', label: 'Writing' },
-                { href: '/topics', label: 'Topics' },
                 { href: '/talks', label: 'Talks' },
-                { href: '/career', label: 'Journey' },
                 { href: '/now', label: 'Now' },
                 { href: '/resume', label: 'CV' },
               ].map(({ href, label }) => (

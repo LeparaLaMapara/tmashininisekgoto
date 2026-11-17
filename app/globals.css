@@ -967,10 +967,7 @@ html.dark .timeline-route.is-live .timeline-stop.is-passed {
 }
 html.dark .timeline-route.is-live .timeline-stop.is-passed svg { color: var(--color-synapse); }
 
-/* LeparaLaMapara */
-.name-roll { display: inline-grid; }
-.name-roll::before { content: attr(data-name); visibility: hidden; grid-area: 1 / 1; }
-.name-roll > span { grid-area: 1 / 1; justify-self: start; white-space: nowrap; }
+/* AI assistant */
 .think-lamps { display: flex; align-items: center; gap: 5px; padding: 3px 2px; }
 .think-lamps > span {
   width: 7px;

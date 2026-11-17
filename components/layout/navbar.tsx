@@ -91,7 +91,7 @@ export function Navbar() {
               pathname === '/ai' ? 'text-ivory' : 'text-muted hover:text-ivory'
             )}
           >
-            Talk to LeparaLaMapara
+            My AI assistant
           </Link>
 
           <ThemeToggle />
@@ -141,7 +141,7 @@ export function Navbar() {
                 href="/ai"
                 className="px-4 py-3 text-base font-medium text-muted hover:text-ivory transition-colors"
               >
-                Talk to LeparaLaMapara
+                My AI assistant
               </Link>
               <div className="mt-3 flex justify-center">
                 <ThemeToggle withLabel />

@@ -4,10 +4,9 @@ import { webPageSchema, breadcrumbSchema } from '@/lib/schema'
 import { pageOpenGraph } from '@/lib/site'
 import { AssistantModes } from '@/components/ai/assistant-modes'
 import { WorkWithMe } from '@/components/ai/work-with-me'
-import { NameRoll } from '@/components/ai/name-roll'
 
 export const metadata: Metadata = {
-  title: 'LeparaLaMapara: my AI assistant, ask about my work',
+  title: 'My AI assistant: ask about my work',
   description:
     'Call or type to an AI assistant grounded on the real work, writing, talks, and projects of Thabang Mashinini-Sekgoto. Every answer cites its sources.',
   alternates: { canonical: '/ai' },
@@ -20,10 +19,10 @@ export default function AIPage() {
     <>
       <JsonLd
         data={[
-          webPageSchema({ path: '/ai', name: 'LeparaLaMapara', description: 'An AI assistant grounded on the real work, writing and projects of Thabang Mashinini-Sekgoto.' }),
+          webPageSchema({ path: '/ai', name: 'My AI assistant', description: 'An AI assistant grounded on the real work, writing and projects of Thabang Mashinini-Sekgoto.' }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
-            { name: 'LeparaLaMapara', path: '/ai' },
+            { name: 'AI assistant', path: '/ai' },
           ]),
         ]}
       />
@@ -31,10 +30,7 @@ export default function AIPage() {
       <section className="mx-auto max-w-4xl px-6 pt-24 pb-8">
         <div className="mb-8 text-center">
           <h1 className="font-display text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
-            Talk to{' '}
-            <span className="text-synapse">
-              <NameRoll />
-            </span>
+            My AI assistant
           </h1>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">
             Call my AI assistant, or type to it. It knows my public work and

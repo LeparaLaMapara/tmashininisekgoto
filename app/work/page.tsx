@@ -5,6 +5,14 @@ import { ProjectFilter } from '@/components/work/project-filter'
 import { JsonLd } from '@/components/seo/json-ld'
 import { workIndexSchema, breadcrumbSchema } from '@/lib/schema'
 import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
+
+/** Live products he built, linked out. Added 2026-11-17; no figures, by his request. */
+const LIVE = [
+  { name: 'Sekhoto', text: 'Free school help for South African learners, Grade R to 12, built to work on a cheap phone.', href: 'https://sekhotomultiversity.com' },
+  { name: 'Masepala', text: 'Plain-language facts on every South African municipality and ward, from public government data.', href: 'https://masepala.vercel.app' },
+  { name: 'ThabangVision', text: 'Rent camera gear and book photographers and filmmakers in South Africa.', href: 'https://www.thabangvision.com' },
+]
 
 export const metadata: Metadata = {
   title: 'Work: Problems, Systems & Open Source',
@@ -41,6 +49,23 @@ export default function WorkPage() {
             sometimes research, and sometimes the useful thing was helping someone
             else learn to solve it. These are some of those.
           </p>
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <h2 className="font-mono text-sm uppercase tracking-widest text-synapse-ink mb-4">Live now</h2>
+          <ul className="mb-20 max-w-3xl">
+            {LIVE.map((l) => (
+              <li key={l.name} className="border-t-2 border-border last:border-b-2">
+                <a href={l.href} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-6 py-5">
+                  <span>
+                    <span className="block font-display text-xl font-semibold text-ivory group-hover:text-synapse-ink transition-colors">{l.name}</span>
+                    <span className="block mt-1 text-muted">{l.text}</span>
+                  </span>
+                  <ArrowUpRight className="w-5 h-5 shrink-0 text-synapse-ink" aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
         </ScrollReveal>
 
         <ProjectFilter />

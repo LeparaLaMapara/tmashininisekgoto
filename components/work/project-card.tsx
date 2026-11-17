@@ -82,14 +82,6 @@ export function ProjectCard({ project }: { project: Project }) {
           <p className="mt-1 text-[0.9375rem] text-muted leading-relaxed">{project.why}</p>
         </div>
 
-        {/* One verified outcome, only where one exists */}
-        {project.outcome && (
-          <div className="mt-4">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted">What changed</span>
-            <p className="mt-1 text-[0.9375rem] text-synapse font-medium leading-relaxed">{project.outcome}</p>
-          </div>
-        )}
-
         {/* Topics, not skill badges */}
         <div className="mt-4 flex flex-wrap gap-1.5">
           {project.topics.map((topic) => (

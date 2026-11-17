@@ -127,7 +127,7 @@ export const RESEARCH: ResearchLine[] = [
       before:
         'A BSc in computational and applied mathematics and astronomy, and an honours project on wildfire estimation with kernel density estimators.',
       after:
-        'The proposed doctoral research, at proposal stage and not registered, is described in the CV record as following on from this work.',
+        'Modelling how things change over time carried on into satellite and climate work at IBM Research.',
     },
     provenance: [
       { label: 'Dissertation record, WIReDSpace', href: 'https://hdl.handle.net/10539/33910' },
@@ -168,7 +168,7 @@ export const RESEARCH: ResearchLine[] = [
     topics: ['seasonal-forecasting', 'climate-risk', 'time-series', 'recurrent-neural-networks', 'deep-learning', 'geospatial-ml'],
     lineage: {
       after:
-        'Climate and geospatial risk continued at a bank, as flood forecasting for underwriting, and in the proposed doctoral research on flood mapping.',
+        'Climate and geospatial risk continued at a bank, as flood forecasting for underwriting.',
     },
     provenance: [
       { label: 'NeurIPS 2020 CCAI workshop paper', href: 'https://www.climatechange.ai/papers/neurips2020/74' },
@@ -209,23 +209,6 @@ export const RESEARCH: ResearchLine[] = [
       { label: 'IFAC-PapersOnLine 52(14) 249 to 254, DOI 10.1016/j.ifacol.2019.09.195', href: 'https://doi.org/10.1016/j.ifacol.2019.09.195' },
     ],
     page: true,
-  },
-  {
-    slug: 'sar-flood-mapping-proposal',
-    name: 'Physics informed self supervised learning for SAR flood mapping',
-    headline: 'Proposed: self supervised flood mapping from radar',
-    summary:
-      'Proposed doctoral research, not yet registered: physics informed self supervised learning for flood extent mapping from synthetic aperture radar.',
-    status: 'proposed',
-    period: 'PhD in Computer Science at Wits, commencing 2027; proposal in preparation, not registered',
-    organization: 'wits',
-    role: 'Proposed doctoral researcher (not registered)',
-    publications: [],
-    software: [],
-    relatedProjects: ['insurance-data-science-capability', 'ibm-geospatial'],
-    topics: ['synthetic-aperture-radar', 'remote-sensing', 'climate-risk', 'geospatial-ml'],
-    provenance: [{ label: 'CV', href: 'https://www.tmashininisekgoto.com/resume' }],
-    page: false,
   },
   {
     slug: 'wildfire-kernel-density-estimation',

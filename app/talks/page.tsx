@@ -67,7 +67,8 @@ export default function TalksPage() {
           </h1>
           <p className="mb-10 max-w-2xl text-lg text-muted leading-relaxed">
             Conversations, demonstrations and interviews about AI, research and
-            learning. I like explaining things, so most of what I have understood
+            learning. I love the moment someone understands something that looked
+            impossible, so most of what I have understood
             properly ends up here in one form or another.
           </p>
 

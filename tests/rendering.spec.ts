@@ -36,6 +36,19 @@ test.describe('server-rendered HTML', () => {
     expect(html).toContain('BibTeX for all')
   })
 
+  // Thabang, 2026-11-17: stop trying to prove a point. Figures live on the CV
+  // only, nothing that has not happened yet (the PhD), and the assistant is
+  // just "my AI assistant".
+  test('homepage carries no figures, no PhD and no assistant name', async ({ request }) => {
+    const html = await (await request.get('/')).text()
+    const text = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ')
+    for (const banned of ['R1B', '100M+', '300K', 'PhD', 'LeparaLaMapara', 'loading...']) {
+      expect(text, banned).not.toContain(banned)
+    }
+    expect(text).toContain('My AI assistant')
+    expect(text).toContain('Questions I')
+  })
+
   test('CV impact numbers are the real values, not zeros', async ({ request }) => {
     const html = await (await request.get('/resume')).text()
     const text = html.replace(/<[^>]+>/g, '')

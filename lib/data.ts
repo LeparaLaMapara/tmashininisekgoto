@@ -665,9 +665,9 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'ai-education-platform',
-    headline: 'AI education: FabAcademic Unfiltered and LeparaLaMapara',
+    headline: 'AI education: FabAcademic Unfiltered and my AI assistant',
     summary:
-      'Co hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, public technical writing, and LeparaLaMapara, a grounded assistant that cites its sources.',
+      'Co hosting FabAcademic Unfiltered with Prof. Mamokgethi Phakeng, public technical writing, and an AI assistant that cites its sources.',
     kind: 'programme',
     status: 'active',
     period: '2026 to present',
@@ -688,7 +688,7 @@ export const PROJECTS: Project[] = [
     artifacts: [
       { kind: 'site', href: 'https://www.youtube.com/@Fabacademic', label: 'FabAcademic Unfiltered' },
       { kind: 'site', href: 'https://www.youtube.com/@tmashininisekgoto', label: 'YouTube' },
-      { kind: 'site', href: 'https://www.tmashininisekgoto.com/ai', label: 'LeparaLaMapara, my AI assistant' },
+      { kind: 'site', href: 'https://www.tmashininisekgoto.com/ai', label: 'My AI assistant' },
     ],
     caseStudy: {
       problem:
@@ -698,7 +698,7 @@ export const PROJECTS: Project[] = [
       context:
         'A public AI leadership and technical education effort, run alongside the day job rather than instead of it, aimed at practical adoption, mentorship and industry-wide literacy.',
       contribution:
-        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also built LeparaLaMapara, my retrieval-grounded AI assistant, which answers only from this site’s own content and cites its sources, so the material can be interrogated rather than only read.',
+        'I co-host FabAcademic Unfiltered alongside Prof. Mamokgethi Phakeng, delivering strategic AI insight to a global audience. I publish technical leadership writing that distils distributed systems, MLOps, AI governance and enterprise ML architecture into something readable. I also built a retrieval-grounded AI assistant for this site, which answers only from this site’s own content and cites its sources, so the material can be interrogated rather than only read.',
       changed:
         'A large audience gets an accurate account of what building with AI involves, from someone doing it in production rather than describing it from outside.',
       benefited:
@@ -1554,18 +1554,6 @@ export interface CareerMilestone {
 }
 
 export const CAREER_TIMELINE: CareerMilestone[] = [
-  {
-    period: 'Commencing 2027',
-    role: 'PhD in Computer Science',
-    org: 'University of the Witwatersrand',
-    shortOrg: 'Research',
-    description: 'Commencing in 2027; the proposal is in preparation and not yet registered. The proposed research explores physics-informed self-supervised learning for SAR-based flood extent mapping, for climate risk in data scarce regions. It follows on from the MSc work on echo state networks for level set segmentation, and from the geospatial and climate risk systems built at IBM Research and at the bank.',
-    kind: 'research',
-    accent: 'signal',
-    era: 'The Next Question',
-    highlight: 'Proposed research: physics-informed self-supervised learning for SAR flood mapping',
-    skills: ['Physics-Informed ML', 'Self-Supervised Learning', 'Remote Sensing', 'Hydrology'],
-  },
   {
     period: 'Mar 2024 - Present',
     role: 'Lead Data Scientist',
