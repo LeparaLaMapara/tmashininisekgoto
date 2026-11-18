@@ -34,7 +34,7 @@ export function DestinationBoard() {
     <div
       className="dest-board relative overflow-hidden bg-[#0c0c0c] border-[6px] border-[#2b2b2b] px-4 py-4 sm:px-6 sm:py-5"
       role="img"
-      aria-label="Destination board: Soshanguve to production, via research and open source"
+      aria-label="Destination board: Soshanguve to the stars, via hard questions"
     >
       <p
         aria-hidden="true"
@@ -43,7 +43,7 @@ export function DestinationBoard() {
         SOSHANGUVE <span className="whitespace-nowrap">⇄ <BoardDestination /></span>
       </p>
       <p aria-hidden="true" className="font-dot font-bold text-[#ffb000]/80 text-xs sm:text-lg tracking-widest mt-2">
-        VIA RESEARCH · VIA OPEN SOURCE · ALL STOPS
+        VIA HARD QUESTIONS · ALL STOPS
       </p>
     </div>
   )
