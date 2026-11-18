@@ -301,42 +301,6 @@ html:not(.dark) main h1:not(.sign-board h1) {
   margin-bottom: 1.75rem;
 }
 
-/* ThabangVision: his photographs, tiny and quiet, behind everything. */
-.vision-collage {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
-  grid-auto-rows: 60px;
-  gap: 3px;
-  overflow: hidden;
-  pointer-events: none;
-}
-.vision-collage i {
-  background-size: cover;
-  background-position: center;
-  filter: grayscale(1) contrast(1.1);
-  opacity: 0.1;
-  transition: filter 2.4s ease, opacity 2.4s ease;
-}
-/* A soft dark veil over the reading column, so the photos live at the edges. */
-.vision-veil {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(ellipse 46% 75% at 50% 50%, rgba(11, 11, 12, 0.82), rgba(11, 11, 12, 0.35) 70%, rgba(11, 11, 12, 0.1));
-}
-.vision-collage { z-index: -2; }
-.vision-collage i.lit {
-  filter: none;
-  opacity: 0.34;
-}
-@media (prefers-reduced-motion: reduce) {
-  .vision-collage i { transition: none; }
-}
-
 /* === Sosha Plata Jo: the street around the sign === */
 
 :root {
