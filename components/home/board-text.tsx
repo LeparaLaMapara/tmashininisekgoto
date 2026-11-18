@@ -7,10 +7,10 @@ import { useEffect, useRef, useState } from 'react'
  * does: every letter rolls through the alphabet and settles, left to right.
  *
  * The server renders the first destination, so crawlers, link previews and
- * people who turned motion off all see "THE STARS". The board pauses while it
+ * people who turned motion off all see "PHYSICS". The board pauses while it
  * is off screen or the tab is hidden.
  */
-const DESTINATIONS = ['THE STARS', 'PHYSICS', 'MATHS', 'DATA', 'THE CLASSROOM', 'ANIME', 'THE CLOUDS']
+const DESTINATIONS = ['PHYSICS', 'MATHS', 'DATA', 'THE CLASSROOM', 'ANIME', 'THE CLOUDS']
 const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 const HOLD_MS = 5200
 const FRAME_MS = 45

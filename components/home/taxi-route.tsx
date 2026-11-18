@@ -34,7 +34,7 @@ export function DestinationBoard() {
     <div
       className="dest-board relative overflow-hidden bg-[#0c0c0c] border-[6px] border-[#2b2b2b] px-4 py-4 sm:px-6 sm:py-5"
       role="img"
-      aria-label="Destination board: Soshanguve to the stars, via hard questions"
+      aria-label="Destination board: Soshanguve to physics, maths, data and more, via hard questions"
     >
       <p
         aria-hidden="true"
