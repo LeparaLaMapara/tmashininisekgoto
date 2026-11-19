@@ -1,0 +1,130 @@
+---
+title: "Write the part only you can write"
+seoTitle: "Ubunye Engine for data and AI teams"
+date: 2026-11-19
+published: true
+tags: [ubunye series, open source, data engineering, data science, python]
+series: "Ubunye Engine"
+seriesPart: 1
+summary: "Put your decisions in two files. Let Ubunye Engine handle the batch work, keep a run record and help you compare the answer."
+---
+
+# Write the part only you can write
+
+*Part one of [Ubunye Engine](/blog/series/ubunye-engine), for the people who use it.*
+
+You know which data you need. You know what should change and where the answer belongs. Getting it there takes more work: connections, checks, writes and another way to find out what happened.
+
+Ubunye Engine gives that work a common home. You write the decisions in two files. It handles the batch task around them.
+
+<VideoEmbed videoId="m2cE4zEyEQM" title="One task. Every engine. Same answer." />
+
+## Make room for your work
+
+Your week should have room for the question you came to answer.
+
+A file needs reading. A result needs saving. A notebook has to become a job. Each time, you write the surrounding code again. Ubunye puts reading, changing and writing data on one path, with data checks and a record of the run.
+
+<UbunyeYourWeek />
+
+It is a Python framework for batch data and machine learning pipelines. A batch processes a bounded set of data. A task is one unit of reading, changing and writing it.
+
+Start with one task. Keep the part that needs your judgement close enough to read.
+
+## Put your decisions in two files
+
+Someone else needs to understand what your job does.
+
+In `config.yaml`, name the inputs, outputs and settings. YAML is a text format for those settings. In `transformations.py`, write the change as a Python class.
+
+<UbunyeTaskFolder />
+
+Connectors read and write the data. A backend executes the work. Choose pandas for local work or Spark for a Spark environment.
+
+Group tasks into a pipeline and pipelines into a use case, a folder for one problem. The path tells the next person where to start. The generated starter also includes sample data and a notebook, so you have something to run straight away.
+
+## Find your starting point
+
+The problem looks different depending on your day. Choose yours.
+
+<UbunyeRoles />
+
+The common idea is small: put the decision beside the work. A data rule belongs with the task it checks. A model gate belongs with the version it judges. A run record belongs where the next person can find it.
+
+Before running, use `ubunye plan` to see the inputs, outputs, transformation and problems. It starts no backend and moves no data. Use `ubunye doctor` to check the machine, installed backends and plugins.
+
+Declare rules for missing values, allowed values, row counts and column types. Output rows that fail eligible checks can go to quarantine, a separate output where you can inspect them. You decide what good data means.
+
+## Take the task with you
+
+Moving the job should leave you with something you can compare.
+
+A run record holds status, timing, code and configuration evidence, plus input and output row counts and hashes. A hash is a compact fingerprint of the data. Canonical row hashing puts values into a common form, so a different row order does not change the answer.
+
+<UbunyeSameAnswer />
+
+The C01 example reads, joins, filters and summarises fixed sample data. It produces **10 order lines and 5 country summary rows**. Its published comparisons report the same shortened workload digest, `bb08a7d7a9fd`, across seven environments.
+
+With `ubunye prove`, compare workload identity, inputs, output data, schemas and row counts. You can ask a better question than “did both jobs finish?” You can ask whether their recorded results agree.
+
+## Know where it runs
+
+You need to know which route has evidence behind it.
+
+<UbunyeRuntimeMap />
+
+The [published seven environment proof](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/docs/proving-ground/latest.md) used **0.7.2 on 30 September 2026**. It covers selected workloads on pandas, local Spark, a local kind Kubernetes cluster, AWS Glue, GCP Dataproc, Azure Container Apps and Databricks. Azure ran Spark in local mode inside a container. This is historical proof, not a seven environment rerun of 0.9.3.
+
+Portability needs compatible transformations and connectors. Narwhals is a library for writing dataframe transformations that work across backends. Spark specific Python and Delta writes do not automatically become pandas work.
+
+On AWS, Glue has proving evidence. EMR Serverless has a deployment route tested as a plan. Redshift has a documented JDBC route, a database connection interface that needs the right driver. Neither has a dedicated proving execution. Generic Spark clusters have a launch route too.
+
+Classic EMR and Hadoop YARN are untested. SageMaker and Vertex AI serving adapters are proposed. Synapse and Fabric support is unknown. Docker has separate matching results for the document index example.
+
+Choose Ubunye for batch work; native streaming is not built in. It uses your scheduler and compute. Rerun protection depends on the sink and shared storage. Enable recording and check that the record was saved. Hashes compare data content, not file bytes, and cannot reconstruct the rows. A model's production stage is a registry decision, not a served endpoint.
+
+## Your first five minutes
+
+Start with a task you can run locally.
+
+A clean Python 3.12 environment installed **0.9.3** from PyPI with:
+
+```bash
+pip install "ubunye-engine[pandas]"
+```
+
+From an empty working folder, create the sample, inspect the plan, run it with recording and list its record:
+
+```bash
+ubunye init -d pipelines -u demo -p starter -t filter_adults
+ubunye plan -d pipelines -u demo -p starter -t filter_adults --backend pandas
+ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas --lineage
+ubunye lineage list -d pipelines -u demo -p starter -t filter_adults
+```
+
+Here, `-d` names the root folder, `-u` the use case, `-p` the pipeline and `-t` the task. pandas runs locally without Java. `--lineage` turns on recording.
+
+<UbunyeQuickstart />
+
+Those four commands ran in **under three seconds on a laptop**. The plan said `Plan OK: 1 task(s) can run.` The run said `[OK] Run complete for filter_adults`. The record showed:
+
+```text
+c4543843  2026-11-19T13:37:53  success  1.2s  in:8  out:5
+```
+
+Open the two task files. You can see what it read, how it chose the adults and where it wrote the five rows. Change the task from there.
+
+## Copy something close to your question
+
+You should not have to invent the first useful example.
+
+The [examples repository](https://github.com/ubunye-ai-ecosystems/ubunye-examples/tree/da40b44a572361f5cb1cc15aaefd200f51e7b82e/examples) contains **eleven examples and eighteen task configurations**.
+
+- **Documents.** Example 11 turns six text files into 6 documents and 13 overlapping chunks. Its README records the same fingerprint on local Spark, Docker, Kubernetes and Databricks.
+- **Machine learning.** Example 04 makes taxi features, trains with held out checks and loads the production model for batch predictions. Example 08 shows monitoring and rollback as task code you can read.
+- **Language models.** Example 05 retrieves document chunks and writes answers with source IDs. This is retrieval augmented generation, or RAG. Example 06 uses teacher labels to train and evaluate a smaller classifier.
+- **Databases.** Example 09 reads public RNAcentral data through JDBC. Its documented local run read 200,000 sequences across four partitions.
+
+Pick the closest task. Read its plan. Run it with recording. You have a place for your decisions and a way to check what they produced.
+
+To add a connection or contribute, continue with [building on the engine](/blog/ubunye-engine-for-engineers). To direct it through named tools, read [the agent guide](/blog/ubunye-engine-for-agents).

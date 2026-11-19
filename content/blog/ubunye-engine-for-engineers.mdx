@@ -1,0 +1,159 @@
+---
+title: "Build the part your team needs"
+seoTitle: "Build on Ubunye Engine"
+date: 2026-11-19
+published: true
+tags: [ubunye series, open source, architecture, software engineering, mlops]
+series: "Ubunye Engine"
+seriesPart: 2
+summary: "Add a connector, backend or model integration through a named contract. Keep the core small and send the evidence with your change."
+---
+
+# Build the part your team needs
+
+*Part two of [Ubunye Engine](/blog/series/ubunye-engine), for the engineers who build on it.*
+
+You need one more connection. Or a different model store. That should be a small addition you can test and explain.
+
+Ubunye Engine keeps its centre small and its edges open. Add the part your team needs through a contract. Keep the proof with the change.
+
+{/* video: summary film to come */}
+
+## Find the right home for the change
+
+You should be able to add a connection without teaching the whole engine about it.
+
+The engine uses ports and adapters. A port describes what a component must do. An adapter supplies the mechanics for a particular backend. This is the hexagonal layout: decisions in the centre, connections around them.
+
+<UbunyeArchitecture />
+
+The real folders tell you where to start:
+
+- `ubunye/core` holds contracts and execution decisions.
+- `ubunye/core/ports.py` defines the data interface.
+- `ubunye/adapters` holds backend specific mechanics.
+- `ubunye/backends` supplies Spark, Databricks and pandas execution.
+- `ubunye/plugins` holds discoverable connections and transforms.
+
+A source import test checks that the core does not import Spark, pandas or pyarrow. That boundary keeps a backend choice out of shared decisions.
+
+Transforms receive native dataframes, the tables their backend understands. Engine consumers receive `DataFramePort`, a contract for schema, row count and collection. This avoids treating pandas column counts as a table's row count.
+
+Backend selection follows one rule across the command line, Python API and notebooks: an explicit choice, then an adapter that recognises an active platform session, then Spark. Databricks keeps control of its platform owned session.
+
+## Plug in through package metadata
+
+A new connector should arrive in its own package.
+
+Python entry points are names in an installed package's metadata. Ubunye discovers those names and loads their implementations. Declare your reader under `ubunye.readers` and your writer under `ubunye.writers`. Implement `read` and `write`. Your plugin can declare configuration keys, validation, required backend capabilities and supported write modes.
+
+<UbunyePluginPort />
+
+The [third party connector test](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/tests/unit/config/test_third_party_connector.py#L67) registers a mock Iceberg connector the way an installed package would. The configuration validates and the connector declares merge support with zero engine edits. Adjacent tests reject unmet requirements and unsupported modes. The Iceberg connector in that test is a mock.
+
+There are **15 plugin entry point groups**, covering the places you can extend:
+
+| What you are adding | Entry point groups |
+|---|---|
+| Execution and data | `ubunye.backends`, `ubunye.readers`, `ubunye.writers`, `ubunye.transforms` |
+| Models | `ubunye.ml`, `ubunye.registry_backends`, `ubunye.artifact_stores` |
+| Language model providers | `ubunye.llm_backends` |
+| Records and identity | `ubunye.lineage_backends`, `ubunye.run_identity` |
+| Events and monitoring | `ubunye.hooks`, `ubunye.monitors` |
+| Platform access | `ubunye.secrets`, `ubunye.auth_backends`, `ubunye.deploy_adapters` |
+
+A connector declares what it can do. The engine checks the task against that declaration before execution.
+
+## Keep the data rules beside the data work
+
+A successful write can still contain the wrong rows.
+
+The shipped connector names are `s3`, `delta`, `hive`, `jdbc`, `unity`, `rest_api` and `binary`. The `s3` connector reads and writes generic paths, including local files. `binary` reads unstructured files. The `unity` connector reads and writes named catalog tables.
+
+Delta is a table format with merge operations. `merge` updates matching keys and inserts new ones. `insert_new` inserts only missing keys, with matching that handles nulls. Existing rows stay as they are. Both require `merge_keys` and a compatible Delta target.
+
+Expectations are declared data checks. Use them for missing values, bounds, allowed values, patterns, uniqueness, row counts and column types. Input checks fail or warn. Output checks can also quarantine eligible rows and name the failed rules on each row.
+
+Reconciliation compares counts or sums across the task. It measures original inputs before a transformation can hide a loss, and counts quarantined rows as carried over. You can check that a join did not quietly drop part of the batch.
+
+A task can declare `CONFIG.requires` to require a successful upstream task for matching variables. The command `ubunye runs wait-for` asks the same question from outside the task. Job health reports last status, last success, consecutive failures and runs that appear stuck. These checks use shared run records.
+
+## Leave evidence someone else can inspect
+
+A green exit code tells the next engineer too little.
+
+Enable recording to keep identity, status, timing, configuration and code evidence with the data evidence. Platform collectors add workspace, job, task, git and deployment identity. A run can say where it came from as well as what it did.
+
+<UbunyeRunRecord />
+
+Run record schema version **2** can hold input and output schemas, row counts, data hashes and the method used. It can also explain a missing hash, identify reused evidence and report that a source changed during hashing.
+
+The `rows-v1` method puts each row into a common form before hashing it. Every row contributes. Row and column order do not change the result. Timestamps use UTC, and null remains distinct from NaN, a numeric missing value.
+
+For outputs with several consumers, the engine materialises one computed copy. Checks, writes and hashes then see the same rows. That decision and its measured overhead are documented in ADR 009. An ADR is an architecture decision record: the reason for a design choice, kept beside the code. There are **18 accepted ADRs**.
+
+## Keep model decisions visible too
+
+Training is only part of putting a model to work.
+
+`UbunyeModel` defines train, predict, save, load and metadata contracts. Your task code calls the model API. The engine does not need to encode the model type from each library.
+
+`ModelRegistry` shares lifecycle rules across filesystem and MLflow storage. Registration starts in development. Promotion to staging or production checks stored gates. Replacing production archives its predecessor. Compare versions, demote them or roll back to a previous version.
+
+The MLflow backend uses the real MLflow Model Registry, with aliases for staging and production. Filesystem storage can also use remote artifact storage through fsspec, a library for filesystem interfaces, with a provider such as `s3fs`.
+
+`ModelTransform` records train and predict actions, versions, metrics and gate decisions. Optional output stamps identify the model version and stage that produced a prediction.
+
+For language model steps, `llm.port` supplies provider plugins and live, record and replay modes. Replay finds a stored answer by request and fails if it is missing. The run record keeps call evidence without storing the raw prompt and answer there.
+
+Copy the public examples when you need a fuller process. Example 04 covers taxi features, training and batch inference. Example 05 retrieves document chunks and writes answers with source IDs, a process called retrieval augmented generation. Example 06 uses teacher labels to fine tune and evaluate a smaller classifier.
+
+## Carry the proof to another runtime
+
+Changing the backend should give you a comparison you can read.
+
+Spark supplies distributed execution. Databricks supplies its platform session. Portable transformations can use Narwhals, a library for compatible dataframe operations across backends.
+
+Record the runs. Use `ubunye prove observe` to turn a record into an observation for a named workload and environment. Use `ubunye prove report` to compare with a reference. It checks execution, workload identity, inputs, output data, schema and row counts. Disagreement exits with code 1.
+
+<UbunyeProvingGrid />
+
+The proving ground contains three workload families and six compared steps. C01 exercises portable joins, filters and summaries. R1 cleans and monitors a committed food price sample. R2 processes a synthetic sample shaped like Olist tables, including quarantine and reconciliation.
+
+Missing evidence gets a visible result such as PARTIAL or NOT RUN. It does not become a pass.
+
+## Make your first contribution small
+
+You need a clear place to start and a way to know the change works.
+
+The [contributor guide](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/CONTRIBUTING.md) starts with a clone and a Python virtual environment. From the engine checkout, install the development dependencies and run the unit and typing checks:
+
+```bash
+pip install -e ".[dev]"
+python -m pytest tests/unit
+python -m mypy ubunye
+```
+
+The guide also asks for `pre-commit install`. Install or provide `pre-commit` separately; the development extra does not include it.
+
+<UbunyeContributorPath />
+
+The package ships typing information. CI runs mypy, a Python type checker, and the unit tests on every change. The unit tests also run on Linux, Windows and macOS with Python 3.10 through 3.13. The suite holds **3,230 test cases**.
+
+For a bug, start with a failing regression test. Add the fix, docs and changelog together. Use Conventional Commits, commit messages with a declared change type, and send a pull request to main. Preserve compatibility through a deprecation window.
+
+A first issue could be a reproducible error with runtime versions, a clearer failure message, an example or an externally packaged connector. The existing errors already suggest fixes: `paht` points to `path`, and a missing profile lists the available names.
+
+## What it does not do yet
+
+Choose your boundary before building on it.
+
+Ubunye is a batch framework. Streaming and model serving adapters remain proposed work. Drift detection lives in example task code. Filesystem registry indexes can lose concurrent updates; use the server backed MLflow registry for concurrent writers. Feature checks cover names, not data types.
+
+Rerun leases cover a task and batch on the same or shared disk. They are not distributed locks across independent cloud disks, and there is no general transaction across every sink. Recording must be enabled and its storage available. Hashes are content evidence, not file byte equality or recoverable rows.
+
+The seven environment proof used **0.7.2 on 30 September 2026**. It does not establish 0.9.3 cloud parity or arbitrary scale. Portable transforms and connector capabilities still determine where a task works. Example RAG helpers do not all use `llm.port`, and different models do not promise identical answers.
+
+Help is wanted on [registry concurrency](https://github.com/ubunye-ai-ecosystems/ubunye_engine/issues/42), [golden output tests](https://github.com/ubunye-ai-ecosystems/ubunye_engine/issues/5) and further deployment evidence. These are open requests, not release promises.
+
+For the task author's view, return to [writing the part only you can write](/blog/ubunye-engine-for-users). For the tool interface, continue with [directing the engine through an agent](/blog/ubunye-engine-for-agents).

@@ -47,6 +47,7 @@ export function FigButton({ onClick, children, active }: { onClick: () => void; 
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={`min-h-11 rounded-sm border px-3 py-2 font-mono text-xs uppercase tracking-wider transition-colors ${
         active ? 'border-synapse bg-synapse text-void' : 'border-border text-ivory hover:bg-surface-hover'
       }`}

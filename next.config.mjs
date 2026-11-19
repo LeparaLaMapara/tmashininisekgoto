@@ -39,7 +39,7 @@ const nextConfig = {
       "media-src 'self' blob:",
       "worker-src 'self' blob:",
       "connect-src 'self' https://*.supabase.co https://api.github.com https://va.vercel-scripts.com https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co",
-      "frame-src https://www.youtube.com https://youtube.com",
+      "frame-src https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",

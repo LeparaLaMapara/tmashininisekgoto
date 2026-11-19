@@ -1,0 +1,162 @@
+---
+title: "Give your agent work it can check"
+seoTitle: "Use Ubunye Engine with AI agents"
+date: 2026-11-19
+published: true
+tags: [ubunye series, ai agents, data engineering, python, ai]
+series: "Ubunye Engine"
+seriesPart: 3
+summary: "Let an agent inspect tasks, plan work and check saved results. Nine tools read. A separate option exposes the tool that runs the task."
+---
+
+# Give your agent work it can check
+
+*Part three of [Ubunye Engine](/blog/series/ubunye-engine), for agents and the people who direct them.*
+
+You ask an agent to run a data task. It needs to find the task, inspect the plan and check what happened afterwards. Each step should have a name and a result it can read.
+
+Ubunye Engine supplies that interface. Nine tools inspect. One optional tool runs the work with recording. The agent can follow the evidence from the plan to the saved result.
+
+{/* video: summary film to come */}
+
+## Give inspection its own tools
+
+An agent needs to look before it acts.
+
+`ubunye mcp` serves the engine through the Model Context Protocol, or MCP. MCP gives an agent named tools and structured results. This server communicates through standard input and output, the streams used to exchange messages with the process that starts it.
+
+Start it against a pipeline root:
+
+```bash
+pip install "ubunye-engine[mcp]"
+ubunye mcp -d /path/to/pipelines
+```
+
+By default, it registers **nine read only tools**. Add `--allow-run` when starting the server to register the tenth tool, `run`.
+
+<UbunyeToolBoundary />
+
+The [MCP interface](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/ubunye/mcp_server.py) gives each tool a small job:
+
+| Tool | What the agent gets |
+|---|---|
+| `tasks` | The root and sorted task names, each in use case, pipeline and task order. |
+| `doctor` | Machine, backend, plugin and optional task checks, with an overall result. |
+| `plan` | One resolved task plan: inputs, outputs, transformation and problems. |
+| `runs` | Recent run summaries, newest first, including status, timing, errors and output counts and hashes. |
+| `record` | The full stored record for the latest or a requested run. |
+| `gate` | A comparison with a baseline, including an overall result and findings. |
+| `focus` | Standardised recorded call export rows, plus information about omitted rows. |
+| `health` | Task history checks, including failures, last success and runs that appear stuck. |
+| `upstream` | Whether a required task has a successful record for the selected batch. |
+| `run` | Execution with recording, returning an overall result, error and run summary. Requires `--allow-run`. |
+
+`plan` starts no backend and moves no data. `gate` evaluates a policy against records. `upstream` checks a recorded dependency. None of those tools executes the task.
+
+You can give an agent inspection access first, then expose execution when the work calls for it.
+
+## Connect it to Claude Code
+
+You should not have to invent the connection command.
+
+The engine's [docs/patterns/mcp.md](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/docs/patterns/mcp.md) documents this exact Claude Code command:
+
+```bash
+claude mcp add ubunye -- ubunye mcp -d /path/to/pipelines --allow-run
+```
+
+Replace `/path/to/pipelines` with your pipeline root. Remove the final option to expose only the nine read tools. Install the MCP extra in the environment that supplies the `ubunye` executable.
+
+Now the agent has a named way to ask what exists, whether it can run and what its last run produced. You can direct the work in those terms: inspect the task, show the problems, then check the record after execution.
+
+## Follow one task from discovery to evidence
+
+“Done” should lead to a record you can open.
+
+Use `demo/starter/filter_adults`, the generated pandas task from [the first part](/blog/ubunye-engine-for-users). Its verified command line run read **8 rows** and wrote **5 rows**. The following figure shows how to inspect and execute that task through the tools.
+
+<UbunyeAgentWalkthrough />
+
+1. **Find it.** Call `tasks` and select `demo/starter/filter_adults`. Task names have three validated components, so the agent has a clear identity for the work.
+2. **Plan it.** Call `plan` for that task with pandas. Read the inputs, the `FilterAdults` transformation, the outputs and any reported problems. Use `doctor` to inspect the environment when setup needs attention.
+3. **Run it.** With execution enabled, call `run`. It runs with recording and returns an overall result, an error and a run summary. If a task fails, inspect that result and any available record.
+4. **Read it.** Call `record` with the returned run ID. Check the task, status, inputs, output counts and hash evidence. Keep that ID when referring to this execution later.
+5. **Check its history.** Call `health`. Look at the last status, last success and consecutive failures. Use `gate` when you also need to compare with a baseline.
+
+The figure is a walkthrough of the interface over a real starter task, rather than a captured MCP conversation. The verified starter transcript is in Part 1.
+
+The server serializes its run calls with a lock. It redirects task output to standard error so task messages do not corrupt the protocol stream. Ordinary engine errors become structured tool errors. Those details let the agent read the result through the same channel even when the task has a problem.
+
+## Make language model reruns deliberate
+
+A second model call can give a different answer.
+
+For calls through `llm.port`, the engine has live, record and replay modes. Record keeps request keyed answers. Replay returns them in occurrence order for repeated requests. The run record holds call evidence such as provider, model, request hash, status and timing.
+
+Agent initiated execution defaults these steps to replay. `--allow-live-llm` is the explicit server option for allowing live calls.
+
+<UbunyeReplayBoundary />
+
+If the recording is missing, replay fails. It does not silently ask the provider for a fresh answer. That gives the person directing the agent a clear decision: supply the recording or explicitly allow live execution.
+
+## Use the notebook path when you need Python
+
+Some agents work through Python or a command line.
+
+`ubunye.notebook(task_dir, backend=...)` gives them the same task operations. `read()` returns named native frames. `transform()` can reuse the previous read, and `write()` can use the previous transformed output. `run()` performs all three.
+
+Keep the operations inside a context block:
+
+```python
+import ubunye
+
+with ubunye.notebook(
+    "pipelines/demo/starter/filter_adults",
+    backend="pandas",
+) as task:
+    sources = task.read()
+    outputs = task.transform(sources)
+    task.write(outputs)
+```
+
+<UbunyeNotebookRun />
+
+Enable recording through `run_records=`, job parameters or environment settings. The context keeps one recorded run across the block. Named steps can add stage information, and failures identify the stage, such as read, transform or write. Context exit releases resources.
+
+For command line inspection, JSON is available on specific commands:
+
+```bash
+ubunye plan -d pipelines -u demo -p starter -t filter_adults --backend pandas --json
+ubunye lineage list -d pipelines -u demo -p starter -t filter_adults --json
+ubunye runs health --help
+```
+
+The first command provides a resolved plan. The second provides recent records. The third shows the health selectors and JSON option for choosing the history to inspect. `doctor`, `gate` and several lineage commands also expose JSON.
+
+Choose the result format from each command's help. The engine keeps the structured path available without requiring every agent to use MCP.
+
+## Hand the next agent something it can verify
+
+A handoff needs more than “the previous agent said it worked.”
+
+You can arrange a handoff through shared run records. Agent A runs with recording and passes the task identity and run ID. Agent B opens that exact record and checks the outcome. Both agents need access to the same record store.
+
+<UbunyeRecordHandoff />
+
+Use `upstream` to check a successful record for the matching date and variables before dependent work starts. Use `health` to inspect the task history. Use `gate` to compare a candidate with a baseline under a policy.
+
+The shared state is the record: what ran, which batch it belonged to, whether it succeeded and what data evidence it left. You arrange who takes the next step. For the contracts behind that state, see [building on the engine](/blog/ubunye-engine-for-engineers).
+
+## What it does not do yet
+
+Keep the boundary clear when directing an agent.
+
+Ubunye is **not an agent framework**. It has no built in agent scheduler, delegation protocol or agent to agent orchestration API. These tools expose batch tasks and their records. `run` executes task code and writes its configured outputs, so expose it deliberately.
+
+Recording must be enabled and the store available. A failed run may have no saved record. Hashes compare content evidence, not file bytes or a recoverable copy of the data. Health depends on the history it can read. The notebook example needs recording settings to retain a record.
+
+Replay covers calls through `llm.port`; direct model helpers in the RAG examples do not establish automatic call recording. Different model providers do not promise identical answers. The command line `run` has no `--json` option; use MCP execution results and saved records for structured execution evidence.
+
+Streaming, model serving adapters and agent orchestration are not supplied. The checkout's `CLAUDE.md` guides contributors; task scaffolding does not generate an agent instructions file.
+
+Useful help includes [golden output tests](https://github.com/ubunye-ai-ecosystems/ubunye_engine/issues/5), clearer plans and examples that show failures as well as success. Deployment evidence is also wanted for [the companion cloud launch paths](https://github.com/ubunye-ai-ecosystems/ubunye-examples/issues/7). Start with a problem you can reproduce and leave a record the next person can check.
