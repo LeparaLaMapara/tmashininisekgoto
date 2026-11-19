@@ -29,6 +29,12 @@ export interface SeriesCopy {
 
 /** Keyed by the slugified series name, i.e. `slugifyTag(post.series)`. */
 export const SERIES: Record<string, SeriesCopy> = {
+  'ubunye-engine': {
+    intro:
+      'Write what to read, what to change and where to put the result. Ubunye Engine handles the batch task around those decisions. This series starts with using it, then turns to extending it and directing it through agent tools. Real commands, worked examples and recorded comparisons show what is available and what still needs proof.',
+    description:
+      'Ubunye Engine for data and AI work: task folders, real commands, worked examples and honest evidence of where the same work runs.',
+  },
   'the-practical-roadmap-to-building-with-ai-agents': {
     slug: 'ai-agents-roadmap',
     intro:
