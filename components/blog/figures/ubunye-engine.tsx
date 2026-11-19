@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { FileCode2, FileSliders, FolderOpen } from 'lucide-react'
+import { BrainCircuit, Database, FileCode2, FileSliders, FolderOpen, Globe2, MessagesSquare, ShieldCheck } from 'lucide-react'
 import { C, FigButton, Figure, useInView, useReducedMotion } from './towers-shared'
 
 // Product labels and numbers come from FACTS.md and the revised brief.
@@ -92,6 +92,58 @@ export function UbunyeRoles() {
               <span className="border-l-2 border-signal pl-2 text-signal">{role.after}</span>
             </span>
           </a>
+        ))}
+      </nav>
+    </EngineFigure>
+  )
+}
+
+const EXAMPLE_GROUPS = [
+  { name: 'Ingest data', icon: Database, examples: [
+    { number: '02', name: 'Weather from an API', href: '#read-a-weather-forecast' },
+    { number: '03', name: 'Documents and chunks', href: '#turn-documents-into-chunks' },
+    { number: '01', name: 'Tables and SQL', href: '#join-tables-and-write-them-safely' },
+    { number: '09', name: 'A public database', href: '#read-a-public-database' },
+  ] },
+  { name: 'Keep data clean', icon: ShieldCheck, examples: [
+    { number: '07', name: 'A data contract', href: '#keep-bad-rows-with-their-reasons' },
+    { number: 'R1', name: 'Food price alerts', href: '#follow-food-prices-through-two-tasks' },
+  ] },
+  { name: 'Train and run models', icon: BrainCircuit, examples: [
+    { number: '04', name: 'Features to predictions', href: '#train-a-model-and-use-it' },
+    { number: '08', name: 'Monitoring and rollback', href: '#decide-when-to-roll-back' },
+    { number: '10', name: 'Three frameworks', href: '#compare-three-frameworks' },
+  ] },
+  { name: 'Language models', icon: MessagesSquare, examples: [
+    { number: '05', name: 'Answers from documents', href: '#answer-from-your-documents' },
+    { number: '06', name: 'A teacher and a student', href: '#teach-a-smaller-model' },
+  ] },
+  { name: 'Run it anywhere', icon: Globe2, examples: [
+    { number: '11', name: 'One task and its fingerprint', href: '#start-with-one-portable-task' },
+  ] },
+]
+
+export function UbunyeExamplePicker() {
+  return (
+    <EngineFigure label="What do you want to learn?" caption="Choose an example. Each link takes you to its steps.">
+      <nav aria-label="Example walkthroughs" className="grid gap-4 sm:grid-cols-2">
+        {EXAMPLE_GROUPS.map(({ name, icon: Icon, examples }) => (
+          <div key={name} className="min-w-0 border-2 border-ivory p-3 sm:p-4">
+            <div className="mb-3 flex items-center gap-3 text-ivory">
+              <Icon aria-hidden="true" className="h-8 w-8 shrink-0 text-synapse-ink" />
+              <p className="!m-0 text-base font-semibold">{name}</p>
+            </div>
+            <ul className="!m-0 !list-none space-y-2 !p-0">
+              {examples.map((example) => (
+                <li key={example.href} className="!m-0 !p-0">
+                  <a href={example.href} className="flex min-h-12 items-center gap-3 border border-border p-2 text-sm text-ivory no-underline transition-colors hover:border-signal hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-signal font-mono text-signal">{example.number}</span>
+                    <span>{example.name}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
       </nav>
     </EngineFigure>
