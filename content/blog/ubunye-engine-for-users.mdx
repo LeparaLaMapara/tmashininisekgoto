@@ -21,45 +21,271 @@ Ubunye Engine gives that work a common home. You write the decisions in two file
 
 ## Make room for your work
 
-Your week should have room for the question you came to answer.
-
-A file needs reading. A result needs saving. A notebook has to become a job. Each time, you write the surrounding code again. Ubunye puts reading, changing and writing data on one path, with data checks and a record of the run.
+A notebook has to become a job. A file needs checking before it lands. Each time, you write the surrounding code again. Ubunye puts reading, changing and writing data on one path, with checks and a record of the run.
 
 <UbunyeYourWeek />
 
 It is a Python framework for batch data and machine learning pipelines. A batch processes a bounded set of data. A task is one unit of reading, changing and writing it.
 
-Start with one task. Keep the part that needs your judgement close enough to read.
+## Your first five minutes
+
+In a Python 3.12 virtual environment, install the local backend and create a starter:
+
+```bash
+pip install "ubunye-engine[pandas]"
+ubunye init -d pipelines -u demo -p starter -t filter_adults
+```
+
+Here, `-d` names the root folder, `-u` the use case, `-p` the pipeline and `-t` the task. A use case groups pipelines for one problem. The generated folder includes sample data and a notebook.
+
+<UbunyeQuickstart />
 
 ## Put your decisions in two files
 
-Someone else needs to understand what your job does.
-
-In `config.yaml`, name the inputs, outputs and settings. YAML is a text format for those settings. In `transformations.py`, write the change as a Python class.
+Open `pipelines/demo/starter/filter_adults`. These are the generated files, with comments shortened.
 
 <UbunyeTaskFolder />
 
-Connectors read and write the data. A backend executes the work. Choose pandas for local work or Spark for a Spark environment.
+`config.yaml` names the CSV to read and the Parquet output to replace. YAML is a text format for settings.
 
-Group tasks into a pipeline and pipelines into a use case, a folder for one problem. The path tells the next person where to start. The generated starter also includes sample data and a notebook, so you have something to run straight away.
+```yaml
+MODEL: "etl"
+VERSION: "0.1.0"
+CONFIG:
+  inputs:
+    people:
+      format: s3
+      path: "{{ task_dir }}/data/people.csv"
+      file_format: csv
+      options:
+        header: "true"
+        inferSchema: "true"
+  transform: {}
+  outputs:
+    adults:
+      format: s3
+      path: "{{ task_dir }}/output/adults"
+      file_format: parquet
+      mode: overwrite
+```
 
-## Find your starting point
+`transformations.py` keeps people aged 18 and over on pandas or Spark.
 
-The problem looks different depending on your day. Choose yours.
+```python
+from typing import Any, Dict
+from ubunye.core.interfaces import Task
+
+class FilterAdults(Task):
+    def transform(self, sources: Dict[str, Any]) -> Dict[str, Any]:
+        people = sources["people"]
+        return {"adults": people[people["age"] >= 18]}
+```
+
+Connectors read and write data. The `s3` connector also handles local paths. A backend executes the work: pandas locally, or Spark in a Spark environment.
+
+## Your workflow, with Ubunye
+
+Choose the work you do. Each route starts inside a workflow you already know.
 
 <UbunyeRoles />
 
-The common idea is small: put the decision beside the work. A data rule belongs with the task it checks. A model gate belongs with the version it judges. A run record belongs where the next person can find it.
+### Data scientist
 
-Before running, use `ubunye plan` to see the inputs, outputs, transformation and problems. It starts no backend and moves no data. Use `ubunye doctor` to check the machine, installed backends and plugins.
+**Your day today.** You explore in a notebook. Turning the result into a job means rebuilding the reads, writes and checks around your experiment.
 
-Declare rules for missing values, allowed values, row counts and column types. Output rows that fail eligible checks can go to quarantine, a separate output where you can inspect them. You decide what good data means.
+**Why Ubunye.** Explore a task one step at a time, then run that same folder as a recorded job.
+
+<UbunyeNotebookRun />
+
+**How**
+
+1. Open the starter in your notebook. Inspect the input between steps. `lineage=True` keeps one run record across the block.
+
+   ```python
+   import ubunye
+
+   with ubunye.notebook(
+       "pipelines/demo/starter/filter_adults",
+       backend="pandas", lineage=True,
+   ) as task:
+       sources = task.read()
+       print(sources["people"].head(3))
+       outputs = task.transform(sources)
+       task.write(outputs)
+   ```
+
+2. Put your transformation in `transformations.py`. Run the same folder from a terminal or scheduler:
+
+   ```bash
+   ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas --lineage
+   ```
+
+3. For training, copy `models/taxi_fare_model.py` from [example 04](https://github.com/ubunye-ai-ecosystems/ubunye-examples/tree/da40b44a572361f5cb1cc15aaefd200f51e7b82e/examples/04_ml_taxi_fare) beside your notebook. Install `scikit-learn` and `joblib`. Prepare separate `train` and `test` frames with its six feature columns and `fare_amount`, then fit and measure on unseen rows:
+
+   ```python
+   from taxi_fare_model import TaxiFareModel
+
+   model = TaxiFareModel()
+   metrics = {**model.train(train), **model.validate(test)}
+   ```
+
+4. Store a quality gate and promote the version. Here the gate requires test error at most 6 and test R squared at least 0.55. Promotion checks both stored rules.
+
+   ```python
+   from ubunye.models import ModelRegistry, ModelStage
+
+   registry = ModelRegistry(".ubunye/model_store")
+   version = registry.register(
+       "taxi_fare", "TaxiFareModel", None, model, metrics,
+       promotion_gates={"max_test_rmse": 6.0, "min_test_r2": 0.55},
+   )
+   registry.promote(
+       "taxi_fare", "TaxiFareModel", version.version, ModelStage.PRODUCTION,
+   )
+   ```
+
+**What you get.** Your notebook work has a repeatable job, and your model version carries the metrics that decide its promotion.
+
+### Data engineer
+
+**Your day today.** A retry can duplicate a batch. Bad rows need somewhere to go, and the next task must wait for the right input.
+
+**Why Ubunye.** Keep source settings, data rules, write behaviour and dependencies beside the transformation.
+
+**How**
+
+1. Create a `load_transactions` task under `pipelines/shop/daily`. In its `config.yaml`, read the source and merge into Delta by transaction ID. Use Spark with Delta installed for this task.
+
+   ```yaml
+   MODEL: "etl"
+   VERSION: "0.1.0"
+   CONFIG:
+     inputs:
+       transactions:
+         format: s3
+         path: "{{ task_dir }}/data/transactions.csv"
+         file_format: csv
+         options: {header: "true", inferSchema: "true"}
+     transform: {}
+     outputs:
+       clean_transactions:
+         format: delta
+         path: "{{ task_dir }}/output/clean"
+         mode: merge
+         merge_keys: [transactionID]
+       quarantined_transactions:
+         format: s3
+         path: "{{ task_dir }}/output/quarantine"
+         file_format: parquet
+         mode: overwrite
+   ```
+
+2. Under the same `CONFIG`, add these expectations. Rows with missing IDs go to quarantine with the failed rule named. Duplicate IDs stop the run. Your task's `transform` returns `{"clean_transactions": sources["transactions"]}`; the engine fills the quarantine output.
+
+   ```yaml
+     expectations:
+       clean_transactions:
+         quarantine: quarantined_transactions
+         rules:
+           - not_null: transactionID
+             severity: quarantine
+           - unique: transactionID
+   ```
+
+3. Let an `extract_transactions` task produce that CSV and record its run. Add this dependency under `CONFIG`, then run both for the same date:
+
+   ```yaml
+     requires:
+       - task: shop/daily/extract_transactions
+         variables: [dt]
+   ```
+
+   ```bash
+   ubunye run -d pipelines -u shop -p daily -t extract_transactions -t load_transactions -dt 2026-11-01 --backend spark --lineage
+   ```
+
+   The dependency checks the upstream record for that date. Merge updates matching IDs and inserts new ones, so repeating the batch does not add those IDs twice. Use `mode: insert_new` with the same keys when existing rows must stay unchanged. For append tasks, name the batch with `-dt`; use `--rerun` to replace it or `--resume` to finish a stopped pipeline.
+
+4. Export the task to Airflow. This writes a DAG, the file that defines an Airflow job:
+
+   ```bash
+   ubunye export airflow -c pipelines/shop/daily/load_transactions/config.yaml -o dags/transactions.py --profile PROD --backend spark --lineage
+   ```
+
+   Set `--usecase-dir` to the pipelines location on your Airflow worker. Schedule the extractor first, and give both jobs the same date and shared run record store.
+
+**What you get.** Checked rows reach the table, rejected rows have a reason, and the task carries its dependency into the scheduled run.
+
+### ML or AI engineer
+
+**Your day today.** You need to know which model version produced an answer, restore an earlier version and reproduce a language model step.
+
+**Why Ubunye.** Model stages and gates make version decisions visible. Recorded model calls make reruns checkable.
+
+**How**
+
+1. Register with gates and promote as in the data scientist steps. List versions before changing production. To restore the known `1.0.0` version after an update:
+
+   ```bash
+   ubunye models list --use-case taxi_fare --model TaxiFareModel --store .ubunye/model_store
+   ubunye models rollback --use-case taxi_fare --model TaxiFareModel --version 1.0.0 --store .ubunye/model_store
+   ```
+
+2. Copy the engine's [review labelling task](https://github.com/ubunye-ai-ecosystems/ubunye_engine/tree/5198d45ff544863ba161afb45073c58d8b0f8006/examples/production/llm_replay) to a local `llm_replay` folder. Its transformation calls `llm.port("openai_compatible", ...)`. Set `LLM_BASE_URL`, `LLM_MODEL` and your provider credentials for your running model server, then record its answers:
+
+   ```bash
+   export REVIEWS_INPUT_PATH="$PWD/llm_replay/data/reviews.csv"
+   export REVIEWS_OUTPUT_PATH="$PWD/out/labelled"
+   UBUNYE_LLM_MODE=record ubunye run -d llm_replay/pipelines -u shop -p reviews -t label --backend pandas --lineage
+   ```
+
+3. Keep `llm-replay.jsonl` beside the task. Repeat the request from the stored answers:
+
+   ```bash
+   UBUNYE_LLM_MODE=replay ubunye run -d llm_replay/pipelines -u shop -p reviews -t label --backend pandas --lineage
+   ```
+
+4. For retrieval augmented generation, or RAG, open [example 05](https://github.com/ubunye-ai-ecosystems/ubunye-examples/tree/da40b44a572361f5cb1cc15aaefd200f51e7b82e/examples/05_rag_documents). In Databricks, use `notebooks/run_embed_chunks.py` after example 03 produces document chunks, then `notebooks/run_answer_questions.py`. Set the catalog and schema widgets, and `EMBEDDING_ENDPOINT` and `LLM_ENDPOINT` for your workspace's models. The first task makes vectors for retrieval. The second finds relevant chunks and writes answers with their source IDs.
+
+**What you get.** A version you can inspect and restore, a model call you can replay, and a document answer linked to its sources.
+
+### Analyst
+
+**Your day today.** A useful pandas script on your laptop still needs reliable inputs, a saved result and a way to check it ran.
+
+**Why Ubunye.** Keep your pandas work in a task with a plan and a record. No Java needed.
+
+**How**
+
+1. Inspect the starter's plan. It shows reads, writes and problems without moving data:
+
+   ```bash
+   ubunye plan -d pipelines -u demo -p starter -t filter_adults --backend pandas
+   ```
+
+2. Run it and list its record:
+
+   ```bash
+   ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas --lineage
+   ubunye lineage list -d pipelines -u demo -p starter -t filter_adults
+   ```
+
+3. Read the saved result in Python:
+
+   ```python
+   import pandas as pd
+
+   adults = pd.read_parquet("pipelines/demo/starter/filter_adults/output/adults")
+   print(adults)
+   ```
+
+**What you get.** Five saved adult rows from eight input rows, with a record you can check next time.
 
 ## Take the task with you
 
 Moving the job should leave you with something you can compare.
 
-A run record holds status, timing, code and configuration evidence, plus input and output row counts and hashes. A hash is a compact fingerprint of the data. Canonical row hashing puts values into a common form, so a different row order does not change the answer.
+A run record holds status, timing, code and configuration evidence, plus row counts and hashes. A hash is a compact fingerprint of the data. Canonical row hashing puts values into a common form, so row order does not change the answer.
 
 <UbunyeSameAnswer />
 
@@ -67,13 +293,13 @@ The C01 example reads, joins, filters and summarises fixed sample data. It produ
 
 With `ubunye prove`, compare workload identity, inputs, output data, schemas and row counts. You can ask a better question than “did both jobs finish?” You can ask whether their recorded results agree.
 
-## Know where it runs
+## What it does not do yet
 
 You need to know which route has evidence behind it.
 
 <UbunyeRuntimeMap />
 
-The [published seven environment proof](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/docs/proving-ground/latest.md) used **0.7.2 on 30 September 2026**. It covers selected workloads on pandas, local Spark, a local kind Kubernetes cluster, AWS Glue, GCP Dataproc, Azure Container Apps and Databricks. Azure ran Spark in local mode inside a container. This is historical proof, not a seven environment rerun of 0.9.3.
+The [published seven environment proof](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/docs/proving-ground/latest.md) used **0.7.2 on 30 September 2026**: pandas, local Spark, local kind Kubernetes, AWS Glue, GCP Dataproc, Azure Container Apps and Databricks. Azure used Spark local mode in a container. This is historical proof, not a seven environment rerun of 0.9.3.
 
 Portability needs compatible transformations and connectors. Narwhals is a library for writing dataframe transformations that work across backends. Spark specific Python and Delta writes do not automatically become pandas work.
 
@@ -81,48 +307,17 @@ On AWS, Glue has proving evidence. EMR Serverless has a deployment route tested 
 
 Classic EMR and Hadoop YARN are untested. SageMaker and Vertex AI serving adapters are proposed. Synapse and Fabric support is unknown. Docker has separate matching results for the document index example.
 
-Choose Ubunye for batch work; native streaming is not built in. It uses your scheduler and compute. Rerun protection depends on the sink and shared storage. Enable recording and check that the record was saved. Hashes compare data content, not file bytes, and cannot reconstruct the rows. A model's production stage is a registry decision, not a served endpoint.
+Choose Ubunye for batch work; native streaming is not built in. It uses your scheduler and compute. Rerun leases protect a shared disk, and replacement behaviour depends on the sink. Filesystem registry indexes do not serialize concurrent writers; use the MLflow registry for that. A model's production stage does not create a serving endpoint. Stored promotion gates apply across versions of a model.
 
-## Your first five minutes
-
-Start with a task you can run locally.
-
-A clean Python 3.12 environment installed **0.9.3** from PyPI with:
-
-```bash
-pip install "ubunye-engine[pandas]"
-```
-
-From an empty working folder, create the sample, inspect the plan, run it with recording and list its record:
-
-```bash
-ubunye init -d pipelines -u demo -p starter -t filter_adults
-ubunye plan -d pipelines -u demo -p starter -t filter_adults --backend pandas
-ubunye run -d pipelines -u demo -p starter -t filter_adults --backend pandas --lineage
-ubunye lineage list -d pipelines -u demo -p starter -t filter_adults
-```
-
-Here, `-d` names the root folder, `-u` the use case, `-p` the pipeline and `-t` the task. pandas runs locally without Java. `--lineage` turns on recording.
-
-<UbunyeQuickstart />
-
-Those four commands ran in **under three seconds on a laptop**. The plan said `Plan OK: 1 task(s) can run.` The run said `[OK] Run complete for filter_adults`. The record showed:
-
-```text
-c4543843  2026-11-19T13:37:53  success  1.2s  in:8  out:5
-```
-
-Open the two task files. You can see what it read, how it chose the adults and where it wrote the five rows. Change the task from there.
+Enable recording and check that the record was saved. Hashes compare data content, not file bytes, and cannot reconstruct rows. Replay fails on missing answers and covers calls through `llm.port`. The RAG example uses separate model helpers; it does not automatically record those calls through the port.
 
 ## Copy something close to your question
-
-You should not have to invent the first useful example.
 
 The [examples repository](https://github.com/ubunye-ai-ecosystems/ubunye-examples/tree/da40b44a572361f5cb1cc15aaefd200f51e7b82e/examples) contains **eleven examples and eighteen task configurations**.
 
 - **Documents.** Example 11 turns six text files into 6 documents and 13 overlapping chunks. Its README records the same fingerprint on local Spark, Docker, Kubernetes and Databricks.
-- **Machine learning.** Example 04 makes taxi features, trains with held out checks and loads the production model for batch predictions. Example 08 shows monitoring and rollback as task code you can read.
-- **Language models.** Example 05 retrieves document chunks and writes answers with source IDs. This is retrieval augmented generation, or RAG. Example 06 uses teacher labels to train and evaluate a smaller classifier.
+- **Monitoring.** Example 08 shows model monitoring and rollback as task code you can read.
+- **Training from labels.** Example 06 uses teacher labels to train and evaluate a smaller classifier.
 - **Databases.** Example 09 reads public RNAcentral data through JDBC. Its documented local run read 200,000 sequences across four partitions.
 
 Pick the closest task. Read its plan. Run it with recording. You have a place for your decisions and a way to check what they produced.
