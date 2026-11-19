@@ -27,13 +27,18 @@ The engine uses ports and adapters. A port describes what a component must do. A
 
 <UbunyeArchitecture />
 
-The real folders tell you where to start:
+The real folders tell you where each kind of change belongs:
 
-- `ubunye/core` holds contracts and execution decisions.
-- `ubunye/core/ports.py` defines the data interface.
-- `ubunye/adapters` holds backend specific mechanics.
-- `ubunye/backends` supplies Spark, Databricks and pandas execution.
-- `ubunye/plugins` holds discoverable connections and transforms.
+| Change | Start here |
+|---|---|
+| Shared execution rules and contracts | `ubunye/core`, including `interfaces.py` and `ports.py` |
+| Backend mechanics | `ubunye/adapters` |
+| Spark, Databricks or pandas execution | `ubunye/backends` |
+| Built in readers, writers and transforms | `ubunye/plugins` |
+| Config fields and validation | `ubunye/config/schema.py` |
+| Model lifecycle or language model calls | `ubunye/models` or `ubunye/llm` |
+| Commands or scheduler exports | `ubunye/cli` or `ubunye/orchestration` |
+| Regression tests and explanations | `tests/unit`, `tests/integration`, `docs` |
 
 A source import test checks that the core does not import Spark, pandas or pyarrow. That boundary keeps a backend choice out of shared decisions.
 
@@ -63,6 +68,62 @@ There are **15 plugin entry point groups**, covering the places you can extend:
 | Platform access | `ubunye.secrets`, `ubunye.auth_backends`, `ubunye.deploy_adapters` |
 
 A connector declares what it can do. The engine checks the task against that declaration before execution.
+
+## Write a connector in fifteen lines
+
+Start with a reader you can run on your laptop. Save this as `rows_reader.py` in your plugin package:
+
+```python
+from ubunye.core.interfaces import Reader
+
+class RowsReader(Reader):
+    """Read a small list of records on a compatible backend."""
+    CONFIG_KEYS = frozenset({"rows", "schema"})
+    REQUIRES = frozenset({"records"})
+
+    @classmethod
+    def validate_config(cls, cfg):
+        if not cfg.get("rows"):
+            return ["format 'rows' requires nonempty 'rows'"]
+        return []
+
+    def read(self, cfg, backend):
+        return backend.frame_from_records(cfg["rows"], schema=cfg.get("schema"))
+```
+
+The [reader contract](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/ubunye/core/interfaces.py#L264) takes an input settings dictionary and a backend, then returns a frame satisfying `DataFramePort`. Here the backend builds that frame. `CONFIG_KEYS` catches misspelled settings. `REQUIRES` asks for record support before execution.
+
+Add these lines to the package's `pyproject.toml`, then install the package into the environment that runs Ubunye:
+
+```toml
+[project.entry-points."ubunye.readers"]
+rows = "rows_reader:RowsReader"
+```
+
+```bash
+pip install -e .
+```
+
+Now any task can use it. Name the format in a task's `config.yaml`:
+
+```yaml
+CONFIG:
+  inputs:
+    source:
+      format: rows
+      rows: [{value: 7}, {value: 8}]
+```
+
+Then plan and run it like any other task:
+
+```bash
+ubunye plan -d pipelines -u demo -p plug -t rows_demo --backend pandas
+ubunye run -d pipelines -u demo -p plug -t rows_demo --backend pandas --lineage
+```
+
+The plan says `Plan OK: 1 task(s) can run.` and the record shows `in:2  out:2`. The engine found your reader through the package metadata. You changed no engine code.
+
+For your own connector, also add a test for invalid settings and for the backend capability it requires. The engine's own [third party connector test](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/tests/unit/config/test_third_party_connector.py) shows the pattern.
 
 ## Keep the data rules beside the data work
 
@@ -122,31 +183,43 @@ The proving ground contains three workload families and six compared steps. C01 
 
 Missing evidence gets a visible result such as PARTIAL or NOT RUN. It does not become a pass.
 
-## Make your first contribution small
+## Change the engine itself
 
 You need a clear place to start and a way to know the change works.
 
-The [contributor guide](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/CONTRIBUTING.md) starts with a clone and a Python virtual environment. From the engine checkout, install the development dependencies and run the unit and typing checks:
+Follow the [contributor guide](https://github.com/ubunye-ai-ecosystems/ubunye_engine/blob/5198d45ff544863ba161afb45073c58d8b0f8006/CONTRIBUTING.md), using the folder map above to place your change.
 
-```bash
-pip install -e ".[dev]"
-python -m pytest tests/unit
-python -m mypy ubunye
-```
+1. Fork the engine repository on GitHub, clone your fork and create a branch for one fix or feature.
+2. From the checkout, create a virtual environment and install the development dependencies. They include pandas and pyarrow, so the unit tests need no Java.
 
-The guide also asks for `pre-commit install`. Install or provide `pre-commit` separately; the development extra does not include it.
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   pip install -e ".[dev]"
+   ```
+
+3. Write a failing test first. Run it to see the failure you are fixing, then change the engine until it passes. Keep backend imports in the adapters.
+4. Run the unit tests and type checker. For changes to reading, writing or hashing, also run the Spark integration and parity tests described in the guide.
+
+   ```bash
+   python -m pytest tests/unit
+   python -m mypy ubunye
+   ```
+
+5. Update the relevant docs and add a line under `Unreleased` in `docs/changelog.md`. Enable the contributor hooks with `pre-commit install`.
+6. Use a Conventional Commit such as `fix(pandas): explain what changed`. These messages name the change type and area. Open a pull request to `main` with what changed, why and how you tested it. Keep existing APIs working through a deprecation window.
 
 <UbunyeContributorPath />
 
 The package ships typing information. CI runs mypy, a Python type checker, and the unit tests on every change. The unit tests also run on Linux, Windows and macOS with Python 3.10 through 3.13. The suite holds **3,230 test cases**.
-
-For a bug, start with a failing regression test. Add the fix, docs and changelog together. Use Conventional Commits, commit messages with a declared change type, and send a pull request to main. Preserve compatibility through a deprecation window.
 
 A first issue could be a reproducible error with runtime versions, a clearer failure message, an example or an externally packaged connector. The existing errors already suggest fixes: `paht` points to `path`, and a missing profile lists the available names.
 
 ## What it does not do yet
 
 Choose your boundary before building on it.
+
+The development extra does not include `pre-commit`; provide it separately for the contributor hooks.
 
 Ubunye is a batch framework. Streaming and model serving adapters remain proposed work. Drift detection lives in example task code. Filesystem registry indexes can lose concurrent updates; use the server backed MLflow registry for concurrent writers. Feature checks cover names, not data types.
 

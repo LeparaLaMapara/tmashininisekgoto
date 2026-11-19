@@ -74,32 +74,26 @@ export function UbunyeTaskFolder() {
 }
 
 const ROLES = [
-  { name: 'Analyst', before: 'File scripts', after: 'A local task', detail: 'Use pandas and check the plan. No Java needed.' },
-  { name: 'Data scientist', before: 'Notebook experiment', after: 'Recorded run', detail: 'Keep the experiment and its run record together.' },
-  { name: 'Data engineer', before: 'Duplicate batches', after: 'Explicit reruns', detail: 'Use batch checks and Delta merge to handle reruns.' },
-  { name: 'ML engineer', before: 'Unvetted version', after: 'Promotion gates', detail: 'Check stored model gates before promotion; keep rollback available.' },
-  { name: 'AI engineer', before: 'Changing answers', after: 'Record and replay', detail: 'Use llm.port to replay recorded requests instead of asking the model again.' },
-  { name: 'Research scientist', before: 'Two green jobs', after: 'Compared data', detail: 'Compare recorded inputs, output data, schemas and row counts with prove.' },
-  { name: 'Team lead', before: 'Did it run?', after: 'Job health', detail: 'Query recorded status, last success and consecutive failures.' },
-  { name: 'Platform engineer', before: 'Integration patches', after: 'Installed plugins', detail: 'Add connectors through package entry points and keep platform control of Spark sessions.' },
+  { name: 'Data scientist', href: '#data-scientist', before: 'Notebook', after: 'Recorded job' },
+  { name: 'Data engineer', href: '#data-engineer', before: 'Source', after: 'Checked table' },
+  { name: 'ML or AI engineer', href: '#ml-or-ai-engineer', before: 'New model', after: 'Checked version' },
+  { name: 'Analyst', href: '#analyst', before: 'Local file', after: 'Saved result' },
 ]
 
 export function UbunyeRoles() {
-  const [selected, setSelected] = useState(0)
-  const role = ROLES[selected]
   return (
-    <EngineFigure label="Find your starting point" caption="Choose the work you do.">
-      <div className="mb-5 grid grid-cols-2 gap-2" role="group" aria-label="Your role">
-        {ROLES.map((item, i) => <FigButton key={item.name} active={selected === i} onClick={() => setSelected(i)}>{item.name}</FigButton>)}
-      </div>
-      <div aria-live="polite" aria-atomic="true">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
-          <div className="flex items-center border border-border p-3 text-sm text-muted">{role.before}</div>
-          <span aria-hidden="true" className="self-center text-xl text-muted">→</span>
-          <div className="flex items-center border-2 border-signal p-3 text-sm font-semibold text-ivory">{role.after}</div>
-        </div>
-        <p className="mt-4 min-h-12 text-sm leading-relaxed text-muted">{role.detail}</p>
-      </div>
+    <EngineFigure label="Find your starting point" caption="Choose your role to jump to the steps.">
+      <nav aria-label="Your workflow" className="grid gap-3 sm:grid-cols-2">
+        {ROLES.map((role) => (
+          <a key={role.href} href={role.href} className="group block min-h-24 border-2 border-ivory p-4 text-ivory no-underline transition-colors hover:border-signal hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal">
+            <span className="block text-base font-semibold group-hover:text-synapse-ink">{role.name}</span>
+            <span className="mt-3 flex flex-wrap gap-x-2 gap-y-1 text-sm">
+              <span className="text-muted">{role.before}</span>
+              <span className="border-l-2 border-signal pl-2 text-signal">{role.after}</span>
+            </span>
+          </a>
+        ))}
+      </nav>
     </EngineFigure>
   )
 }

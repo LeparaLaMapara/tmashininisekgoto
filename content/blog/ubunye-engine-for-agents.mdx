@@ -73,7 +73,7 @@ Now the agent has a named way to ask what exists, whether it can run and what it
 
 “Done” should lead to a record you can open.
 
-Use `demo/starter/filter_adults`, the generated pandas task from [the first part](/blog/ubunye-engine-for-users). Its verified command line run read **8 rows** and wrote **5 rows**. The following figure shows how to inspect and execute that task through the tools.
+Use `demo/starter/filter_adults`, the generated pandas task. Its verified command line run read **8 rows** and wrote **5 rows**. The following figure shows how to inspect and execute that task through the tools.
 
 <UbunyeAgentWalkthrough />
 
@@ -99,29 +99,9 @@ Agent initiated execution defaults these steps to replay. `--allow-live-llm` is 
 
 If the recording is missing, replay fails. It does not silently ask the provider for a fresh answer. That gives the person directing the agent a clear decision: supply the recording or explicitly allow live execution.
 
-## Use the notebook path when you need Python
+## Read structured results without MCP
 
-Some agents work through Python or a command line.
-
-`ubunye.notebook(task_dir, backend=...)` gives them the same task operations. `read()` returns named native frames. `transform()` can reuse the previous read, and `write()` can use the previous transformed output. `run()` performs all three.
-
-Keep the operations inside a context block:
-
-```python
-import ubunye
-
-with ubunye.notebook(
-    "pipelines/demo/starter/filter_adults",
-    backend="pandas",
-) as task:
-    sources = task.read()
-    outputs = task.transform(sources)
-    task.write(outputs)
-```
-
-<UbunyeNotebookRun />
-
-Enable recording through `run_records=`, job parameters or environment settings. The context keeps one recorded run across the block. Named steps can add stage information, and failures identify the stage, such as read, transform or write. Context exit releases resources.
+For Python access, use `ubunye.notebook`; the [data scientist workflow](/blog/ubunye-engine-for-users#data-scientist) shows a recorded notebook block and the same folder run from the command line.
 
 For command line inspection, JSON is available on specific commands:
 
@@ -153,7 +133,7 @@ Keep the boundary clear when directing an agent.
 
 Ubunye is **not an agent framework**. It has no built in agent scheduler, delegation protocol or agent to agent orchestration API. These tools expose batch tasks and their records. `run` executes task code and writes its configured outputs, so expose it deliberately.
 
-Recording must be enabled and the store available. A failed run may have no saved record. Hashes compare content evidence, not file bytes or a recoverable copy of the data. Health depends on the history it can read. The notebook example needs recording settings to retain a record.
+Recording must be enabled and the store available. A failed run may have no saved record. Hashes compare content evidence, not file bytes or a recoverable copy of the data. Health depends on the history it can read.
 
 Replay covers calls through `llm.port`; direct model helpers in the RAG examples do not establish automatic call recording. Different model providers do not promise identical answers. The command line `run` has no `--json` option; use MCP execution results and saved records for structured execution evidence.
 
