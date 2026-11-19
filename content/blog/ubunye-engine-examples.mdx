@@ -1,0 +1,449 @@
+---
+title: "Learn it by running it"
+seoTitle: "Ubunye Engine examples you can run locally"
+date: 2026-11-19
+published: true
+tags: [ubunye series, open source, data engineering, data science, python]
+series: "Ubunye Engine"
+seriesPart: 4
+summary: "Run the Ubunye Engine examples on your machine. Read a forecast, check a data contract, train a model and follow the output."
+---
+
+# Learn it by running it
+
+*Part four of [Ubunye Engine](/blog/series/ubunye-engine), for learning at your own machine.*
+
+A task makes more sense when you can open its output. Start with six text files. Then read a forecast, check some transactions and train a model you can use.
+
+These walkthroughs follow the examples repository at `da40b44`, using the released engine `0.9.3`. The local tables contain seeded, synthetic data. Weather comes from the live API. The two language model pipelines are shown, not run, because their default local model exceeds the size limit for this walkthrough.
+
+<UbunyeExamplePicker />
+
+## Set up once
+
+Use a terminal with Git, [uv](https://docs.astral.sh/uv/) and Java 21 available. These commands use Python 3.12, Spark 4.2 and its matching Delta package. Run one example at a time.
+
+```bash
+git clone https://github.com/ubunye-ai-ecosystems/ubunye-examples.git
+cd ubunye-examples
+git checkout da40b44
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python --index-url https://pypi.org/simple \
+  'ubunye-engine[spark,ml,pandas]==0.9.3' \
+  'pyspark==4.2.0' 'delta-spark==4.4.1' requests
+source .venv/bin/activate
+```
+
+Then load the local setup and seed the sample data. The [setup script](/blog/ubunye/examples-env.sh) points Spark at Delta, downloads three Java libraries once, keeps everything under `.local-data`, and limits Spark to two cores so your machine stays usable. It also gives you `peek`, which runs SQL and shows five rows.
+
+```bash
+curl -fsSLO https://www.tmashininisekgoto.com/blog/ubunye/examples-env.sh
+source examples-env.sh
+python platforms/seed.py
+cp examples/11_run_anywhere/data/corpus/*.txt "$DATA_DIR/corpus/"
+```
+
+The seed creates 20,000 trips, 5,000 transactions, 12 franchises, 400 customers and 200 reviews. In a new terminal, run `source .venv/bin/activate` and `source examples-env.sh` again from the repository root.
+
+In the commands below, `-d` is the task root, `-u` the use case, `-p` the pipeline and `-t` the task. `--lineage` saves a run record. Console warnings are omitted from the output excerpts.
+
+## Start with one portable task
+
+**What you will learn.** Example 11 turns files into documents and gives you a fingerprint you can compare after another run.
+
+**Run it.**
+
+```bash
+ubunye run -d examples/11_run_anywhere/pipelines \
+  -u portable -p ingestion -t document_index -m DEV -dt 2026-11-19 --lineage
+python platforms/fingerprint.py "$DATA_DIR/documents" "$DATA_DIR/document_chunks"
+```
+
+**What you see.** Six documents, thirteen chunks, and this combined fingerprint:
+
+```text
+[OK] Run complete for document_index
+FINGERPRINT=067da98ea04a7d2f08969aa8ee614ac69fe6f659176145767d4e8fa5e296292d
+```
+
+**Look inside.** In [`document_index/transformations.py`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/11_run_anywhere/pipelines/portable/ingestion/document_index/transformations.py), `F.sha2(text, 256)` derives document identity from content. The config uses `mode: merge` and `merge_keys: ["doc_id"]`. The same document updates its existing row.
+
+**Try this next.** Change the batch date to `2026-11-20` and run both commands again. The fingerprint stayed the same. This task deliberately leaves the clock out of its output. Its [README](https://github.com/ubunye-ai-ecosystems/ubunye-examples/tree/da40b44/examples/11_run_anywhere) also records this fingerprint on Docker, Kubernetes and Databricks; this walkthrough runs locally.
+
+## Read a weather forecast
+
+**What you will learn.** Example 02 turns one nested JSON response from Open Meteo into hourly rows.
+
+**Run it.** This needs internet access.
+
+```bash
+ubunye run -d examples/02_ingest_rest_api/pipelines \
+  -u weather -p ingestion -t hourly_forecast -m DEV -dt 2026-11-19 --lineage
+peek "SELECT city, observed_at, temperature_2m FROM delta.\`$DATA_DIR/hourly_forecast\` ORDER BY observed_at"
+```
+
+**What you see.** The run writes 168 hourly rows. The first two displayed rows were:
+
+```text
+Johannesburg | 2026-11-19 00:00:00 | 16.4
+Johannesburg | 2026-11-19 01:00:00 | 15.8
+```
+
+The rows were written, but engine `0.9.3` left both REST run records at `running`. Inspect the Delta table directly here; these records do not prove completion.
+
+Your forecast will change. The example parses local API clock text without converting it to UTC. Treat these as local clock readings with the accompanying `timezone` field. Add an explicit time zone conversion before joining them to UTC data.
+
+**Look inside.** Open the [task folder](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/02_ingest_rest_api/pipelines/weather/ingestion/hourly_forecast). Its `config.yaml` sets `format: rest_api` and `forecast_days: 7`. In `transformations.py`, `F.arrays_zip(...)` keeps each hour beside its measurements before `F.explode(...)` makes rows.
+
+**Try this next.** Set `forecast_days` to `1`. Run with `UBUNYE_DATA_ROOT="file://$DATA_DIR/one-day"` before `ubunye run` to keep the experiment separate. I got 24 rows. Restore `7` afterwards.
+
+## Turn documents into chunks
+
+**What you will learn.** Example 03 gives text from a table and text from files the same shape.
+
+**Run it.**
+
+```bash
+ubunye run -d examples/03_ingest_unstructured/pipelines \
+  -u docs -p ingestion -t document_index -m DEV -dt 2026-11-19 --lineage
+peek 'SELECT source, count(*) AS chunks FROM ubunye_examples.document_chunks GROUP BY source'
+```
+
+**What you see.** The task writes 206 documents and 212 chunks:
+
+```text
+source | chunks
+review | 200
+file   | 12
+```
+
+**Look inside.** In [`document_index/config.yaml`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/03_ingest_unstructured/pipelines/docs/ingestion/document_index/config.yaml), `format: binary` reads the files. Its `transformations.py` sets `CHUNK_WORDS = 120` and `OVERLAP_WORDS = 30`. Overlap keeps words on both sides of a boundary together.
+
+**Try this next.** Preview a smaller window without writing new chunk IDs into the existing table:
+
+```bash
+python - <<'PY'
+import sys
+from pathlib import Path
+sys.path.insert(0, 'examples/03_ingest_unstructured/pipelines/docs/ingestion/document_index')
+import transformations as t
+text = Path('examples/03_ingest_unstructured/data/corpus/idempotency.txt').read_text()
+print('120 words:', len(t.chunk_text(text)), 'chunks')
+t.CHUNK_WORDS = 60
+print('60 words:', len(t.chunk_text(text)), 'chunks')
+PY
+```
+
+It prints `120 words: 2 chunks`, then `60 words: 5 chunks`.
+
+## Join tables and write them safely
+
+**What you will learn.** Example 01 reads a table and a SQL join, then writes two monthly summaries with different replacement rules.
+
+**Run it.**
+
+```bash
+ubunye run -d examples/01_ingest_tables_sql/pipelines \
+  -u retail -p ingestion -t customer_revenue -m DEV -dt 2026-11-19 --lineage
+peek 'SELECT count(*) AS franchise_months FROM ubunye_examples.franchise_revenue'
+```
+
+**What you see.** The 5,000 transactions produced 61 franchise months and 31 product months in this run.
+
+```text
+franchise_months
+61
+```
+
+**Look inside.** Open [`customer_revenue/config.yaml`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/01_ingest_tables_sql/pipelines/retail/ingestion/customer_revenue/config.yaml). `franchises` uses `table:`; `transactions` uses `sql:` with a customer join. The first output merges by franchise and month. The second uses `mode: overwrite_partitions` with `partitionBy: ["revenue_month"]`.
+
+**Try this next.** Ask for one month:
+
+```bash
+peek "SELECT count(*) AS january_products FROM ubunye_examples.product_revenue WHERE revenue_month = '2026-01'"
+```
+
+It returns `6`. The month is stored as `yyyy-MM`, so use that form in your filter.
+
+## Keep bad rows with their reasons
+
+**What you will learn.** Example 07 separates malformed rows from a broken source.
+
+**Run it.**
+
+```bash
+ubunye run -d examples/07_data_quality/pipelines \
+  -u quality -p contracts -t validate_transactions -m DEV -dt 2026-11-19 --lineage
+peek 'SELECT transactionID, broken_rules FROM ubunye_examples.quarantined_transactions ORDER BY transactionID'
+```
+
+**What you see.** The task keeps 5,000 valid rows, quarantines five and reports all seven rules. Each injected fault has its reason:
+
+```text
+900001 | [quantity_positive]
+900002 | [total_price_reconciles]
+900003 | [timestamp_present]
+900004 | [unit_price_not_negative]
+900005 | [payment_method_known]
+```
+
+**Look inside.** In [`validate_transactions/contract.py`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/07_data_quality/pipelines/quality/contracts/validate_transactions/contract.py), each `Rule` has a severity. Missing identity is `fatal`; invalid quantity is `quarantine`. `MAX_QUARANTINE_RATE = 0.05` stops a run when too many rows fail. This contract is example code you can adapt.
+
+**Try this next.** Lower that limit to `0.0001` and run with batch date `2026-11-20`. It stops with `5/5005 rows (0.1%) failed the contract`. Use a fresh date to reach the rule check, since the rule report appends rows. Restore `0.05` afterwards.
+
+## Train a model and use it
+
+**What you will learn.** Example 04 makes features, trains against a held out test set, checks gates and uses the production model for batch predictions.
+
+**Run it.** Task flags run in order. Keep this sequence together:
+
+```bash
+ubunye run -d examples/04_ml_taxi_fare/pipelines \
+  -u taxi_fare -p ml -t feature_engineering -t model_training -t batch_inference \
+  -m DEV -dt 2026-11-19 --lineage
+peek 'SELECT split, count(*) AS rows FROM ubunye_examples.taxi_features GROUP BY split ORDER BY split'
+peek "SELECT metric, round(value, 4) AS value FROM ubunye_examples.taxi_model_metrics WHERE metric LIKE 'test_%' ORDER BY metric"
+```
+
+**What you see.** The seeded trips split into 14,080 training rows, 3,024 test rows and 2,896 scoring rows. The test metrics were:
+
+```text
+test_mae  | 0.6843
+test_r2   | 0.9788
+test_rmse | 1.0644
+```
+
+Inference wrote 2,896 predictions using version `1.0.0`. These are results on synthetic data, not a claim about real taxi prediction.
+
+**Look inside.** In [`model_training/transformations.py`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/04_ml_taxi_fare/pipelines/taxi_fare/ml/model_training/transformations.py), `self._gate(test_metrics)` comes before registration. Its defaults require test RMSE at most `6.0` and test R squared at least `0.55`. RMSE measures prediction error; R squared compares the model with predicting a constant. The sibling `batch_inference/transformations.py` loads `ModelStage.PRODUCTION`.
+
+**Try this next.** Ask the model to clear a much stricter bar:
+
+```bash
+TAXI_MAX_RMSE=0.01 ubunye run -d examples/04_ml_taxi_fare/pipelines \
+  -u taxi_fare -p ml -t model_training -m DEV -dt 2026-11-20 --lineage
+```
+
+It fails with `test_rmse: 1.0644 > 0.01 (max threshold)` before registration. Use a different batch date as shown: repeating the original append batch is refused before training, to prevent duplicate metrics.
+
+## Decide when to roll back
+
+**What you will learn.** Example 08 compares changed data with a worse model promotion before choosing what to do.
+
+**Run it.** Run example 04 first.
+
+```bash
+ubunye run -d examples/08_model_monitoring/pipelines \
+  -u taxi_fare -p mlops -t monitor_model -m DEV -dt 2026-11-19 --lineage
+peek 'SELECT diagnosis, action FROM ubunye_examples.monitoring_incidents ORDER BY detected_at DESC'
+```
+
+
+Now reproduce the second scenario from its notebook. This deliberately promotes a poor model in your local example registry:
+
+```bash
+python - <<'PYCODE'
+import os
+import sys
+from pyspark.sql import SparkSession
+from sklearn.ensemble import HistGradientBoostingRegressor
+from ubunye.models.registry import ModelRegistry, ModelStage
+sys.path.insert(0, 'examples/04_ml_taxi_fare/models')
+from taxi_fare_model import TaxiFareModel
+spark = SparkSession.builder.enableHiveSupport().getOrCreate()
+try:
+    features = spark.table('ubunye_examples.taxi_features')
+    broken = TaxiFareModel()
+    broken._model = HistGradientBoostingRegressor(max_iter=1, max_depth=1, random_state=0)
+    train = broken.train(features.filter("split = 'train'").limit(200).toPandas())
+    test = broken.validate(features.filter("split = 'test'").toPandas())
+    registry = ModelRegistry(os.environ['TAXI_MODEL_STORE'])
+    bad = registry.register(use_case='taxi_fare', model_name='TaxiFareModel',
+                            version=None, model=broken, metrics={**train, **test})
+    registry.promote(use_case='taxi_fare', model_name='TaxiFareModel',
+                     version=bad.version, to_stage=ModelStage.PRODUCTION)
+finally:
+    spark.stop()
+PYCODE
+DRIFT_FACTOR=1.0 ubunye run -d examples/08_model_monitoring/pipelines \
+  -u taxi_fare -p mlops -t monitor_model -m DEV -dt 2026-11-20 --lineage
+```
+
+**What you see.** The first run recommends retraining after the target changes. The second finds the older model performs better and restores it:
+
+```text
+world_moved | retrain  | live_mae 4.598
+regression  | rollback | live_mae 4.507
+ROLLED BACK production: 1.0.1 -> 1.0.0
+```
+
+The second error belongs to the bad model before rollback.
+
+**Look inside.** In [`monitor_model/config.yaml`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/08_model_monitoring/pipelines/taxi_fare/mlops/monitor_model/config.yaml), `DRIFT_FACTOR` defaults to `1.35`. It changes the target fares while leaving inputs alone. The task's `transformations.py` scores the registered candidates on the same live rows before choosing a rollback.
+
+**Try this next.** With the healthy model restored, run with `DRIFT_FACTOR=1.0` and batch date `2026-11-21`. The result was `healthy` with action `none`.
+
+## Read a public database
+
+**What you will learn.** Example 09 pushes a bounded query into PostgreSQL and partitions its read.
+
+**Run it.** This needs internet access to RNAcentral's public database on port `5432`.
+
+```bash
+ubunye run -d examples/09_jdbc_ingest/pipelines \
+  -u rnacentral -p ingestion -t ingest_rna -m DEV -dt 2026-11-19 --lineage
+```
+
+**What you see.** This run succeeded against the live service. It read 59 contributing databases and 200,000 sequences, then wrote five length bands. Every band reports four read partitions:
+
+```text
+long (1k-10k)    | 48413  | 4
+medium (200-1k)  | 116933 | 4
+small (50-200)   | 22723  | 4
+tiny (<50)      | 11930  | 4
+very long (>10k) | 1      | 4
+```
+
+To inspect yours:
+
+```bash
+peek "SELECT length_band, sequences, read_partitions FROM delta.\`$DATA_DIR/rna_sequence_profile\` ORDER BY length_band"
+```
+
+**Look inside.** In [`ingest_rna/config.yaml`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/09_jdbc_ingest/pipelines/rnacentral/ingestion/ingest_rna/config.yaml), `WHERE id <= 200000` limits the rows. `partitionColumn: id` and `numPartitions: 4` split the work. The bounds choose partition ranges; they do not filter the data.
+
+**Try this next.** Change the SQL limit to `1000`, `upperBound` to `1000` and `numPartitions` to `2`. Rerun with batch date `2026-11-20`. The result contained 1,000 sequences and reported two partitions. Restore the three settings afterwards.
+
+## Compare three frameworks
+
+**What you will learn.** Example 10 trains a tree and two small neural networks behind the same task configuration.
+
+**Run it.** Run example 04 first. Install the CPU frameworks, then run the trainers one after another:
+
+```bash
+uv pip install --python .venv/bin/python --index-url https://pypi.org/simple \
+  --extra-index-url https://download.pytorch.org/whl/cpu \
+  --index-strategy unsafe-best-match \
+  'torch==2.9.1+cpu' 'tensorflow-cpu==2.20.0' 'numpy<2.3'
+export BENCH_MODEL_STORE="$DATA_DIR/bench-models"
+export TF_NUM_INTRAOP_THREADS=2 TF_NUM_INTEROP_THREADS=1
+ubunye run -d examples/10_ml_frameworks/pipelines -u fare_bench -p ml \
+  -t train_sklearn -m DEV -dt 2026-11-19 --lineage
+ubunye run -d examples/10_ml_frameworks/pipelines -u fare_bench -p ml \
+  -t train_torch -m DEV -dt 2026-11-19 --lineage
+ubunye run -d examples/10_ml_frameworks/pipelines -u fare_bench -p ml \
+  -t train_keras -m DEV -dt 2026-11-19 --lineage
+ubunye run -d examples/10_ml_frameworks/pipelines -u fare_bench -p ml \
+  -t select_champion -m DEV -dt 2026-11-19 --lineage
+peek 'SELECT framework, round(score_rmse, 4) AS score_rmse, verdict FROM ubunye_examples.fare_bench_leaderboard ORDER BY rank'
+```
+
+**What you see.** All three passed their gates. The ranking on the untouched scoring split was:
+
+```text
+tensorflow   | 0.8198 | too close to call
+pytorch      | 0.8215 | too close to call
+scikit-learn | 0.9343 | too close to call
+```
+
+The leading pair is closer than the example's five percent threshold for calling a clear win.
+
+**Look inside.** The three trainer configs under [`task folder`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/10_ml_frameworks/pipelines/fare_bench/ml) are identical. Each `transformations.py` hands a different model to `benchmark.run(...)`. In `select_champion/transformations.py`, `RANK_BY = "score_rmse"` uses rows reserved for ranking, separate from fitting and gating.
+
+**Try this next.** Sort the same leaderboard by test error instead:
+
+```bash
+peek 'SELECT framework, round(test_rmse, 4) AS test_rmse FROM ubunye_examples.fare_bench_leaderboard ORDER BY test_rmse'
+```
+
+TensorFlow still came first, at `0.8024`. The ranking task deliberately uses the separate score split, which the quality gate never judged.
+
+## Answer from your documents
+
+**What you will learn.** Example 05 stores embeddings, retrieves relevant chunks and saves an answer with its sources. An embedding is a numeric representation used to compare pieces of text.
+
+**Run it.** **Shown, not run.** The local provider uses MiniLM for embeddings, about 90 MB, and Qwen for generation, about 1 GB. You need those model downloads, the Python model libraries and the chunks from example 03. This recipe comes from the repository's local workflow and model provider:
+
+```bash
+# Shown from .github/workflows/portability.yml; not executed here.
+uv pip install --python .venv/bin/python --index-url https://pypi.org/simple \
+  --extra-index-url https://download.pytorch.org/whl/cpu \
+  --index-strategy unsafe-best-match \
+  'torch==2.9.1+cpu' 'sentence-transformers>=3' 'transformers>=4.44'
+MODEL_BACKEND=local TORCH_THREADS=2 ubunye run \
+  -d examples/05_rag_documents/pipelines -u rag -p knowledge \
+  -t embed_chunks -t answer_questions -m DEV -dt 2026-11-19 --lineage
+```
+
+**What you see.** The code writes `chunk_embeddings`, then `rag_answers` with the question, answer and source chunk IDs. No generated answer is claimed here. One of its five questions deliberately asks something the corpus cannot answer.
+
+**Look inside.** In [`answer_questions/transformations.py`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/05_rag_documents/pipelines/rag/knowledge/answer_questions/transformations.py), `TOP_K = 4` chooses four chunks. `SYSTEM_PROMPT` tells the model to answer only from context and to refuse when the answer is absent. `serving.py` selects the CPU provider when `MODEL_BACKEND=local`.
+
+**Try this next.** Change `TOP_K` to `2`. I tried the retrieval helper on four small numeric vectors. It returned two chunks instead of four. This checks retrieval selection, not the quality of a generated answer.
+
+## Teach a smaller model
+
+**What you will learn.** Example 06 uses teacher labels to train a smaller sentiment classifier, then checks its agreement on reviews held out from training.
+
+**Run it.** **Shown, not run.** The default CPU teacher is the same Qwen model. The student is `distilbert-base-uncased`; its code trains for three epochs. You need the model libraries above, both model downloads, the seeded reviews and a writable student registry:
+
+```bash
+# Shown from .github/workflows/portability.yml; not executed here.
+MODEL_BACKEND=local TORCH_THREADS=2 \
+STUDENT_MODEL_STORE="$DATA_DIR/student-models" ubunye run \
+  -d examples/06_finetune_llm/pipelines -u reviews -p nlp \
+  -t label_reviews -t finetune_classifier -m DEV -dt 2026-11-19 --lineage
+```
+
+**What you see.** A successful run writes labelled reviews and student metrics. Registration requires both accuracy and negative class recall to pass. Recall asks how many teacher labelled negative reviews the student found. These measurements compare the student with its teacher, not with independent human labels.
+
+**Look inside.** In [`finetune_classifier/transformations.py`](https://github.com/ubunye-ai-ecosystems/ubunye-examples/blob/da40b44/examples/06_finetune_llm/pipelines/reviews/nlp/finetune_classifier/transformations.py), the defaults are `min_test_accuracy: 0.70` and `min_test_recall_negative: 0.50` in the `GATES` dictionary.
+
+**Try this next.** Try a sentence in the teacher response parser instead of a single label. I called `label_from_response('The review is positive.')` from `label_reviews/transformations.py`; it returned `positive`. That small helper check ran locally. The teacher and student did not.
+
+## Follow food prices through two tasks
+
+**What you will learn.** The engine's R1 proving workload turns a committed WFP food price sample into monthly alerts using pandas.
+
+**Run it.** Use the same environment. From the examples repository root, clone the engine beside it and enter its food price example:
+
+```bash
+cd ..
+git clone https://github.com/ubunye-ai-ecosystems/ubunye_engine.git
+cd ubunye_engine
+git checkout 5198d45
+cd examples/real-world/food_prices_africa
+ubunye run -d pipelines -u food -p prices -t clean -t monitor --backend pandas --lineage
+python - <<'PY'
+import pandas as pd
+alerts = pd.read_parquet('output/alerts')
+print(alerts[['countryiso3', 'commodity', 'change_on_year', 'markets']].to_string(index=False))
+PY
+```
+
+**What you see.** The sample produces 2,229 cleaned rows, 47 monthly rows and two alerts in Chad:
+
+```text
+TCD | Rice (imported) | 0.5940 | 54
+TCD | Wheat flour     | 0.7792 | 54
+```
+
+The last columns are the rise against the same month a year before and the number of markets. Both alerts are for January 2026. The sample's [README](https://github.com/ubunye-ai-ecosystems/ubunye_engine/tree/5198d45/examples/real-world/food_prices_africa) credits the World Food Programme data and its CC BY 3.0 IGO licence.
+
+**Look inside.** In `pipelines/food/prices/monitor/config.yaml`, `rise_threshold: 0.5` requires a rise of at least 50 percent. `min_markets: 3` requires agreement across several markets. The `monitor` input reads the `prices_per_kg` output written by `clean`.
+
+**Try this next.** Raise `rise_threshold` to `0.7` and rerun only `monitor`. Only wheat flour remained, because its rise cleared 70 percent. Restore `0.5` to get the original alerts back.
+
+## Take your next step
+
+Return to the examples repository root. Keep the task folder, its input version and the run record together. To inspect the records from your first example:
+
+```bash
+cd "$EXAMPLES_ROOT"
+ubunye lineage list -d examples/11_run_anywhere/pipelines \
+  -u portable -p ingestion -t document_index
+```
+
+Share a small input, the exact command and a few output rows in an [examples issue](https://github.com/ubunye-ai-ecosystems/ubunye-examples/issues). Include the engine version and a run ID so someone else can follow the same steps. Remove private data before sharing.
+
+Return to [using the engine](/blog/ubunye-engine-for-users) for your daily workflow, [building on it](/blog/ubunye-engine-for-engineers) to add a connector, or [directing it through tools](/blog/ubunye-engine-for-agents) to work with an agent. The [engine docs](https://github.com/ubunye-ai-ecosystems/ubunye_engine/tree/5198d45ff544863ba161afb45073c58d8b0f8006/docs) explain the settings behind these examples.

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { slugify } from '@/lib/utils'
 import { CopyButton } from './copy-button'
 import { VideoEmbed } from './video-embed'
-import { UbunyeTaskFolder, UbunyeRoles, UbunyeSameAnswer, UbunyeRuntimeMap, UbunyeQuickstart, UbunyeYourWeek, UbunyeArchitecture, UbunyePluginPort, UbunyeRunRecord, UbunyeProvingGrid, UbunyeContributorPath, UbunyeToolBoundary, UbunyeAgentWalkthrough, UbunyeNotebookRun, UbunyeRecordHandoff, UbunyeReplayBoundary } from './figures/ubunye-engine'
+import { UbunyeTaskFolder, UbunyeRoles, UbunyeExamplePicker, UbunyeSameAnswer, UbunyeRuntimeMap, UbunyeQuickstart, UbunyeYourWeek, UbunyeArchitecture, UbunyePluginPort, UbunyeRunRecord, UbunyeProvingGrid, UbunyeContributorPath, UbunyeToolBoundary, UbunyeAgentWalkthrough, UbunyeNotebookRun, UbunyeRecordHandoff, UbunyeReplayBoundary } from './figures/ubunye-engine'
 import { HeadingAnchor } from './heading-anchor'
 import { UpThereOutHere } from './figures/up-there-out-here'
 import { TowerChain } from './figures/tower-chain'
@@ -199,6 +199,7 @@ export const mdxComponents: MDXComponents = {
   VideoEmbed,
   UbunyeTaskFolder,
   UbunyeRoles,
+  UbunyeExamplePicker,
   UbunyeSameAnswer,
   UbunyeRuntimeMap,
   UbunyeQuickstart,
